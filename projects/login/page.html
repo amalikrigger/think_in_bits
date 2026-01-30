@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome</title>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    // Check if user is logged in
+    if (sessionStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+
+<body>
+  <section>
+    <div class="welcome-box">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Welcome!</h1>
+        <p class="welcome-message">You have successfully logged in.</p>
+        <p class="welcome-subtitle">We're glad to have you here.</p>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function logout() {
+      sessionStorage.removeItem('loggedIn');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Club - Innovation & Entrepreneurship</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">Business Club</a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="shop.html" class="nav-link">Shop</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
+        <li><a href="blog.html" class="nav-link">Blog</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Business Club</h1>
+      <p>Where Innovation Meets Entrepreneurship. Explore our 3D printing services, student-built games, and join our community of creators.</p>
+      <div class="hero-buttons">
+        <a href="shop.html" class="btn btn-primary">Explore 3D Prints</a>
+        <a href="projects.html" class="btn btn-secondary">View Student Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D Print Promo Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">3D Printing Services</h2>
+      <p style="text-align: center; color: var(--secondary-color); max-width: 700px; margin: 0 auto 3rem; font-size: 1.1rem;">From custom prototypes to ready-made prints, we bring your ideas to life with precision and quality.</p>
+      <div class="products-grid">
+        <!-- Custom Designs Card -->
+        <div class="product-card">
+          <div class="product-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-color) 100%);">
+            <span style="font-size: 4rem;">🎨</span>
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">Custom Designs</h3>
+            <p class="product-description">Upload your STL and get a quote in 24 hours</p>
+            <a href="shop.html" class="product-cta">Get a Quote</a>
+          </div>
+        </div>
+        <!-- Ready-Made Prints Card -->
+        <div class="product-card">
+          <div class="product-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-color) 100%);">
+            <span style="font-size: 4rem;">🖨️</span>
+          </div>
+          <div class="product-content">
+            <h3 class="product-title">Ready-Made Prints</h3>
+            <p class="product-description">Browse our collection of pre-designed items</p>
+            <a href="shop.html" class="product-cta">Browse Collection</a>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 3rem;">
+        <a href="shop.html" class="btn btn-primary">Shop All Prints</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Games/Projects Promo Section -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Student Creations</h2>
+      <p style="text-align: center; color: var(--secondary-color); max-width: 700px; margin: 0 auto 3rem; font-size: 1.1rem;">Check out the amazing games and websites built by our Computer Science students.</p>
+      <div class="cards-grid">
+        <!-- Chess Card -->
+        <div class="project-card">
+          <span class="project-type game">Game</span>
+          <div class="card-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-color) 100%);">
+            <span style="font-size: 4rem;">♟️</span>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">MASTER CHESS</h3>
+            <p class="card-description">Classic strategy game with intelligent AI opponent</p>
+          </div>
+          <div class="project-links">
+            <a href="projects/chess/index.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          </div>
+        </div>
+        <!-- Flappy Bird Card -->
+        <div class="project-card">
+          <span class="project-type game">Game</span>
+          <div class="card-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-color) 100%);">
+            <span style="font-size: 4rem;">🐦</span>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Flappy Bird</h3>
+            <p class="card-description">Navigate through obstacles in this addictive arcade game</p>
+          </div>
+          <div class="project-links">
+            <a href="projects/flappy-bird/index.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          </div>
+        </div>
+        <!-- Memory Card Game -->
+        <div class="project-card">
+          <span class="project-type game">Game</span>
+          <div class="card-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--surface-light) 0%, var(--surface-color) 100%);">
+            <span style="font-size: 4rem;">🃏</span>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Memory Card Game</h3>
+            <p class="card-description">Test your memory with this fun matching game</p>
+          </div>
+          <div class="project-links">
+            <a href="projects/matching-website/index.html" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 3rem;">
+        <a href="projects.html" class="btn btn-secondary">View All Projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog Preview Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Latest News</h2>
+      <div class="blog-grid">
+        <!-- Blog Post 1 -->
+        <article class="blog-card">
+          <div class="card-content">
+            <span class="blog-date">January 25, 2026</span>
+            <h3 class="card-title">Launching Our 3D Printing Service</h3>
+            <p class="blog-excerpt">We're excited to announce the launch of our new 3D printing service, offering custom designs and ready-made prints for the school community.</p>
+            <a href="blog.html" class="blog-read-more">Read More →</a>
+          </div>
+        </article>
+        <!-- Blog Post 2 -->
+        <article class="blog-card">
+          <div class="card-content">
+            <span class="blog-date">January 18, 2026</span>
+            <h3 class="card-title">CS Class Game Showcase Success</h3>
+            <p class="blog-excerpt">Our Computer Science students wowed the crowd at the annual game showcase, presenting their student-built games and interactive projects.</p>
+            <a href="blog.html" class="blog-read-more">Read More →</a>
+          </div>
+        </article>
+      </div>
+      <div style="text-align: center; margin-top: 3rem;">
+        <a href="blog.html" class="btn btn-primary">All News</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Preview Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>About Us</h2>
+      <p>We're passionate about precision, quality, and innovation. The Business Club brings together students eager to learn real-world skills.</p>
+      <a href="about.html" class="btn btn-primary">Learn More About Us</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="contact-info">
+        <a href="mailto:hello@businessclub.edu" class="contact-item">hello@businessclub.edu</a>
+        <a href="tel:+1234567890" class="contact-item">+1 (234) 567-890</a>
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link" aria-label="Facebook">f</a>
+        <a href="#" class="social-link" aria-label="Instagram">📷</a>
+        <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+        <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+      </div>
+      <p>© 2026 Business Club. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

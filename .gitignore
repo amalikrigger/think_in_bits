@@ -1,0 +1,32 @@
+# OS files
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.*.swp
+
+# Documentation/task files (not needed for production)
+docs/
+
+# Backup files
+*_backup.html
+*.bak
+
+# Node (if any)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp files
+*.tmp
+*.temp
