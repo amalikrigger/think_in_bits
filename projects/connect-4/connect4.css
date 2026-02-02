@@ -1,28 +1,63 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 #board {
-    height: 540px;
-    width: 630px;
+    width: min(630px, 95vw);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 7 / 6;
     background-color: blue;
     border: 10px solid navy;
+    margin: 10px auto;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    box-sizing: border-box;
+}
 
+#reset-btn {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: navy;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
 
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
+#reset-btn:hover {
+    background-color: #000050;
+}
+
+#winner {
+    margin: 20px 0;
+    height: 1.5em; /* Reserve space to prevent layout shift */
 }
 
 .tile {
-    height: 70px;
-    width: 70px;
-    margin: 5px;
+    /* Responsive sizing inside grid */
+    aspect-ratio: 1 / 1;
+    width: 80%;
+    height: 80%;
+    place-self: center;
 
     background-color: white;
     border-radius: 50%;
-    border: 5px solid navy;
+    border: 0.5vw solid navy; /* Responsive border */
+}
+
+/* Fallback for larger screens to prevent massive borders */
+@media (min-width: 630px) {
+    .tile {
+        border-width: 5px;
+    }
 }
 
 .red-piece {

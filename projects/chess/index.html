@@ -57,7 +57,7 @@
                     <li class="box" id="b505"></li>
                     <li class="box" id="b506"></li>
                     <li class="box" id="b507"></li>
-                    <li class="box" id="b508 "></li>
+                    <li class="box" id="b508"></li>
                </div>
 
                <div class="div" id="row4">
@@ -106,7 +106,26 @@
           </ul>
 
           <h2 id="tog"> White's Turn </h2>
-          <h2 id="reset-btn"> Reset</h2>
+          <h3 id="move-counter">Move: 1</h3>
+          <div class="game-buttons">
+               <h2 id="reset-btn"> Reset</h2>
+               <h2 id="draw-btn"> Offer Draw</h2>
+          </div>
+
+          <div class="captured-pieces">
+               <div class="captured" id="white-captured"></div>
+               <div class="captured" id="black-captured"></div>
+          </div>
+
+          <!-- Audio & Fullscreen Controls -->
+          <div class="audio-controls">
+               <button class="control-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
+               <button class="control-btn" id="music-btn" title="Toggle Music">🎵</button>
+               <button class="control-btn" id="prev-track-btn" title="Previous Track">⏮</button>
+               <span class="track-name" id="track-name">Music Off</span>
+               <button class="control-btn" id="next-track-btn" title="Next Track">⏭</button>
+               <button class="control-btn active" id="sfx-btn" title="Toggle Sound Effects">🔊</button>
+          </div>
 
      </div>
 

@@ -1,0 +1,99 @@
+<!-- ========================================
+     Footer with Contact Info (Home Page)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Footer Styles */
+.tib-footer {
+  padding: 3rem 1.5rem 2rem;
+  background: var(--tib-bg-color);
+  text-align: center;
+  border-top: 1px solid var(--tib-border-subtle);
+  font-family: var(--tib-font-family);
+}
+
+.tib-footer .tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+}
+
+.tib-footer .tib-contact-info {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.tib-footer .tib-contact-item {
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tib-footer .tib-contact-item:hover {
+  color: var(--tib-text-color);
+}
+
+.tib-footer .tib-social-links {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.tib-footer .tib-social-link {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--tib-primary-alpha-10);
+  border: 2px solid var(--tib-primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.tib-footer .tib-social-link:hover {
+  background: var(--tib-primary-color);
+  color: var(--tib-bg-color);
+  transform: translateY(-5px);
+}
+
+.tib-footer p {
+  color: var(--tib-text-muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .tib-footer .tib-contact-info { flex-direction: column; gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-footer .tib-social-link { width: 45px; height: 45px; font-size: 1.1rem; }
+}
+</style>
+
+<footer class="tib-footer">
+  <div class="tib-container">
+    <div class="tib-contact-info">
+      <a href="mailto:hello@businessclub.edu" class="tib-contact-item">hello@businessclub.edu</a>
+      <a href="tel:+1234567890" class="tib-contact-item">+1 (234) 567-890</a>
+    </div>
+    <div class="tib-social-links">
+      <a href="#" class="tib-social-link" aria-label="Facebook">f</a>
+      <a href="#" class="tib-social-link" aria-label="Instagram">📷</a>
+      <a href="#" class="tib-social-link" aria-label="Twitter">🐦</a>
+      <a href="#" class="tib-social-link" aria-label="LinkedIn">in</a>
+    </div>
+    <p>© 2026 Business Club. All rights reserved.</p>
+  </div>
+</footer>

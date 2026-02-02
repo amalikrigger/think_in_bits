@@ -1,0 +1,120 @@
+<!-- ========================================
+     Values Grid Section (About Page)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Values Section Styles */
+.tib-section-alt {
+  padding: var(--tib-section-padding);
+  background: var(--tib-surface-alt);
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+}
+
+.tib-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+}
+
+.tib-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+.tib-card-content {
+  padding: 2rem;
+  text-align: center;
+}
+
+.tib-value-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.tib-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--tib-text-color);
+}
+
+.tib-card-description {
+  font-size: 0.95rem;
+  color: var(--tib-secondary-color);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+  .tib-cards-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-section-alt { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-card-content { padding: 1.5rem; }
+  .tib-card-title { font-size: 1.25rem; }
+}
+</style>
+
+<section class="tib-section-alt">
+  <div class="tib-container">
+    <h2 class="tib-section-title">What We Stand For</h2>
+    <div class="tib-cards-grid">
+      <!-- Precision Card -->
+      <div class="tib-card">
+        <div class="tib-card-content">
+          <div class="tib-value-icon">🎯</div>
+          <h3 class="tib-card-title">Precision</h3>
+          <p class="tib-card-description">Every project we undertake is executed with attention to detail and commitment to excellence.</p>
+        </div>
+      </div>
+      <!-- Quality Card -->
+      <div class="tib-card">
+        <div class="tib-card-content">
+          <div class="tib-value-icon">⭐</div>
+          <h3 class="tib-card-title">Quality</h3>
+          <p class="tib-card-description">We never compromise on quality. From 3D prints to code, we deliver our best work.</p>
+        </div>
+      </div>
+      <!-- Innovation Card -->
+      <div class="tib-card">
+        <div class="tib-card-content">
+          <div class="tib-value-icon">💡</div>
+          <h3 class="tib-card-title">Innovation</h3>
+          <p class="tib-card-description">We embrace new technologies and creative solutions to push boundaries and learn continuously.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

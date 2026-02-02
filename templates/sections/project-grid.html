@@ -1,0 +1,316 @@
+<!-- ========================================
+     Project Grid Section (Games & Projects)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Project Grid Styles */
+.tib-featured-section {
+  padding: var(--tib-section-padding);
+  background: var(--tib-surface-alt);
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+}
+
+.tib-project-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+  position: relative;
+}
+
+.tib-project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+.tib-project-type {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--tib-border-radius-btn);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--tib-primary-color);
+  z-index: 1;
+}
+
+.tib-project-type.game {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.tib-project-type.website {
+  background: rgba(78, 205, 196, 0.1);
+  color: #4ecdc4;
+  border-color: #4ecdc4;
+}
+
+.tib-card-content {
+  padding: 2rem;
+}
+
+.tib-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--tib-text-color);
+}
+
+.tib-card-description {
+  font-size: 0.95rem;
+  color: var(--tib-secondary-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.tib-card-meta {
+  font-size: 0.85rem;
+  color: var(--tib-text-muted);
+  margin-bottom: 1rem;
+}
+
+.tib-project-links {
+  display: flex;
+  gap: 1rem;
+  padding: 0 2rem 2rem;
+}
+
+.tib-project-links .tib-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--tib-border-radius-btn);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: var(--tib-font-family);
+}
+
+.tib-project-links .tib-btn-primary {
+  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
+  color: var(--tib-bg-color);
+  box-shadow: var(--tib-shadow-primary);
+}
+
+.tib-project-links .tib-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
+}
+
+.tib-project-links .tib-btn-secondary {
+  background: transparent;
+  color: var(--tib-primary-color);
+  border: 2px solid var(--tib-primary-color);
+}
+
+.tib-project-links .tib-btn-secondary:hover {
+  background: var(--tib-primary-alpha-10);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+  .tib-cards-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .tib-project-links { flex-direction: column; }
+  .tib-project-links .tib-btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .tib-featured-section { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-card-content { padding: 1.5rem; }
+  .tib-card-title { font-size: 1.25rem; }
+}
+</style>
+
+<section id="projects" class="tib-featured-section">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Our Creations</h2>
+    <div class="tib-cards-grid">
+      
+      <!-- Project 1: Bouncing Cat -->
+      <div class="tib-project-card">
+        <span class="tib-project-type">Animation</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Bouncing Cat</h3>
+          <p class="tib-card-description">A fun animated cat bouncing around the screen. Simple and entertaining!</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/bouncing-cat/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Animation</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Bouncing Cat" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 2: Checkers Game -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Checkers Game</h3>
+          <p class="tib-card-description">Classic board game brought to life. Challenge yourself or a friend!</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/checkers/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Checkers Game" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 3: MASTER CHESS -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">MASTER CHESS</h3>
+          <p class="tib-card-description">The ultimate strategy game. Test your chess skills against our implementation.</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/chess/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: MASTER CHESS" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 4: Connect 4 -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Connect 4</h3>
+          <p class="tib-card-description">Get four in a row to win! A timeless game of strategy and planning.</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/connect-4/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Connect 4" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 5: Flappy Bird -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Flappy Bird</h3>
+          <p class="tib-card-description">Navigate through obstacles in this addictive arcade-style game.</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/flappy-bird/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Flappy Bird" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 6: Sign Up Form -->
+      <div class="tib-project-card">
+        <span class="tib-project-type website">Website</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Sign Up Form</h3>
+          <p class="tib-card-description">A sleek and modern user authentication form with validation.</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/login/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Demo</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Sign Up Form" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 7: Memory Card Game -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Memory Card Game</h3>
+          <p class="tib-card-description">Test your memory by matching pairs of cards. How fast can you clear the board?</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/matching-website/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Memory Card Game" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 8: Top 10 Restaurants (St.Croix) -->
+      <div class="tib-project-card">
+        <span class="tib-project-type website">Website</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Top 10 Restaurants (St.Croix)</h3>
+          <p class="tib-card-description">Discover the best dining spots on St.Croix island with our curated guide.</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/restaurant-webpage/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Explore</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Top 10 Restaurants" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+      <!-- Project 9: Tic Tac Toe -->
+      <div class="tib-project-card">
+        <span class="tib-project-type game">Game</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Tic Tac Toe</h3>
+          <p class="tib-card-description">The classic game of X's and O's. Simple to learn, fun to play!</p>
+          <div class="tib-card-meta">
+            <span class="creator">Created by: CS Student</span>
+          </div>
+        </div>
+        <div class="tib-project-links">
+          <a href="projects/tic-tac-toe/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
+          <a href="mailto:feedback@businessclub.edu?subject=Feedback: Tic Tac Toe" class="tib-btn tib-btn-secondary">Send Feedback</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

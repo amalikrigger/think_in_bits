@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
   <script>
     // Check if user is logged in
     if (sessionStorage.getItem('loggedIn') !== 'true') {
@@ -22,17 +23,10 @@
         <h1 class="welcome-title">Welcome!</h1>
         <p class="welcome-message">You have successfully logged in.</p>
         <p class="welcome-subtitle">We're glad to have you here.</p>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
       </div>
     </div>
   </section>
-
-  <script>
-    function logout() {
-      sessionStorage.removeItem('loggedIn');
-      window.location.href = 'index.html';
-    }
-  </script>
 </body>
 
 </html>

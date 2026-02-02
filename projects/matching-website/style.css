@@ -1,86 +1,201 @@
+:root {
+    --bg-color: #12181f;
+    --accent-color: #27ae60;
+    --text-color: #ffffff;
+    --card-bg: #ffffff;
+    --grid-gap: 16px;
+    --max-width: 1000px;
+}
+
 body {
+    margin: 0;
+    padding: 20px;
     min-height: 100vh;
-    min-width: 100vh;
-    background-color: #12181f;
+    background: radial-gradient(circle at center, #1e272e 0%, #12181f 100%);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.125rem);
+    margin-bottom: 20px;
+}
+
+p {
+    text-align: center;
+    font-size: clamp(1.2rem, 3vw, 1.875rem);
+    font-weight: bold;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px 40px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.stats p {
+    margin: 0;
+}
+
+#win-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.98);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    z-index: 1000;
+    text-align: center;
+    color: var(--accent-color);
+    border: 4px solid var(--accent-color);
+    animation: celebrate 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#win-message h2 {
+    margin: 0;
+    font-size: 3rem;
+}
+
+#win-message p {
+    margin: 0;
+    color: #12181f;
+    font-size: 1.5rem;
+}
+
+#win-message button {
+    padding: 10px 30px;
+    font-size: 1.5rem;
+    background-color: var(--accent-color);
     color: white;
-  }
-  
-  h1 {
-      text-align: center;
-      font-weight: 700;
-      font-size: 50px;
-  }
-  
-  p {
-      text-align: center;
-      font-size: 30px;
-      font-weight: bold;
-  }
-  
-  .actions {
-      display: flex;
-      justify-content: center;
-  }
-  
-  .actions button {
-      padding: 8px 16px;
-      font-size: 30px;
-      border-radius: 10px;
-      background-color: #27ae60;
-      color: white;
-  }
-  
-  .grid-container {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#win-message button:hover {
+    transform: scale(1.05);
+}
+
+@keyframes celebrate {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.actions button {
+    padding: 10px 20px;
+    font-size: clamp(1rem, 2vw, 1.875rem);
+    border-radius: 10px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.actions button:hover {
+    background-color: #2ecc71;
+}
+
+.grid-container {
     display: grid;
     justify-content: center;
-    grid-gap: 16px;
-    grid-template-columns: repeat(6, 140px);
-    grid-template-rows: repeat(2, calc(140px / 2 * 3));
-  }
-  
-  .card {
-    height: calc(140px / 2 * 3);
-    width: 140px;
+    grid-gap: var(--grid-gap);
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 20px auto;
+}
+
+.card {
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    max-width: 140px;
+    min-height: 180px;
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--card-bg);
     position: relative;
     transform-style: preserve-3d;
-    transition: all 0.5s ease-in-out;
-  }
-  
-  .front-image {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .card.flipped {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+    justify-self: center;
+}
+
+.card:hover:not(.flipped) {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(39, 174, 96, 0.4);
+}
+
+.card.matched {
+    animation: matchPulse 0.5s ease-in-out;
+}
+
+.card.mismatch {
+    animation: shake 0.5s linear;
+}
+
+@keyframes matchPulse {
+    0% { transform: rotateY(180deg) scale(1); }
+    50% { transform: rotateY(180deg) scale(1.1); box-shadow: 0 0 25px var(--accent-color); }
+    100% { transform: rotateY(180deg) scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    20%, 60% { transform: rotateY(180deg) translateX(-10px); }
+    40%, 80% { transform: rotateY(180deg) translateX(10px); }
+}
+
+.front-image {
+    width: 70%;
+    height: auto;
+    object-fit: contain;
+}
+
+.card.flipped {
     transform: rotateY(180deg);
-  }
-  
-  .front, .back {
-      backface-visibility: hidden;
-      position: absolute;
-      border-radius: 10px;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-  }
-  
-  .card-front {
+}
+
+.card-front, .back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: absolute;
+    border-radius: 10px;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-  }
-  
-  .card .back {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-front {
+    background-color: var(--card-bg);
+    transform: rotateY(180deg);
+}
+
+.card .back {
+    background-color: #2c3e50;
     background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='25' height='25' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M25 30a5 5 0 110-10 5 5 0 010 10zm0-25a5 5 0 110-10 5 5 0 010 10zM0 30a5 5 0 110-10 5 5 0 010 10zM0 5A5 5 0 110-5 5 5 0 010 5zm12.5 12.5a5 5 0 110-10 5 5 0 010 10z'  stroke-width='1' stroke='none' fill='hsla(174, 100%, 29%, 1)'/><path d='M0 15a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm25 0a2.5 2.5 0 110-5 2.5 2.5 0 010 5zM12.5 2.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm0 25a2.5 2.5 0 110-5 2.5 2.5 0 010 5z'  stroke-width='1' stroke='none' fill='hsla(187, 100%, 42%, 1)'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
     background-position: center center;
     background-size: cover;
-    backface-visibility: hidden;
-  }
-  
-  .card .front {
-    transform: rotateY(180deg);
-  }
+}

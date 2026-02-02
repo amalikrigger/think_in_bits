@@ -3,14 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Play American Checkers online - a classic two-player strategy board game with mandatory jumps and king pieces.">
 <title>Checkers Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<h1 class="visually-hidden">Checkers Game</h1>
 <h2 id="turnIndicator">Turn: Red</h2>
-<div class="board" id="board"></div>
-<button id="resetBtn">Reset Game</button>
+<div class="game-info">
+    <span id="blackCount">Black: 12</span>
+    <span id="redCount">Red: 12</span>
+</div>
+<div class="board" id="board" role="grid" aria-label="Checkers game board"></div>
+<button id="resetBtn" aria-label="Reset Game">Reset Game</button>
 
 <script src="script.js"></script>
 </body>

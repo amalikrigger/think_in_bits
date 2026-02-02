@@ -1,16 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>Bouncing cat</title> 
-   <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncing Cat 🐱</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <marquee behavior = "alternate" scrollamount="30">
-   <marquee behavior = "alternate" scrollamount="30" direction="down"> 
-   <img src = "cat.gif">
-   </marquee>
+    <div class="container" id="container">
+        <!-- Bouncing cat using JavaScript physics -->
+        <div class="cat-wrapper" id="catWrapper">
+            <img src="cat.gif" alt="Bouncing cat" class="cat" id="cat">
+        </div>
+        
+        <!-- Corner hit celebration -->
+        <div class="corner-hit" id="cornerHit">
+            <span class="corner-text">🎉 CORNER! 🎉</span>
+        </div>
+        
+        <!-- Stats display -->
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Bounces</span>
+                <span class="stat-value" id="bounceCount">0</span>
+            </div>
+            <div class="stat-item corner-stat">
+                <span class="stat-label">Corners</span>
+                <span class="stat-value" id="cornerCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Speed</span>
+                <span class="stat-value" id="speedValue">1x</span>
+            </div>
+        </div>
+        
+        <!-- Fun controls -->
+        <div class="controls">
+            <button id="speedUp" title="Speed up (↑)">🚀 Faster</button>
+            <button id="slowDown" title="Slow down (↓)">🐢 Slower</button>
+            <button id="changeColor" title="Change background (C)">🎨 Color</button>
+            <button id="togglePause" title="Pause/Resume (Space)">⏸️ Pause</button>
+            <button id="addCat" title="Add another cat (A)">🐱 Add Cat</button>
+            <button id="toggleTrail" title="Toggle trail effect (T)">✨ Trail</button>
+            <button id="toggleDark" title="Toggle dark mode (D)">🌙 Dark</button>
+        </div>
+        
+        <!-- Help tooltip -->
+        <div class="help-tooltip" id="helpTooltip">
+            <button class="help-btn" id="helpBtn">❓</button>
+            <div class="help-content" id="helpContent">
+                <h3>Controls</h3>
+                <ul>
+                    <li><kbd>Space</kbd> / <kbd>P</kbd> - Pause</li>
+                    <li><kbd>↑</kbd> / <kbd>+</kbd> - Speed up</li>
+                    <li><kbd>↓</kbd> / <kbd>-</kbd> - Slow down</li>
+                    <li><kbd>C</kbd> - Change color</li>
+                    <li><kbd>A</kbd> - Add cat</li>
+                    <li><kbd>T</kbd> - Toggle trail</li>
+                    <li><kbd>D</kbd> - Dark mode</li>
+                    <li><kbd>R</kbd> - Reset</li>
+                    <li><b>Click cat</b> - New direction</li>
+                    <li><b>Move mouse</b> - Cats avoid it!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
 </body>
-
 </html>
 
  

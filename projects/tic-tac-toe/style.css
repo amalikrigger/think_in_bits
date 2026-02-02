@@ -1,0 +1,506 @@
+/*
+ * Tic Tac Toe - Enhanced Stylesheet
+ * Theme: Hot Pink & Purple Gradient
+ * 
+ * COLOR PALETTE:
+ * - Primary Purple: #8c52ff
+ * - Primary Pink: #ff52eb
+ * - Secondary Purple: #6b3fd4
+ * - Secondary Pink: #c850c0
+ * - Accent Green (winner): #4ade80
+ * 
+ * ANIMATIONS:
+ * - Button hover transition: 0.3s ease
+ * - Cell hover transition: 0.2s ease
+ * - Win pulse animation: 0.5s ease-in-out
+ * - Symbol placement: 0.3s ease-out
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* ============================================
+ * Base Styles
+ * ============================================ */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(135deg, #ff52eb 0%, #c850c0 50%, #8c52ff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+section {
+    text-align: center;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 420px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+ * Title
+ * ============================================ */
+
+.game--title {
+    padding-top: 10px;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #8c52ff, #ff52eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+/* ============================================
+ * Game Grid Container
+ * ============================================ */
+
+.game--container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: fit-content;
+    margin: 20px auto;
+    padding: 15px;
+    background: linear-gradient(145deg, #e0e0e0, #f5f5f5);
+    border-radius: 16px;
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.1),
+        0 10px 30px rgba(140, 82, 255, 0.2);
+}
+
+/* ============================================
+ * Cell Styles
+ * ============================================ */
+
+.cell {
+    font-family: "Poppins", sans-serif;
+    width: 70px;
+    height: 70px;
+    background: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    line-height: 70px;
+    font-size: 28px;
+    font-weight: 700;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.2s ease;
+}
+
+.cell:hover {
+    background-color: rgba(140, 82, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 12px rgba(140, 82, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.cell:focus {
+    outline: 3px solid #8c52ff;
+    outline-offset: 2px;
+}
+
+.cell:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.cell:focus-visible {
+    outline: 3px solid #8c52ff;
+    outline-offset: 2px;
+}
+
+/* X/O color differentiation */
+.cell.x {
+    color: #8c52ff;
+    text-shadow: 0 2px 4px rgba(140, 82, 255, 0.3);
+}
+
+.cell.o {
+    color: #ff52eb;
+    text-shadow: 0 2px 4px rgba(255, 82, 235, 0.3);
+}
+
+/* Symbol placement animation */
+.cell.x, .cell.o {
+    animation: symbolPlaced 0.3s ease-out;
+}
+
+@keyframes symbolPlaced {
+    0% { 
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Winning cells highlighting */
+.cell.winner {
+    background: linear-gradient(145deg, #4ade80, #22c55e);
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: winPulse 0.5s ease-in-out 2;
+}
+
+@keyframes winPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* Disabled cell state (game ended) */
+.cell.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Draw state styling */
+.cell.draw-state {
+    background-color: rgba(150, 150, 150, 0.2);
+}
+
+/* ============================================
+ * Button Styles
+ * ============================================ */
+
+button {
+    margin: 8px 4px;
+    height: auto;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.game--restart {
+    background: linear-gradient(135deg, #8c52ff, #6b3fd4);
+}
+
+.game--restart:hover {
+    background: linear-gradient(135deg, #9d6aff, #8c52ff);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(140, 82, 255, 0.4);
+}
+
+.game--reset-scores {
+    background: linear-gradient(135deg, #ff52eb, #d946c7);
+}
+
+.game--reset-scores:hover {
+    background: linear-gradient(135deg, #ff6ef0, #ff52eb);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 82, 235, 0.4);
+}
+
+button:active {
+    transform: scale(0.95) translateY(0);
+}
+
+button:focus {
+    outline: 3px solid #333;
+    outline-offset: 2px;
+}
+
+/* ============================================
+ * Game Status
+ * ============================================ */
+
+.game--status {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    padding: 12px 20px;
+    background: linear-gradient(145deg, #f8f8f8, #ececec);
+    border-radius: 12px;
+    margin: 15px 0;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Win message animation */
+.game--status.win-message {
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+    color: #166534;
+    animation: statusPop 0.6s ease;
+}
+
+/* Draw message animation */
+.game--status.draw-message {
+    background: linear-gradient(145deg, #fef3c7, #fde68a);
+    color: #92400e;
+    animation: statusShake 0.5s ease;
+}
+
+@keyframes statusPop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.1); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+@keyframes statusShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+/* Button row layout */
+.button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* ============================================
+ * Scoreboard Styles
+ * ============================================ */
+
+.scoreboard {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+    padding: 15px;
+    background: linear-gradient(145deg, #f8f8f8, #ececec);
+    border-radius: 16px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.score {
+    text-align: center;
+    padding: 8px 15px;
+}
+
+.score-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.score span:last-child {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #8c52ff, #ff52eb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: transform 0.2s ease;
+}
+
+/* Score update animation */
+.score-updated {
+    animation: scoreUpdate 0.4s ease !important;
+}
+
+@keyframes scoreUpdate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+/* ============================================
+ * Sound & Music Toggle Buttons
+ * ============================================ */
+
+.sound-toggle,
+.music-toggle {
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    color: #333;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.sound-toggle:hover,
+.music-toggle:hover {
+    background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Music playing state - pulsing glow */
+.music-toggle.music-playing {
+    background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+    animation: musicPulse 2s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+    0%, 100% {
+        box-shadow: 
+            0 2px 8px rgba(76, 175, 80, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    50% {
+        box-shadow: 
+            0 2px 15px rgba(76, 175, 80, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* ============================================
+ * Accessibility: Screen Reader Styles
+ * ============================================ */
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============================================
+ * Responsive Design
+ * ============================================ */
+
+@media (max-width: 480px) {
+    section {
+        padding: 20px 15px;
+        border-radius: 20px;
+    }
+    
+    .game--title {
+        font-size: 1.6rem;
+    }
+    
+    .cell {
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+        font-size: 24px;
+        border-radius: 10px;
+    }
+    
+    .game--container {
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    button {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    .score span:last-child {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .cell {
+        width: 55px;
+        height: 55px;
+        line-height: 55px;
+        font-size: 22px;
+    }
+    
+    .game--title {
+        font-size: 1.5rem;
+    }
+    
+    button {
+        padding: 8px 18px;
+    }
+    
+    section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .cell {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 20px;
+    }
+    
+    .game--title {
+        font-size: 1.4rem;
+    }
+    
+    .scoreboard {
+        padding: 10px;
+    }
+    
+    .score {
+        padding: 5px 8px;
+    }
+}
+
+/* ============================================
+ * Accessibility: Reduced Motion
+ * ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .cell.winner {
+        animation: none;
+    }
+    
+    .cell.x, .cell.o {
+        animation: none;
+    }
+    
+    .game--status.win-message,
+    .game--status.draw-message {
+        animation: none;
+    }
+    
+    .score-updated {
+        animation: none !important;
+    }
+    
+    button {
+        transition: none;
+    }
+    
+    .cell {
+        transition: none;
+    }
+}

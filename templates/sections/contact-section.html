@@ -1,0 +1,106 @@
+<!-- ========================================
+     Contact Section (About Page)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Contact Section Styles */
+.tib-about-section {
+  padding: var(--tib-section-padding);
+  background: var(--tib-surface-alt);
+  text-align: center;
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-contact-info {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.tib-contact-item {
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tib-contact-item:hover {
+  color: var(--tib-text-color);
+  transform: translateY(-2px);
+}
+
+.tib-social-links {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.tib-social-link {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--tib-primary-alpha-10);
+  border: 2px solid var(--tib-primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.tib-social-link:hover {
+  background: var(--tib-primary-color);
+  color: var(--tib-bg-color);
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+  .tib-contact-info { flex-direction: column; gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-about-section { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-social-link { width: 45px; height: 45px; font-size: 1.1rem; }
+}
+</style>
+
+<section class="tib-about-section" id="contact">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Get In Touch</h2>
+    <div class="tib-contact-info">
+      <a href="mailto:hello@businessclub.edu" class="tib-contact-item">hello@businessclub.edu</a>
+      <a href="tel:+1234567890" class="tib-contact-item">+1 (234) 567-890</a>
+    </div>
+    <div class="tib-social-links">
+      <a href="#" class="tib-social-link" aria-label="Facebook">f</a>
+      <a href="#" class="tib-social-link" aria-label="Instagram">📷</a>
+      <a href="#" class="tib-social-link" aria-label="Twitter">🐦</a>
+      <a href="#" class="tib-social-link" aria-label="LinkedIn">in</a>
+    </div>
+  </div>
+</section>

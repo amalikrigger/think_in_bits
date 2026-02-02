@@ -1,8 +1,9 @@
+import os
 from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 
-WEB_DIR = "/home/pi/chess"  # Path to your webpage folder
+WEB_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route("/")
 def index():

@@ -1,0 +1,163 @@
+<!-- ========================================
+     Product Grid Section (3D Prints)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Product Grid Styles */
+.tib-featured-section {
+  padding: var(--tib-section-padding);
+  background: var(--tib-surface-alt);
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+}
+
+.tib-product-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+}
+
+.tib-product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+.tib-product-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  background: var(--tib-surface-light);
+}
+
+.tib-product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tib-product-info {
+  padding: 2rem;
+}
+
+.tib-product-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--tib-text-color);
+}
+
+.tib-product-description {
+  font-size: 0.95rem;
+  color: var(--tib-secondary-color);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.tib-product-info .tib-btn {
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--tib-border-radius-btn);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: var(--tib-font-family);
+}
+
+.tib-product-info .tib-btn-primary {
+  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
+  color: var(--tib-bg-color);
+  box-shadow: var(--tib-shadow-primary);
+}
+
+.tib-product-info .tib-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+  .tib-products-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-featured-section { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-product-info { padding: 1.5rem; }
+  .tib-product-title { font-size: 1.25rem; }
+}
+</style>
+
+<section id="featured" class="tib-featured-section">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Featured 3D Prints</h2>
+    <div class="tib-products-grid">
+      <!-- Product 1 -->
+      <div class="tib-product-card">
+        <div class="tib-product-image">
+          <img src="https://cdn.goengineer.com/complex-hinges-3d-printing-services-goengineer.png?format=webp" alt="Complex Mechanical Hinges">
+        </div>
+        <div class="tib-product-info">
+          <h3 class="tib-product-title">Complex Mechanical Hinges</h3>
+          <p class="tib-product-description">Precision-engineered interlocking hinges perfect for functional prototypes and mechanical assemblies.</p>
+          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="tib-product-card">
+        <div class="tib-product-image">
+          <img src="https://makeitquick.co.uk/wp-content/uploads/2020/05/SLA-Clipped.png" alt="High-Resolution SLA Parts">
+        </div>
+        <div class="tib-product-info">
+          <h3 class="tib-product-title">High-Resolution SLA Parts</h3>
+          <p class="tib-product-description">Ultra-smooth surface finish with exceptional detail, ideal for jewelry, dental models, and miniatures.</p>
+          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="tib-product-card">
+        <div class="tib-product-image">
+          <img src="https://printrealm.co.uk/wp-content/uploads/2025/02/Hero-Image.png" alt="Custom Design Prints">
+        </div>
+        <div class="tib-product-info">
+          <h3 class="tib-product-title">Custom Design Prints</h3>
+          <p class="tib-product-description">Bring your unique vision to life with our custom printing service. Any design, any complexity.</p>
+          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

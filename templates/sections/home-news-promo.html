@@ -1,0 +1,169 @@
+<!-- ========================================
+     Latest News Promo (Home Page)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Blog Preview Section Styles */
+.tib-section {
+  padding: var(--tib-section-padding);
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+}
+
+.tib-blog-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+}
+
+.tib-blog-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+.tib-blog-card .tib-card-content {
+  padding: 2rem;
+}
+
+.tib-blog-date {
+  font-size: 0.85rem;
+  color: var(--tib-primary-color);
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+}
+
+.tib-blog-card .tib-card-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--tib-text-color);
+}
+
+.tib-blog-excerpt {
+  font-size: 0.95rem;
+  color: var(--tib-secondary-color);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tib-blog-read-more {
+  color: var(--tib-primary-color);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap 0.3s ease;
+  text-decoration: none;
+}
+
+.tib-blog-read-more:hover {
+  gap: 0.75rem;
+}
+
+.tib-center-cta {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.tib-center-cta .tib-btn {
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--tib-border-radius-btn);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: var(--tib-font-family);
+}
+
+.tib-center-cta .tib-btn-primary {
+  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
+  color: var(--tib-bg-color);
+  box-shadow: var(--tib-shadow-primary);
+}
+
+.tib-center-cta .tib-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+  .tib-blog-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-section { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-blog-card .tib-card-content { padding: 1.5rem; }
+  .tib-blog-card .tib-card-title { font-size: 1.25rem; }
+}
+</style>
+
+<section class="tib-section">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Latest News</h2>
+    <div class="tib-blog-grid">
+      <!-- Blog Post 1 -->
+      <article class="tib-blog-card">
+        <div class="tib-card-content">
+          <span class="tib-blog-date">January 25, 2026</span>
+          <h3 class="tib-card-title">Launching Our 3D Printing Service</h3>
+          <p class="tib-blog-excerpt">We're excited to announce the launch of our new 3D printing service, offering custom designs and ready-made prints for the school community.</p>
+          <a href="blog.html" class="tib-blog-read-more">Read More →</a>
+        </div>
+      </article>
+      <!-- Blog Post 2 -->
+      <article class="tib-blog-card">
+        <div class="tib-card-content">
+          <span class="tib-blog-date">January 18, 2026</span>
+          <h3 class="tib-card-title">CS Class Game Showcase Success</h3>
+          <p class="tib-blog-excerpt">Our Computer Science students wowed the crowd at the annual game showcase, presenting their student-built games and interactive projects.</p>
+          <a href="blog.html" class="tib-blog-read-more">Read More →</a>
+        </div>
+      </article>
+    </div>
+    <div class="tib-center-cta">
+      <a href="blog.html" class="tib-btn tib-btn-primary">All News</a>
+    </div>
+  </div>
+</section>

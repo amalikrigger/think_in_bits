@@ -1,8 +1,10 @@
 from flask import Flask, send_from_directory
+import os
 
 app = Flask(__name__)
 
-WEB_DIR = "/home/pi/restaurant-webpage"  # Path to your webpage folder
+# Use the current directory where the script is located
+WEB_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @app.route("/")
 def index():

@@ -1,0 +1,62 @@
+<!-- ========================================
+     About Mission Section
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     ======================================== -->
+
+<style>
+/* Mission Section Styles */
+.tib-section {
+  padding: var(--tib-section-padding);
+  font-family: var(--tib-font-family);
+}
+
+.tib-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--tib-text-color);
+}
+
+.tib-about-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tib-about-content p {
+  font-size: 1.15rem;
+  color: var(--tib-secondary-color);
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .tib-section-title { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-section { padding: 3rem 1rem; }
+  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
+  .tib-about-content p { font-size: 1rem; }
+}
+</style>
+
+<section class="tib-section">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Our Mission</h2>
+    <div class="tib-about-content">
+      <p>
+        We're passionate about precision, quality, and local innovation. The Business Club brings together students who are eager to learn real-world skills in entrepreneurship, technology, and design. From running our 3D printing service to developing games and web applications, we turn ideas into reality.
+      </p>
+    </div>
+  </div>
+</section>

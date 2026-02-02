@@ -1,0 +1,98 @@
+<!-- ========================================
+     CTA Banner Section
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css in WordPress theme CSS
+     
+     NOTE: Update icon, title, description, and button
+     text/link as needed for different use cases:
+     - Shop: Custom prints CTA
+     - Blog: Newsletter subscription
+     - Home: About Us CTA
+     ======================================== -->
+
+<style>
+/* CTA Section Styles */
+.tib-cta-section {
+  padding: var(--tib-section-padding);
+  background: linear-gradient(135deg, var(--tib-bg-gradient-end) 0%, var(--tib-bg-color) 100%);
+  text-align: center;
+  font-family: var(--tib-font-family);
+}
+
+.tib-cta-container {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tib-cta-icon {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+}
+
+.tib-cta-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.tib-cta-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--tib-text-color);
+}
+
+.tib-cta-section p {
+  font-size: 1.125rem;
+  color: var(--tib-secondary-color);
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.tib-cta-section .tib-btn {
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--tib-border-radius-btn);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: var(--tib-font-family);
+}
+
+.tib-cta-section .tib-btn-primary {
+  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
+  color: var(--tib-bg-color);
+  box-shadow: var(--tib-shadow-primary);
+}
+
+.tib-cta-section .tib-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .tib-cta-section h2 { font-size: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .tib-cta-section { padding: 3rem 1rem; }
+  .tib-cta-icon { font-size: 3rem; }
+  .tib-cta-section h2 { font-size: 1.5rem; }
+  .tib-cta-section p { font-size: 1rem; }
+}
+</style>
+
+<!-- CTA Variant: Custom Print (for Shop page) -->
+<section class="tib-cta-section">
+  <div class="tib-cta-container">
+    <div class="tib-cta-icon">🎨</div>
+    <h2>Need Something Custom?</h2>
+    <p>Upload your STL file and get a personalized quote within 24 hours.</p>
+    <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Request a Quote</a>
+  </div>
+</section>
