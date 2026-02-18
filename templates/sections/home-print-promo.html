@@ -7,42 +7,7 @@
      ======================================== -->
 
 <style>
-/* Print Promo Section Styles */
-.tib-section {
-  padding: var(--tib-section-padding);
-  font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
-}
-
-.tib-section-subtitle {
-  text-align: center;
-  color: var(--tib-secondary-color);
-  max-width: 700px;
-  margin: 0 auto 3rem;
-  font-size: 1.1rem;
-}
-
-.tib-products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-}
-
+/* Print Promo Section - Product Card Styles */
 .tib-product-card {
   background: var(--tib-surface-color);
   border-radius: var(--tib-border-radius-card);
@@ -112,43 +77,7 @@
   transform: scale(1.05);
 }
 
-.tib-center-cta {
-  text-align: center;
-  margin-top: 3rem;
-}
-
-.tib-center-cta .tib-btn {
-  padding: 1rem 2.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
-}
-
-.tib-center-cta .tib-btn-primary {
-  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
-  color: var(--tib-bg-color);
-  box-shadow: var(--tib-shadow-primary);
-}
-
-.tib-center-cta .tib-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
-}
-
-@media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
-  .tib-products-grid { grid-template-columns: 1fr; gap: 2rem; }
-}
-
 @media (max-width: 480px) {
-  .tib-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
   .tib-product-content { padding: 1.5rem; }
   .tib-product-title { font-size: 1.25rem; }
 }

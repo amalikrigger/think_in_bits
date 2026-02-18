@@ -3,31 +3,11 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* Blog Grid Styles */
-.tib-featured-section {
-  padding: var(--tib-section-padding);
-  background: var(--tib-surface-alt);
-  font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
-}
-
+/* Blog Grid Specific Styles */
 .tib-blog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -51,10 +31,6 @@
   border-color: var(--tib-primary-alpha-30);
 }
 
-.tib-blog-card .tib-card-content {
-  padding: 2rem;
-}
-
 .tib-blog-date {
   font-size: 0.85rem;
   color: var(--tib-primary-color);
@@ -63,13 +39,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: block;
-}
-
-.tib-blog-card .tib-card-title {
-  font-size: 1.35rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--tib-text-color);
 }
 
 .tib-blog-excerpt {
@@ -83,44 +52,37 @@
   overflow: hidden;
 }
 
-.tib-blog-card .tib-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
+.tib-blog-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--tib-border-subtle);
 }
 
-.tib-blog-card .tib-btn-secondary {
-  background: transparent;
-  color: var(--tib-primary-color);
+.tib-blog-author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
   border: 2px solid var(--tib-primary-color);
 }
 
-.tib-blog-card .tib-btn-secondary:hover {
-  background: var(--tib-primary-alpha-10);
-  transform: translateY(-3px);
+.tib-blog-author-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--tib-text-color);
 }
 
 @media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
   .tib-blog-grid { grid-template-columns: 1fr; gap: 2rem; }
-}
-
-@media (max-width: 480px) {
-  .tib-featured-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
-  .tib-blog-card .tib-card-content { padding: 1.5rem; }
-  .tib-blog-card .tib-card-title { font-size: 1.25rem; }
 }
 </style>
 
-<section id="posts" class="tib-featured-section">
+<!-- Base styles from shared-components.css -->
+
+<section id="posts" class="tib-section-alt">
   <div class="tib-container">
     <h2 class="tib-section-title">Latest Posts</h2>
     <div class="tib-blog-grid">
@@ -128,6 +90,10 @@
       <!-- Blog Post 1 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 25, 2026</span>
           <h3 class="tib-card-title">Launching Our 3D Printing Service</h3>
           <p class="tib-blog-excerpt">We're excited to announce the launch of our in-school 3D printing service! Students can now order custom prints for projects, gifts, or personal use. Our team has been trained on the latest printing techniques.</p>
@@ -138,6 +104,10 @@
       <!-- Blog Post 2 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 18, 2026</span>
           <h3 class="tib-card-title">CS Class Game Showcase Success</h3>
           <p class="tib-blog-excerpt">Last week's game showcase was a huge hit! Over 50 students participated in testing games created by our Computer Science class. From Chess to Flappy Bird, the creativity was outstanding.</p>
@@ -148,6 +118,10 @@
       <!-- Blog Post 3 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 10, 2026</span>
           <h3 class="tib-card-title">New Members Welcome!</h3>
           <p class="tib-blog-excerpt">The Business Club is always looking for passionate students to join our team. Whether you're interested in entrepreneurship, technology, or design, there's a place for you here.</p>
@@ -158,6 +132,10 @@
       <!-- Blog Post 4 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">December 15, 2025</span>
           <h3 class="tib-card-title">Winter Break Project Ideas</h3>
           <p class="tib-blog-excerpt">Looking for something productive to do over break? Check out our list of beginner-friendly coding projects that you can complete at home. Perfect for building your portfolio!</p>

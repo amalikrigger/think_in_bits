@@ -3,98 +3,36 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* Team Section Styles */
-.tib-section {
-  padding: var(--tib-section-padding);
-  font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
-}
-
-.tib-section-subtitle {
-  text-align: center;
-  font-size: 1.1rem;
-  color: var(--tib-secondary-color);
-  line-height: 1.8;
-  max-width: 700px;
-  margin: 0 auto 2rem;
-}
-
-.tib-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2.5rem;
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-}
-
-.tib-card {
-  background: var(--tib-surface-color);
-  border-radius: var(--tib-border-radius-card);
-  overflow: hidden;
-  transition: all 0.4s ease;
-  box-shadow: var(--tib-shadow-card);
-  border: 1px solid var(--tib-border-subtle);
-}
-
-.tib-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--tib-shadow-hover);
-  border-color: var(--tib-primary-alpha-30);
-}
-
-.tib-card-content {
-  padding: 2rem;
-  text-align: center;
-}
-
+/* Team Section Specific Styles */
 .tib-team-avatar {
-  font-size: 4rem;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
   margin-bottom: 1.5rem;
+  border: 3px solid var(--tib-primary-color);
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2);
 }
 
-.tib-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--tib-text-color);
-}
-
-.tib-card-description {
-  font-size: 0.95rem;
-  color: var(--tib-secondary-color);
-  line-height: 1.6;
+/* Team grid uses smaller cards (250px min vs 300px) */
+.tib-section .tib-cards-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 @media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
-  .tib-cards-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .tib-section .tib-cards-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
 }
 
 @media (max-width: 480px) {
-  .tib-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
-  .tib-cards-grid { grid-template-columns: 1fr; }
-  .tib-card-content { padding: 1.5rem; }
-  .tib-card-title { font-size: 1.15rem; }
+  .tib-section .tib-cards-grid { grid-template-columns: 1fr; }
 }
 </style>
+
+<!-- Base styles from shared-components.css -->
 
 <section class="tib-section">
   <div class="tib-container">
@@ -104,7 +42,7 @@
       <!-- Club President -->
       <div class="tib-card">
         <div class="tib-card-content">
-          <div class="tib-team-avatar">👤</div>
+          <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Club President" class="tib-team-avatar">
           <h3 class="tib-card-title">Club President</h3>
           <p class="tib-card-description">Leading our initiatives and representing the club.</p>
         </div>
@@ -112,7 +50,7 @@
       <!-- Vice President / Tech Lead -->
       <div class="tib-card">
         <div class="tib-card-content">
-          <div class="tib-team-avatar">👤</div>
+          <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Vice President" class="tib-team-avatar">
           <h3 class="tib-card-title">Vice President / Tech Lead</h3>
           <p class="tib-card-description">Overseeing technical projects and development initiatives.</p>
         </div>
@@ -120,7 +58,7 @@
       <!-- Treasurer / Operations -->
       <div class="tib-card">
         <div class="tib-card-content">
-          <div class="tib-team-avatar">👤</div>
+          <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Treasurer" class="tib-team-avatar">
           <h3 class="tib-card-title">Treasurer / Operations</h3>
           <p class="tib-card-description">Managing finances and day-to-day operations.</p>
         </div>
@@ -128,7 +66,7 @@
       <!-- Member Representative -->
       <div class="tib-card">
         <div class="tib-card-content">
-          <div class="tib-team-avatar">👤</div>
+          <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="Member Representative" class="tib-team-avatar">
           <h3 class="tib-card-title">Member Representative</h3>
           <p class="tib-card-description">Voicing member ideas and fostering community engagement.</p>
         </div>

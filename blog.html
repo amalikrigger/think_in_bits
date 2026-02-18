@@ -1,3 +1,8 @@
+<!-- ============================================
+     AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+     Edit templates in /templates/ folder instead.
+     Rebuild with: ./scripts/build-pages.sh
+     ============================================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +36,12 @@
       --tib-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
       --tib-shadow-primary: 0 8px 20px rgba(0, 229, 255, 0.3);
       --tib-shadow-hover: 0 20px 50px rgba(0, 229, 255, 0.2);
+      
+      /* Accent Colors (for tags/badges) */
+      --tib-accent-game: #ff6b6b;
+      --tib-accent-game-alpha: rgba(255, 107, 107, 0.1);
+      --tib-accent-website: #4ecdc4;
+      --tib-accent-website-alpha: rgba(78, 205, 196, 0.1);
     }
     
     /* Base Reset */
@@ -47,6 +58,294 @@
     a { text-decoration: none; color: inherit; }
     ul, ol { list-style: none; }
     img { max-width: 100%; height: auto; display: block; }
+
+    /* ========================================
+       Shared Component Styles
+       ======================================== */
+    /* ========================================
+       Layout Utilities
+       ======================================== */
+    .tib-container {
+      max-width: var(--tib-max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    .tib-section {
+      padding: var(--tib-section-padding);
+      font-family: var(--tib-font-family);
+    }
+    
+    .tib-section-alt {
+      padding: var(--tib-section-padding);
+      background: var(--tib-surface-alt);
+      font-family: var(--tib-font-family);
+    }
+    
+    /* ========================================
+       Typography
+       ======================================== */
+    .tib-section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      color: var(--tib-text-color);
+    }
+    
+    .tib-section-subtitle {
+      text-align: center;
+      color: var(--tib-secondary-color);
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      font-size: 1.1rem;
+    }
+    
+    /* ========================================
+       Buttons
+       ======================================== */
+    .tib-btn {
+      padding: 1rem 2.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--tib-border-radius-btn);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      font-family: var(--tib-font-family);
+    }
+    
+    .tib-btn-primary {
+      background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
+      color: var(--tib-bg-color);
+      box-shadow: var(--tib-shadow-primary);
+    }
+    
+    .tib-btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
+    }
+    
+    .tib-btn-secondary {
+      background: transparent;
+      color: var(--tib-primary-color);
+      border: 2px solid var(--tib-primary-color);
+    }
+    
+    .tib-btn-secondary:hover {
+      background: var(--tib-primary-alpha-10);
+      transform: translateY(-3px);
+    }
+    
+    /* ========================================
+       Center CTA Container
+       ======================================== */
+    .tib-center-cta {
+      text-align: center;
+      margin-top: 3rem;
+    }
+    
+    /* ========================================
+       Card Base Styles
+       ======================================== */
+    .tib-card-image {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--tib-surface-light) 0%, var(--tib-surface-color) 100%);
+    }
+    
+    .tib-card-image .icon {
+      font-size: 4rem;
+    }
+    
+    .tib-card-content {
+      padding: 1.5rem 2rem;
+    }
+    
+    .tib-card-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--tib-text-color);
+    }
+    
+    .tib-card-description {
+      font-size: 0.95rem;
+      color: var(--tib-secondary-color);
+      line-height: 1.6;
+    }
+    
+    /* ========================================
+       Grid Layouts
+       ======================================== */
+    .tib-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      max-width: var(--tib-max-width);
+      margin: 0 auto;
+    }
+    
+    .tib-products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      max-width: var(--tib-max-width);
+      margin: 0 auto;
+    }
+    
+    .tib-blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2.5rem;
+      max-width: var(--tib-max-width);
+      margin: 0 auto;
+    }
+    
+    /* ========================================
+       Responsive Styles
+       ======================================== */
+    @media (max-width: 768px) {
+      .tib-section-title {
+        font-size: 2rem;
+      }
+      
+      .tib-cards-grid,
+      .tib-products-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .tib-blog-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tib-section,
+      .tib-section-alt {
+        padding: 3rem 1rem;
+      }
+      
+      .tib-section-title {
+        font-size: 1.75rem;
+        margin-bottom: 2rem;
+      }
+      
+      .tib-card-content {
+        padding: 1.5rem;
+      }
+      
+      .tib-card-title {
+        font-size: 1.25rem;
+      }
+    }
+    
+    /* ========================================
+       Hero Section
+       ======================================== */
+    .tib-hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(var(--tib-navbar-height, 70px) + 2rem) 1.5rem 3rem 1.5rem;
+      background: linear-gradient(135deg, var(--tib-bg-color) 0%, var(--tib-bg-gradient-end) 100%);
+      overflow: hidden;
+      font-family: var(--tib-font-family);
+    }
+    
+    /* Diagonal Grid Pattern Overlay */
+    .tib-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%);
+      background-size: 60px 60px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    
+    .tib-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+    }
+    
+    .tib-hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--tib-text-color) 0%, var(--tib-primary-color) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .tib-hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2.5rem;
+      color: var(--tib-secondary-color);
+      font-weight: 300;
+    }
+    
+    .tib-hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Hero Responsive */
+    @media (max-width: 768px) {
+      .tib-hero h1 {
+        font-size: 2.25rem;
+      }
+    
+      .tib-hero p {
+        font-size: 1rem;
+      }
+    
+      .tib-hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+    
+      .tib-hero-buttons .tib-btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tib-hero {
+        min-height: 80vh;
+        padding: calc(var(--tib-navbar-height, 70px) + 1rem) 1rem 2rem 1rem;
+      }
+    
+      .tib-hero h1 {
+        font-size: 1.75rem;
+      }
+    
+      .tib-hero p {
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -290,107 +589,10 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
-<style>
-/* Hero Section Styles */
-.tib-hero {
-  position: relative;
-  min-height: 90vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 3rem 1.5rem;
-  background: linear-gradient(135deg, var(--tib-bg-color) 0%, var(--tib-bg-gradient-end) 100%);
-  overflow: hidden;
-  font-family: var(--tib-font-family);
-}
-
-.tib-hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    linear-gradient(45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%);
-  background-size: 60px 60px;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.tib-hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 900px;
-}
-
-.tib-hero h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-  background: linear-gradient(135deg, var(--tib-text-color) 0%, var(--tib-primary-color) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.tib-hero p {
-  font-size: 1.25rem;
-  margin-bottom: 2.5rem;
-  color: var(--tib-secondary-color);
-  font-weight: 300;
-}
-
-.tib-hero-buttons {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.tib-hero .tib-btn {
-  padding: 1rem 2.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
-}
-
-.tib-hero .tib-btn-primary {
-  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
-  color: var(--tib-bg-color);
-  box-shadow: var(--tib-shadow-primary);
-}
-
-.tib-hero .tib-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
-}
-
-@media (max-width: 768px) {
-  .tib-hero h1 { font-size: 2.25rem; }
-  .tib-hero p { font-size: 1rem; }
-  .tib-hero-buttons { flex-direction: column; align-items: center; }
-  .tib-hero .tib-btn { width: 100%; max-width: 300px; }
-}
-
-@media (max-width: 480px) {
-  .tib-hero { min-height: 80vh; padding: 2rem 1rem; }
-  .tib-hero h1 { font-size: 1.75rem; }
-  .tib-hero p { font-size: 0.95rem; margin-bottom: 2rem; }
-}
-</style>
+<!-- Hero styles from shared-components.css -->
 
 <section class="tib-hero">
   <div class="tib-hero-content">
@@ -408,31 +610,11 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* Blog Grid Styles */
-.tib-featured-section {
-  padding: var(--tib-section-padding);
-  background: var(--tib-surface-alt);
-  font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
-}
-
+/* Blog Grid Specific Styles */
 .tib-blog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -456,10 +638,6 @@
   border-color: var(--tib-primary-alpha-30);
 }
 
-.tib-blog-card .tib-card-content {
-  padding: 2rem;
-}
-
 .tib-blog-date {
   font-size: 0.85rem;
   color: var(--tib-primary-color);
@@ -468,13 +646,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: block;
-}
-
-.tib-blog-card .tib-card-title {
-  font-size: 1.35rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--tib-text-color);
 }
 
 .tib-blog-excerpt {
@@ -488,44 +659,37 @@
   overflow: hidden;
 }
 
-.tib-blog-card .tib-btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
+.tib-blog-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--tib-border-subtle);
 }
 
-.tib-blog-card .tib-btn-secondary {
-  background: transparent;
-  color: var(--tib-primary-color);
+.tib-blog-author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
   border: 2px solid var(--tib-primary-color);
 }
 
-.tib-blog-card .tib-btn-secondary:hover {
-  background: var(--tib-primary-alpha-10);
-  transform: translateY(-3px);
+.tib-blog-author-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--tib-text-color);
 }
 
 @media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
   .tib-blog-grid { grid-template-columns: 1fr; gap: 2rem; }
-}
-
-@media (max-width: 480px) {
-  .tib-featured-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
-  .tib-blog-card .tib-card-content { padding: 1.5rem; }
-  .tib-blog-card .tib-card-title { font-size: 1.25rem; }
 }
 </style>
 
-<section id="posts" class="tib-featured-section">
+<!-- Base styles from shared-components.css -->
+
+<section id="posts" class="tib-section-alt">
   <div class="tib-container">
     <h2 class="tib-section-title">Latest Posts</h2>
     <div class="tib-blog-grid">
@@ -533,6 +697,10 @@
       <!-- Blog Post 1 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 25, 2026</span>
           <h3 class="tib-card-title">Launching Our 3D Printing Service</h3>
           <p class="tib-blog-excerpt">We're excited to announce the launch of our in-school 3D printing service! Students can now order custom prints for projects, gifts, or personal use. Our team has been trained on the latest printing techniques.</p>
@@ -543,6 +711,10 @@
       <!-- Blog Post 2 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 18, 2026</span>
           <h3 class="tib-card-title">CS Class Game Showcase Success</h3>
           <p class="tib-blog-excerpt">Last week's game showcase was a huge hit! Over 50 students participated in testing games created by our Computer Science class. From Chess to Flappy Bird, the creativity was outstanding.</p>
@@ -553,6 +725,10 @@
       <!-- Blog Post 3 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">January 10, 2026</span>
           <h3 class="tib-card-title">New Members Welcome!</h3>
           <p class="tib-blog-excerpt">The Business Club is always looking for passionate students to join our team. Whether you're interested in entrepreneurship, technology, or design, there's a place for you here.</p>
@@ -563,6 +739,10 @@
       <!-- Blog Post 4 -->
       <article class="tib-blog-card">
         <div class="tib-card-content">
+          <div class="tib-blog-author">
+            <img src="https://plus.unsplash.com/premium_photo-1688740375397-34605b6abe48?fm=jpg&q=60&w=100&auto=format&fit=crop" alt="Author" class="tib-blog-author-avatar">
+            <span class="tib-blog-author-name">Club Member</span>
+          </div>
           <span class="tib-blog-date">December 15, 2025</span>
           <h3 class="tib-card-title">Winter Break Project Ideas</h3>
           <p class="tib-blog-excerpt">Looking for something productive to do over break? Check out our list of beginner-friendly coding projects that you can complete at home. Perfect for building your portfolio!</p>
@@ -580,11 +760,11 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* CTA Section Styles */
+/* CTA Newsletter Specific Styles */
 .tib-cta-section {
   padding: var(--tib-section-padding);
   background: linear-gradient(135deg, var(--tib-bg-gradient-end) 0%, var(--tib-bg-color) 100%);
@@ -617,30 +797,6 @@
   line-height: 1.7;
 }
 
-.tib-cta-section .tib-btn {
-  padding: 1rem 2.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
-}
-
-.tib-cta-section .tib-btn-primary {
-  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
-  color: var(--tib-bg-color);
-  box-shadow: var(--tib-shadow-primary);
-}
-
-.tib-cta-section .tib-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
-}
-
 @media (max-width: 768px) {
   .tib-cta-section h2 { font-size: 2rem; }
 }
@@ -652,6 +808,8 @@
   .tib-cta-section p { font-size: 1rem; }
 }
 </style>
+
+<!-- Button styles from shared-components.css -->
 
 <section class="tib-cta-section">
   <div class="tib-cta-container">

@@ -68,6 +68,10 @@ print_info() {
     echo -e "${YELLOW}→ $1${NC}"
 }
 
+# Paths to base CSS files
+VARIABLES_CSS="$TEMPLATES_DIR/base/variables.css"
+SHARED_CSS="$TEMPLATES_DIR/base/shared-components.css"
+
 # Generate HTML document header
 generate_head() {
     local page_name="$1"
@@ -75,6 +79,11 @@ generate_head() {
     title=$(get_page_title "$page_name")
     
     cat <<EOF
+<!-- ============================================
+     AUTO-GENERATED FILE - DO NOT EDIT DIRECTLY
+     Edit templates in /templates/ folder instead.
+     Rebuild with: ./scripts/build-pages.sh
+     ============================================ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,6 +117,12 @@ generate_head() {
       --tib-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
       --tib-shadow-primary: 0 8px 20px rgba(0, 229, 255, 0.3);
       --tib-shadow-hover: 0 20px 50px rgba(0, 229, 255, 0.2);
+      
+      /* Accent Colors (for tags/badges) */
+      --tib-accent-game: #ff6b6b;
+      --tib-accent-game-alpha: rgba(255, 107, 107, 0.1);
+      --tib-accent-website: #4ecdc4;
+      --tib-accent-website-alpha: rgba(78, 205, 196, 0.1);
     }
     
     /* Base Reset */
@@ -124,6 +139,19 @@ generate_head() {
     a { text-decoration: none; color: inherit; }
     ul, ol { list-style: none; }
     img { max-width: 100%; height: auto; display: block; }
+EOF
+
+    # Inject shared components CSS if it exists
+    if [[ -f "$SHARED_CSS" ]]; then
+        echo ""
+        echo "    /* ========================================"
+        echo "       Shared Component Styles"
+        echo "       ======================================== */"
+        # Read the file, skip the header comment block (first 10 lines), indent each line
+        tail -n +11 "$SHARED_CSS" | sed 's/^/    /'
+    fi
+
+    cat <<EOF
   </style>
 </head>
 <body>

@@ -3,30 +3,16 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* Contact Section Styles */
+/* Contact Section Specific Styles */
 .tib-about-section {
   padding: var(--tib-section-padding);
   background: var(--tib-surface-alt);
   text-align: center;
   font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
 }
 
 .tib-contact-info {
@@ -69,6 +55,7 @@
   text-decoration: none;
   font-size: 1.25rem;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .tib-social-link:hover {
@@ -78,16 +65,16 @@
 }
 
 @media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
   .tib-contact-info { flex-direction: column; gap: 1rem; }
 }
 
 @media (max-width: 480px) {
   .tib-about-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
   .tib-social-link { width: 45px; height: 45px; font-size: 1.1rem; }
 }
 </style>
+
+<!-- Base styles from shared-components.css -->
 
 <section class="tib-about-section" id="contact">
   <div class="tib-container">
@@ -97,10 +84,10 @@
       <a href="tel:+1234567890" class="tib-contact-item">+1 (234) 567-890</a>
     </div>
     <div class="tib-social-links">
-      <a href="#" class="tib-social-link" aria-label="Facebook">f</a>
-      <a href="#" class="tib-social-link" aria-label="Instagram">📷</a>
-      <a href="#" class="tib-social-link" aria-label="Twitter">🐦</a>
-      <a href="#" class="tib-social-link" aria-label="LinkedIn">in</a>
+      <a href="javascript:void(0)" class="tib-social-link" aria-label="Facebook" title="Coming Soon">f</a>
+      <a href="javascript:void(0)" class="tib-social-link" aria-label="Instagram" title="Coming Soon">📷</a>
+      <a href="javascript:void(0)" class="tib-social-link" aria-label="Twitter" title="Coming Soon">🐦</a>
+      <a href="javascript:void(0)" class="tib-social-link" aria-label="LinkedIn" title="Coming Soon">in</a>
     </div>
   </div>
 </section>

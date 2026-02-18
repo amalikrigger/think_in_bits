@@ -3,31 +3,11 @@
      ======================================== 
      
      USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css in WordPress theme CSS
+     REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
 <style>
-/* Product Grid Styles */
-.tib-featured-section {
-  padding: var(--tib-section-padding);
-  background: var(--tib-surface-alt);
-  font-family: var(--tib-font-family);
-}
-
-.tib-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.tib-section-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  color: var(--tib-text-color);
-}
-
+/* Product Grid Specific Styles */
 .tib-products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -82,44 +62,19 @@
   line-height: 1.6;
 }
 
-.tib-product-info .tib-btn {
-  padding: 1rem 2.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: var(--tib-border-radius-btn);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  font-family: var(--tib-font-family);
-}
-
-.tib-product-info .tib-btn-primary {
-  background: linear-gradient(135deg, var(--tib-primary-color) 0%, var(--tib-primary-dark) 100%);
-  color: var(--tib-bg-color);
-  box-shadow: var(--tib-shadow-primary);
-}
-
-.tib-product-info .tib-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
-}
-
 @media (max-width: 768px) {
-  .tib-section-title { font-size: 2rem; }
   .tib-products-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 @media (max-width: 480px) {
-  .tib-featured-section { padding: 3rem 1rem; }
-  .tib-section-title { font-size: 1.75rem; margin-bottom: 2rem; }
   .tib-product-info { padding: 1.5rem; }
   .tib-product-title { font-size: 1.25rem; }
 }
 </style>
 
-<section id="featured" class="tib-featured-section">
+<!-- Base styles from shared-components.css -->
+
+<section id="featured" class="tib-section-alt">
   <div class="tib-container">
     <h2 class="tib-section-title">Featured 3D Prints</h2>
     <div class="tib-products-grid">
