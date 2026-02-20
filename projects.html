@@ -623,6 +623,18 @@
   box-shadow: var(--tib-shadow-card);
   border: 1px solid var(--tib-border-subtle);
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tib-project-card .tib-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tib-project-card .tib-card-description {
+  flex: 1;
 }
 
 .tib-project-card:hover {
@@ -665,10 +677,84 @@
   margin-bottom: 1rem;
 }
 
+.tib-project-creator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 2rem;
+  border-top: 1px solid var(--tib-border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tib-creator-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--tib-primary-color), var(--tib-primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--tib-bg-color);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+.tib-creator-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.tib-creator-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--tib-text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tib-creator-role {
+  font-size: 0.7rem;
+  color: var(--tib-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tib-creator-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--tib-primary-alpha-10);
+  border: 1px solid transparent;
+  color: var(--tib-primary-color);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.tib-creator-email:hover {
+  background: var(--tib-primary-alpha-30);
+  border-color: var(--tib-primary-color);
+  transform: scale(1.1);
+}
+
+.tib-creator-email svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .tib-project-links {
   display: flex;
-  gap: 1rem;
-  padding: 0 2rem 2rem;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem 2rem;
 }
 
 .tib-project-links .tib-btn {
@@ -703,9 +789,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Bouncing Cat</h3>
           <p class="tib-card-description">A fun animated cat bouncing around the screen. Simple and entertaining!</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Bouncing Cat" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/bouncing-cat/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Animation</a>
@@ -719,9 +810,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Checkers Game</h3>
           <p class="tib-card-description">Classic board game brought to life. Challenge yourself or a friend!</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Checkers Game" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/checkers/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -735,9 +831,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">MASTER CHESS</h3>
           <p class="tib-card-description">The ultimate strategy game. Test your chess skills against our implementation.</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: MASTER CHESS" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/chess/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -751,9 +852,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Connect 4</h3>
           <p class="tib-card-description">Get four in a row to win! A timeless game of strategy and planning.</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Connect 4" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/connect-4/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -767,9 +873,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Flappy Bird</h3>
           <p class="tib-card-description">Navigate through obstacles in this addictive arcade-style game.</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Flappy Bird" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/flappy-bird/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -783,9 +894,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Sign Up Form</h3>
           <p class="tib-card-description">A sleek and modern user authentication form with validation.</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Sign Up Form" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/login/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Demo</a>
@@ -799,9 +915,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Memory Card Game</h3>
           <p class="tib-card-description">Test your memory by matching pairs of cards. How fast can you clear the board?</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Memory Card Game" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/matching-website/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -815,9 +936,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Top 10 Restaurants (St.Croix)</h3>
           <p class="tib-card-description">Discover the best dining spots on St.Croix island with our curated guide.</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Top 10 Restaurants" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/restaurant-webpage/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Explore</a>
@@ -831,9 +957,14 @@
         <div class="tib-card-content">
           <h3 class="tib-card-title">Tic Tac Toe</h3>
           <p class="tib-card-description">The classic game of X's and O's. Simple to learn, fun to play!</p>
-          <div class="tib-card-meta">
-            <span class="creator">Created by: CS Student</span>
+        </div>
+        <div class="tib-project-creator">
+          <div class="tib-creator-avatar">SC</div>
+          <div class="tib-creator-info">
+            <span class="tib-creator-name">Student Creator</span>
+            <span class="tib-creator-role">Developer</span>
           </div>
+          <a href="mailto:student@businessclub.edu?subject=About: Tic Tac Toe" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/tic-tac-toe/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
