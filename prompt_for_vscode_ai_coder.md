@@ -1,7 +1,7 @@
 # Prompt for VS Code AI Coder
 
 **Role:** You are an expert Frontend Web Developer and UI/UX Designer.  
-**Task:** Create a multi-page website for a school Business Club based on the design language found in `#file:index.html`.
+**Task:** Create a multi-page website for Think In Bits based on the design language found in `#file:index.html`.
 
 ---
 

@@ -35,12 +35,12 @@ OUTPUT_DIR="$PROJECT_ROOT"
 get_page_title() {
     local page_name="$1"
     case "$page_name" in
-        index)    echo "Business Club - Innovation & Entrepreneurship" ;;
-        shop)     echo "3D Prints Shop - Business Club" ;;
-        projects) echo "Projects & Games - Business Club" ;;
-        blog)     echo "Blog & News - Business Club" ;;
-        about)    echo "About Us - Business Club" ;;
-        *)        echo "Business Club" ;;
+        index)    echo "Think In Bits - Digital Projects & Learning" ;;
+        shop)     echo "3D Prints Shop - Think In Bits" ;;
+        projects) echo "Projects & Games - Think In Bits" ;;
+        blog)     echo "Blog & News - Think In Bits" ;;
+        about)    echo "About Us - Think In Bits" ;;
+        *)        echo "Think In Bits" ;;
     esac
 }
 

@@ -7,7 +7,7 @@
 #   Description: This script automates the deployment of a static HTML/CSS/JS
 #                project to GitHub Pages for embedding in WordPress/Elementor.
 #
-#   Author: Business Club Automation
+#   Author: Think In Bits Automation
 #   Created: 2026-01-29
 #   
 #   Prerequisites:

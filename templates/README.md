@@ -242,7 +242,7 @@ This will:
    ```
 2. Add page title to `scripts/build-pages.sh`:
    ```bash
-   PAGE_TITLES["newpage"]="New Page - Business Club"
+   PAGE_TITLES["newpage"]="New Page - Think In Bits"
    ```
 3. Run `./scripts/build-pages.sh`
 
@@ -383,4 +383,4 @@ This namespacing ensures your embedded sections don't conflict with theme styles
 
 ## Support
 
-For questions or issues, contact the Business Club development team.
+For questions or issues, contact the Think In Bits development team.
