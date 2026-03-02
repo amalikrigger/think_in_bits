@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Authenticate (Mock)
       const validEmail = 'example@gmail.com';
-      const validPassword = 'Example123!';
+      const validPassword = 'Play2Win!';
       
       if (email === validEmail && password === validPassword) {
         // Handle "Remember Me"
