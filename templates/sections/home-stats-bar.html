@@ -1,0 +1,74 @@
+<!-- ========================================
+     Stats Bar Section - Home Page
+     ========================================
+
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css and shared-components.css
+     ======================================== -->
+
+<style>
+  .tib-stats-bar {
+    background: var(--tib-surface-alt);
+    border-top: 1px solid var(--tib-border-subtle);
+    border-bottom: 1px solid var(--tib-border-subtle);
+    padding: 3rem 0;
+  }
+
+  .tib-stats-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .tib-stat-item {
+    text-align: center;
+  }
+
+  .tib-stat-number {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--tib-primary-color);
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+  }
+
+  .tib-stat-label {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--tib-secondary-color);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 600px) {
+    .tib-stats-grid {
+      gap: 2.5rem;
+    }
+    .tib-stat-number {
+      font-size: 2.25rem;
+    }
+  }
+</style>
+
+<section class="tib-stats-bar">
+  <div class="tib-container">
+    <div class="tib-stats-grid tib-animate">
+      <div class="tib-stat-item">
+        <span class="tib-stat-number" data-target="9">0</span>
+        <span class="tib-stat-label">Projects Built</span>
+      </div>
+      <div class="tib-stat-item">
+        <span class="tib-stat-number" data-target="18">0</span>
+        <span class="tib-stat-label">Student Developers</span>
+      </div>
+      <div class="tib-stat-item">
+        <span class="tib-stat-number" data-target="5">0</span>
+        <span class="tib-stat-label">Game Types</span>
+      </div>
+    </div>
+  </div>
+</section>

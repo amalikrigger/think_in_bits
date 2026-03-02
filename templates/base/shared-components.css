@@ -35,8 +35,26 @@
   text-align: center;
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 3rem;
+  margin-bottom: 1.25rem;
   color: var(--tib-text-color);
+  position: relative;
+  padding-bottom: 1.25rem;
+}
+
+.tib-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 3px;
+  background: var(--tib-primary-color);
+  border-radius: 2px;
+}
+
+.tib-section-title + .tib-section-subtitle {
+  margin-top: 1.75rem;
 }
 
 .tib-section-subtitle {
@@ -82,6 +100,7 @@
 
 .tib-btn-secondary:hover {
   background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
   transform: translateY(-3px);
 }
 
@@ -221,7 +240,7 @@
     linear-gradient(45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%),
     linear-gradient(-45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%);
   background-size: 60px 60px;
-  opacity: 0.5;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -290,5 +309,101 @@
   .tib-hero p {
     font-size: 0.95rem;
     margin-bottom: 2rem;
+  }
+}
+/* ========================================
+   Hero Entrance Animations
+   ======================================== */
+@keyframes tib-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tib-hero h1 {
+  animation: tib-fadeInUp 0.7s ease forwards;
+}
+
+.tib-hero p {
+  animation: tib-fadeInUp 0.7s 0.18s ease both;
+}
+
+.tib-hero-buttons {
+  animation: tib-fadeInUp 0.7s 0.36s ease both;
+}
+
+/* ========================================
+   Scroll-Triggered Animation System
+   ======================================== */
+.tib-animate {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.tib-animate.tib-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive: disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .tib-animate,
+  .tib-hero h1,
+  .tib-hero p,
+  .tib-hero-buttons {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Badge / Project Type Overrides */
+.tib-project-type.animation { background: var(--tib-accent-animation); }
+
+/* Hero canvas overlay */
+#tib-hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Scroll progress bar */
+#tib-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--tib-primary-color);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* Section divider */
+.tib-section-divider {
+  height: 1px;
+  border: none;
+  background: linear-gradient(90deg, transparent, var(--tib-primary-color), transparent);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes tib-pulse-glow {
+    0%, 100% { box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4); }
+    50%       { box-shadow: 0 6px 35px rgba(0, 229, 255, 0.8); }
+  }
+  .tib-btn-primary {
+    animation: tib-pulse-glow 2.5s ease-in-out infinite;
   }
 }

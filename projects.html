@@ -33,6 +33,7 @@
       --tib-border-radius-cta: 30px;
       --tib-section-padding: 5rem 1.5rem;
       --tib-max-width: 1200px;
+      --tib-navbar-height: 70px;
       --tib-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
       --tib-shadow-primary: 0 8px 20px rgba(0, 229, 255, 0.3);
       --tib-shadow-hover: 0 20px 50px rgba(0, 229, 255, 0.2);
@@ -42,6 +43,7 @@
       --tib-accent-game-alpha: rgba(255, 107, 107, 0.1);
       --tib-accent-website: #4ecdc4;
       --tib-accent-website-alpha: rgba(78, 205, 196, 0.1);
+      --tib-accent-animation: #a78bfa;
     }
     
     /* Base Reset */
@@ -89,8 +91,26 @@
       text-align: center;
       font-size: 2.5rem;
       font-weight: 700;
-      margin-bottom: 3rem;
+      margin-bottom: 1.25rem;
       color: var(--tib-text-color);
+      position: relative;
+      padding-bottom: 1.25rem;
+    }
+    
+    .tib-section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 3px;
+      background: var(--tib-primary-color);
+      border-radius: 2px;
+    }
+    
+    .tib-section-title + .tib-section-subtitle {
+      margin-top: 1.75rem;
     }
     
     .tib-section-subtitle {
@@ -136,6 +156,7 @@
     
     .tib-btn-secondary:hover {
       background: var(--tib-primary-alpha-10);
+      color: var(--tib-primary-color);
       transform: translateY(-3px);
     }
     
@@ -275,7 +296,7 @@
         linear-gradient(45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%),
         linear-gradient(-45deg, transparent 48%, var(--tib-primary-alpha-03) 49%, var(--tib-primary-alpha-03) 51%, transparent 52%);
       background-size: 60px 60px;
-      opacity: 0.5;
+      opacity: 0.6;
       pointer-events: none;
     }
     
@@ -346,7 +367,102 @@
         margin-bottom: 2rem;
       }
     }
-  </style>
+    /* ========================================
+       Hero Entrance Animations
+       ======================================== */
+    @keyframes tib-fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .tib-hero h1 {
+      animation: tib-fadeInUp 0.7s ease forwards;
+    }
+    
+    .tib-hero p {
+      animation: tib-fadeInUp 0.7s 0.18s ease both;
+    }
+    
+    .tib-hero-buttons {
+      animation: tib-fadeInUp 0.7s 0.36s ease both;
+    }
+    
+    /* ========================================
+       Scroll-Triggered Animation System
+       ======================================== */
+    .tib-animate {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    
+    .tib-animate.tib-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Responsive: disable animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .tib-animate,
+      .tib-hero h1,
+      .tib-hero p,
+      .tib-hero-buttons {
+        animation: none;
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+    
+    /* Badge / Project Type Overrides */
+    .tib-project-type.animation { background: var(--tib-accent-animation); }
+    
+    /* Hero canvas overlay */
+    #tib-hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.4;
+    }
+    
+    /* Scroll progress bar */
+    #tib-scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--tib-primary-color);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+    
+    /* Section divider */
+    .tib-section-divider {
+      height: 1px;
+      border: none;
+      background: linear-gradient(90deg, transparent, var(--tib-primary-color), transparent);
+      margin: 0;
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes tib-pulse-glow {
+        0%, 100% { box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4); }
+        50%       { box-shadow: 0 6px 35px rgba(0, 229, 255, 0.8); }
+      }
+      .tib-btn-primary {
+        animation: tib-pulse-glow 2.5s ease-in-out infinite;
+      }
+    }  </style>
 </head>
 <body>
 
@@ -769,7 +885,8 @@
     <div class="tib-cards-grid">
       
       <!-- Project 1: Bouncing Cat -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🐱</span></div>
         <span class="tib-project-type">Animation</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Bouncing Cat</h3>
@@ -781,7 +898,7 @@
             <span class="tib-creator-name">Makeda & Jumalie</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:mhardcastle@ghcdsstudent.org?subject=About: Bouncing Cat" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:mhardcastle@ghcdsstudent.org,jjohn@ghcdsstudent.org?subject=About: Bouncing Cat" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/bouncing-cat/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Animation</a>
@@ -790,7 +907,8 @@
       </div>
 
       <!-- Project 2: Checkers Game -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🔴</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Checkers Game</h3>
@@ -802,7 +920,7 @@
             <span class="tib-creator-name">Jasem & Dylan</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:jrahhal@ghcdsstudent.org?subject=About: Checkers Game" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:jrahhal@ghcdsstudent.org,dgreenidge@ghcdsstudent.org?subject=About: Checkers Game" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/checkers/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -811,7 +929,8 @@
       </div>
 
       <!-- Project 3: MASTER CHESS -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">♟️</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">MASTER CHESS</h3>
@@ -823,7 +942,7 @@
             <span class="tib-creator-name">Adawah & Miles</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:ajohn@ghcdsstudent.org?subject=About: MASTER CHESS" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:ajohn@ghcdsstudent.org,mkantowski@ghcdsstudent.org?subject=About: MASTER CHESS" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/chess/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -832,7 +951,8 @@
       </div>
 
       <!-- Project 4: Connect 4 -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🟡</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Connect 4</h3>
@@ -844,7 +964,7 @@
             <span class="tib-creator-name">Max & R'Mani</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:mdale2@ghcdsstudent.org?subject=About: Connect 4" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:mdale2@ghcdsstudent.org,rramsingh@ghcdsstudent.org?subject=About: Connect 4" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/connect-4/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -853,7 +973,8 @@
       </div>
 
       <!-- Project 5: Flappy Bird -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🐦</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Flappy Bird</h3>
@@ -865,7 +986,7 @@
             <span class="tib-creator-name">Lu & Mycal</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:ajoseph@ghcdsstudent.org?subject=About: Flappy Bird" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:ajoseph@ghcdsstudent.org,mmarshall@ghcdsstudent.org?subject=About: Flappy Bird" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/flappy-bird/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -874,7 +995,8 @@
       </div>
 
       <!-- Project 6: Sign Up Form -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">📋</span></div>
         <span class="tib-project-type website">Website</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Sign Up Form</h3>
@@ -886,7 +1008,7 @@
             <span class="tib-creator-name">Jedi & Eduardo</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:pgiordano@ghcdsstudent.org?subject=About: Sign Up Form" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:pgiordano@ghcdsstudent.org,ehermida@ghcdsstudent.org?subject=About: Sign Up Form" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/login/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">View Demo</a>
@@ -895,7 +1017,8 @@
       </div>
 
       <!-- Project 7: Memory Card Game -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🃏</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Memory Card Game</h3>
@@ -907,7 +1030,7 @@
             <span class="tib-creator-name">Kenny & Jamal</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:knguyen@ghcdsstudent.org?subject=About: Memory Card Game" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:knguyen@ghcdsstudent.org,jmisbeh@ghcdsstudent.org?subject=About: Memory Card Game" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/matching-website/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -916,7 +1039,8 @@
       </div>
 
       <!-- Project 8: Top 10 Restaurants (St.Croix) -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🍽️</span></div>
         <span class="tib-project-type website">Website</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Top 10 Restaurants (St.Croix)</h3>
@@ -928,7 +1052,7 @@
             <span class="tib-creator-name">Wajeeh & David</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:wabdallah@ghcdsstudent.org?subject=About: Top 10 Restaurants" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:wabdallah@ghcdsstudent.org,dvaughan@ghcdsstudent.org?subject=About: Top 10 Restaurants" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/restaurant-webpage/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Explore</a>
@@ -937,7 +1061,8 @@
       </div>
 
       <!-- Project 9: Tic Tac Toe -->
-      <div class="tib-project-card">
+      <div class="tib-project-card tib-animate">
+        <div class="tib-card-image"><span class="icon">❌</span></div>
         <span class="tib-project-type game">Game</span>
         <div class="tib-card-content">
           <h3 class="tib-card-title">Tic Tac Toe</h3>
@@ -949,7 +1074,7 @@
             <span class="tib-creator-name">Aj & Teague</span>
             <span class="tib-creator-role">Developer</span>
           </div>
-          <a href="mailto:amauro@ghcdsstudent.org?subject=About: Tic Tac Toe" class="tib-creator-email" title="Email developer"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="mailto:amauro@ghcdsstudent.org,tgleason@ghcdsstudent.org?subject=About: Tic Tac Toe" class="tib-creator-email" title="Email developers"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
         </div>
         <div class="tib-project-links">
           <a href="projects/tic-tac-toe/index.html" class="tib-btn tib-btn-primary" target="_blank" rel="noopener noreferrer">Play Now</a>
@@ -973,31 +1098,136 @@
 <style>
 /* Footer Styles */
 .tib-footer {
-  padding: 2rem 1.5rem;
+  padding: 3.5rem 1.5rem 2rem;
   background: var(--tib-bg-color);
-  text-align: center;
   border-top: 1px solid var(--tib-border-subtle);
   font-family: var(--tib-font-family);
 }
 
-.tib-footer p {
-  color: var(--tib-text-muted);
-  font-size: 0.9rem;
+.tib-footer-inner {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: start;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--tib-border-subtle);
 }
 
-.tib-footer a {
+.tib-footer-col h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--tib-primary-color);
-  transition: opacity 0.3s ease;
-  text-decoration: none;
+  margin-bottom: 1rem;
 }
 
-.tib-footer a:hover {
+.tib-footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tib-footer-col ul li a {
+  color: var(--tib-secondary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.25s ease;
+}
+
+.tib-footer-col ul li a:hover {
+  color: var(--tib-primary-color);
+}
+
+.tib-footer-col p {
+  color: var(--tib-secondary-color);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.tib-footer-col a.tib-footer-email {
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: opacity 0.25s ease;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.tib-footer-col a.tib-footer-email:hover {
   opacity: 0.8;
+}
+
+.tib-footer-bottom {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tib-footer-copy {
+  color: var(--tib-text-muted);
+  font-size: 0.85rem;
+}
+
+.tib-footer-top-link {
+  color: var(--tib-text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.25s ease;
+}
+
+.tib-footer-top-link:hover {
+  color: var(--tib-primary-color);
+}
+
+@media (max-width: 768px) {
+  .tib-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .tib-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 </style>
 
 <footer class="tib-footer">
-  <p>© 2026 Think In Bits. All rights reserved.</p>
+  <div class="tib-footer-inner">
+    <div class="tib-footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="tib-footer-col">
+      <h4>Contact</h4>
+      <p>Questions, feedback, or ideas?</p>
+      <a href="mailto:akrigger@ghcds.org" class="tib-footer-email">akrigger@ghcds.org</a>
+    </div>
+    <div class="tib-footer-col">
+      <h4>Think In Bits</h4>
+      <p>A student-run project site showcasing digital creativity and learning through code.</p>
+    </div>
+  </div>
+  <div class="tib-footer-bottom">
+    <span class="tib-footer-copy">&copy; 2026 Think In Bits. All rights reserved.</span>
+    <a href="#" class="tib-footer-top-link">Back to top &uarr;</a>
+  </div>
 </footer>
+  <script src="js/main.js"></script>
 </body>
 </html>

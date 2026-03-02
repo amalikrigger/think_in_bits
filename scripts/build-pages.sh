@@ -114,6 +114,7 @@ generate_head() {
       --tib-border-radius-cta: 30px;
       --tib-section-padding: 5rem 1.5rem;
       --tib-max-width: 1200px;
+      --tib-navbar-height: 70px;
       --tib-shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
       --tib-shadow-primary: 0 8px 20px rgba(0, 229, 255, 0.3);
       --tib-shadow-hover: 0 20px 50px rgba(0, 229, 255, 0.2);
@@ -123,6 +124,7 @@ generate_head() {
       --tib-accent-game-alpha: rgba(255, 107, 107, 0.1);
       --tib-accent-website: #4ecdc4;
       --tib-accent-website-alpha: rgba(78, 205, 196, 0.1);
+      --tib-accent-animation: #a78bfa;
     }
     
     /* Base Reset */
@@ -161,6 +163,7 @@ EOF
 # Generate HTML document footer
 generate_foot() {
     cat <<EOF
+  <script src="js/main.js"></script>
 </body>
 </html>
 EOF

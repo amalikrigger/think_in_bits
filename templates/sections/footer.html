@@ -9,29 +9,133 @@
 <style>
 /* Footer Styles */
 .tib-footer {
-  padding: 2rem 1.5rem;
+  padding: 3.5rem 1.5rem 2rem;
   background: var(--tib-bg-color);
-  text-align: center;
   border-top: 1px solid var(--tib-border-subtle);
   font-family: var(--tib-font-family);
 }
 
-.tib-footer p {
-  color: var(--tib-text-muted);
-  font-size: 0.9rem;
+.tib-footer-inner {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: start;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--tib-border-subtle);
 }
 
-.tib-footer a {
+.tib-footer-col h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--tib-primary-color);
-  transition: opacity 0.3s ease;
-  text-decoration: none;
+  margin-bottom: 1rem;
 }
 
-.tib-footer a:hover {
+.tib-footer-col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tib-footer-col ul li a {
+  color: var(--tib-secondary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.25s ease;
+}
+
+.tib-footer-col ul li a:hover {
+  color: var(--tib-primary-color);
+}
+
+.tib-footer-col p {
+  color: var(--tib-secondary-color);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.tib-footer-col a.tib-footer-email {
+  color: var(--tib-primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: opacity 0.25s ease;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.tib-footer-col a.tib-footer-email:hover {
   opacity: 0.8;
+}
+
+.tib-footer-bottom {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tib-footer-copy {
+  color: var(--tib-text-muted);
+  font-size: 0.85rem;
+}
+
+.tib-footer-top-link {
+  color: var(--tib-text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.25s ease;
+}
+
+.tib-footer-top-link:hover {
+  color: var(--tib-primary-color);
+}
+
+@media (max-width: 768px) {
+  .tib-footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .tib-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 </style>
 
 <footer class="tib-footer">
-  <p>© 2026 Think In Bits. All rights reserved.</p>
+  <div class="tib-footer-inner">
+    <div class="tib-footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="tib-footer-col">
+      <h4>Contact</h4>
+      <p>Questions, feedback, or ideas?</p>
+      <a href="mailto:akrigger@ghcds.org" class="tib-footer-email">akrigger@ghcds.org</a>
+    </div>
+    <div class="tib-footer-col">
+      <h4>Think In Bits</h4>
+      <p>A student-run project site showcasing digital creativity and learning through code.</p>
+    </div>
+  </div>
+  <div class="tib-footer-bottom">
+    <span class="tib-footer-copy">&copy; 2026 Think In Bits. All rights reserved.</span>
+    <a href="#" class="tib-footer-top-link">Back to top &uarr;</a>
+  </div>
 </footer>

@@ -54,6 +54,7 @@
   --tib-accent-game-alpha: rgba(255, 107, 107, 0.1);
   --tib-accent-website: #4ecdc4;
   --tib-accent-website-alpha: rgba(78, 205, 196, 0.1);
+  --tib-accent-animation: #a78bfa;
 }
 
 /* ========================================
@@ -91,6 +92,7 @@
 
 .tib-btn-secondary:hover {
   background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
   transform: translateY(-3px);
 }
 
