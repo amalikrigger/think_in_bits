@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 2. Login Form Submission
   if (loginForm) {
+    // Track attempts and start time
+    let loginAttempts = 0;
+    if (!sessionStorage.getItem('loginStartTime')) {
+      sessionStorage.setItem('loginStartTime', Date.now().toString());
+    }
+
     // Check for saved email
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail && emailInput) {
@@ -47,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      loginAttempts++;
       
       const email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -83,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Login Success
         sessionStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('loginAttempts', loginAttempts.toString());
         window.location.href = 'page.html';
       } else {
         showError('Invalid email or password. Click "Need a hint?" below for help.');

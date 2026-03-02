@@ -17,16 +17,83 @@
 </head>
 
 <body>
+  <canvas id="confetti-canvas"></canvas>
   <section>
     <div class="welcome-box">
       <div class="welcome-content">
-        <h1 class="welcome-title">Welcome!</h1>
-        <p class="welcome-message">You have successfully logged in.</p>
-        <p class="welcome-subtitle">We're glad to have you here.</p>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <div class="trophy-icon">&#127942;</div>
+        <h1 class="welcome-title">You Cracked It!</h1>
+        <p class="welcome-message">Riddle solved. Access granted.</p>
+        <p class="welcome-subtitle">Not everyone makes it this far. Well played.</p>
+        <div class="welcome-stats">
+          <div class="stat"><span class="stat-number" id="attempts">1</span><span class="stat-label">Attempt(s)</span></div>
+          <div class="stat"><span class="stat-number" id="timeSpent">--</span><span class="stat-label">Seconds</span></div>
+        </div>
+        <button id="logoutBtn" class="logout-btn">Lock It Back Up</button>
       </div>
     </div>
   </section>
+  <script>
+    // Confetti animation
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+    const confetti = [];
+    const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#01a3a4', '#f368e0', '#ff9f43', '#00d2d3'];
+
+    function createConfetti() {
+      for (let i = 0; i < 150; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 10 + 5,
+          h: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speed: Math.random() * 3 + 2,
+          swing: Math.random() * 4 - 2,
+          rotation: Math.random() * 360,
+          rotSpeed: Math.random() * 6 - 3,
+          opacity: 1
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let active = false;
+      confetti.forEach(c => {
+        if (c.opacity <= 0) return;
+        active = true;
+        ctx.save();
+        ctx.translate(c.x + c.w / 2, c.y + c.h / 2);
+        ctx.rotate((c.rotation * Math.PI) / 180);
+        ctx.globalAlpha = c.opacity;
+        ctx.fillStyle = c.color;
+        ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+        ctx.restore();
+        c.y += c.speed;
+        c.x += c.swing;
+        c.rotation += c.rotSpeed;
+        if (c.y > canvas.height) c.opacity -= 0.02;
+      });
+      if (active) requestAnimationFrame(drawConfetti);
+    }
+
+    createConfetti();
+    drawConfetti();
+
+    // Show attempts and time from sessionStorage
+    const attempts = sessionStorage.getItem('loginAttempts') || '1';
+    document.getElementById('attempts').textContent = attempts;
+    const startTime = sessionStorage.getItem('loginStartTime');
+    if (startTime) {
+      const elapsed = Math.round((Date.now() - parseInt(startTime)) / 1000);
+      document.getElementById('timeSpent').textContent = elapsed;
+    }
+  </script>
 </body>
 
 </html>
