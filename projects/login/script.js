@@ -123,6 +123,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 4. Credentials Popup
+  const credentialsPopup = document.getElementById('credentialsPopup');
+  const showCredentialsBtn = document.getElementById('showCredentials');
+  const credentialsCloseBtn = document.getElementById('credentialsClose');
+
+  // Show popup on page load
+  if (credentialsPopup) {
+    credentialsPopup.classList.add('active');
+  }
+
+  if (showCredentialsBtn && credentialsPopup) {
+    showCredentialsBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      credentialsPopup.classList.add('active');
+    });
+  }
+
+  if (credentialsCloseBtn && credentialsPopup) {
+    credentialsCloseBtn.addEventListener('click', () => {
+      credentialsPopup.classList.remove('active');
+    });
+  }
+
+  // Close popup when clicking outside
+  if (credentialsPopup) {
+    credentialsPopup.addEventListener('click', (e) => {
+      if (e.target === credentialsPopup) {
+        credentialsPopup.classList.remove('active');
+      }
+    });
+  }
+
   // --- Welcome Page Logic ---
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {

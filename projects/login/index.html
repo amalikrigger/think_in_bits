@@ -18,6 +18,16 @@
 
 <body>
   <section>
+    <!-- Credentials Popup -->
+    <div class="credentials-popup" id="credentialsPopup">
+      <div class="credentials-popup-content">
+        <h3>Demo Credentials</h3>
+        <p><strong>Email:</strong> example@gmail.com</p>
+        <p><strong>Password:</strong> Example123!</p>
+        <button type="button" class="credentials-close" id="credentialsClose">Got it</button>
+      </div>
+    </div>
+
     <div class="login-box">
       <form action="">
         <h2>Login</h2>
@@ -44,6 +54,9 @@
           <a href="#" class="forgot-link">Forgot Password?</a>
         </div>
         <button type="submit">Login</button>
+        <div class="hint-link">
+          <a href="#" id="showCredentials">Need login credentials?</a>
+        </div>
         <div class="register-link">
           <p>Don't have an account? <a href="#" class="register-link-btn">Register</a></p>
         </div>
