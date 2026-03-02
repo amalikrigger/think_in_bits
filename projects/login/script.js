@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // Authenticate (Mock)
-      const validEmail = 'example@gmail.com';
+      const validEmail = 'player1@thinkinbits.site';
       const validPassword = 'Play2Win!';
       
       if (email === validEmail && password === validPassword) {
