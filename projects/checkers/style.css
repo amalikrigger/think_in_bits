@@ -60,18 +60,18 @@ body {
 /* Board */
 .board { 
   display: grid; 
-  grid-template-columns: repeat(8, 70px); 
-  grid-template-rows: repeat(8, 70px); 
+  grid-template-columns: repeat(8, minmax(35px, 70px)); 
+  grid-template-rows: repeat(8, auto); 
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
   position: relative;
+  width: min(560px, 95vw);
 }
 
 /* Squares */
 .cell { 
-  width: 70px; 
-  height: 70px; 
+  aspect-ratio: 1;
   position: relative;
   transition: background-color 0.3s ease;
 }
@@ -81,10 +81,10 @@ body {
 
 /* Pieces */
 .piece { 
-  width: 60px; 
-  height: 60px; 
+  width: 85%; 
+  aspect-ratio: 1;
   border-radius: 50%; 
-  margin: 5px auto; 
+  margin: 7.5% auto; 
   cursor: pointer;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
@@ -307,20 +307,7 @@ body {
   }
 
   .board {
-    grid-template-columns: repeat(8, 40px);
-    grid-template-rows: repeat(8, 40px);
     border-radius: 10px;
-  }
-
-  .cell {
-    width: 40px;
-    height: 40px;
-  }
-
-  .piece {
-    width: 34px;
-    height: 34px;
-    margin: 3px auto;
   }
 
   .piece.king::after {
@@ -343,6 +330,7 @@ body {
   .win-message {
     font-size: 28px;
     padding: 15px 25px;
+    white-space: normal;
   }
 
   #resetBtn {
@@ -353,22 +341,6 @@ body {
 }
 
 @media (max-width: 380px) {
-  .board {
-    grid-template-columns: repeat(8, 35px);
-    grid-template-rows: repeat(8, 35px);
-  }
-
-  .cell {
-    width: 35px;
-    height: 35px;
-  }
-
-  .piece {
-    width: 29px;
-    height: 29px;
-    margin: 3px auto;
-  }
-
   .piece.king::after {
     font-size: 12px;
     top: 50%;
@@ -379,5 +351,10 @@ body {
   .game-info {
     gap: 10px;
     font-size: 12px;
+  }
+
+  .win-message {
+    font-size: 22px;
+    padding: 10px 20px;
   }
 }

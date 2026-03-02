@@ -92,6 +92,13 @@
   box-shadow: 0 12px 30px rgba(0, 229, 255, 0.5);
 }
 
+@media (hover: none) {
+  .tib-btn-primary:hover {
+    transform: none;
+    box-shadow: var(--tib-shadow-primary);
+  }
+}
+
 .tib-btn-secondary {
   background: transparent;
   color: var(--tib-primary-color);
@@ -102,6 +109,21 @@
   background: var(--tib-primary-alpha-10);
   color: var(--tib-primary-color);
   transform: translateY(-3px);
+}
+
+@media (hover: none) {
+  .tib-btn-secondary:hover {
+    transform: none;
+    background: transparent;
+  }
+}
+
+/* Ensure minimum touch target size */
+@media (pointer: coarse) {
+  .tib-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* ========================================

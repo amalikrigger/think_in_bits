@@ -302,6 +302,7 @@ h1::after {
     border: 1px solid rgba(212, 175, 55, 0.3);
     opacity: 0;
     transition: all 0.3s ease;
+    max-width: 90vw;
 }
 
 .promotion-dialog.active {
@@ -319,11 +320,14 @@ h1::after {
     font-size: 1.4rem;
     letter-spacing: 2px;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .promotion-options {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .promotion-option {
@@ -339,11 +343,38 @@ h1::after {
     transition: all 0.3s ease;
 }
 
-.promotion-option:hover {
+@media (hover: hover) {
+    .promotion-option:hover {
+        border-color: #d4af37;
+        background-color: rgba(212, 175, 55, 0.2);
+        transform: scale(1.1);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+    }
+}
+
+.promotion-option:active {
     border-color: #d4af37;
     background-color: rgba(212, 175, 55, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+}
+
+@media (max-width: 400px) {
+    .promotion-dialog {
+        padding: 20px;
+    }
+
+    .promotion-dialog h3 {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+    }
+
+    .promotion-option {
+        width: 55px;
+        height: 55px;
+    }
+
+    .promotion-options {
+        gap: 10px;
+    }
 }
 
 .promotion-overlay {
