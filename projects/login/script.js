@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.setItem('loggedIn', 'true');
         window.location.href = 'page.html';
       } else {
-        showError('Invalid email or password. Hint: example@gmail.com / Example123!');
+        showError('Invalid email or password. Click "Need a hint?" below for help.');
       }
     });
   }

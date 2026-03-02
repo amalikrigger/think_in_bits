@@ -222,6 +222,25 @@
     word-break: break-all;
   }
 
+  .riddle-label {
+    margin-top: 12px;
+    word-break: normal;
+  }
+
+  .riddle-text {
+    font-style: italic;
+    line-height: 1.5;
+    word-break: normal;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .riddle-hint {
+    margin-top: 10px;
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.5);
+    word-break: normal;
+  }
+
   .credentials-popup-content p strong {
     color: #fff;
   }
