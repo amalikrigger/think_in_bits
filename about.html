@@ -9,6 +9,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us - Think In Bits</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     /* CSS Variables - Required for all sections */
@@ -506,11 +507,19 @@
 }
 
 .tib-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--tib-primary-color);
   text-decoration: none;
   transition: opacity 0.3s ease;
+}
+
+.tib-nav-logo img {
+  height: 32px;
+  width: auto;
 }
 
 .tib-nav-logo:hover {
@@ -629,7 +638,10 @@
 
 <nav class="tib-navbar">
   <div class="tib-nav-container">
-    <a href="index.html" class="tib-nav-logo">Think In Bits</a>
+    <a href="index.html" class="tib-nav-logo">
+      <img src="images/logo.png" alt="Think In Bits Logo">
+      Think In Bits
+    </a>
     <ul class="tib-nav-links">
       <li><a href="index.html" class="tib-nav-link">Home</a></li>
       <li><a href="projects.html" class="tib-nav-link">Projects</a></li>
