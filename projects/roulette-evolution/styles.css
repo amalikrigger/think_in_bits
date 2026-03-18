@@ -1,0 +1,968 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+    --accent-color: #fbbf24;
+    --danger-color: #ef4444;
+    --success-color: #22c55e;
+    --neutral-color: #64748b;
+    
+    --wheel-red: #dc2626;
+    --wheel-black: #171717;
+    --wheel-green: #15803d;
+    
+    --radius-lg: 12px;
+    --transition-fast: 0.2s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+header p {
+    color: var(--neutral-color);
+}
+
+.variant-selector {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+button:hover {
+    background: rgba(251, 191, 36, 0.1);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button.active {
+    background: var(--accent-color);
+    color: var(--bg-color);
+}
+
+button.btn-secondary {
+    border-color: var(--neutral-color);
+    color: var(--neutral-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+button.collapse-btn {
+    float: right;
+    padding: 0.25rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1;
+    margin-top: -0.25rem;
+    min-width: 32px;
+}
+
+button.chip-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(251, 191, 36, 0.1);
+    border: 2px solid var(--neutral-color);
+    color: var(--neutral-color);
+}
+
+button.chip-btn.active {
+    border-color: var(--accent-color);
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--accent-color);
+}
+
+button.chip-btn:hover {
+    background: rgba(251, 191, 36, 0.2);
+}
+
+button.btn-add-bet {
+    width: 100%;
+    padding: 1rem;
+    background: var(--success-color);
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+}
+
+button.btn-add-bet:hover {
+    background: #16a34a;
+}
+
+button.btn-spin-full {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.1rem;
+    background: var(--success-color);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    margin-top: 1rem;
+}
+
+button.btn-spin-full:hover:not(:disabled) {
+    background: #16a34a;
+}
+
+button.btn-spin-full:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dashboard-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr 300px; /* Left Sidebar, Center Wheel, Right Sidebar */
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1400px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+    .col-center {
+        grid-column: span 2;
+        order: -1;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+    .col-center {
+        grid-column: span 1;
+    }
+}
+
+.col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wheel-stage-container {
+    background: var(--card-bg);
+    padding: 3rem;
+    border-radius: 50%; /* Circular container? Or just rounded */
+    border-radius: var(--radius-lg);
+    border: 4px solid var(--accent-color);
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+}
+
+.wheel-container {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto 2rem auto;
+}
+
+.wheel {
+    width: 360px;
+    height: 360px;
+}
+
+/* Theme Selector */
+.theme-select {
+    padding: 0.5rem;
+    background: var(--bg-color);
+    color: var(--accent-color);
+    border: 2px solid var(--accent-color);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+}
+
+/* Badge for Last Result */
+.last-result-display {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.large-badge {
+    font-size: 3rem;
+    display: block;
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: var(--card-bg);
+    border: 3px solid var(--neutral-color);
+}
+
+/* Horizontal History Log */
+.horizontal-log {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+}
+
+/* THEMES */
+/* Default (Midnight) is :root */
+
+/* Classic Green */
+body[data-theme="classic"] {
+    --bg-color: #064e3b;
+    --card-bg: #065f46;
+    --text-color: #ecfdf5;
+    --accent-color: #fbbf24;
+    --neutral-color: #a7f3d0;
+    --wheel-red: #ef4444;
+    --wheel-black: #022c22;
+}
+
+/* Casino Royale (Black/Gold) */
+body[data-theme="royale"] {
+    --bg-color: #0f0f0f;
+    --card-bg: #1c1c1c;
+    --text-color: #fafafa;
+    --accent-color: #d4af37;
+    --neutral-color: #a1a1aa;
+    --success-color: #d4af37;
+}
+
+/* Cyberpunk */
+body[data-theme="cyber"] {
+    --bg-color: #0f0518;
+    --card-bg: #1a0b2e;
+    --text-color: #e2e8f0;
+    --accent-color: #d946ef; /* Magenta */
+    --success-color: #22d3ee; /* Cyan */
+    --danger-color: #f43f5e;
+    --neutral-color: #94a3b8;
+}
+
+/* Pink Paradigm */
+body[data-theme="pink"] {
+    --bg-color: #3f0e20;
+    --card-bg: #5a1a30;
+    --text-color: #fff1f2;
+    --accent-color: #f472b6;
+    --success-color: #f9a8d4;
+    --danger-color: #fb7185;
+    --neutral-color: #fbcfe8;
+    --wheel-red: #be123c;
+    --wheel-black: #280512;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
+}
+
+h2, h3 {
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+/* Bankroll Styles */
+.bankroll-card {
+    border: 2px solid var(--accent-color);
+}
+
+.bankroll-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.analysis-card .bankroll-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.bankroll-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bankroll-item .label {
+    font-size: 0.875rem;
+    color: var(--neutral-color);
+    margin-bottom: 0.5rem;
+}
+
+.bankroll-item .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--success-color);
+}
+
+/* Table Styles */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid var(--neutral-color);
+    color: var(--neutral-color);
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+/* Betting Card Styles */
+.betting-card {
+    grid-column: span 2;
+}
+
+.chip-selector {
+    margin-bottom: 1.5rem;
+}
+
+.chip-selector label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.chips {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .chips {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.chip-btn {
+    padding: 0.75rem;
+}
+
+.chip-btn.all-in-btn {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    border-color: #ef4444;
+    color: white;
+    font-weight: 700;
+}
+
+.chip-btn.all-in-btn:hover {
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
+}
+
+.bet-input-group {
+    margin-bottom: 1.5rem;
+}
+
+.bet-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.bet-input-group select,
+.bet-input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-color);
+    border: 2px solid var(--neutral-color);
+    color: white;
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+}
+
+.bet-input-group select:focus,
+.bet-input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.number-grid .number-btn {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.number-grid .number-btn {
+    background: rgba(100, 116, 139, 0.2);
+    border: 1px solid var(--neutral-color); /* Added explicit border style */
+    border-color: var(--neutral-color);
+    color: var(--text-color);
+    display: flex; /* Ensure centering for divs */
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px; /* Ensure consistency */
+    cursor: pointer;
+}
+
+.number-grid .number-btn:hover {
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.number-grid .number-btn.selected {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--bg-color);
+}
+
+/* Color Classes for Grid Visualizer */
+.number-btn.red { background-color: rgba(220, 38, 38, 0.2); border-color: var(--wheel-red); }
+.number-btn.black { background-color: rgba(23, 23, 23, 0.4); border-color: #404040; }
+.number-btn.green { background-color: rgba(21, 128, 61, 0.2); border-color: var(--wheel-green); }
+
+.bet-summary {
+    background: rgba(251, 191, 36, 0.05);
+    border: 2px solid rgba(251, 191, 36, 0.2);
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.summary-row:last-child {
+    margin-bottom: 0;
+    border-top: 1px solid rgba(251, 191, 36, 0.2);
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    color: var(--success-color);
+}
+
+.bet-buttons {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.placed-bets {
+    border-top: 2px solid var(--neutral-color);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.placed-bets h3 {
+    margin-bottom: 1rem;
+}
+
+.bets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.bet-item {
+    background: rgba(100, 116, 139, 0.1);
+    border-left: 4px solid var(--accent-color);
+    padding: 0.75rem;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.bet-item-info {
+    flex: 1;
+}
+
+.bet-item-type {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.bet-item-amount {
+    color: var(--success-color);
+    margin-top: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.bet-item-remove {
+    background: var(--danger-color);
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-left: 1rem;
+}
+
+.bet-item-remove:hover {
+    background: #dc2626;
+    opacity: 0.8;
+}
+
+.empty-bets {
+    text-align: center;
+    color: var(--neutral-color);
+    padding: 1rem;
+}
+
+/* Wheel Styles */
+.wheel-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 2rem auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.wheel {
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    border: 8px solid #1e293b;
+    position: relative;
+    background-size: cover;
+    transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add a center hub to the wheel */
+.wheel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, #475569 0%, #1e293b 100%);
+    border-radius: 50%;
+    border: 4px solid #334155;
+    z-index: 5;
+}
+
+.wheel-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: 20px;
+    text-align: center;
+    padding-top: 15px;
+    font-weight: bold;
+    font-size: 0.75rem;
+    color: white;
+    pointer-events: none;
+    transform-origin: 50% 50%;
+}
+
+.ball {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 10;
+    box-shadow: 0 0 4px rgba(0,0,0,0.8), inset -2px -2px 4px rgba(0,0,0,0.2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-172px);
+}
+
+.pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid var(--accent-color);
+    z-index: 20;
+}
+
+/* Stats Styles */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-card {
+    background: var(--card-bg);
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.number-badge {
+    background: var(--neutral-color);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.number-badge.red { background: var(--wheel-red); }
+.number-badge.black { background: var(--wheel-black); }
+.number-badge.green { background: var(--wheel-green); }
+.number-badge.win { 
+    background: var(--success-color);
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--bg-color);
+    border-radius: 4px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-color);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+/* History */
+.history-log {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    min-height: 40px;
+}
+
+.history-card {
+    grid-column: span 2;
+}
+
+@media (max-width: 1200px) {
+    .history-card {
+        grid-column: span 1;
+    }
+    
+    .betting-card {
+        grid-column: span 1;
+    }
+}
+
+/* Audio Controls */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.card-header-row h2 {
+    margin-bottom: 0;
+}
+
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    color: var(--neutral-color);
+}
+
+.full-width-select {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--neutral-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-color);
+    font-size: 1rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem top 50%;
+    background-size: 0.65rem auto;
+}
+
+.full-width-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #0f172a; /* darker bg */
+  border: 1px solid var(--neutral-color);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--neutral-color);
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+  background-color: #000;
+}
+
+/* Fullscreen Mode */
+.exit-fullscreen-btn {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 0.75rem 1.5rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+}
+
+.exit-fullscreen-btn:hover {
+    background: rgba(251, 191, 36, 0.2);
+}
+
+body.is-fullscreen .exit-fullscreen-btn {
+    display: block;
+}
+
+body.is-fullscreen header {
+    display: none;
+}
+
+body.is-fullscreen .info-panel {
+    display: none;
+}
+
+body.is-fullscreen .grid-layout {
+    grid-template-columns: 1fr;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 2rem;
+}
+
+body.is-fullscreen .app-container {
+    padding: 1rem;
+}
+
+/* Probability Lab */
+.calc-group {
+    margin-bottom: 1rem;
+}
+
+.calc-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--neutral-color);
+    font-size: 0.9rem;
+}
+
+.calc-stat-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: var(--neutral-color);
+    border-radius: 2px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+/* --- LESSON & PROBABILITY UI --- */
+
+.tab-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    color: var(--neutral-color);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: var(--text-color);
+}
+
+.tab-btn.active {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.mini-grid .number-btn {
+    font-size: 0.7rem;
+    padding: 0.25rem;
+    min-height: 25px;
+}
+
+.math-board {
+    background: rgba(0,0,0,0.3);
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Event Highlighting in Lesson Grid */
+.number-btn.is-event-a {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(251, 191, 36, 0.15);
+    box-shadow: 0 0 5px rgba(251, 191, 36, 0.2);
+}
+
+.number-btn.is-event-b {
+    border-color: var(--success-color);
+    color: var(--success-color);
+    background: rgba(34, 197, 94, 0.15);
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.2);
+}
+
+.number-btn.is-overlap {
+    border-color: #fff;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.4) 0%, rgba(34, 197, 94, 0.4) 100%);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+}

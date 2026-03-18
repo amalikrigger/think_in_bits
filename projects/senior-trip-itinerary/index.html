@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Senior Class Trip Itinerary, Puerto Rico Adventure Week">
+  <title>Senior Trip 🌴 Puerto Rico</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- AUTH GATE - blocks all content until password verified -->
+  <div id="auth-gate" role="dialog" aria-modal="true" aria-labelledby="auth-gate-title">
+    <div class="auth-gate-card">
+      <div class="auth-gate-icon" aria-hidden="true">🔒</div>
+      <h1 id="auth-gate-title">Senior Trip Itinerary</h1>
+      <p class="auth-gate-subtitle">Enter the class password to view the trip details</p>
+      <form id="auth-form" autocomplete="off">
+        <div class="auth-input-wrap">
+          <label for="auth-password" class="visually-hidden">Password</label>
+          <input type="password" id="auth-password" placeholder="Enter password" autocomplete="off" required>
+          <button type="submit" id="auth-submit" class="btn-primary" aria-label="Unlock itinerary">Unlock 🌴</button>
+        </div>
+        <p id="auth-error" class="auth-error" role="alert" aria-live="assertive"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- SKIP LINK (accessible) -->
+  <a href="#itinerary-column" class="skip-link">Skip to itinerary</a>
+
+  <!-- APP SHELL - hidden until authenticated -->
+  <div id="app-shell" class="app-hidden">
+
+  <!-- HEADER: theme toggle + settings button -->
+  <header>
+    <div class="container header-inner">
+      <span class="header-brand">🌴 Senior Trip</span>
+      <div class="header-actions">
+        <button id="share-btn" aria-label="Share this itinerary">Share</button>
+        <button id="settings-btn" aria-label="Open trip settings"><span aria-hidden="true">⚙</span> Settings</button>
+        <button id="theme-toggle" aria-label="Toggle light/dark mode">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" role="banner">
+    <div class="container hero-content">
+      <h1 class="hero-title">Senior Trip 🌴<br>Puerto Rico Adventure Week</h1>
+      <p class="hero-subtitle">Sun, Sea, and Senior Year Memories</p>
+      <!-- Countdown widget rendered by JS -->
+      <div id="hero-countdown" aria-live="polite" aria-label="Countdown to trip"></div>
+    </div>
+    <!-- Decorative floating shapes (CSS pseudo-elements handle these) -->
+    <div class="hero-shape hero-shape-1" aria-hidden="true"></div>
+    <div class="hero-shape hero-shape-2" aria-hidden="true"></div>
+  </section>
+
+  <!-- DAY CHIP NAVIGATION (sticky) -->
+  <nav id="day-chips-wrapper" aria-label="Jump to day">
+    <div class="container">
+      <div id="day-chips" role="tablist" aria-label="Trip days"></div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="container">
+      <div id="main-grid">
+
+        <!-- LEFT COLUMN: Itinerary day sections -->
+        <div id="itinerary-column">
+          <h2 class="section-heading">📅 Itinerary</h2>
+          <div id="itinerary-sections" aria-label="Daily itinerary sections"></div>
+        </div>
+
+        <!-- RIGHT COLUMN: Budget + Checklist + Reminders -->
+        <aside id="sidebar-column">
+
+          <!-- Budget Snapshot -->
+          <section id="budget" aria-labelledby="budget-heading">
+            <h2 id="budget-heading" class="section-heading">💰 Budget Snapshot</h2>
+            <div class="budget-card">
+              <h3>Known Costs (per student)</h3>
+              <ul id="budget-known-list" aria-label="Known costs"></ul>
+              <div class="budget-total-row">
+                <span>Known Total:</span>
+                <strong id="budget-known-total">$0</strong>
+              </div>
+              <h3>Range / Variable Costs</h3>
+              <ul id="budget-range-list" aria-label="Variable costs"></ul>
+              <div class="budget-bar-label">Cost Breakdown</div>
+              <div id="budget-bar" role="img" aria-label="Cost breakdown bar chart"></div>
+            </div>
+          </section>
+
+          <!-- Packing Checklist -->
+          <section id="checklist" aria-labelledby="checklist-heading">
+            <div class="checklist-heading-row">
+              <h2 id="checklist-heading" class="section-heading">🧳 Packing Checklist</h2>
+              <span id="checklist-progress" class="checklist-progress" aria-live="polite">0/15 packed</span>
+            </div>
+            <div class="checklist-card">
+              <ul id="checklist-items" aria-label="Packing checklist"></ul>
+              <button id="reset-checklist" aria-label="Reset all checklist items">Reset Checklist</button>
+            </div>
+          </section>
+
+          <!-- Reminders & Boundaries -->
+          <section id="reminders" aria-labelledby="reminders-heading">
+            <h2 id="reminders-heading" class="section-heading">📋 Reminders &amp; Boundaries</h2>
+
+            <div class="boundaries-callout" role="note" aria-label="Thursday free day boundaries">
+              <h3>🗓 Thursday Free Day: Boundaries</h3>
+              <p>Thursday is YOUR day to explore, but with structure. Stay within approved areas, be back by the agreed time, and keep your chaperone updated. Safety first, fun always.</p>
+            </div>
+
+            <div class="reminder-card">
+              <h3>🤝 General Reminders</h3>
+              <ul class="reminders-list">
+                <li>🔒 <strong>Buddy system</strong> - always travel in groups of 2+</li>
+                <li>📱 <strong>Stay reachable</strong> - phone charged, notifications on</li>
+                <li>🕐 <strong>Be on time</strong> - the group waits for no one (seriously)</li>
+                <li>🪪 <strong>Carry your ID</strong> at all times</li>
+                <li>💧 <strong>Stay hydrated</strong> - it's Puerto Rico, it's hot</li>
+                <li>🚫 <strong>Respect the rules</strong> - this trip only happens because you're responsible</li>
+                <li>📸 <strong>Make memories</strong> - have the time of your life!</li>
+              </ul>
+            </div>
+          </section>
+
+        </aside>
+      </div><!-- /#main-grid -->
+    </div><!-- /.container -->
+  </main>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-panel">
+      <button id="settings-close" class="modal-close-btn" aria-label="Close settings">✕</button>
+      <h2 id="settings-modal-title">⚙ Trip Settings</h2>
+      <p>Set your trip start date to get accurate countdowns and active day highlighting.</p>
+      <div class="form-group">
+        <label for="start-date-input">Trip Start Date (Day 8 - Sunday)</label>
+        <input type="date" id="start-date-input" aria-describedby="date-hint">
+        <small id="date-hint">The site will calculate Days 9–12 and Friday automatically.</small>
+      </div>
+      <div class="modal-actions">
+        <button id="save-settings" class="btn-primary" aria-label="Save trip settings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+  <div id="modal-backdrop" class="hidden" aria-hidden="true"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>🌴 Class of 2026, Puerto Rico Senior Trip</p>
+      <p class="footer-muted">Have the best time. Be safe. Make memories that last forever.</p>
+    </div>
+  </footer>
+
+  </div><!-- /#app-shell -->
+
+  <script src="script.js"></script>
+</body>
+</html>

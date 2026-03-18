@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffb6c1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>UNO Card Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Main Game Container -->
+    <div id="game-container">
+        <!-- Header with game title and controls -->
+        <header id="game-header">
+            <h1 class="game-title">UNO</h1>
+            <div class="header-controls">
+                <button id="fullscreen-toggle" class="control-btn" title="Toggle Fullscreen">
+                    <span class="fullscreen-enter">⛶</span>
+                    <span class="fullscreen-exit" style="display: none;">⛶</span>
+                </button>
+                <button id="music-toggle" class="control-btn" title="Toggle Music">
+                    <span class="music-on">🎵</span>
+                    <span class="music-off" style="display: none;">🎵</span>
+                </button>
+                <button id="sound-toggle" class="control-btn" title="Toggle Sound">
+                    <span class="sound-on">🔊</span>
+                    <span class="sound-off" style="display: none;">🔇</span>
+                </button>
+                <button id="new-game-btn" class="control-btn">New Game</button>
+            </div>
+        </header>
+
+        <!-- Game Table - 4 Player Layout -->
+        <div id="game-table">
+            <!-- Top Opponent (AI Player 2) -->
+            <div id="player-top" class="player-area opponent" data-player="2">
+                <div class="player-info">
+                    <span class="player-name">Bot 2</span>
+                    <span class="card-count">7</span>
+                </div>
+                <div class="player-hand horizontal"></div>
+            </div>
+
+            <!-- Left Opponent (AI Player 1) -->
+            <div id="player-left" class="player-area opponent" data-player="1">
+                <div class="player-info">
+                    <span class="player-name">Bot 1</span>
+                    <span class="card-count">7</span>
+                </div>
+                <div class="player-hand vertical"></div>
+            </div>
+
+            <!-- Center Play Area -->
+            <div id="play-area">
+                <!-- Direction Indicator -->
+                <div id="direction-indicator">
+                    <span class="direction-arrow clockwise">↻</span>
+                </div>
+
+                <!-- Draw Pile -->
+                <div id="draw-pile" class="card-pile" title="Click to draw a card">
+                    <div class="card card-back"></div>
+                    <span class="pile-label">DRAW</span>
+                </div>
+
+                <!-- Discard Pile -->
+                <div id="discard-pile" class="card-pile">
+                    <div class="card discard-top"></div>
+                    <span class="pile-label">DISCARD</span>
+                </div>
+
+                <!-- Current Color Indicator -->
+                <div id="current-color-indicator">
+                    <span class="color-label">Current Color:</span>
+                    <div class="color-display"></div>
+                </div>
+
+                <!-- Turn Indicator -->
+                <div id="turn-indicator">
+                    <span class="turn-text">Your Turn</span>
+                </div>
+            </div>
+
+            <!-- Right Opponent (AI Player 3) -->
+            <div id="player-right" class="player-area opponent" data-player="3">
+                <div class="player-info">
+                    <span class="player-name">Bot 3</span>
+                    <span class="card-count">7</span>
+                </div>
+                <div class="player-hand vertical"></div>
+            </div>
+
+            <!-- Bottom Player (Human - Player 0) -->
+            <div id="player-bottom" class="player-area human" data-player="0">
+                <div class="player-info">
+                    <span class="player-name">You</span>
+                    <span class="card-count">7</span>
+                </div>
+                <div class="player-hand horizontal"></div>
+            </div>
+        </div>
+
+        <!-- Spectator In-Game Banner -->
+        <div id="spectator-game-banner" class="spectator-game-banner hidden">
+            👁 Spectating - All hands hidden
+        </div>
+
+        <!-- UNO Alert Banner -->
+        <div id="uno-alert" class="hidden">
+            <span class="uno-text">UNO!</span>
+        </div>
+
+        <!-- Color Picker Modal -->
+        <div id="color-picker-modal" class="modal hidden">
+            <div class="modal-content color-picker-content">
+                <h2>Choose a Color</h2>
+                <div class="color-options">
+                    <button class="color-btn" data-color="red" style="background-color: #f44336;">Red</button>
+                    <button class="color-btn" data-color="blue" style="background-color: #2196f3;">Blue</button>
+                    <button class="color-btn" data-color="green" style="background-color: #4caf50;">Green</button>
+                    <button class="color-btn" data-color="yellow" style="background-color: #ffeb3b; color: #333;">Yellow</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Winner Modal -->
+        <div id="winner-modal" class="modal hidden">
+            <div class="modal-content winner-content">
+                <div class="confetti"></div>
+                <h2 class="winner-title">🎉 Winner! 🎉</h2>
+                <p class="winner-name"></p>
+                <button id="play-again-btn" class="play-again-btn">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Game Start Modal -->
+        <div id="start-modal" class="modal">
+            <div class="modal-content start-content">
+                <h1 class="start-title">UNO</h1>
+                <p class="start-subtitle">The Classic Card Game</p>
+                
+                <!-- Mode Selection -->
+                <div id="mode-selection">
+                    <button id="play-ai-btn" class="start-btn">Play vs AI</button>
+                    <button id="create-room-btn" class="start-btn multiplayer-btn">Create Room</button>
+                    <button id="join-room-btn" class="start-btn multiplayer-btn">Join Room</button>
+                </div>
+
+                <!-- Create Room View -->
+                <div id="create-room-view" class="lobby-view hidden">
+                    <form id="create-room-form">
+                        <div class="input-group">
+                            <label for="create-player-name">Your Name</label>
+                            <input type="text" id="create-player-name" maxlength="12" placeholder="Enter your name...">
+                        </div>
+                        <button type="submit" class="start-btn">Create Room</button>
+                    </form>
+                    <button class="back-btn">← Back</button>
+                </div>
+
+                <!-- Join Room View -->
+                <div id="join-room-view" class="lobby-view hidden">
+                    <form id="join-room-form">
+                        <div class="input-group">
+                            <label for="join-player-name">Your Name</label>
+                            <input type="text" id="join-player-name" maxlength="12" placeholder="Enter your name...">
+                        </div>
+                        <div class="input-group">
+                            <label for="room-code-input">Room Code</label>
+                            <input type="text" id="room-code-input" maxlength="4" placeholder="ABCD" class="room-code-input">
+                        </div>
+                        <div class="join-options">
+                            <button type="submit" class="start-btn">Join as Player</button>
+                            <button type="button" id="spectate-btn" class="start-btn spectate-btn">Spectate</button>
+                        </div>
+                    </form>
+                    <button class="back-btn">← Back</button>
+                </div>
+
+                <!-- Lobby View -->
+                <div id="lobby-view" class="lobby-view hidden">
+                    <div class="room-code-display">
+                        <span class="room-code-label">Room Code</span>
+                        <span id="lobby-room-code" class="room-code-value">----</span>
+                        <button id="copy-code-btn" class="copy-btn" title="Copy code">📋</button>
+                    </div>
+                    <div class="player-list">
+                        <h3>Players</h3>
+                        <ul id="lobby-player-list"></ul>
+                        <div class="spectator-info">
+                            <span>👁 <span id="spectator-count">0</span> spectator(s)</span>
+                        </div>
+                    </div>
+                    <div class="lobby-controls">
+                        <button id="ready-toggle" class="start-btn">Ready Up</button>
+                        <button id="lobby-start-btn" class="start-btn hidden" disabled>Start Game</button>
+                    </div>
+                    <button id="leave-lobby-btn" class="back-btn">Leave Room</button>
+                </div>
+
+                <!-- Spectator Waiting View -->
+                <div id="spectator-view" class="lobby-view hidden">
+                    <div class="spectator-banner">👁 Spectating</div>
+                    <p class="waiting-text">Waiting for game to start...</p>
+                    <button id="leave-spectator-btn" class="back-btn">Leave Room</button>
+                </div>
+
+                <!-- Connection Status -->
+                <div id="connection-status" class="hidden">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+
+                <div class="game-rules">
+                    <h3>Quick Rules:</h3>
+                    <ul>
+                        <li>Match cards by color, number, or symbol</li>
+                        <li>Wild cards can be played anytime</li>
+                        <li>Draw if you can't play</li>
+                        <li>First to empty their hand wins!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reconnecting Overlay -->
+        <div id="reconnecting-overlay" class="modal hidden">
+            <div class="modal-content reconnecting-content">
+                <div class="spinner"></div>
+                <h2>Reconnecting...</h2>
+                <p>Please wait while we reconnect you to the game.</p>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast-container"></div>
+
+        <!-- Dancing Cat -->
+        <div id="dancing-cat">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJieHozamN6NXF6NXF6NXF6NXF6NXF6NXF6NXF6NXF6NXF6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9iZCZjdD1n/GeimqsH0TLDt4tScGw/giphy.gif" alt="Dancing Cat">
+            <div class="cat-label">🎀 Meow! 🎀</div>
+        </div>
+    </div>
+
+    <!-- Audio Elements for Sound Effects -->
+    <audio id="background-music" loop preload="auto">
+        <source src="music/jazz-lounge-elevator-music-332339.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sound-play" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleQAAN5PsyZaGQxIbsOPgk3w1GTmo4s2cYD8eMv/yyZVoFR0i8v7krGIxDi7//tOXZBMbHfP/3aFaKgsk8vvUnFwaGBny/dqTViMIIuz63plYGRYW7/vYkVIgBh/o+dqVVhcTE+353JJRHwQc4/jZkVIWEBDs99mPTxwCGd/32o9QFA4O6vXXjU0aABbc9diNTBILCufy1YpKFwAT2PLWiksPCAjj79KHRxQAD9Tv04dGDAYF3+zPhUQSAAzP7NCDQwkDANrpzIJBDwAIyujLgD8GAN7l0n9DDgIIz+zXhEYKBAnh69eGRwwGC+Hq1oRFCgQJ3unUgkMIAgna5tGAQAYABNXi0H4/BAAEz97OfD0CAALJiGw=" type="audio/wav">
+    </audio>
+    <audio id="sound-draw" preload="auto">
+        <source src="data:audio/wav;base64,UklGRl4FAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YToFAACAgICAgICAgICAgICBgYKDhYiLj5OYnaKoraKTgG9cS0A6Nzk/Sl1wg5WorqqfjHZfRjMnIyUuPFRthpqorKaZh3JbQSwiHyMtPVVvh5yorKaWhm9VPCkhHyMtPlhxip6rrqiYhm1SPCgfHCAnN0xkfJKkrqyjk39oUDkqIB4hKTlNZX2UpK2soZB9ZU04Kh8dICk5TmZ/l6aurKGPfGNNNykfHCApOU9of5inrqyhj3tiTDYoHhsgKDhOZ3+Yp66soY96YUs1Jx4bHyc3TWV+laWurKKQfWNNNykfHCApOU5nf5enrqyhj3tiSzUoHhsgJzdNZX6Vpa6sopB9Yk02KR8cICk5Tmd/l6eurKGPemFKNCcfGyAnN01lfZWlrqyikH1iTTYpHxwgKTlOZ3+Xp66soY96YUo0Jx8bICc3TWV9laWurKKQfWJNNikeHCApOE5mf5anrqyhjnphSjQnHxsgJjdNZX2Upq6sopB8Ykw2KB4cHyk4Tmd/l6aurKGOeWBKNCceGyAmN0xlfZSlrqyikHxhTDUnHhwfKDhNZn6Wpq6soY55YEk0Jh4bICY2TGV9lKWurKGPfGFMNSceHB8oOE1mfpamrqyhj3lgSTMmHhsgJjZMZH2Upa6soY98YEs1Jx4cHyg4TWZ+laaurKGOeF9JMyYeGyAlNktkfJSlrqyhjnxgSzUnHhwfKDdMZn6Vpq6soY54X0kzJh0bICU2S2R8lKWurKGOfF9KNCceHB8nN0xlfZWmrqyhj3hfSDMmHRsgJTZLZHyUpa6soY58X0o0Jh4cHyc3S2V9laWurKGOeF5IMyUdGyAlNktjfJSlrqyhj3xeSjQmHhwfJjZLZX2Upq6soY54Xkc0JR0bHyU1SmN8k6WurKGOfF5JNCYeHB8mNktlfJWmrqyhjnhdRzMlHRoeJTVKY3uTpa2soY98XUk0Jh0cHiU1SmN7k6WtrKGOfF1INSUdGx4lNUpje5OlrayhkHxdSTQmHRweJTVKYnuTpa2soZB7XUg0JR0bHiU0SWJ7kqWtraGQe11IMyUdGx4lNElhe5Klra2hkHtcRzMkHBoeJDRJYXqSpK2toZB7XEc0JB0bHiQ0SWF6kqStraCRe1xHMyQcGh0kM0hgeZKkra2gkHpbRjMkHBodJDNIYHmRpK2toJB6W0YyIxwaHCMzR196kaSsraCQeltFMyMcGh0jM0dfeZGkrK2gkHpaRTIjHBocIzJHX3mQpKysoJB5WkUyIxsaHCMyRl55kKSsrKCQeVpEMiMbGhwiMkZeeJCjrKygkXlZRDEiGxocIjFGXneQo6ysoJF5WUMxIhsaHCIxRV53kKOsq6CReVlDMSIbGhwiMUVddpCjrKugkXhYQzEhGhobITFFXXaPo6yrn5F4WEIxIRsaGyExRFx2jqKrq5+Rd1hCMCEaGhshMURcdY6iq6ufkXdXQTAhGhoaIDFEW3WOoqurn5F3V0EwIBoaGiAwQ1t1jaGrqp+Sd1dBLyAaGRogMENadI2hq6qfkndWQC8gGRkZHzBCWnSNoauqn5J2Vj8vHxkZGR8vQll0jKGqqJ+SdlY/Lh8YGRkeLkJZc4yg" type="audio/wav">
+    </audio>
+    <audio id="sound-uno" preload="auto">
+        <source src="data:audio/wav;base64,UklGRqQHAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YYAHAACBhYqNlZ2lra2lnZWNhYF9eXmBhY2VnaWtra2lpZ2VjYWBfXl5gYWNlZ2lra2tpaWdlY2FgX15eYGFjZWdpa2traWlnZWNhYF9eXmBhY2VnaWtrayloZ2VjYWBfXl5gYWNlZ2lra2tpaGdlY2FgX15fYGFjZWdpa2traWhnZWNhYF9eXmBhY2VnaWtrayloZ2VjYWBfXl5gYWNlZ2lra2tpaGdlY2FgX15eYGFjZWdpa2traWhnZWNhYF9eXmBgY2VnaWlrayloZ2VjYF9eXl9gYWNlZ2lraytpZ2dlY2BfXl5fYGFjZWdpq6upZ2dlYmBfXl5fYGFjZWerrKmlnZWNhX15eXmBhY2VnaWrq6WdlY2FfXl5eYGFjZWdpaulnZWNhX15eXmBhY2VnaWpoZmRjIJ+e3p7fYGFiY2Rlaero5eMgnh0cHBydnqAhY2Vo6upn5WLgXl1c3N1eX2DjZersa+po5mPhX12c3NzdnmAhpCgsrutpZuPhXx2c3R1dn2EjJessrGpnpOHfnZ0dHR2e4GJmay0s62ln5KIfnZ0dHR2eoCJmKu1ta+qoJaOhHt2dXV3eoGKmay4trOsopmOgnp2dnV2eYGKmq27uLSwo5yShH15d3d4e4OMn7bAvbivppuPhXx4eHd4fYaQpbu/urOnm4+Efnp4eHh7gIqYrb+/uLGom5GGfnp4eHl7gYqZr8C/ureqnZOIfnt5eXp8gYuassPCu7erlpCE" type="audio/wav">
+    </audio>
+    <audio id="sound-win" preload="auto">
+        <source src="data:audio/wav;base64,UklGRqQHAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YYAHAABhcIGQn6y3wMfLzMrFvbOmln54bWZiYGFkaHB6hpOgrLfAx8vMysS9s6aWeHBqZWFgYWRod3+LmaWxu8TJy8nEvbKmmYx/c2toZWRlaW94gY6bqLS+xcrLycS8saSXi392bGlmZWVobXZ/jJmnsrzFycvIw7ywo5aMgHVtamZlZmltd4CMmKWxu8TIy8jDvLCjloyAdW1qZmVmam14gYyYpbG7xMjKyMO8sKOVi391bWllZWZqbXiAi5ilsLvExsrIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TIysjDvLCjloyAdW1qZmVmam14gIyYpbC7xMbJyMO8saOWjIB1bWpmZWZqbXiAjJilsLvExsnIw7ywo5aMgHVtamZlZmpteICMmKWwu8TGyMjDvLGjloyAdW5qZmVmam13gIyYpbC7xMbIyMO8saOWjIF1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGychDvLGjloyAdW1qZmVmam14gIyYpbG7xMbJyMO8saOWjIB1bWpmZWZqbXiAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZQ==" type="audio/wav">
+    </audio>
+
+    <!-- Load Socket.io and Game Script -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

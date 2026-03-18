@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <header>
+      <h1>Snake Game 🐍</h1>
+      <div id="score-display" aria-live="polite">
+        Score: <span id="score">0</span>
+        <span id="best-display">Best: <span id="best-score">0</span></span>
+      </div>
+    </header>
+    <main>
+      <div id="canvas-container">
+        <canvas id="game-canvas" width="400" height="400" role="img" aria-label="Snake game board"></canvas>
+        <div id="overlay">
+          <p id="overlay-text">Press Start to Play</p>
+          <button id="start-btn">Start</button>
+        </div>
+      </div>
+      <div id="controls">
+        <p class="hint">Arrow keys / WASD to move · P to pause</p>
+        <div id="touch-controls">
+          <button class="touch-btn" data-dir="up" aria-label="Move up">&#9650;</button>
+          <div class="touch-row">
+            <button class="touch-btn" data-dir="left" aria-label="Move left">&#9664;</button>
+            <button class="touch-btn" data-dir="down" aria-label="Move down">&#9660;</button>
+            <button class="touch-btn" data-dir="right" aria-label="Move right">&#9654;</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="sr-announce" class="sr-only" aria-live="assertive"></div>
+    <footer>
+      <p>By Chloe McCants &amp; Anna-Marie Figueroa</p>
+    </footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>

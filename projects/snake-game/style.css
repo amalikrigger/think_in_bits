@@ -1,0 +1,240 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a2e;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+#game-wrapper {
+  text-align: center;
+  padding: 1.5rem;
+  position: relative;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto 1rem;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4ade80, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#score-display {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4ade80;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+#best-display {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #888;
+}
+
+/* Canvas container — positions overlay relative to canvas */
+#canvas-container {
+  position: relative;
+  display: inline-block;
+  max-width: 400px;
+  width: 100%;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  background: #0d3b0d;
+  border: 2px solid #4ade80;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+/* Overlay — scoped to canvas-container */
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(26, 26, 46, 0.85);
+  border-radius: 8px;
+  z-index: 10;
+}
+
+#overlay.hidden { display: none; }
+
+#overlay-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#start-btn {
+  padding: 0.75rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #4ade80, #22d3ee);
+  color: #0a0a0a;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 222, 128, 0.4);
+}
+
+#start-btn:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 3px;
+}
+
+.hint {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+/* Touch controls — hidden by default, visible only on touch devices */
+#touch-controls {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 0.25rem;
+}
+
+.touch-btn {
+  width: 56px;
+  height: 56px;
+  font-size: 1.25rem;
+  border: 1px solid #4ade80;
+  border-radius: 12px;
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+  cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:active {
+  background: rgba(74, 222, 128, 0.3);
+}
+
+.touch-btn:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.touch-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+footer {
+  margin-top: 1.5rem;
+  color: #666;
+  font-size: 0.8rem;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Score pop animation */
+@keyframes score-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); color: #fff; }
+  100% { transform: scale(1); }
+}
+
+.score-pop {
+  animation: score-pop 0.3s ease-out;
+}
+
+/* Canvas shake animation */
+@keyframes canvas-shake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-6px); }
+  20% { transform: translateX(6px); }
+  30% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+}
+
+.canvas-shake {
+  animation: canvas-shake 0.4s ease-out;
+}
+
+/* Show touch controls only on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  #touch-controls { display: flex; }
+  .hint { display: none; }
+}
+
+/* Small screens */
+@media (max-width: 440px) {
+  #canvas-container { max-width: 320px; }
+  header { max-width: 320px; }
+}
+
+@media (max-width: 360px) {
+  #game-wrapper { padding: 1rem; }
+  header h1 { font-size: 1.2rem; }
+  #score-display { font-size: 0.95rem; }
+  footer { font-size: 0.7rem; }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  header { margin-bottom: 0.5rem; }
+  footer { margin-top: 0.75rem; }
+  #game-wrapper { padding: 0.75rem; }
+  .hint { margin-top: 0.4rem; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .score-pop,
+  .canvas-shake {
+    animation: none;
+  }
+}

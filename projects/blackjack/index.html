@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blackjack Casino</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Blackjack</h1>
+            <div class="mp-controls">
+                <button id="mp-start-btn">Start Multiplayer</button>
+                <span id="mp-status">MP: disconnected</span>
+            </div>
+            <div id="stats-summary">
+                <span>Bankroll: $<span id="bankroll-display">1000</span></span>
+                <span>Current Bet: $<span id="total-bet-display">0</span></span>
+            </div>
+            <div class="header-controls">
+                <button id="sound-btn" class="icon-btn" title="Toggle Sound" aria-label="Toggle Sound">🔊</button>
+                <button id="music-btn" class="icon-btn" title="Toggle Music" aria-label="Toggle Music">🎵</button>
+                <button id="fullscreen-btn" class="icon-btn" title="Full Screen" aria-label="Toggle Full Screen">⛶</button>
+                <button id="reset-btn" class="icon-btn" title="Reset Game" aria-label="Reset Game">🔄</button>
+                <button id="settings-btn" class="icon-btn" title="Settings" aria-label="Open Settings">⚙️</button>
+                <button id="help-btn" class="icon-btn" title="Keyboard Shortcuts" aria-label="Keyboard Shortcuts">?</button>
+            </div>
+        </header>
+
+        <main id="table">
+            <div id="deck-visual"></div>
+            <div id="dealer-area" role="region" aria-label="Dealer's hand">
+                <div class="hand-label">Dealer <span id="dealer-score" class="score-badge" aria-live="polite"></span></div>
+                <div id="dealer-hand" class="card-area"></div>
+            </div>
+
+            <div id="message-area">
+                <div id="game-message" aria-live="polite" aria-atomic="true">Place your bet to start!</div>
+            </div>
+
+            <div id="player-area" role="region" aria-label="Player's hand">
+                <!-- Hands will be dynamically added here to support splitting -->
+                <div id="player-hands-container" aria-live="polite"></div>
+                <!-- Multiplayer seat views (clockwise) -->
+                <div id="multiplayer-seats">
+                    <div id="seat-0" class="mp-seat">
+                        <div class="seat-label">Seat 1</div>
+                        <div class="seat-chip-holder">$<span class="seat-bankroll">1000</span></div>
+                        <div class="seat-bet-info">Bet: $<span class="seat-bet-val">0</span></div>
+                        <div class="card-area"></div>
+                    </div>
+                    <div id="seat-1" class="mp-seat">
+                        <div class="seat-label">Seat 2</div>
+                        <div class="seat-chip-holder">$<span class="seat-bankroll">0</span></div>
+                        <div class="seat-bet-info">Bet: $<span class="seat-bet-val">0</span></div>
+                        <div class="card-area"></div>
+                    </div>
+                    <div id="seat-2" class="mp-seat">
+                        <div class="seat-label">Seat 3</div>
+                        <div class="seat-chip-holder">$<span class="seat-bankroll">0</span></div>
+                        <div class="seat-bet-info">Bet: $<span class="seat-bet-val">0</span></div>
+                        <div class="card-area"></div>
+                    </div>
+                    <div id="seat-3" class="mp-seat">
+                        <div class="seat-label">Seat 4</div>
+                        <div class="seat-chip-holder">$<span class="seat-bankroll">0</span></div>
+                        <div class="seat-bet-info">Bet: $<span class="seat-bet-val">0</span></div>
+                        <div class="card-area"></div>
+                    </div>
+                    <div id="mp-dealer" class="mp-dealer">Dealer<div class="card-area"></div></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div id="betting-controls" class="controls-row" role="region" aria-label="Betting controls">
+                <div class="chips">
+                    <button class="chip" data-value="1" aria-label="Bet 1 dollar">$1</button>
+                    <button class="chip" data-value="5" aria-label="Bet 5 dollars">$5</button>
+                    <button class="chip" data-value="25" aria-label="Bet 25 dollars">$25</button>
+                    <button class="chip" data-value="100" aria-label="Bet 100 dollars">$100</button>
+                </div>
+                <div class="bet-actions">
+                    <button id="clear-bet-btn">Clear</button>
+                    <button id="deal-btn" disabled>Deal</button>
+                </div>
+            </div>
+
+            <div id="action-controls" class="controls-row hidden" role="region" aria-label="Game actions">
+                <button id="hit-btn">Hit</button>
+                <button id="stand-btn">Stand</button>
+                <button id="double-btn">Double</button>
+                <button id="split-btn">Split</button>
+                <button id="surrender-btn">Surrender</button>
+            </div>
+        </footer>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Game Settings</h2>
+                <div class="setting-group">
+                    <label>Decks in Shoe:</label>
+                    <input type="number" id="deck-count" min="1" max="8" value="6">
+                </div>
+                <div class="setting-group">
+                    <label>Background Music:</label>
+                    <select id="music-select"></select>
+                </div>
+                <div class="setting-group">
+                    <label>Dealer Stands on Soft 17 (S17):</label>
+                    <input type="checkbox" id="s17-toggle" checked>
+                </div>
+                <div class="setting-group">
+                    <label>Blackjack Payout:</label>
+                    <select id="bj-payout">
+                        <option value="1.5">3:2</option>
+                        <option value="1.2">6:5</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>Surrender Allowed:</label>
+                    <input type="checkbox" id="surrender-toggle" checked>
+                </div>
+                <button id="close-settings">Close & Save</button>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts Modal -->
+        <div id="help-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Keyboard Shortcuts</h2>
+                <div class="shortcut-list">
+                    <div class="shortcut-row"><kbd>H</kbd><span>Hit</span></div>
+                    <div class="shortcut-row"><kbd>S</kbd><span>Stand</span></div>
+                    <div class="shortcut-row"><kbd>D</kbd><span>Double Down</span></div>
+                    <div class="shortcut-row"><kbd>P</kbd><span>Split</span></div>
+                    <div class="shortcut-row"><kbd>Q</kbd><span>Surrender</span></div>
+                    <div class="shortcut-row"><kbd>R</kbd><span>Repeat Last Bet</span></div>
+                    <div class="shortcut-row"><kbd>Enter</kbd><span>Deal</span></div>
+                    <div class="shortcut-row"><kbd>Esc</kbd><span>Close Settings</span></div>
+                </div>
+                <button id="close-help">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/stats.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/sounds.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/multiplayer.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
