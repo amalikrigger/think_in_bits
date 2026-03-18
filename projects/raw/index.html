@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raw 🍣</title>
+  <meta name="description" content="Swipe through sushi to discover your perfect match and sushi personality type." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+  <script src="app.js?v=3" defer></script>
+</head>
+<body class="app">
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="sakura-field" id="sakura-field-splash" aria-hidden="true"></div>
+    <div class="splash-content">
+      <h1 class="splash-brand">Raw 🍣</h1>
+      <p class="splash-sub">Swipe to find your perfect sushi</p>
+      <button id="splash-begin-btn" class="btn-splash-begin">Begin ✨</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- AMBIENT SAKURA PETALS -->
+  <div class="sakura-bg" id="sakura-bg" aria-hidden="true"></div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <h1 class="brand">Raw 🍣</h1>
+    <div class="header-controls">
+      <button id="sound-toggle" class="btn-header-ctrl" aria-label="Toggle sound" aria-pressed="true">🔊</button>
+      <button id="theme-toggle" class="btn-header-ctrl" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+    </div>
+  </header>
+
+  <!-- SWIPE SCREEN -->
+  <main id="swipe-screen" class="swipe-screen">
+
+    <!-- Progress -->
+    <div class="progress-bar" role="status" aria-live="polite">
+      <span id="progress-text">Swipe 0 / 20</span>
+      <div class="progress-track">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Undo -->
+    <div class="undo-row">
+      <button id="undo-btn" class="btn-undo" aria-label="Undo last swipe" disabled>
+        ↩ Undo (<span id="undo-count">3</span>)
+      </button>
+    </div>
+
+    <!-- Streak Badge -->
+    <div class="streak-row" id="streak-row" style="display:none" aria-live="polite">
+      <span class="streak-badge" id="streak-badge">🔥 <span id="streak-count">0</span>× Streak!</span>
+    </div>
+
+    <!-- Card Stack -->
+    <div id="card-stack" class="card-stack" role="region" aria-label="Sushi card">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <button id="nope-btn" class="btn-action btn-nope" aria-label="Nope - I would never eat this">
+        ❌ Nope
+      </button>
+      <button id="eat-btn" class="btn-action btn-eat" aria-label="Eat - I would definitely eat this">
+        ❤️ Eat
+      </button>
+    </div>
+
+  </main>
+
+  <!-- RESULTS SCREEN -->
+  <section id="results-screen" class="results-screen" style="display:none" aria-live="polite">
+    <!-- Friend compatibility banner (shown when a deep-link hash is present) -->
+    <div id="friend-banner" class="friend-banner" style="display:none">
+      <span id="friend-banner-text"></span>
+    </div>
+    <h2 class="results-title">Your Perfect Sushi Is…</h2>
+    <div id="result-type-card" class="result-type-card">
+      <span id="result-type-icon" class="result-type-icon"></span>
+      <div class="result-type-body">
+        <div id="result-type-title" class="result-type-title"></div>
+        <div id="result-type-desc" class="result-type-desc"></div>
+      </div>
+    </div>
+    <div class="result-card">
+      <img id="result-img" class="result-img" src="" alt="Your perfect sushi" />
+      <h3 id="result-name" class="result-name"></h3>
+      <div id="result-group" class="result-group-badge"></div>
+    </div>
+    <p id="result-personality" class="result-personality"></p>
+    <div class="result-breakdown">
+      <h4>Your top tags:</h4>
+      <ul id="result-tags" class="result-tags-list"></ul>
+      <h4>Likes by group:</h4>
+      <div id="result-groups-breakdown" class="groups-breakdown"></div>
+    </div>
+    <!-- Achievement Badges -->
+    <div class="badges-section" id="badges-section" style="display:none">
+      <h4 class="badges-title">🏆 Achievements</h4>
+      <div id="badges-grid" class="badges-grid"></div>
+    </div>
+
+    <!-- Speed Stat -->
+    <div class="speed-stat" id="speed-stat" style="display:none">
+      <span id="speed-stat-text"></span>
+    </div>
+
+    <div class="results-actions">
+      <button id="play-again-btn" class="btn-play-again" aria-label="Play again">🔄 Play Again</button>
+      <button id="share-btn" class="btn-share" aria-label="Share your result">📸 Share</button>
+    </div>
+  </section>
+
+  <!-- CARD DETAIL MODAL -->
+  <div id="card-modal" class="card-modal" role="dialog" aria-modal="true" aria-label="Sushi details" style="display:none">
+    <div class="card-modal-sheet">
+      <button id="card-modal-close" class="card-modal-close" aria-label="Close">✕</button>
+      <div id="card-modal-img-wrap" class="card-modal-img-wrap">
+        <img id="card-modal-img" class="card-modal-img" src="" alt="" />
+      </div>
+      <div class="card-modal-content">
+        <div class="card-modal-header">
+          <h3 id="card-modal-name" class="card-modal-name"></h3>
+          <span id="card-modal-group" class="card-modal-group-badge"></span>
+        </div>
+        <div id="card-modal-tags" class="card-modal-tags"></div>
+        <p id="card-modal-desc" class="card-modal-desc"></p>
+      </div>
+    </div>
+    <div class="card-modal-backdrop" id="card-modal-backdrop"></div>
+  </div>
+
+  <!-- BG PULSE -->
+  <div id="bg-pulse" class="bg-pulse" aria-hidden="true"></div>
+
+  <!-- CONFETTI -->
+  <canvas id="confetti-canvas" class="confetti-canvas" style="display:none" aria-hidden="true"></canvas>
+
+  <!-- ERROR SCREEN -->
+  <div id="error-screen" style="display:none" class="error-screen" role="alert">
+    <h2>😅 Something went wrong</h2>
+    <p id="error-message"></p>
+    <p class="error-hint">Make sure you're running via a local server: <code>python3 -m http.server 8080</code></p>
+  </div>
+
+</body>
+</html>

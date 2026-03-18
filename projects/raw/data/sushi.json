@@ -1,0 +1,519 @@
+[
+  {
+    "id": "ikura-gold-nigiri",
+    "name": "Ikura Gold Nigiri",
+    "image": "assets/sushi/1.jpg",
+    "group": "Nigiri",
+    "tags": ["rich", "bold", "umami", "adventurous"],
+    "descriptionSnippets": [
+      "Finally, fish eggs AND gold leaf on the same bite — because apparently just one thing to flex wasn't enough",
+      "Your bank account cried. Your mouth did not"
+    ]
+  },
+  {
+    "id": "torched-salmon-parade",
+    "name": "Torched Salmon Parade",
+    "image": "assets/sushi/2.jpg",
+    "group": "Maki",
+    "tags": ["rich", "smoky", "fresh", "bold"],
+    "descriptionSnippets": [
+      "Twenty rolls standing in a line like they're waiting to get into a club and they all got in",
+      "The chef spent 45 minutes arranging this. The table destroyed it in 4 minutes"
+    ]
+  },
+  {
+    "id": "kawaii-panda-bento",
+    "name": "Kawaii Panda Bento",
+    "image": "assets/sushi/3.jpg",
+    "group": "Fusion",
+    "tags": ["adventurous", "light", "classic", "fresh"],
+    "descriptionSnippets": [
+      "The chef spent three hours making these adorable little panda faces and you're about to demolish them without hesitation",
+      "Therapy is cheaper but this hits different"
+    ]
+  },
+  {
+    "id": "lone-salmon-nigiri",
+    "name": "Lone Salmon Nigiri",
+    "image": "assets/sushi/4.jpg",
+    "group": "Nigiri",
+    "tags": ["fresh", "delicate", "classic", "umami"],
+    "descriptionSnippets": [
+      "One piece. One fish. One rice. The photographer used a ring light and mood music for this",
+      "It's literally just salmon on rice but somehow it has main character energy"
+    ]
+  },
+  {
+    "id": "black-moon-tamago-roll",
+    "name": "Black Moon Tamago Roll",
+    "image": "assets/sushi/5.jpg",
+    "group": "Maki",
+    "tags": ["rich", "umami", "bold", "sweet"],
+    "descriptionSnippets": [
+      "Looks like something you'd find in a villain's lair but somehow it's just egg and sesame",
+      "The goth kid at the sushi party. Still delicious. Especially at 2am"
+    ]
+  },
+  {
+    "id": "glitter-omakase-platter",
+    "name": "Glitter Omakase Platter",
+    "image": "assets/sushi/6.jpg",
+    "group": "Fusion",
+    "tags": ["adventurous", "fresh", "bold", "sweet"],
+    "descriptionSnippets": [
+      "Someone looked at perfectly good sushi and thought 'what if I made it MORE' and honestly we respect the vision",
+      "Will end up all over your shirt. Worth it"
+    ]
+  },
+  {
+    "id": "shrimp-tempura-crunch",
+    "name": "Shrimp Tempura Crunch Roll",
+    "image": "assets/sushi/7.jpg",
+    "group": "Tempura Rolls",
+    "tags": ["crunchy", "tempura", "rich", "classic"],
+    "descriptionSnippets": [
+      "Shrimp got deep-fried, wrapped in rice, and sent to your mouth. The shrimp had no complaints about any of this",
+      "The crunch is so loud your table neighbors will give you a look. Eat it anyway"
+    ]
+  },
+  {
+    "id": "sushi-wedding-cake",
+    "name": "The Sushi Wedding Cake",
+    "image": "assets/sushi/8.jpg",
+    "group": "Fusion",
+    "tags": ["adventurous", "rich", "fresh", "bold"],
+    "descriptionSnippets": [
+      "Someone built a three-tier cake out of sushi and nobody stopped them. This is the world we live in and it rules",
+      "Do you cut it? Do you disassemble it? Do you just cry? Yes. All three"
+    ]
+  },
+  {
+    "id": "sakura-salmon-sashimi",
+    "name": "Sakura Salmon Sashimi",
+    "image": "assets/sushi/9.jpg",
+    "group": "Sashimi",
+    "tags": ["fresh", "delicate", "light", "rich"],
+    "descriptionSnippets": [
+      "Salmon fanned out with a flower on top like it's going to prom and it absolutely deserves the corsage",
+      "You will spend 40 seconds photographing it and 8 seconds eating it. No regrets"
+    ]
+  },
+  {
+    "id": "salmon-avocado-press-cake",
+    "name": "Salmon Avocado Press Cake",
+    "image": "assets/sushi/10.jpg",
+    "group": "Fusion",
+    "tags": ["fresh", "creamy", "rich", "adventurous"],
+    "descriptionSnippets": [
+      "Someone stacked sushi into a cylinder and called it a torte. The audacity. The deliciousness. The nerve",
+      "You will absolutely post this before eating it and that is the correct decision"
+    ]
+  },
+  {
+    "id": "super-sized-gimbap",
+    "name": "Super-Sized Gimbap",
+    "image": "assets/sushi/11.jpg",
+    "group": "Maki",
+    "tags": ["bold", "fresh", "umami", "classic"],
+    "descriptionSnippets": [
+      "Regular gimbap got tired of being underestimated and went absolutely feral",
+      "Each slice is the size of a hockey puck. This is not a problem. This is a blessing"
+    ]
+  },
+  {
+    "id": "critter-character-sushi",
+    "name": "Critter Character Sushi",
+    "image": "assets/sushi/12.jpg",
+    "group": "Fusion",
+    "tags": ["adventurous", "sweet", "light", "fresh"],
+    "descriptionSnippets": [
+      "The chef studied art for six years to make something shaped like a cartoon and we are deeply grateful",
+      "It has eyes. It's looking at you. Eat it before it judges you further"
+    ]
+  },
+  {
+    "id": "rainbow-salmon-tuna-lineup",
+    "name": "Rainbow Salmon & Tuna Lineup",
+    "image": "assets/sushi/13.jpg",
+    "group": "Maki",
+    "tags": ["fresh", "bold", "adventurous", "umami"],
+    "descriptionSnippets": [
+      "An entire line-up of fish suspects and you have to eat every single one of them",
+      "Colour-coded by fish type because the chef is organised and low-key judging your life choices"
+    ]
+  },
+  {
+    "id": "bluefin-tuna-reveal",
+    "name": "Bluefin Tuna Reveal",
+    "image": "assets/sushi/14.jpg",
+    "group": "Sashimi",
+    "tags": ["bold", "umami", "classic", "rich"],
+    "descriptionSnippets": [
+      "A chef holding an entire tuna like a baby and honestly the tuna looks more relaxed than the chef",
+      "This fish is like 800 dollars. Please don't take a bite and say 'eh it's fine'"
+    ]
+  },
+  {
+    "id": "sesame-nori-onigiri",
+    "name": "Sesame Nori Onigiri",
+    "image": "assets/sushi/15.jpg",
+    "group": "Classic",
+    "tags": ["classic", "light", "umami", "fresh"],
+    "descriptionSnippets": [
+      "Rice in a triangle. Sounds boring. Is never boring. Scientists are baffled",
+      "Technically not a roll, technically not nigiri, technically perfect and you won't hear otherwise"
+    ]
+  },
+  {
+    "id": "teriyaki-sesame-roll",
+    "name": "Teriyaki Sesame Roll",
+    "image": "assets/sushi/16.jpg",
+    "group": "Classic",
+    "tags": ["smoky", "rich", "umami", "sweet"],
+    "descriptionSnippets": [
+      "Rolls dunked in teriyaki and rolled in sesame like they had an appointment with greatness and showed up early",
+      "You will get sauce on your phone screen. You will not care"
+    ]
+  },
+  {
+    "id": "volcano-spicy-tuna",
+    "name": "Volcano Spicy Tuna Roll",
+    "image": "assets/sushi/17.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "bold", "rich", "crunchy"],
+    "descriptionSnippets": [
+      "Geologists have confirmed this roll is technically a natural disaster site and FEMA is not responding",
+      "Your nose will run. Your eyes will water. You will order another immediately"
+    ]
+  },
+  {
+    "id": "pressed-salmon-oshi",
+    "name": "Pressed Salmon Oshi",
+    "image": "assets/sushi/18.jpg",
+    "group": "Classic",
+    "tags": ["fresh", "rich", "classic", "delicate"],
+    "descriptionSnippets": [
+      "Sushi pressed into a perfect rectangle because someone at this restaurant has an engineering degree and isn't afraid to use it",
+      "Every edge is a perfect right angle. Your life will never be this organised"
+    ]
+  },
+  {
+    "id": "pomegranate-tuna-roll",
+    "name": "Pomegranate Tuna Roll",
+    "image": "assets/sushi/19.jpg",
+    "group": "Fusion",
+    "tags": ["tangy", "sweet", "bold", "adventurous"],
+    "descriptionSnippets": [
+      "Someone put pomegranate on a tuna roll and everyone at the table went quiet for a second before agreeing it was genius",
+      "You'll spend 10 minutes explaining it to your friends and worth every second"
+    ]
+  },
+  {
+    "id": "shrimp-tempura-parade",
+    "name": "Shrimp Tempura Parade",
+    "image": "assets/sushi/20.jpg",
+    "group": "Tempura Rolls",
+    "tags": ["crunchy", "tempura", "rich", "classic"],
+    "descriptionSnippets": [
+      "Look at them all lined up like they're waiting for inspection. They passed. They all passed",
+      "Each roll is crispier than your last dating profile. And infinitely more likeable"
+    ]
+  },
+  {
+    "id": "baked-spicy-salmon-roll",
+    "name": "Baked Spicy Salmon Roll",
+    "image": "assets/sushi/21.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "rich", "crunchy", "creamy"],
+    "descriptionSnippets": [
+      "Sushi that decided the oven was a reasonable way to enter any situation",
+      "The spicy mayo zigzag was drawn with the confidence of someone who never second-guesses themselves"
+    ]
+  },
+  {
+    "id": "honey-sesame-salmon-roll",
+    "name": "Honey Sesame Salmon Roll",
+    "image": "assets/sushi/22.jpg",
+    "group": "Maki",
+    "tags": ["sweet", "rich", "umami", "smoky"],
+    "descriptionSnippets": [
+      "Glazed in honey like it's trying to get a 5-star review on Yelp and it absolutely deserves it",
+      "You'll pick up the last piece before anyone else can and then pretend you didn't plan to"
+    ]
+  },
+  {
+    "id": "black-sesame-avocado-roll",
+    "name": "Black Sesame Avocado Roll",
+    "image": "assets/sushi/23.jpg",
+    "group": "Vegetarian",
+    "tags": ["creamy", "fresh", "vegetarian", "light"],
+    "descriptionSnippets": [
+      "The health-conscious roll that showed up to a party full of deep-fried things and still had a great time",
+      "Your nutritionist would approve. Your nutritionist has no idea how many you ate"
+    ]
+  },
+  {
+    "id": "unagi-dark-tide-roll",
+    "name": "Unagi Dark Tide Roll",
+    "image": "assets/sushi/24.jpg",
+    "group": "Maki",
+    "tags": ["rich", "smoky", "sweet", "umami"],
+    "descriptionSnippets": [
+      "This roll has the energy of someone who listens to deep house music and owns a lot of black turtlenecks",
+      "Mysterious. Sticky. You don't know what's going on but you're fully invested"
+    ]
+  },
+  {
+    "id": "love-heart-tuna-roll",
+    "name": "Love Heart Tuna Roll",
+    "image": "assets/sushi/25.jpg",
+    "group": "Fusion",
+    "tags": ["fresh", "bold", "adventurous", "umami"],
+    "descriptionSnippets": [
+      "Someone sliced a roll and there was a perfect heart inside. This was not an accident. This was a threat",
+      "Extremely romantic. Also fish. That combination should not work. It does"
+    ]
+  },
+  {
+    "id": "spicy-crab-crunch-roll",
+    "name": "Spicy Crab Crunch Roll",
+    "image": "assets/sushi/26.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "crunchy", "creamy", "bold"],
+    "descriptionSnippets": [
+      "Crab showed up spicy and nobody told it to calm down and that was the right call",
+      "The crunch will betray your location. Everyone at the table will look at you. Crunch again defiantly"
+    ]
+  },
+  {
+    "id": "classic-shrimp-tempura",
+    "name": "Classic Shrimp Tempura Roll",
+    "image": "assets/sushi/27.jpg",
+    "group": "Tempura Rolls",
+    "tags": ["crunchy", "tempura", "classic", "rich"],
+    "descriptionSnippets": [
+      "The reliable friend of the sushi menu. Always there. Never cancels. Absolutely battered",
+      "You've had this a hundred times and you'll have it a hundred more. This is your destiny"
+    ]
+  },
+  {
+    "id": "salmon-rainbow-maki",
+    "name": "Salmon Rainbow Maki",
+    "image": "assets/sushi/28.jpg",
+    "group": "Maki",
+    "tags": ["fresh", "bold", "umami", "adventurous"],
+    "descriptionSnippets": [
+      "Thick as a hockey puck, colorful as a fever dream, delicious as a fever dream about sushi",
+      "You will underestimate how filling this is and then immediately regret underestimating it"
+    ]
+  },
+  {
+    "id": "spicy-tuna-volcano-dump",
+    "name": "Spicy Tuna Overdrive",
+    "image": "assets/sushi/29.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "bold", "rich", "umami"],
+    "descriptionSnippets": [
+      "Someone asked 'what if the outside was also the inside?' and the answer was chaos and it was perfect",
+      "There is no roll visible under all this topping. That is a feature, not a bug"
+    ]
+  },
+  {
+    "id": "salmon-nigiri-set",
+    "name": "Salmon Nigiri Set",
+    "image": "assets/sushi/30.jpg",
+    "group": "Nigiri",
+    "tags": ["fresh", "classic", "umami", "delicate"],
+    "descriptionSnippets": [
+      "Salmon just lying there looking gorgeous on rice, not trying to be anything else, fully winning at life",
+      "The most unbothered item on the entire menu and honestly good for it"
+    ]
+  },
+  {
+    "id": "dragon-shrimp-roll",
+    "name": "Dragon Shrimp Roll",
+    "image": "assets/sushi/31.jpg",
+    "group": "Fusion",
+    "tags": ["creamy", "rich", "adventurous", "crunchy"],
+    "descriptionSnippets": [
+      "A roll dressed up as a dragon because regular rolls are boring and this chef has something to prove",
+      "Zero dragons were harmed in the making of this roll. The avocado had a rough day though"
+    ]
+  },
+  {
+    "id": "spicy-salmon-crunch",
+    "name": "Spicy Salmon Crunch Roll",
+    "image": "assets/sushi/32.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "crunchy", "rich", "bold"],
+    "descriptionSnippets": [
+      "Spicy salmon in a crunchy roll topped with tiny eggs — it's like an action movie but edible",
+      "Your mouth will be slightly on fire. You will tip well for this experience"
+    ]
+  },
+  {
+    "id": "tuna-avocado-maki",
+    "name": "Tuna Avocado Maki",
+    "image": "assets/sushi/33.jpg",
+    "group": "Maki",
+    "tags": ["fresh", "bold", "umami", "creamy"],
+    "descriptionSnippets": [
+      "Tuna and avocado in a roll — the sushi equivalent of putting ketchup and fries together — obviously correct",
+      "No drama. No gimmicks. Just two things that are great and decided to hang out"
+    ]
+  },
+  {
+    "id": "spicy-tuna-masago-blast",
+    "name": "Spicy Tuna Masago Blast",
+    "image": "assets/sushi/34.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "bold", "rich", "adventurous"],
+    "descriptionSnippets": [
+      "The roll is in there somewhere beneath this avalanche of masago. Trust the process",
+      "You'll get fish eggs in your teeth and smile the entire time"
+    ]
+  },
+  {
+    "id": "salmon-takeout-oshi",
+    "name": "Salmon Takeout Oshi",
+    "image": "assets/sushi/35.jpg",
+    "group": "Classic",
+    "tags": ["fresh", "rich", "classic", "light"],
+    "descriptionSnippets": [
+      "Salmon oshi served in a takeout box because fine dining should be accessible from your car if necessary",
+      "Box sushi that gives off the vibe of someone who wears a suit but also owns a skateboard"
+    ]
+  },
+  {
+    "id": "yellowtail-scallion-nigiri",
+    "name": "Yellowtail Scallion Nigiri",
+    "image": "assets/sushi/36.jpg",
+    "group": "Nigiri",
+    "tags": ["delicate", "fresh", "umami", "light"],
+    "descriptionSnippets": [
+      "Yellowtail so fresh it probably had plans today before this happened",
+      "One scallion on top minding its own business. Respect that scallion"
+    ]
+  },
+  {
+    "id": "philly-cream-roll",
+    "name": "Philly Cream Salmon Roll",
+    "image": "assets/sushi/37.jpg",
+    "group": "Classic",
+    "tags": ["creamy", "rich", "smoky", "classic"],
+    "descriptionSnippets": [
+      "Cream cheese in sushi — a decision that scandalized Japan and delighted everyone else",
+      "Your sushi purist friend will roll their eyes. They will also eat three of them"
+    ]
+  },
+  {
+    "id": "shrimp-boston-roll",
+    "name": "Shrimp Boston Roll",
+    "image": "assets/sushi/38.jpg",
+    "group": "Classic",
+    "tags": ["fresh", "light", "classic", "sweet"],
+    "descriptionSnippets": [
+      "Shrimp was poached and that sounds violent but it was actually the best thing that ever happened to it",
+      "Named after Boston despite Boston having very little to do with it. Classic Boston move"
+    ]
+  },
+  {
+    "id": "salmon-alaska-roll",
+    "name": "Salmon Alaska Roll",
+    "image": "assets/sushi/39.jpg",
+    "group": "Classic",
+    "tags": ["fresh", "rich", "classic", "umami"],
+    "descriptionSnippets": [
+      "Salmon flew all the way from Alaska to be in this roll. The least you can do is eat it with enthusiasm",
+      "No tricks. No gimmicks. Just fish doing what fish does best: being delicious"
+    ]
+  },
+  {
+    "id": "spicy-tuna-tobiko-roll",
+    "name": "Spicy Tuna Tobiko Roll",
+    "image": "assets/sushi/40.jpg",
+    "group": "Spicy",
+    "tags": ["spicy", "bold", "umami", "adventurous"],
+    "descriptionSnippets": [
+      "The tobiko pops in your mouth like a tiny ocean firework and nothing has ever been more satisfying",
+      "Sounds like bubble wrap when you eat it. This is a feature not a flaw"
+    ]
+  },
+  {
+    "id": "unagi-teriyaki-maki",
+    "name": "Unagi Teriyaki Maki",
+    "image": "assets/sushi/41.jpg",
+    "group": "Maki",
+    "tags": ["rich", "sweet", "smoky", "umami"],
+    "descriptionSnippets": [
+      "Eel glazed in sauce that could double as candy syrup. The eel has no complaints",
+      "Sweet enough to serve at dessert, bold enough to make your doctor nervous. Perfect"
+    ]
+  },
+  {
+    "id": "las-vegas-baked-roll",
+    "name": "Las Vegas Baked Roll",
+    "image": "assets/sushi/42.jpg",
+    "group": "Fusion",
+    "tags": ["rich", "creamy", "bold", "smoky"],
+    "descriptionSnippets": [
+      "This roll made decisions that a regular roll would never make and we are living better lives because of it",
+      "Three sauces, two layers, zero restraint. Las Vegas would be proud"
+    ]
+  },
+  {
+    "id": "avocado-dragon-roll",
+    "name": "Avocado Dragon Roll",
+    "image": "assets/sushi/43.jpg",
+    "group": "Fusion",
+    "tags": ["creamy", "rich", "adventurous", "fresh"],
+    "descriptionSnippets": [
+      "An avocado gave its life to become scales on a sushi dragon and honestly that's a legendary way to go",
+      "The chef spent 20 minutes on the presentation. You'll spend 20 seconds on the destruction"
+    ]
+  },
+  {
+    "id": "tiger-spicy-tuna-roll",
+    "name": "Tiger Spicy Tuna Roll",
+    "image": "assets/sushi/44.jpg",
+    "group": "Fusion",
+    "tags": ["spicy", "bold", "adventurous", "crunchy"],
+    "descriptionSnippets": [
+      "Striped in sauce like an actual tiger, which is the most unhinged and excellent way to design a roll",
+      "Spicy, patterned, feral. Like a tiger but you can eat it and it's encouraged"
+    ]
+  },
+  {
+    "id": "eel-caterpillar-roll",
+    "name": "Eel Caterpillar Roll",
+    "image": "assets/sushi/45.jpg",
+    "group": "Fusion",
+    "tags": ["sweet", "creamy", "rich", "adventurous"],
+    "descriptionSnippets": [
+      "A roll that looks like a caterpillar which should be off-putting but is somehow the most charming thing on the menu",
+      "One day this roll will become a butterfly. Today it becomes your lunch"
+    ]
+  },
+  {
+    "id": "tornado-salmon-roll",
+    "name": "Tornado Salmon Roll",
+    "image": "assets/sushi/46.jpg",
+    "group": "Fusion",
+    "tags": ["adventurous", "bold", "spicy", "crunchy"],
+    "descriptionSnippets": [
+      "A hand roll that spirals like a tornado and hits your taste buds with the same energy",
+      "You did not plan to finish this entire thing in one sitting. Surprise"
+    ]
+  },
+  {
+    "id": "baked-salmon-miso-roll",
+    "name": "Baked Salmon Miso Roll",
+    "image": "assets/sushi/47.jpg",
+    "group": "Fusion",
+    "tags": ["rich", "creamy", "smoky", "umami"],
+    "descriptionSnippets": [
+      "Someone put sushi in an oven and instead of a catastrophe it was the greatest decision in recent culinary history",
+      "Warm, golden, and smells incredible — basically a hug that costs seventeen dollars"
+    ]
+  }
+]
