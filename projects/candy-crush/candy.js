@@ -229,6 +229,7 @@ function startGame() {
             tile.addEventListener("touchmove", touchMove, { passive: false });
 
             tile.addEventListener("keydown", handleKeyboard);
+            tile.addEventListener("click", tileClick);
 
             let shape = document.createElement("span");
             shape.className = "candy-shape";
@@ -369,6 +370,16 @@ function touchEnd(e) {
     dragEnd();
 
     touchStartTile = null;
+}
+
+// =========================================================================
+// CLICK SUPPORT
+// =========================================================================
+
+function tileClick() {
+    if (gameState !== "idle") return;
+    let pos = parseTileId(this);
+    handleTileSelect(pos.r, pos.c);
 }
 
 // =========================================================================
