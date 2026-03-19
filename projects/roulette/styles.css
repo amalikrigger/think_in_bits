@@ -104,11 +104,6 @@ body {
     background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
 }
 
-/* Ball track - chrome ring around the wheel (hidden) */
-.wheel-outer > .ball-track {
-    display: none;
-}
-
 .wheel-inner {
     position: absolute;
     top: 50%;
@@ -167,24 +162,6 @@ body {
         -1px -1px 2px rgba(0,0,0,0.95),
         0 0 4px rgba(0,0,0,0.8);
 }
-
-/* Ball track - outer ring (disabled) */
-/*
-.wheel-inner::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    border: 8px solid transparent;
-    background: linear-gradient(#1a1a1a, #0a0a0a) padding-box,
-                linear-gradient(135deg, #c9a227, #8b6914, #c9a227) border-box;
-    pointer-events: none;
-    z-index: 0;
-}
-*/
 
 /* Inner decorative ring */
 .wheel-outer::before {
@@ -551,13 +528,13 @@ body {
 /* Chips in Cells */
 .chip {
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: radial-gradient(circle, #fff 20%, var(--gold) 21%);
     border: 2px dashed #333;
     color: #000;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 1000;
     display: flex;
     align-items: center;
@@ -956,204 +933,174 @@ body {
     color: #e74c3c;
 }
 
-/* Bet Modify Modal */
-.bet-modify-modal {
+/* Toast Notification */
+.game-toast {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: modal-fade-in 0.2s ease;
-}
-
-@keyframes modal-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.bet-modify-content {
-    position: absolute;
-    transform: translateX(-50%) translateY(-100%);
-    background: linear-gradient(145deg, #1a3d1a, #0d2a10);
-    border: 2px solid var(--gold);
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    padding: 16px 32px;
     border-radius: 12px;
-    padding: 20px;
-    min-width: 250px;
-    box-shadow: 
-        0 10px 40px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(241, 196, 15, 0.3);
-    animation: modal-pop-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.bet-modify-content.below {
-    transform: translateX(-50%) translateY(0);
-}
-
-@keyframes modal-pop-in {
-    from { 
-        opacity: 0;
-        transform: translateX(-50%) translateY(-100%) scale(0.8);
-    }
-    to { 
-        opacity: 1;
-        transform: translateX(-50%) translateY(-100%) scale(1);
-    }
-}
-
-.bet-modify-content.below {
-    animation: modal-pop-in-below 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes modal-pop-in-below {
-    from { 
-        opacity: 0;
-        transform: translateX(-50%) translateY(0) scale(0.8);
-    }
-    to { 
-        opacity: 1;
-        transform: translateX(-50%) translateY(0) scale(1);
-    }
-}
-
-.bet-modify-header {
-    text-align: center;
-    margin-bottom: 15px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(241, 196, 15, 0.3);
-}
-
-.bet-modify-title {
-    display: block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #888;
-    margin-bottom: 5px;
-}
-
-.bet-modify-name {
-    display: block;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 800;
-    color: var(--gold);
-    margin-bottom: 8px;
-}
-
-.bet-modify-current {
-    display: block;
-    font-size: 0.9rem;
-    color: #ccc;
-}
-
-.bet-modify-current strong {
-    color: #2ecc71;
-    font-size: 1.1rem;
-}
-
-.bet-modify-chip-info {
+    z-index: 10000;
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+    pointer-events: auto;
+    cursor: pointer;
     text-align: center;
-    font-size: 0.8rem;
-    color: #aaa;
-    margin-bottom: 15px;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    border: 2px solid;
 }
 
-.selected-chip-value {
-    color: var(--gold);
-    font-weight: 700;
-    font-size: 1rem;
+.game-toast.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
 }
 
-.bet-modify-actions {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
+.game-toast.win {
+    background: linear-gradient(135deg, #1a5e20, #0d3d12);
+    border-color: #2ecc71;
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
-.bet-modify-btn {
-    flex: 1;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+.game-toast.lose {
+    background: linear-gradient(135deg, #3d1010, #2a0a0a);
+    border-color: #e74c3c;
+    color: #e74c3c;
+    text-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
 }
 
-.bet-modify-btn .btn-icon {
-    font-size: 1.5rem;
-    font-weight: 900;
-    line-height: 1;
+/* Result display color indicator */
+#winning-number.result-red {
+    color: #e74c3c;
 }
 
-.bet-modify-btn.add-btn {
-    background: linear-gradient(145deg, #27ae60, #1e8449);
-    color: white;
-    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+#winning-number.result-black {
+    color: #ffffff;
 }
 
-.bet-modify-btn.add-btn:hover {
-    background: linear-gradient(145deg, #2ecc71, #27ae60);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(39, 174, 96, 0.4);
+#winning-number.result-green {
+    color: #2ecc71;
 }
 
-.bet-modify-btn.remove-btn {
-    background: linear-gradient(145deg, #e74c3c, #c0392b);
-    color: white;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+@keyframes result-pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-.bet-modify-btn.remove-btn:hover {
-    background: linear-gradient(145deg, #ff6b5b, #e74c3c);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+#winning-number.result-animate {
+    animation: result-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.bet-modify-btn:active {
-    transform: translateY(0) scale(0.98);
+/* Focus styles for keyboard navigation */
+.bet-cell:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: -2px;
+    box-shadow: 0 0 12px rgba(241, 196, 15, 0.5);
+    z-index: 3;
 }
 
-.bet-modify-close {
-    width: 100%;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    color: #aaa;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.bet-modify-close:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+.chip-btn:focus,
+.chip-action:focus,
+#spin-btn:focus,
+#clear-btn:focus,
+.music-toggle-btn:focus {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    box-shadow: 0 0 12px rgba(241, 196, 15, 0.5);
 }
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    #main-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #left-panel, #right-panel {
+        width: 100%;
+        min-width: unset;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    #left-panel .side-panel,
+    #right-panel .side-panel {
+        flex: 1;
+        min-width: 220px;
+        max-width: 400px;
+    }
+
+    #game-container {
+        order: -1;
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
+    body {
+        padding: 10px 5px;
+    }
+
+    #game-container {
+        padding: 12px;
+    }
+
     #board-container {
         padding: 5px;
     }
+
     .roulette-table {
         min-width: 800px;
     }
-    
-    .bet-modify-content {
-        min-width: 220px;
-        padding: 15px;
+
+    .wheel-outer {
+        transform: scale(0.74);
+        margin: -25px 0;
+    }
+
+    #winning-number {
+        font-size: 2.5rem;
+    }
+
+    #chip-selector {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .chip-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 0.9rem;
+    }
+
+    #status-bar {
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        padding: 12px;
+    }
+
+    .status-item {
+        font-size: 1.1rem;
+    }
+
+    #controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #controls button {
+        padding: 12px 20px;
+        width: 100%;
+    }
+
+    #left-panel .side-panel,
+    #right-panel .side-panel {
+        min-width: 100%;
     }
 }

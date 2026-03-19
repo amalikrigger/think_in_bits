@@ -14,16 +14,16 @@
             <div class="variant-selector">
                 <button id="btn-european" class="active">European (Single 0)</button>
                 <button id="btn-american">American (Double 00)</button>
-                <button id="btn-fullscreen" class="btn-secondary" style="margin-left: 1rem;">Fullscreen</button>
+                <button id="btn-fullscreen" class="btn-secondary fullscreen-spacer" aria-label="Enter fullscreen mode">Fullscreen</button>
             </div>
         </header>
 
-        <button id="btn-exit-fullscreen" class="exit-fullscreen-btn">Exit Fullscreen</button>
+        <button id="btn-exit-fullscreen" class="exit-fullscreen-btn" aria-label="Exit fullscreen mode">Exit Fullscreen</button>
 
         <main class="dashboard-layout">
             
             <!-- LEFT COLUMN: CONTROLS -->
-            <section class="col-left">
+            <section class="col-left" role="complementary" aria-label="Betting Controls">
                 <!-- Betting Panel -->
                 <div class="card betting-card">
                     <h2>Place Your Bets</h2>
@@ -31,13 +31,13 @@
                     <div class="chip-selector">
                         <label>Chip Value:</label>
                         <div class="chips">
-                            <button class="chip-btn active" data-value="1">$1</button>
-                            <button class="chip-btn" data-value="5">$5</button>
-                            <button class="chip-btn" data-value="10">$10</button>
-                            <button class="chip-btn" data-value="25">$25</button>
-                            <button class="chip-btn" data-value="50">$50</button>
-                            <button class="chip-btn" data-value="100">$100</button>
-                            <button id="btn-all-in" class="chip-btn all-in-btn">All In</button>
+                            <button class="chip-btn active" data-value="1" aria-label="Bet $1 chip">$1</button>
+                            <button class="chip-btn" data-value="5" aria-label="Bet $5 chip">$5</button>
+                            <button class="chip-btn" data-value="10" aria-label="Bet $10 chip">$10</button>
+                            <button class="chip-btn" data-value="25" aria-label="Bet $25 chip">$25</button>
+                            <button class="chip-btn" data-value="50" aria-label="Bet $50 chip">$50</button>
+                            <button class="chip-btn" data-value="100" aria-label="Bet $100 chip">$100</button>
+                            <button id="btn-all-in" class="chip-btn all-in-btn" aria-label="Bet all remaining balance">All In</button>
                         </div>
                     </div>
 
@@ -50,7 +50,7 @@
 
                     <div class="bet-input-group">
                         <label for="bet-number">Selection:</label>
-                        <div id="number-selector" class="number-grid">
+                        <div id="number-selector" class="number-grid" role="group" aria-label="Number selection">
                             <!-- Injected by JS -->
                         </div>
                         <input type="text" id="bet-number" placeholder="Selection" readonly>
@@ -68,14 +68,14 @@
                     </div>
 
                     <div class="bet-buttons">
-                        <button id="btn-add-bet" class="btn-add-bet">Add Bet</button>
+                        <button id="btn-add-bet" class="btn-add-bet" aria-label="Add bet to table">Add Bet</button>
                         <button id="btn-clear-bet" class="btn-secondary">Clear</button>
                     </div>
 
                     <div class="placed-bets">
                         <h3>Placed Bets</h3>
                         <div id="placed-bets-list" class="bets-list"></div>
-                        <button id="btn-spin-with-bets" class="btn-spin-full" disabled>Spin</button>
+                        <button id="btn-spin-with-bets" class="btn-spin-full" disabled aria-label="Spin the roulette wheel">Spin</button>
                     </div>
                 </div>
 
@@ -84,9 +84,9 @@
                     <h3>Settings</h3>
                     
                     <!-- Theme Selection -->
-                    <div style="margin-bottom: 1rem;">
-                        <label for="theme-selector" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Theme:</label>
-                        <select id="theme-selector" class="full-width-select">
+                    <div class="settings-group">
+                        <label for="theme-selector" class="settings-label">Theme:</label>
+                        <select id="theme-selector" class="full-width-select" aria-label="Select color theme">
                             <option value="default">Midnight Blue</option>
                             <option value="classic">Classic Green</option>
                             <option value="royale">Casino Royale</option>
@@ -96,19 +96,19 @@
                     </div>
 
                     <!-- Atmosphere Section -->
-                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
-                        <label for="music-select" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Atmosphere:</label>
-                        <select id="music-select" class="full-width-select" style="margin-bottom: 0.75rem;"></select>
+                    <div class="settings-divider">
+                        <label for="music-select" class="settings-label">Atmosphere:</label>
+                        <select id="music-select" class="full-width-select settings-select-spaced" aria-label="Select background music track"></select>
                         
-                        <div style="display: flex; gap: 1rem; align-items: center;">
-                            <label class="switch" title="SFX" style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="font-size: 0.9rem;">SFX</span>
-                                <input type="checkbox" id="sfx-toggle" checked>
+                        <div class="toggle-row">
+                            <label class="switch toggle-label" title="SFX">
+                                <span class="toggle-label-text">SFX</span>
+                                <input type="checkbox" id="sfx-toggle" aria-label="Toggle sound effects" checked>
                                 <span class="slider"></span>
                             </label>
-                            <label class="switch" title="Music" style="display: flex; align-items: center; gap: 0.5rem;">
-                                <span style="font-size: 0.9rem;">Music</span>
-                                <input type="checkbox" id="music-toggle">
+                            <label class="switch toggle-label" title="Music">
+                                <span class="toggle-label-text">Music</span>
+                                <input type="checkbox" id="music-toggle" aria-label="Toggle background music">
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -117,7 +117,7 @@
             </section>
 
             <!-- CENTER COLUMN: WHEEL -->
-            <section class="col-center">
+            <section class="col-center" role="region" aria-label="Roulette Wheel">
                 <div class="wheel-stage-container">
                     <div class="wheel-container">
                         <div id="wheel" class="wheel"></div>
@@ -126,19 +126,19 @@
                     </div>
                     
                     <div class="last-result-display">
-                        <span id="stat-last" class="number-badge large-badge">--</span>
+                        <span id="stat-last" class="number-badge large-badge" aria-live="polite">--</span>
                         <span class="last-result-label">Last Number</span>
                     </div>
 
                     <div id="history-log" class="history-log horizontal-log">
                         <!-- Injected by JS -->
                     </div>
-                    <button id="reset-button" class="btn-secondary">Reset Session</button>
+                    <button id="reset-button" class="btn-secondary" aria-label="Reset session statistics">Reset Session</button>
                 </div>
             </section>
 
             <!-- RIGHT COLUMN: STATS & ANALYSIS -->
-            <section class="col-right">
+            <section class="col-right" role="complementary" aria-label="Statistics and Analysis">
                 
                 <!-- Bankroll -->
                 <div class="card bankroll-card">
@@ -146,14 +146,14 @@
                     <div class="bankroll-grid">
                         <div class="bankroll-item">
                             <span class="label">Balance</span>
-                            <span class="value" id="balance">$1000</span>
+                            <span class="value" id="balance" aria-live="polite">$1000</span>
                         </div>
                         <div class="bankroll-item">
                             <span class="label">Profit</span>
-                            <span class="value" id="earnings">+$0</span>
+                            <span class="value" id="earnings" aria-live="polite">+$0</span>
                         </div>
                     </div>
-                    <button id="reset-bankroll" class="btn-secondary small-btn" style="width: 100%; margin-top: 0.5rem;">Reset</button>
+                    <button id="reset-bankroll" class="btn-secondary small-btn bankroll-reset-btn" aria-label="Reset bankroll to $1000">Reset</button>
                 </div>
 
                 <!-- Live Analysis -->
@@ -207,7 +207,7 @@
                 <div class="card" data-collapsible="true">
                     <h3>Betting Bible <button class="collapse-btn" aria-expanded="false">+</button></h3>
                     <div class="card-body" style="display:none;">
-                        <div class="bible-intro" style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--neutral-color);">
+                        <div class="bible-intro">
                             <p><strong>Coverage:</strong> The count of numbers covered by the bet.</p>
                             <p><strong>Win %:</strong> The theoretical probability of winning a single spin.</p>
                             <p><strong>Edge:</strong> The casino's mathematical advantage over the player.</p>
@@ -240,8 +240,8 @@
                         <div class="calc-stat-row">
                             <span>Win %:</span> <span id="calc-single-chance">--</span>
                         </div>
-                        <div class="calc-group" style="margin-top: 0.5rem;">
-                            <div style="display: flex; justify-content: space-between;">
+                        <div class="calc-group calc-group-spaced">
+                            <div class="calc-row">
                                 <label>Spins:</label> <span id="calc-spins-val">10</span>
                             </div>
                             <input type="range" id="calc-spins-input" min="1" max="100" value="10">
@@ -253,29 +253,28 @@
                             <span>Lose All:</span> <span id="calc-prob-lose">--</span>
                         </div>
                         
-                         <!-- Combined Prob Hidden for compactness or kept? Let's keep basics -->
-                         <div class="calc-combined" style="margin-top:1rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:0.5rem;">
+                         <div class="calc-combined">
                              <h4>Combined Events</h4>
-                             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom: 0.5rem;">
+                             <div class="calc-two-col">
                                 <select id="calc-a-type" class="full-width-select"></select>
                                 <select id="calc-b-type" class="full-width-select"></select>
                              </div>
                              
-                             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom: 0.5rem;">
+                             <div class="calc-two-col">
                                  <div>
-                                     <div style="font-size:0.8rem; color:var(--neutral-color); margin-bottom:0.2rem;">Selection A:</div>
-                                     <div id="calc-a-selection" class="number-grid" style="grid-template-columns: repeat(3, 1fr);"></div>
+                                     <div class="calc-selection-label">Selection A:</div>
+                                     <div id="calc-a-selection" class="number-grid calc-selection-grid"></div>
                                  </div>
                                  <div>
-                                     <div style="font-size:0.8rem; color:var(--neutral-color); margin-bottom:0.2rem;">Selection B:</div>
-                                     <div id="calc-b-selection" class="number-grid" style="grid-template-columns: repeat(3, 1fr);"></div>
+                                     <div class="calc-selection-label">Selection B:</div>
+                                     <div id="calc-b-selection" class="number-grid calc-selection-grid"></div>
                                  </div>
                              </div>
                              
                              <div class="stat-row"><span>P(A or B):</span> <span id="calc-pAorB">--</span></div>
                              <div class="stat-row"><span>Independent?</span> <span id="calc-independence">--</span></div>
                              
-                             <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.8rem; opacity:0.8;">
+                             <div class="calc-detail-grid">
                                 <div>P(A): <span id="calc-pA">--</span></div>
                                 <div>P(B): <span id="calc-pB">--</span></div>
                                 <div>P(A∩B): <span id="calc-pAandB">--</span></div>
@@ -291,7 +290,7 @@
                     <div class="card-body" style="display:none;">
                         
                         <!-- TAB NAVIGATION -->
-                        <div class="tab-nav" style="display:flex; gap:0.5rem; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.5rem;">
+                        <div class="tab-nav">
                             <button class="tab-btn active" data-tab="events">Events (Add Rule)</button>
                             <button class="tab-btn" data-tab="sequence">Sequence (Mult Rule)</button>
                         </div>
@@ -299,67 +298,67 @@
                         <!-- TAB 1: EVENTS -->
                         <div id="tab-events" class="tab-content">
                             <div class="lesson-controls">
-                                <select id="lesson-selector" class="full-width-select" style="margin-bottom: 1rem;">
+                                <select id="lesson-selector" class="full-width-select lesson-select-spaced">
                                     <option value="">-- Select a Lesson --</option>
                                     <option value="mutually-exclusive">1. Mutually Exclusive</option>
                                     <option value="addition-rule">2. Addition Rule (Overlap)</option>
                                     <option value="dependence">3. Dependence</option>
                                 </select>
 
-                                <div class="event-selectors" style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
+                                <div class="event-selectors">
                                     <div class="event-group">
-                                        <label class="event-label-a" style="color:var(--accent-color); font-weight:bold;">Event A</label>
+                                        <label class="event-label-a">Event A</label>
                                         <select id="lesson-event-a" class="full-width-select"></select>
                                     </div>
                                     
                                     <div class="event-group">
-                                        <label class="event-label-b" style="color:var(--success-color); font-weight:bold;">Event B</label>
+                                        <label class="event-label-b">Event B</label>
                                         <select id="lesson-event-b" class="full-width-select"></select>
                                     </div>
                                 </div>
                                 
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
-                                     <div id="lesson-selection-a" class="number-grid mini-grid" style="grid-template-columns: repeat(4, 1fr); max-height:100px; overflow-y:auto;"></div>
-                                     <div id="lesson-selection-b" class="number-grid mini-grid" style="grid-template-columns: repeat(4, 1fr); max-height:100px; overflow-y:auto;"></div>
+                                <div class="calc-two-col">
+                                     <div id="lesson-selection-a" class="number-grid lesson-mini-grid"></div>
+                                     <div id="lesson-selection-b" class="number-grid lesson-mini-grid"></div>
                                 </div>
                             </div>
 
-                            <div class="math-board" style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px; margin-bottom:1rem;">
-                                <div id="math-formula-title" class="math-title" style="font-size:0.8rem; color:var(--neutral-color); text-transform:uppercase;">Formula</div>
-                                <div id="math-formula-display" class="math-formula" style="font-family:monospace; margin:0.5rem 0;"></div>
-                                <div id="math-calculation-display" class="math-calculation" style="font-family:monospace; color:var(--neutral-color); font-size:0.9rem;"></div>
-                                <div id="math-result-display" class="math-result" style="font-weight:bold; font-size:1.2rem; margin-top:0.5rem;"></div>
+                            <div class="math-board">
+                                <div id="math-formula-title" class="math-title">Formula</div>
+                                <div id="math-formula-display" class="math-formula"></div>
+                                <div id="math-calculation-display" class="math-calculation"></div>
+                                <div id="math-result-display" class="math-result"></div>
                             </div>
 
-                            <div class="grid-legend" style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:0.5rem;">
-                                <span class="legend-item"><span class="swatch swatch-a" style="display:inline-block; width:10px; height:10px; background:var(--accent-color); margin-right:5px;"></span>Event A</span>
-                                <span class="legend-item"><span class="swatch swatch-b" style="display:inline-block; width:10px; height:10px; background:var(--success-color); margin-right:5px;"></span>Event B</span>
-                                <span class="legend-item"><span class="swatch swatch-overlap" style="display:inline-block; width:10px; height:10px; background:#fff; margin-right:5px;"></span>Overlap</span>
+                            <div class="grid-legend">
+                                <span class="legend-item"><span class="legend-swatch legend-swatch-a"></span>Event A</span>
+                                <span class="legend-item"><span class="legend-swatch legend-swatch-b"></span>Event B</span>
+                                <span class="legend-item"><span class="legend-swatch legend-swatch-overlap"></span>Overlap</span>
                             </div>
                             <!-- Full grid visualizer for the lesson -->
-                            <div id="lesson-grid" class="number-grid full-grid" style="grid-template-columns: repeat(6, 1fr);"></div>
+                            <div id="lesson-grid" class="number-grid lesson-full-grid"></div>
                         </div>
 
                         <!-- TAB 2: SEQUENCE -->
                         <div id="tab-sequence" class="tab-content" style="display:none;">
                             <div class="sequence-controls">
-                                <p style="font-size:0.9rem; margin-bottom:1rem;">Test Independence: Does the previous spin affect the next one?</p>
-                                <div class="control-row" style="margin-bottom:0.5rem;">
+                                <p class="seq-intro">Test Independence: Does the previous spin affect the next one?</p>
+                                <div class="control-row control-row-spaced">
                                     <label>Bet:</label>
                                     <select id="seq-bet-type" class="full-width-select"></select>
-                                    <select id="seq-bet-selection" class="full-width-select" style="margin-top:0.25rem;"></select>
+                                    <select id="seq-bet-selection" class="full-width-select seq-select-spaced"></select>
                                 </div>
-                                <div class="control-row" style="margin-bottom:1rem;">
+                                <div class="control-row control-row-spaced">
                                     <label>Consecutive Wins Needed:</label>
-                                    <input type="number" id="seq-count" value="3" min="2" max="10" style="width:60px; padding:0.25rem;">
+                                    <input type="number" id="seq-count" value="3" min="2" max="10" class="seq-count-input">
                                 </div>
-                                <button id="btn-run-seq" class="btn-secondary" style="width:100%;">Run 1000 Simulations</button>
+                                <button id="btn-run-seq" class="btn-secondary full-width-btn">Run 1000 Simulations</button>
                             </div>
 
-                            <div class="math-board" style="background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px; margin:1rem 0;">
-                                <div class="math-title" style="font-size:0.8rem; color:var(--neutral-color);">Multiplication Rule (Independence)</div>
-                                <div id="seq-formula" class="math-formula" style="font-family:monospace; margin:0.5rem 0;">P(A and B) = P(A) × P(B)</div>
-                                <div id="seq-calc" class="math-calculation" style="font-family:monospace; color:var(--neutral-color); font-size:0.9rem;"></div>
+                            <div class="math-board seq-math-board">
+                                <div class="math-title">Multiplication Rule (Independence)</div>
+                                <div id="seq-formula" class="math-formula">P(A and B) = P(A) × P(B)</div>
+                                <div id="seq-calc" class="math-calculation"></div>
                             </div>
 
                             <div class="seq-results">
@@ -381,6 +380,7 @@
         </main>
 
     </div>
+    <div id="toast-container" aria-live="polite"></div>
     <script src="script.js"></script>
 </body>
 </html>

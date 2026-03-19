@@ -19,19 +19,20 @@
         <header id="game-header">
             <h1 class="game-title">UNO</h1>
             <div class="header-controls">
-                <button id="fullscreen-toggle" class="control-btn" title="Toggle Fullscreen">
-                    <span class="fullscreen-enter">⛶</span>
-                    <span class="fullscreen-exit" style="display: none;">⛶</span>
+                <button id="rules-btn" class="control-btn" title="View Rules" aria-label="View game rules">📋 Rules</button>
+                <button id="fullscreen-toggle" class="control-btn" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+                    <span class="fullscreen-enter" aria-hidden="true">⛶</span>
+                    <span class="fullscreen-exit" style="display: none;" aria-hidden="true">⛶</span>
                 </button>
-                <button id="music-toggle" class="control-btn" title="Toggle Music">
-                    <span class="music-on">🎵</span>
-                    <span class="music-off" style="display: none;">🎵</span>
+                <button id="music-toggle" class="control-btn" title="Toggle Music" aria-label="Toggle music">
+                    <span class="music-on" aria-hidden="true">🎵</span>
+                    <span class="music-off" style="display: none;" aria-hidden="true">🎵</span>
                 </button>
-                <button id="sound-toggle" class="control-btn" title="Toggle Sound">
-                    <span class="sound-on">🔊</span>
-                    <span class="sound-off" style="display: none;">🔇</span>
+                <button id="sound-toggle" class="control-btn" title="Toggle Sound" aria-label="Toggle sound effects">
+                    <span class="sound-on" aria-hidden="true">🔊</span>
+                    <span class="sound-off" style="display: none;" aria-hidden="true">🔇</span>
                 </button>
-                <button id="new-game-btn" class="control-btn">New Game</button>
+                <button id="new-game-btn" class="control-btn" aria-label="New game">New Game</button>
             </div>
         </header>
 
@@ -63,13 +64,13 @@
                 </div>
 
                 <!-- Draw Pile -->
-                <div id="draw-pile" class="card-pile" title="Click to draw a card">
+                <div id="draw-pile" class="card-pile" title="Click to draw a card" role="button" tabindex="0" aria-label="Draw pile — click to draw a card">
                     <div class="card card-back"></div>
                     <span class="pile-label">DRAW</span>
                 </div>
 
                 <!-- Discard Pile -->
-                <div id="discard-pile" class="card-pile">
+                <div id="discard-pile" class="card-pile" role="img" aria-label="Discard pile">
                     <div class="card discard-top"></div>
                     <span class="pile-label">DISCARD</span>
                 </div>
@@ -81,7 +82,7 @@
                 </div>
 
                 <!-- Turn Indicator -->
-                <div id="turn-indicator">
+                <div id="turn-indicator" role="status" aria-live="polite">
                     <span class="turn-text">Your Turn</span>
                 </div>
             </div>
@@ -105,140 +106,144 @@
             </div>
         </div>
 
-        <!-- Spectator In-Game Banner -->
-        <div id="spectator-game-banner" class="spectator-game-banner hidden">
-            👁 Spectating - All hands hidden
-        </div>
-
         <!-- UNO Alert Banner -->
-        <div id="uno-alert" class="hidden">
+        <div id="uno-alert" class="hidden" role="alert" aria-live="assertive">
             <span class="uno-text">UNO!</span>
         </div>
 
         <!-- Color Picker Modal -->
-        <div id="color-picker-modal" class="modal hidden">
+        <div id="color-picker-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="color-picker-title">
             <div class="modal-content color-picker-content">
-                <h2>Choose a Color</h2>
-                <div class="color-options">
-                    <button class="color-btn" data-color="red" style="background-color: #f44336;">Red</button>
-                    <button class="color-btn" data-color="blue" style="background-color: #2196f3;">Blue</button>
-                    <button class="color-btn" data-color="green" style="background-color: #4caf50;">Green</button>
-                    <button class="color-btn" data-color="yellow" style="background-color: #ffeb3b; color: #333;">Yellow</button>
+                <h2 id="color-picker-title">Choose a Color</h2>
+                <div class="color-options" role="group" aria-label="Color options">
+                    <button class="color-btn" data-color="red" style="background-color: #f44336;" aria-label="Red">Red</button>
+                    <button class="color-btn" data-color="blue" style="background-color: #2196f3;" aria-label="Blue">Blue</button>
+                    <button class="color-btn" data-color="green" style="background-color: #4caf50;" aria-label="Green">Green</button>
+                    <button class="color-btn" data-color="yellow" style="background-color: #ffeb3b; color: #333;" aria-label="Yellow">Yellow</button>
                 </div>
             </div>
         </div>
 
         <!-- Winner Modal -->
-        <div id="winner-modal" class="modal hidden">
+        <div id="winner-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="winner-title">
             <div class="modal-content winner-content">
-                <div class="confetti"></div>
-                <h2 class="winner-title">🎉 Winner! 🎉</h2>
-                <p class="winner-name"></p>
+                <div class="confetti" aria-hidden="true"></div>
+                <h2 class="winner-title" id="winner-title">🎉 Winner! 🎉</h2>
+                <p class="winner-name" aria-live="polite"></p>
                 <button id="play-again-btn" class="play-again-btn">Play Again</button>
             </div>
         </div>
 
         <!-- Game Start Modal -->
-        <div id="start-modal" class="modal">
+        <div id="start-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="start-title">
             <div class="modal-content start-content">
-                <h1 class="start-title">UNO</h1>
+                <h1 class="start-title" id="start-title">UNO</h1>
                 <p class="start-subtitle">The Classic Card Game</p>
                 
                 <!-- Mode Selection -->
                 <div id="mode-selection">
                     <button id="play-ai-btn" class="start-btn">Play vs AI</button>
-                    <button id="create-room-btn" class="start-btn multiplayer-btn">Create Room</button>
-                    <button id="join-room-btn" class="start-btn multiplayer-btn">Join Room</button>
-                </div>
-
-                <!-- Create Room View -->
-                <div id="create-room-view" class="lobby-view hidden">
-                    <form id="create-room-form">
-                        <div class="input-group">
-                            <label for="create-player-name">Your Name</label>
-                            <input type="text" id="create-player-name" maxlength="12" placeholder="Enter your name...">
-                        </div>
-                        <button type="submit" class="start-btn">Create Room</button>
-                    </form>
-                    <button class="back-btn">← Back</button>
-                </div>
-
-                <!-- Join Room View -->
-                <div id="join-room-view" class="lobby-view hidden">
-                    <form id="join-room-form">
-                        <div class="input-group">
-                            <label for="join-player-name">Your Name</label>
-                            <input type="text" id="join-player-name" maxlength="12" placeholder="Enter your name...">
-                        </div>
-                        <div class="input-group">
-                            <label for="room-code-input">Room Code</label>
-                            <input type="text" id="room-code-input" maxlength="4" placeholder="ABCD" class="room-code-input">
-                        </div>
-                        <div class="join-options">
-                            <button type="submit" class="start-btn">Join as Player</button>
-                            <button type="button" id="spectate-btn" class="start-btn spectate-btn">Spectate</button>
-                        </div>
-                    </form>
-                    <button class="back-btn">← Back</button>
-                </div>
-
-                <!-- Lobby View -->
-                <div id="lobby-view" class="lobby-view hidden">
-                    <div class="room-code-display">
-                        <span class="room-code-label">Room Code</span>
-                        <span id="lobby-room-code" class="room-code-value">----</span>
-                        <button id="copy-code-btn" class="copy-btn" title="Copy code">📋</button>
+                    <button id="play-local-btn" class="start-btn start-btn-secondary">Local Multiplayer</button>
+                    <div class="game-rules">
+                        <h3>Quick Rules:</h3>
+                        <ul>
+                            <li>Match cards by color, number, or symbol</li>
+                            <li>Wild cards can be played anytime</li>
+                            <li>Draw if you can't play</li>
+                            <li>First to empty their hand wins!</li>
+                        </ul>
                     </div>
-                    <div class="player-list">
-                        <h3>Players</h3>
-                        <ul id="lobby-player-list"></ul>
-                        <div class="spectator-info">
-                            <span>👁 <span id="spectator-count">0</span> spectator(s)</span>
+                </div>
+
+                <!-- Local Multiplayer Setup (hidden by default) -->
+                <div id="local-setup" class="hidden">
+                    <h2 class="setup-title">Local Multiplayer Setup</h2>
+                    <div class="setup-player-count">
+                        <label class="setup-label">Number of Human Players:</label>
+                        <div class="count-selector">
+                            <button class="count-btn" id="count-minus">−</button>
+                            <span id="player-count-display">2</span>
+                            <button class="count-btn" id="count-plus">+</button>
                         </div>
                     </div>
-                    <div class="lobby-controls">
-                        <button id="ready-toggle" class="start-btn">Ready Up</button>
-                        <button id="lobby-start-btn" class="start-btn hidden" disabled>Start Game</button>
+                    <div id="player-name-inputs"></div>
+                    <div class="setup-actions">
+                        <button id="start-local-btn" class="start-btn">Start Game</button>
+                        <button id="cancel-local-btn" class="start-btn start-btn-ghost">Back</button>
                     </div>
-                    <button id="leave-lobby-btn" class="back-btn">Leave Room</button>
-                </div>
-
-                <!-- Spectator Waiting View -->
-                <div id="spectator-view" class="lobby-view hidden">
-                    <div class="spectator-banner">👁 Spectating</div>
-                    <p class="waiting-text">Waiting for game to start...</p>
-                    <button id="leave-spectator-btn" class="back-btn">Leave Room</button>
-                </div>
-
-                <!-- Connection Status -->
-                <div id="connection-status" class="hidden">
-                    <span class="status-dot"></span>
-                    <span class="status-text">Connecting...</span>
-                </div>
-
-                <div class="game-rules">
-                    <h3>Quick Rules:</h3>
-                    <ul>
-                        <li>Match cards by color, number, or symbol</li>
-                        <li>Wild cards can be played anytime</li>
-                        <li>Draw if you can't play</li>
-                        <li>First to empty their hand wins!</li>
-                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Reconnecting Overlay -->
-        <div id="reconnecting-overlay" class="modal hidden">
-            <div class="modal-content reconnecting-content">
-                <div class="spinner"></div>
-                <h2>Reconnecting...</h2>
-                <p>Please wait while we reconnect you to the game.</p>
+        <!-- Pass Screen Modal (local multiplayer) -->
+        <div id="pass-screen" class="modal hidden">
+            <div class="pass-screen-content">
+                <div class="pass-screen-icon">🙈</div>
+                <h2 class="pass-screen-title" id="pass-screen-title">Pass to Player</h2>
+                <p class="pass-screen-sub">Other players, look away!</p>
+                <div id="pass-pin-section" class="hidden">
+                    <label class="pass-pin-label">Enter your PIN to reveal your hand:</label>
+                    <div class="pass-pin-inputs" id="pass-pin-inputs">
+                        <input type="password" class="pass-pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                        <input type="password" class="pass-pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                        <input type="password" class="pass-pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                        <input type="password" class="pass-pin-digit" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    </div>
+                    <p class="pass-pin-error hidden" id="pass-pin-error">Incorrect PIN. Try again.</p>
+                </div>
+                <button id="pass-reveal-btn" class="start-btn pass-reveal-btn">Tap to Reveal Hand</button>
             </div>
         </div>
 
-        <!-- Toast Notification -->
-        <div id="toast-container"></div>
+        <!-- Rules Modal -->
+        <div id="rules-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="rules-modal-title">
+            <div class="modal-content rules-content">
+                <button id="rules-close-btn" class="modal-close-btn" aria-label="Close rules">✕</button>
+                <h2 class="rules-title" id="rules-modal-title">🎴 How to Play UNO</h2>
+                <div class="rules-scrollable">
+                    <section class="rules-section">
+                        <h3>Objective</h3>
+                        <p>Be the first player to empty your hand. Shout <strong>UNO!</strong> when you have one card left.</p>
+                    </section>
+                    <section class="rules-section">
+                        <h3>On Your Turn</h3>
+                        <ul>
+                            <li>Play a card that matches the top card by <strong>color</strong>, <strong>number</strong>, or <strong>symbol</strong>.</li>
+                            <li>If you can't play, click the draw pile to draw one card.</li>
+                            <li>If the drawn card is playable, you may play it immediately.</li>
+                        </ul>
+                    </section>
+                    <section class="rules-section">
+                        <h3>Special Cards</h3>
+                        <ul>
+                            <li><strong>Skip</strong> — Next player loses their turn.</li>
+                            <li><strong>Reverse</strong> — Play direction reverses.</li>
+                            <li><strong>Draw 2</strong> — Next player draws 2 cards and is skipped. Can be stacked!</li>
+                            <li><strong>Wild</strong> — Play on anything; choose any color.</li>
+                            <li><strong>Wild Draw 4</strong> — Choose a color; next player draws 4 and is skipped.</li>
+                        </ul>
+                    </section>
+                    <section class="rules-section">
+                        <h3>Draw 2 Stacking</h3>
+                        <p>If hit with a Draw 2, you can play your own Draw 2 to stack the penalty. The next player then faces the full accumulated draw count, or can stack further.</p>
+                    </section>
+                    <section class="rules-section rules-pink">
+                        <h3>🩷 Pink Cards (Special)</h3>
+                        <ul>
+                            <li><strong>Pink Bomb</strong> — All other players draw 2 cards.</li>
+                            <li><strong>Pink Shuffle</strong> — All hands are collected, shuffled, and redistributed randomly.</li>
+                            <li><strong>Pink Peek &amp; Steal</strong> — Peek at any opponent's hand and steal one card from them.</li>
+                            <li><strong>Pink Shield</strong> — Protects you from the next action card that targets you (Draw 2, Wild Draw 4, Skip).</li>
+                        </ul>
+                        <p>Pink cards can be played on any turn, but only activate their ability when played.</p>
+                    </section>
+                    <section class="rules-section">
+                        <h3>Winning</h3>
+                        <p>Play your last card to win! UNO is automatically declared when you have one card left.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
 
         <!-- Dancing Cat -->
         <div id="dancing-cat">
@@ -264,8 +269,6 @@
         <source src="data:audio/wav;base64,UklGRqQHAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YYAHAABhcIGQn6y3wMfLzMrFvbOmln54bWZiYGFkaHB6hpOgrLfAx8vMysS9s6aWeHBqZWFgYWRod3+LmaWxu8TJy8nEvbKmmYx/c2toZWRlaW94gY6bqLS+xcrLycS8saSXi392bGlmZWVobXZ/jJmnsrzFycvIw7ywo5aMgHVtamZlZmltd4CMmKWxu8TIy8jDvLCjloyAdW1qZmVmam14gYyYpbG7xMjKyMO8sKOVi391bWllZWZqbXiAi5ilsLvExsrIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TIysjDvLCjloyAdW1qZmVmam14gIyYpbC7xMbJyMO8saOWjIB1bWpmZWZqbXiAjJilsLvExsnIw7ywo5aMgHVtamZlZmpteICMmKWwu8TGyMjDvLGjloyAdW5qZmVmam13gIyYpbC7xMbIyMO8saOWjIF1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGychDvLGjloyAdW1qZmVmam14gIyYpbG7xMbJyMO8saOWjIB1bWpmZWZqbXiAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIxLyxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam13gIyYpbC7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWwu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbG7xMbIyMO8saOWjIB1bWpmZWZqbXeAjJilsLvExsjIw7yxo5aMgHVtamZlZmptd4CMmKWxu8TGyMjDvLGjloyAdW1qZmVmam14gIyYpbC7xMbIyMO8saOWjIB1bWpmZQ==" type="audio/wav">
     </audio>
 
-    <!-- Load Socket.io and Game Script -->
-    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

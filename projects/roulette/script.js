@@ -69,6 +69,15 @@ function initAudio() {
     }
 }
 
+function ensureAudio() {
+    initAudio();
+    if (!audioCtx) return false;
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+    return true;
+}
+
 let volumeControlsSetup = false;
 
 function setupVolumeControls() {
@@ -136,13 +145,7 @@ function pauseMusicForEffect(durationMs) {
 
 // --- Sad Trombone ---
 function playSadTrombone() {
-    initAudio();
-    if (!audioCtx) return;
-    
-    // Ensure audio context is running
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!ensureAudio()) return;
     
     // Pause lobby music during this sound effect (total duration ~2 seconds)
     pauseMusicForEffect(2200);
@@ -195,13 +198,7 @@ function playSadTrombone() {
 }
 
 function playChipSound() {
-    initAudio();
-    if (!audioCtx) return;
-    
-    // Ensure audio context is running
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!ensureAudio()) return;
     
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
@@ -223,13 +220,7 @@ function playChipSound() {
 }
 
 function playSpinSound() {
-    initAudio();
-    if (!audioCtx) return;
-    
-    // Ensure audio context is running
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!ensureAudio()) return;
     
     // Create a drumroll sound effect - more spaced out for realistic drum
     const duration = 5; // Match spin animation duration
@@ -293,13 +284,7 @@ function playSpinSound() {
 }
 
 function playWinSound() {
-    initAudio();
-    if (!audioCtx) return;
-    
-    // Ensure audio context is running
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!ensureAudio()) return;
     
     // Play celebratory arpeggio
     const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
@@ -331,13 +316,7 @@ function playWinSound() {
 let activeYaySounds = [];
 
 function playYaySound(customDuration = null) {
-    initAudio();
-    if (!audioCtx) return;
-    
-    // Ensure audio context is running
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!ensureAudio()) return;
     
     // Create a cheerful "yay" vocal-like sound - extended duration
     // If customDuration is provided, use it (for syncing with confetti)
@@ -390,9 +369,12 @@ function playYaySound(customDuration = null) {
     oscillator1.stop(audioCtx.currentTime + duration);
     oscillator2.stop(audioCtx.currentTime + duration);
     
-    // Track these oscillators
-    activeYaySounds.push({ osc: oscillator1, gain: gainNode });
-    activeYaySounds.push({ osc: oscillator2, gain: gainNode });
+    // Track these oscillators with auto-cleanup
+    const entry1 = { osc: oscillator1, gain: gainNode };
+    const entry2 = { osc: oscillator2, gain: gainNode };
+    activeYaySounds.push(entry1, entry2);
+    oscillator1.onended = () => { activeYaySounds = activeYaySounds.filter(s => s !== entry1); };
+    oscillator2.onended = () => { activeYaySounds = activeYaySounds.filter(s => s !== entry2); };
     
     // Add a second higher "yay" for chorus effect - also longer
     setTimeout(() => {
@@ -598,7 +580,35 @@ function playQuietYay() {
     osc.start(audioCtx.currentTime);
     osc.stop(audioCtx.currentTime + 0.7);
     
-    activeYaySounds.push({ osc, gain });
+    const entry = { osc, gain };
+    activeYaySounds.push(entry);
+    osc.onended = () => { activeYaySounds = activeYaySounds.filter(s => s !== entry); };
+}
+
+// --- Toast Notification ---
+function showToast(message, type = 'win') {
+    const existing = document.querySelector('.game-toast');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `game-toast ${type}`;
+    toast.textContent = message;
+    toast.addEventListener('click', () => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 400);
+    });
+    document.body.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.add('visible');
+    });
+    
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.classList.remove('visible');
+            setTimeout(() => toast.remove(), 400);
+        }
+    }, 3000);
 }
 
 // --- DOM Elements ---
@@ -618,6 +628,7 @@ function init() {
     generateGrid();
     generateWheel();
     setupEventListeners();
+    setupAccessibility();
     setupFirstClickAudioInit();
     updateUI();
     
@@ -719,14 +730,15 @@ function setupFirstClickAudioInit() {
     const startAudioOnInteraction = () => {
         initAudio();
         tryStartMusic();
+        document.removeEventListener('click', startAudioOnInteraction);
+        document.removeEventListener('keydown', startAudioOnInteraction);
+        document.removeEventListener('touchstart', startAudioOnInteraction);
     };
     
-    // Listen for any user interaction to initialize audio
     document.addEventListener('click', startAudioOnInteraction);
     document.addEventListener('keydown', startAudioOnInteraction);
     document.addEventListener('touchstart', startAudioOnInteraction);
     
-    // Also setup volume controls immediately so they work before audio starts
     setupVolumeControls();
 }
 
@@ -823,6 +835,33 @@ function setupEventListeners() {
 
     spinBtn.addEventListener('click', spin);
     clearBtn.addEventListener('click', clearBets);
+    
+    // Music toggle
+    const musicToggleBtn = document.getElementById('music-toggle-btn');
+    if (musicToggleBtn) {
+        musicToggleBtn.addEventListener('click', toggleMusic);
+    }
+    
+    // Keyboard navigation for betting table
+    document.querySelector('.roulette-table').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            const cell = e.target.closest('.bet-cell');
+            if (cell && !isSpinning) {
+                e.preventDefault();
+                placeBet(cell);
+            }
+        }
+    });
+}
+
+function setupAccessibility() {
+    document.querySelectorAll('.bet-cell').forEach(cell => {
+        cell.setAttribute('tabindex', '0');
+        cell.setAttribute('role', 'button');
+        const type = cell.dataset.betType;
+        const value = cell.dataset.betValue;
+        cell.setAttribute('aria-label', `Bet on ${getBetDisplayName(type, value)}`);
+    });
 }
 
 // --- Logic ---
@@ -837,7 +876,7 @@ function placeBet(cell) {
     if (betMode === 'add') {
         // Add mode
         if (balance < selectedChip) {
-            alert("Insufficient balance!");
+            showToast('Insufficient balance!', 'lose');
             return;
         }
         
@@ -885,10 +924,13 @@ function placeBet(cell) {
 }
 
 function addChipToCell(cell, amount) {
-    const chip = document.createElement('div');
-    chip.classList.add('chip');
+    let chip = cell.querySelector('.chip');
+    if (!chip) {
+        chip = document.createElement('div');
+        chip.classList.add('chip');
+        cell.appendChild(chip);
+    }
     chip.textContent = amount;
-    cell.appendChild(chip);
 }
 
 function updateChipDisplay(cell, amount) {
@@ -965,8 +1007,11 @@ function spin() {
 function resolveSpin(winNum) {
     const winColor = winNum === 0 ? 'green' : (RED_NUMBERS.includes(winNum) ? 'red' : 'black');
     
-    // Update Display
+    // Update Display with animation
     winningNumEl.textContent = winNum;
+    winningNumEl.className = '';
+    void winningNumEl.offsetWidth;
+    winningNumEl.classList.add(`result-${winColor}`, 'result-animate');
     winningColorEl.textContent = winColor;
     winningColorEl.style.color = winColor === 'green' ? '#27ae60' : (winColor === 'red' ? '#e74c3c' : '#ffffff');
 
@@ -974,12 +1019,33 @@ function resolveSpin(winNum) {
     const winCell = document.querySelector(`.bet-cell[data-bet-type="number"][data-bet-value="${winNum}"]`);
     if (winCell) winCell.classList.add('winning-highlight');
 
+    // Highlight winning outside bet areas
+    if (winNum !== 0) {
+        const colorCell = document.querySelector(`.bet-cell[data-bet-type="color"][data-bet-value="${winColor}"]`);
+        if (colorCell) colorCell.classList.add('winning-highlight');
+        
+        const parity = winNum % 2 === 0 ? 'even' : 'odd';
+        const parityCell = document.querySelector(`.bet-cell[data-bet-type="parity"][data-bet-value="${parity}"]`);
+        if (parityCell) parityCell.classList.add('winning-highlight');
+        
+        const range = winNum <= 18 ? 'low' : 'high';
+        const rangeCell = document.querySelector(`.bet-cell[data-bet-type="range"][data-bet-value="${range}"]`);
+        if (rangeCell) rangeCell.classList.add('winning-highlight');
+        
+        const dozen = Math.ceil(winNum / 12);
+        const dozenCell = document.querySelector(`.bet-cell[data-bet-type="dozen"][data-bet-value="${dozen}"]`);
+        if (dozenCell) dozenCell.classList.add('winning-highlight');
+        
+        const column = winNum % 3 === 0 ? 3 : winNum % 3;
+        const columnCell = document.querySelector(`.bet-cell[data-bet-type="column"][data-bet-value="${column}"]`);
+        if (columnCell) columnCell.classList.add('winning-highlight');
+    }
+
     // Evaluate Bets
     let totalWin = 0;
     currentBets.forEach(bet => {
         if (checkBetWon(bet, winNum, winColor)) {
             const payoutMultiplier = PAYOUTS[bet.type];
-            // payout including original bet: (amount * multiplier) + amount
             totalWin += (bet.amount * payoutMultiplier) + bet.amount;
         }
     });
@@ -989,8 +1055,7 @@ function resolveSpin(winNum) {
     
     // Finalize round
     currentBets = [];
-    // We don't remove chips immediately so player can see what happened
-    // They will be cleared by the next bet or manual clear
+    document.querySelectorAll('.chip').forEach(c => c.remove());
     
     isSpinning = false;
     spinBtn.disabled = false;
@@ -999,17 +1064,14 @@ function resolveSpin(winNum) {
     updateUI();
     
     if (totalWin > 0) {
-        // Show confetti and play sounds (yay sound plays with confetti automatically)
         createConfetti();
         playWinSound();
-        
-        // Show alert after confetti ends, then remove confetti when dismissed
+        showToast(`\u{1F389} You won ${totalWin} chips!`, 'win');
         setTimeout(() => {
-            alert(`You won ${totalWin} chips!`);
             removeConfetti();
         }, CONFETTI_DURATION * 1000);
     } else {
-        // Player lost - play sad trombone
+        showToast('No win this time', 'lose');
         setTimeout(() => {
             playSadTrombone();
         }, 200);

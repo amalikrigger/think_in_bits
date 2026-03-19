@@ -38,9 +38,39 @@ const MUSIC_TRACKS = [
     { name: 'Upbeat', path: 'music/upbeat-music-upbeat-462284.mp3' }
 ];
 
+const RED_NUMBERS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+
+function getBetOptions(betId) {
+    switch(betId) {
+        case 'straight':
+            return WHEEL_DATA[currentVariant].numbers.map(n => String(n));
+        case 'split':
+            return ['1-2','2-3','4-5','5-6','7-8','8-9','10-11','11-12','13-14','14-15','16-17','17-18'];
+        case 'street':
+            return ['1-2-3','4-5-6','7-8-9','10-11-12','13-14-15','16-17-18','19-20-21','22-23-24','25-26-27','28-29-30','31-32-33','34-35-36'];
+        case 'corner':
+            return ['1-2-4-5','2-3-5-6','4-5-7-8','5-6-8-9','7-8-10-11','8-9-11-12','10-11-13-14','11-12-14-15','13-14-16-17','14-15-17-18','16-17-19-20','17-18-20-21','19-20-22-23','20-21-23-24','22-23-25-26','23-24-26-27','25-26-28-29','26-27-29-30','28-29-31-32','29-30-32-33','31-32-34-35','32-33-35-36'];
+        case 'sixline':
+            return ['1-2-3-4-5-6','4-5-6-7-8-9','7-8-9-10-11-12','10-11-12-13-14-15','13-14-15-16-17-18','16-17-18-19-20-21','19-20-21-22-23-24','22-23-24-25-26-27','25-26-27-28-29-30','28-29-30-31-32-33','31-32-33-34-35-36'];
+        case 'dozen':
+            return ['1-12 (First Dozen)','13-24 (Second Dozen)','25-36 (Third Dozen)'];
+        case 'column':
+            return ['Column 1 (1,4,7...34)','Column 2 (2,5,8...35)','Column 3 (3,6,9...36)'];
+        case 'redblack':
+            return ['Red','Black'];
+        case 'evenodd':
+            return ['Even','Odd'];
+        case 'highlow':
+            return ['High (19-36)','Low (1-18)'];
+        default:
+            return [];
+    }
+}
+
 // --- STATE MANAGEMENT ---
 let currentVariant = 'european';
 let bankroll = 1000;
+let previousBankroll = 1000;
 let totalWagered = 0;
 let sessionStats = {
     spins: 0,
@@ -147,6 +177,33 @@ const SoundEffects = {
     }
 };
 
+// --- TOAST NOTIFICATIONS ---
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('toast-out');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, 3000);
+}
+
+// --- ANIMATED VALUE COUNTER ---
+function animateValue(element, start, end, duration, formatter) {
+    const startTime = performance.now();
+    function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.round(start + (end - start) * progress);
+        element.textContent = formatter(current);
+        if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
 // --- DOM ELEMENTS ---
 const elements = {
     btnEuro: document.getElementById('btn-european'),
@@ -164,7 +221,6 @@ const elements = {
     numberSelector: document.getElementById('number-selector'),
     betNumber: document.getElementById('bet-number'),
     betAmount: document.getElementById('bet-amount'),
-    potentialWin: document.getElementById('potential-win'),
     totalReturn: document.getElementById('total-return'),
     btnAddBet: document.getElementById('btn-add-bet'),
     btnClearBet: document.getElementById('btn-clear-bet'),
@@ -363,7 +419,7 @@ function numbersForBet(betId, selection) {
             if (selection.includes('Column 3')) return allNums.filter(n => { const v = parseInt(n); return !isNaN(v) && v % 3 === 0; });
             break;
         case 'redblack':
-            const reds = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].map(n=>String(n));
+            const reds = RED_NUMBERS.map(n=>String(n));
             return selection === 'Red' ? reds : allNums.filter(n => n !== '0' && n !== '00' && !reds.includes(n));
         case 'evenodd':
             return selection === 'Even' ? allNums.filter(n => { const v = parseInt(n); return !isNaN(v) && v % 2 === 0; }) : allNums.filter(n => { const v = parseInt(n); return !isNaN(v) && v % 2 === 1; });
@@ -390,40 +446,8 @@ function populateCalcSelections(which) {
         return;
     }
 
-    // For selections, build small buttons similar to numberSelector but simplified
-    const options = [];
-    switch(betId) {
-        case 'straight':
-            WHEEL_DATA[currentVariant].numbers.forEach(n => options.push(String(n)));
-            break;
-        case 'split':
-            options.push('1-2','2-3','4-5','5-6','7-8','8-9','10-11','11-12','13-14','14-15','16-17','17-18');
-            break;
-        case 'street':
-            options.push('1-2-3','4-5-6','7-8-9','10-11-12','13-14-15','16-17-18','19-20-21','22-23-24','25-26-27','28-29-30','31-32-33','34-35-36');
-            break;
-        case 'corner':
-            options.push('1-2-4-5','2-3-5-6','4-5-7-8','5-6-8-9','7-8-10-11','8-9-11-12','10-11-13-14','11-12-14-15','13-14-16-17','14-15-17-18','16-17-19-20','17-18-20-21','19-20-22-23','20-21-23-24','22-23-25-26','23-24-26-27','25-26-28-29','26-27-29-30','28-29-31-32','29-30-32-33','31-32-34-35','32-33-35-36');
-            break;
-        case 'sixline':
-            options.push('1-2-3-4-5-6','4-5-6-7-8-9','7-8-9-10-11-12','10-11-12-13-14-15','13-14-15-16-17-18','16-17-18-19-20-21','19-20-21-22-23-24','22-23-24-25-26-27','25-26-27-28-29-30','28-29-30-31-32-33','31-32-33-34-35-36');
-            break;
-        case 'dozen':
-            options.push('1-12 (First Dozen)','13-24 (Second Dozen)','25-36 (Third Dozen)');
-            break;
-        case 'column':
-            options.push('Column 1 (1,4,7...34)','Column 2 (2,5,8...35)','Column 3 (3,6,9...36)');
-            break;
-        case 'redblack':
-            options.push('Red','Black');
-            break;
-        case 'evenodd':
-            options.push('Even','Odd');
-            break;
-        case 'highlow':
-            options.push('High (19-36)','Low (1-18)');
-            break;
-    }
+    // For selections, build small buttons
+    const options = getBetOptions(betId);
 
     options.forEach((opt, idx) => {
         const btn = document.createElement('button');
@@ -565,41 +589,7 @@ function updateNumberSelector() {
         return;
     }
 
-    const data = WHEEL_DATA[currentVariant];
-    let options = [];
-
-    switch(betTypeId) {
-        case 'straight':
-            options = data.numbers.map(n => n);
-            break;
-        case 'split':
-            options = ['1-2', '2-3', '4-5', '5-6', '7-8', '8-9', '10-11', '11-12', '13-14', '14-15', '16-17', '17-18'];
-            break;
-        case 'street':
-            options = ['1-2-3', '4-5-6', '7-8-9', '10-11-12', '13-14-15', '16-17-18', '19-20-21', '22-23-24', '25-26-27', '28-29-30', '31-32-33', '34-35-36'];
-            break;
-        case 'corner':
-            options = ['1-2-4-5', '2-3-5-6', '4-5-7-8', '5-6-8-9', '7-8-10-11', '8-9-11-12', '10-11-13-14', '11-12-14-15', '13-14-16-17', '14-15-17-18', '16-17-19-20', '17-18-20-21', '19-20-22-23', '20-21-23-24', '22-23-25-26', '23-24-26-27', '25-26-28-29', '26-27-29-30', '28-29-31-32', '29-30-32-33', '31-32-34-35', '32-33-35-36'];
-            break;
-        case 'sixline':
-            options = ['1-2-3-4-5-6', '4-5-6-7-8-9', '7-8-9-10-11-12', '10-11-12-13-14-15', '13-14-15-16-17-18', '16-17-18-19-20-21', '19-20-21-22-23-24', '22-23-24-25-26-27', '25-26-27-28-29-30', '28-29-30-31-32-33', '31-32-33-34-35-36'];
-            break;
-        case 'dozen':
-            options = ['1-12 (First Dozen)', '13-24 (Second Dozen)', '25-36 (Third Dozen)'];
-            break;
-        case 'column':
-            options = ['Column 1 (1,4,7...34)', 'Column 2 (2,5,8...35)', 'Column 3 (3,6,9...36)'];
-            break;
-        case 'redblack':
-            options = ['Red', 'Black'];
-            break;
-        case 'evenodd':
-            options = ['Even', 'Odd'];
-            break;
-        case 'highlow':
-            options = ['High (19-36)', 'Low (1-18)'];
-            break;
-    }
+    const options = getBetOptions(betTypeId);
 
     options.forEach(opt => {
         const btn = document.createElement('button');
@@ -636,24 +626,23 @@ function updateBetPreview() {
     const total = chipValue + potential;
 
     elements.betAmount.textContent = `$${chipValue}`;
-    elements.potentialWin.textContent = `$${potential}`;
     elements.totalReturn.textContent = `$${total}`;
 }
 
 function addBet() {
     if (!currentBetTemp.type) {
-        alert('Please select a bet type');
+        showToast('Please select a bet type', 'error');
         return;
     }
 
     const betType = BET_TYPES.find(b => b.id === currentBetTemp.type);
     if (betType.requiresNumber && currentBetTemp.number === null) {
-        alert('Please select a number/option');
+        showToast('Please select a number/option', 'error');
         return;
     }
 
     if (bankroll < chipValue) {
-        alert('Insufficient funds');
+        showToast('Insufficient funds!', 'error');
         return;
     }
 
@@ -703,7 +692,6 @@ function clearBetTemp() {
     currentBetTemp = { type: null, number: null, amount: 0 };
     elements.betNumber.value = '';
     elements.betAmount.textContent = '$0';
-    elements.potentialWin.textContent = '$0';
     elements.totalReturn.textContent = '$0';
     document.querySelectorAll('.number-btn.selected').forEach(b => b.classList.remove('selected'));
 }
@@ -725,19 +713,24 @@ function updatePlacedBetsList() {
         }
 
         return `
-        <div class="bet-item">
+        <div class="bet-item${bet.isNew ? ' bet-item-new' : ''}">
             <div class="bet-item-info">
                 <div class="bet-item-type">
                     ${bet.typeName} 
-                    <span style="font-size:0.85em; color:var(--accent-color); margin-left:0.5rem; opacity:0.8;">
+                    <span class="bet-item-hist">
                         (Hist: ${betHistProb.toFixed(1)}%)
                     </span>
                 </div>
                 <div class="bet-item-amount">${bet.number} • $${bet.amount} @ ${bet.payout}:1 = $${bet.amount * (bet.payout + 1)} potential</div>
             </div>
-            <button class="bet-item-remove" onclick="removeBet(${idx})">Remove</button>
+            <button class="bet-item-remove" data-remove-idx="${idx}">Remove</button>
         </div>
     `}).join('');
+
+    // Attach remove handlers via event delegation
+    elements.placedBetsList.querySelectorAll('[data-remove-idx]').forEach(btn => {
+        btn.addEventListener('click', () => removeBet(parseInt(btn.dataset.removeIdx)));
+    });
 
     elements.btnSpinWithBets.disabled = false;
     updateBetAnalysis();
@@ -814,47 +807,13 @@ function renderWheel() {
     });
 }
 
-function playSpinMusic() {
-    if (!isMusicEnabled) return;
-
-    // Ensure AudioContext is ready if we are using Web Audio API elsewhere
-    if (SoundEffects.ctx && SoundEffects.ctx.state === 'suspended') {
-        SoundEffects.ctx.resume();
-    }
-
-    const trackIndex = elements.musicSelect.value;
-    const track = MUSIC_TRACKS[trackIndex] || MUSIC_TRACKS[0];
-
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
-
-    console.log("Playing music:", track.path);
-    currentAudio = new Audio(track.path);
-    currentAudio.loop = true;
-    currentAudio.volume = 0.5;
-    
-    currentAudio.play().catch(e => {
-        console.error("Audio play failed:", e);
-        // Sometimes reloading the element helps in some browsers?
-    });
-}
-
-function stopSpinMusic() {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.currentTime = 0;
-    }
-}
-
 async function spin() {
     if (isSpinning || placedBets.length === 0) return;
     
     // Deduct stakes for persistent bets (those already on the table from previous rounds)
     const persistentStakes = placedBets.reduce((sum, bet) => bet.isNew ? sum : sum + bet.amount, 0);
     if (bankroll < persistentStakes) {
-        alert("Insufficient funds to maintain current bets!");
+        showToast('Insufficient funds to maintain current bets!', 'error');
         return;
     }
 
@@ -919,8 +878,9 @@ async function spin() {
 
 function animateBallSpiral(startRotation, finalRotation, duration) {
     const startTime = performance.now();
-    const startRadius = -172;
-    const endRadius = -145;
+    const wheelSize = elements.wheel.getBoundingClientRect().width;
+    const startRadius = -(wheelSize / 2 + 8);
+    const endRadius = -(wheelSize / 2 - 15);
     
     const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -971,9 +931,14 @@ function processSpinResult(winningNumber) {
     if (spinWon) {
         sessionStats.wins++;
         SoundEffects.playWin();
+        const netProfit = totalWinnings - totalStaked;
+        showToast(`Won $${netProfit}!`, 'success');
     } else {
         sessionStats.losses++;
         SoundEffects.playLose();
+        showToast('No luck this round', 'info');
+        elements.balance.classList.add('balance-shake');
+        setTimeout(() => elements.balance.classList.remove('balance-shake'), 400);
     }
 
     sessionStats.fullHistory.push(String(winningNumber));
@@ -1032,7 +997,7 @@ function checkWin(num, betType, betSelection) {
             break;
         
         case 'redblack':
-            const isRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36].includes(parseInt(num));
+            const isRed = RED_NUMBERS.includes(parseInt(num));
             if (betSelection === 'Red') return isRed;
             if (betSelection === 'Black') return !isRed && num !== '0' && num !== '00';
             break;
@@ -1059,12 +1024,20 @@ function checkWin(num, betType, betSelection) {
 
 function updateBankrollDisplay() {
     const earnings = bankroll - 1000;
-    const earningsText = earnings >= 0 ? `+$${earnings}` : `-$${Math.abs(earnings)}`;
     const earningsColor = earnings >= 0 ? '#22c55e' : '#ef4444';
-    
-    elements.balance.textContent = `$${bankroll}`;
-    elements.earnings.textContent = earningsText;
     elements.earnings.style.color = earningsColor;
+
+    if (previousBankroll !== bankroll) {
+        animateValue(elements.balance, previousBankroll, bankroll, 400, v => `$${v}`);
+        const prevEarnings = previousBankroll - 1000;
+        animateValue(elements.earnings, prevEarnings, earnings, 400, v => v >= 0 ? `+$${v}` : `-$${Math.abs(v)}`);
+        previousBankroll = bankroll;
+    } else {
+        elements.balance.textContent = `$${bankroll}`;
+        const earningsText = earnings >= 0 ? `+$${earnings}` : `-$${Math.abs(earnings)}`;
+        elements.earnings.textContent = earningsText;
+    }
+
     if (elements.totalWageredEl) {
         elements.totalWageredEl.textContent = `$${totalWagered}`;
     }
@@ -1193,9 +1166,14 @@ function attachEventListeners() {
     elements.btnSpinWithBets.addEventListener('click', spin);
 
     // Reset buttons
-    elements.resetBtn.addEventListener('click', resetSession);
+    elements.resetBtn.addEventListener('click', () => {
+        if (!confirm('Reset session? This clears all stats and bets.')) return;
+        resetSession();
+    });
     elements.resetBankroll.addEventListener('click', () => {
+        if (!confirm('Reset bankroll to $1000? This clears everything.')) return;
         bankroll = 1000;
+        previousBankroll = 1000;
         totalWagered = 0;
         sessionStats = { spins: 0, wins: 0, losses: 0, history: [], fullHistory: [] };
         placedBets = [];
@@ -1239,16 +1217,15 @@ function updateFullscreenState() {
 // --- UTILS ---
 
 function getNumberColor(num) {
-    if (num === 0 || num === '00') return '#15803d';
-    const reds = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-    return reds.includes(num) ? '#dc2626' : '#171717';
+    if (num === 0 || num === '0' || num === '00') return '#15803d';
+    return RED_NUMBERS.includes(typeof num === 'string' ? parseInt(num) : num) ? '#dc2626' : '#171717';
 }
 
 function getNumberColorName(num) {
     if (num === '--') return '';
-    if (num === 0 || num === '00') return 'green';
-    const reds = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-    return reds.includes(num) ? 'red' : 'black';
+    if (num === 0 || num === '0' || num === '00') return 'green';
+    const n = typeof num === 'string' ? parseInt(num) : num;
+    return RED_NUMBERS.includes(n) ? 'red' : 'black';
 }
 
 // --- LESSON LOGIC ---
@@ -1354,45 +1331,7 @@ function updateLessonSelections(which) {
     const bet = BET_TYPES.find(b => b.id === betId);
     if (!bet) return;
     
-    let options = [];
-    if (!bet.requiresNumber) {
-         options.push(bet.name); // Just a dummy clickable
-    } else {
-        // Reuse the switch from populateCalcSelections logic...
-        // For brevity in this append, I'll extract options generation or duplicate:
-        switch(betId) {
-            case 'straight': 
-                options = WHEEL_DATA[currentVariant].numbers.map(String); 
-                break;
-            case 'split': 
-                options = ['1-2','2-3','4-5','5-6','7-8','8-9','10-11','11-12','13-14','14-15','16-17','17-18']; 
-                break;
-            case 'street': 
-                options = ['1-2-3','4-5-6','7-8-9','10-11-12','13-14-15','16-17-18','19-20-21','22-23-24','25-26-27','28-29-30','31-32-33','34-35-36']; 
-                break;
-            case 'corner': 
-                options = ['1-2-4-5','2-3-5-6','4-5-7-8','5-6-8-9','7-8-10-11','8-9-11-12','10-11-13-14','11-12-14-15','13-14-16-17','14-15-17-18','16-17-19-20','17-18-20-21','19-20-22-23','20-21-23-24','22-23-25-26','23-24-26-27','25-26-28-29','26-27-29-30','28-29-31-32','29-30-32-33','31-32-34-35','32-33-35-36']; 
-                break;
-            case 'sixline': 
-                options = ['1-2-3-4-5-6','4-5-6-7-8-9','7-8-9-10-11-12','10-11-12-13-14-15','13-14-15-16-17-18','16-17-18-19-20-21','19-20-21-22-23-24','22-23-24-25-26-27','25-26-27-28-29-30','28-29-30-31-32-33','31-32-33-34-35-36']; 
-                break;
-            case 'dozen': 
-                options = ['1-12 (First Dozen)','13-24 (Second Dozen)','25-36 (Third Dozen)']; 
-                break;
-            case 'column': 
-                options = ['Column 1 (1,4,7...34)','Column 2 (2,5,8...35)','Column 3 (3,6,9...36)']; 
-                break;
-            case 'redblack': 
-                options = ['Red','Black']; 
-                break;
-            case 'evenodd': 
-                options = ['Even','Odd']; 
-                break;
-            case 'highlow': 
-                options = ['High (19-36)','Low (1-18)']; 
-                break;
-        }
-    }
+    const options = !bet.requiresNumber ? [bet.name] : getBetOptions(betId);
 
     options.forEach((opt, idx) => {
         const btn = document.createElement('button');
@@ -1535,7 +1474,7 @@ function updateLessonMath() {
         const diff = Math.abs(cond - pB);
         const isDep = diff > 0.001;
         lessonElements.mathResult.innerHTML += `
-            <div style="font-size:0.8rem; font-weight:normal; margin-top:0.5rem;">
+            <div class="math-compare">
                 Compare to P(B) = ${fmt(pB)}.<br>
                 Events are <strong>${isDep ? 'DEPENDENT' : 'INDEPENDENT'}</strong>
             </div>
@@ -1565,47 +1504,8 @@ function updateSeqSelections() {
      const container = lessonElements.seqBetSelection;
      container.innerHTML = '';
      
-     let options = [];
      const bet = BET_TYPES.find(b => b.id === betId);
-     
-     if (!bet || !bet.requiresNumber) {
-         options.push(bet ? bet.name : 'Default');
-     } else {
-        switch(betId) {
-            case 'straight': 
-                options = WHEEL_DATA[currentVariant].numbers.map(String); 
-                break;
-            case 'split': 
-                options = ['1-2','2-3','4-5','5-6','7-8','8-9','10-11','11-12','13-14','14-15','16-17','17-18']; 
-                break;
-            case 'street': 
-                options = ['1-2-3','4-5-6','7-8-9','10-11-12','13-14-15','16-17-18','19-20-21','22-23-24','25-26-27','28-29-30','31-32-33','34-35-36']; 
-                break;
-            case 'corner': 
-                options = ['1-2-4-5','2-3-5-6','4-5-7-8','5-6-8-9','7-8-10-11','8-9-11-12','10-11-13-14','11-12-14-15','13-14-16-17','14-15-17-18','16-17-19-20','17-18-20-21','19-20-22-23','20-21-23-24','22-23-25-26','23-24-26-27','25-26-28-29','26-27-29-30','28-29-31-32','29-30-32-33','31-32-34-35','32-33-35-36']; 
-                break;
-            case 'sixline': 
-                options = ['1-2-3-4-5-6','4-5-6-7-8-9','7-8-9-10-11-12','10-11-12-13-14-15','13-14-15-16-17-18','16-17-18-19-20-21','19-20-21-22-23-24','22-23-24-25-26-27','25-26-27-28-29-30','28-29-30-31-32-33','31-32-33-34-35-36']; 
-                break;
-            case 'dozen': 
-                options = ['1-12 (First Dozen)','13-24 (Second Dozen)','25-36 (Third Dozen)']; 
-                break;
-            case 'column': 
-                options = ['Column 1 (1,4,7...34)','Column 2 (2,5,8...35)','Column 3 (3,6,9...36)']; 
-                break;
-            case 'redblack': 
-                options = ['Red','Black']; 
-                break;
-            case 'evenodd': 
-                options = ['Even','Odd']; 
-                break;
-            case 'highlow': 
-                options = ['High (19-36)','Low (1-18)']; 
-                break;
-            default:
-                options = ['Default'];
-        }
-     }
+     const options = (!bet || !bet.requiresNumber) ? [bet ? bet.name : 'Default'] : getBetOptions(betId);
      
      options.forEach(opt => {
          const op = document.createElement('option');

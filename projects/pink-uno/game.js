@@ -401,411 +401,6 @@ setInterval(triggerGlitterRain, 20000); // Every 20 seconds
 setTimeout(triggerGlitterRain, 5000);
 
 // ===========================================
-// NETWORK MANAGER (Socket.io Client)
-// ===========================================
-
-/**
- * Handles all multiplayer networking
- */
-class NetworkManager {
-    constructor() {
-        this.socket = null;
-        this.connected = false;
-        this.roomCode = null;
-        this.playerId = null;
-        this.isHost = false;
-        this.isSpectator = false;
-        this.callbacks = {};
-        this.reconnecting = false;
-    }
-
-    /**
-     * Connect to the game server
-     * @param {string} serverUrl - WebSocket server URL
-     * @returns {Promise}
-     */
-    connect(serverUrl = 'http://localhost:3000') {
-        return new Promise((resolve, reject) => {
-            if (this.socket && this.connected) {
-                resolve();
-                return;
-            }
-
-            try {
-                this.socket = io(serverUrl, {
-                    reconnection: true,
-                    reconnectionDelay: 1000,
-                    reconnectionDelayMax: 5000,
-                    reconnectionAttempts: 10
-                });
-
-                this.socket.on('connect', () => {
-                    this.connected = true;
-                    this.reconnecting = false;
-                    this.updateConnectionStatus('connected');
-                    resolve();
-                });
-
-                this.socket.on('disconnect', () => {
-                    this.connected = false;
-                    this.updateConnectionStatus('disconnected');
-                    if (this.roomCode) {
-                        this.reconnecting = true;
-                        this.showReconnectingOverlay(true);
-                    }
-                });
-
-                this.socket.on('connect_error', (error) => {
-                    this.updateConnectionStatus('error');
-                    reject(error);
-                });
-
-                this.socket.on('reconnect', () => {
-                    this.connected = true;
-                    this.reconnecting = false;
-                    this.showReconnectingOverlay(false);
-                    // Rejoin room if we were in one
-                    if (this.roomCode && this.playerId) {
-                        this.joinRoom(this.roomCode, null, false, this.playerId);
-                    }
-                });
-
-                // Setup event listeners
-                this.setupEventListeners();
-
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
-
-    /**
-     * Setup socket event listeners
-     */
-    setupEventListeners() {
-        // Room events
-        this.socket.on('roomCreated', (data) => {
-            this.roomCode = data.roomCode;
-            this.playerId = data.playerId;
-            this.isHost = true;
-            this.saveSession();
-            this.emit('roomCreated', data);
-        });
-
-        this.socket.on('roomJoined', (data) => {
-            this.roomCode = data.roomCode;
-            if (data.playerId) this.playerId = data.playerId;
-            this.isSpectator = data.isSpectator || false;
-            if (!this.isSpectator) this.saveSession();
-            this.emit('roomJoined', data);
-        });
-
-        this.socket.on('lobbyState', (data) => {
-            this.emit('lobbyState', data);
-        });
-
-        this.socket.on('gameState', (data) => {
-            this.emit('gameState', data);
-        });
-
-        this.socket.on('gameStarted', (data) => {
-            this.emit('gameStarted', data);
-        });
-
-        this.socket.on('playerJoined', (data) => {
-            this.showToast(`${data.playerName} joined!`, 'info');
-            this.emit('playerJoined', data);
-        });
-
-        this.socket.on('playerLeft', (data) => {
-            this.showToast(`${data.playerName} left`, 'warning');
-            this.emit('playerLeft', data);
-        });
-
-        this.socket.on('playerDisconnected', (data) => {
-            this.showToast(`${data.playerName} disconnected...`, 'warning');
-            this.emit('playerDisconnected', data);
-        });
-
-        this.socket.on('playerReconnected', (data) => {
-            this.showToast(`${data.playerName} reconnected!`, 'success');
-            this.emit('playerReconnected', data);
-        });
-
-        this.socket.on('playerAITakeover', (data) => {
-            this.showToast(`${data.playerName} is now AI-controlled 🤖`, 'info');
-            this.emit('playerAITakeover', data);
-        });
-
-        this.socket.on('spectatorJoined', (data) => {
-            this.emit('spectatorJoined', data);
-        });
-
-        this.socket.on('spectatorLeft', (data) => {
-            this.emit('spectatorLeft', data);
-        });
-
-        this.socket.on('playerAction', (data) => {
-            this.emit('playerAction', data);
-        });
-
-        this.socket.on('chooseColor', () => {
-            this.emit('chooseColor');
-        });
-
-        this.socket.on('colorChosen', (data) => {
-            this.emit('colorChosen', data);
-        });
-
-        this.socket.on('unoDeclared', (data) => {
-            this.emit('unoDeclared', data);
-        });
-
-        this.socket.on('error', (data) => {
-            this.showToast(data.message, 'error');
-            this.emit('error', data);
-        });
-    }
-
-    /**
-     * Register callback for event
-     */
-    on(event, callback) {
-        if (!this.callbacks[event]) {
-            this.callbacks[event] = [];
-        }
-        this.callbacks[event].push(callback);
-    }
-
-    /**
-     * Emit event to callbacks
-     */
-    emit(event, data) {
-        if (this.callbacks[event]) {
-            this.callbacks[event].forEach(cb => cb(data));
-        }
-    }
-
-    /**
-     * Create a new room
-     */
-    createRoom(playerName) {
-        const savedId = this.getSavedPlayerId();
-        this.socket.emit('createRoom', { playerName, playerId: savedId });
-    }
-
-    /**
-     * Join an existing room
-     */
-    joinRoom(roomCode, playerName, asSpectator = false, playerId = null) {
-        const savedId = playerId || this.getSavedPlayerId();
-        this.socket.emit('joinRoom', { 
-            roomCode, 
-            playerName, 
-            playerId: savedId,
-            asSpectator 
-        });
-    }
-
-    /**
-     * Toggle ready status
-     */
-    toggleReady() {
-        this.socket.emit('toggleReady', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId 
-        });
-    }
-
-    /**
-     * Start the game (host only)
-     */
-    startGame() {
-        this.socket.emit('startGame', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId 
-        });
-    }
-
-    /**
-     * Play a card
-     */
-    playCard(cardId, chosenColor = null) {
-        this.socket.emit('playCard', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId,
-            cardId,
-            chosenColor
-        });
-    }
-
-    /**
-     * Draw a card
-     */
-    drawCard() {
-        this.socket.emit('drawCard', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId 
-        });
-    }
-
-    /**
-     * Choose color for wild card
-     */
-    chooseColor(color) {
-        this.socket.emit('chooseColor', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId,
-            color
-        });
-    }
-
-    /**
-     * Declare UNO
-     */
-    declareUno() {
-        this.socket.emit('declareUno', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId 
-        });
-    }
-
-    /**
-     * Leave room
-     */
-    leaveRoom() {
-        this.socket.emit('leaveRoom', { 
-            roomCode: this.roomCode, 
-            playerId: this.playerId 
-        });
-        this.roomCode = null;
-        this.isHost = false;
-        this.isSpectator = false;
-        this.clearSession();
-    }
-
-    /**
-     * Save session to localStorage for reconnection
-     */
-    saveSession() {
-        localStorage.setItem('uno_playerId', this.playerId);
-        localStorage.setItem('uno_roomCode', this.roomCode);
-    }
-
-    /**
-     * Get saved player ID
-     */
-    getSavedPlayerId() {
-        return localStorage.getItem('uno_playerId');
-    }
-
-    /**
-     * Clear session
-     */
-    clearSession() {
-        localStorage.removeItem('uno_playerId');
-        localStorage.removeItem('uno_roomCode');
-    }
-
-    /**
-     * Check for saved session
-     */
-    hasSavedSession() {
-        return localStorage.getItem('uno_roomCode') && localStorage.getItem('uno_playerId');
-    }
-
-    /**
-     * Get saved room code
-     */
-    getSavedRoomCode() {
-        return localStorage.getItem('uno_roomCode');
-    }
-
-    /**
-     * Update connection status display
-     */
-    updateConnectionStatus(status) {
-        const statusEl = document.getElementById('connection-status');
-        if (!statusEl) return;
-
-        statusEl.classList.remove('hidden', 'connected', 'error');
-        
-        const statusText = statusEl.querySelector('.status-text');
-        
-        switch (status) {
-            case 'connected':
-                statusEl.classList.add('connected');
-                statusText.textContent = 'Connected';
-                setTimeout(() => statusEl.classList.add('hidden'), 2000);
-                break;
-            case 'disconnected':
-                statusText.textContent = 'Disconnected - Reconnecting...';
-                break;
-            case 'error':
-                statusEl.classList.add('error');
-                statusText.textContent = 'Connection Error';
-                break;
-            default:
-                statusText.textContent = 'Connecting...';
-        }
-    }
-
-    /**
-     * Show/hide reconnecting overlay
-     */
-    showReconnectingOverlay(show) {
-        const overlay = document.getElementById('reconnecting-overlay');
-        if (overlay) {
-            if (show) {
-                overlay.classList.remove('hidden');
-            } else {
-                overlay.classList.add('hidden');
-            }
-        }
-    }
-
-    /**
-     * Show toast notification
-     */
-    showToast(message, type = 'info') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        
-        const icons = {
-            info: 'ℹ️',
-            success: '✅',
-            warning: '⚠️',
-            error: '❌'
-        };
-        
-        toast.innerHTML = `<span>${icons[type] || ''}</span><span>${message}</span>`;
-        container.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add('fadeOut');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
-    /**
-     * Disconnect from server
-     */
-    disconnect() {
-        if (this.socket) {
-            this.socket.disconnect();
-            this.socket = null;
-            this.connected = false;
-        }
-    }
-}
-
-// Global network manager instance
-const networkManager = new NetworkManager();
-
-// ===========================================
 // CONSTANTS
 // ===========================================
 
@@ -813,6 +408,9 @@ const COLORS = ['red', 'blue', 'green', 'yellow'];
 const NUMBERS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 const ACTIONS = ['Skip', 'Reverse', 'Draw_2'];
 const WILDS = ['Wild', 'Wild_Draw_4'];
+
+// Pink cards: special unique abilities, one of each in the deck
+const PINK_CARDS = ['Pink_Bomb', 'Pink_Shuffle', 'Pink_Peek', 'Pink_Shield'];
 
 const PLAYER_COUNT = 4;
 const STARTING_HAND_SIZE = 7;
@@ -842,6 +440,11 @@ class Card {
      * @returns {string} Path to card image
      */
     getImagePath() {
+        // Pink cards use a special rendered image
+        if (this.color === 'pink') {
+            return `cards/Pink_${this.value.replace('Pink_', '')}.jpg`;
+        }
+        
         if (this.color === null) {
             // Wild cards
             return `cards/${this.value}.jpg`;
@@ -870,6 +473,14 @@ class Card {
      */
     isWild() {
         return this.color === null;
+    }
+
+    /**
+     * Check if this is a pink special card
+     * @returns {boolean}
+     */
+    isPink() {
+        return this.color === 'pink';
     }
 
     /**
@@ -933,6 +544,11 @@ class Deck {
         // Four Wild Draw Four cards
         for (let i = 0; i < 4; i++) {
             this.cards.push(new Card(null, 'Wild_Draw_4'));
+        }
+
+        // Pink special cards (one each)
+        for (const pinkType of PINK_CARDS) {
+            this.cards.push(new Card('pink', pinkType));
         }
     }
 
@@ -1073,6 +689,11 @@ class Player {
      * @returns {boolean}
      */
     canPlay(card, topCard, currentColor) {
+        // Pink cards can always be played (like wild)
+        if (card.isPink()) {
+            return true;
+        }
+
         // Wild cards can always be played
         if (card.isWild()) {
             return true;
@@ -1130,19 +751,20 @@ class GameState {
         this.musicEnabled = true;
         this.backgroundMusic = null;
         this.pendingColorChoice = false;
-        
-        // Multiplayer properties
-        this.isMultiplayer = false;
-        this.roomCode = null;
-        this.localPlayerId = null;
-        this.isSpectator = false;
-        this.playerStatuses = {}; // Map of playerId -> status (connected, disconnected, ai)
+        this.drawPenalty = 0; // Accumulated draw penalty from stacked Draw_2 / Wild_Draw_4
+        this.hasDrawnThisTurn = false; // Enforce single draw per turn
+        this.shieldedPlayerIndex = -1; // Player protected by Pink Shield (-1 = none)
+        this.pendingPeekSteal = null; // Pending Peek & Steal interaction data
+        this.localMultiplayer = false; // True when playing local pass-and-play
+        this.playerPins = {}; // PIN map: playerIndex -> 4-digit string (or null)
+        this.justPassedTo = false; // Flag: next human turn needs pass screen
     }
 
     /**
      * Initialize a new game
+     * @param {Array<{name: string, isHuman: boolean, pin?: string}>} [playerConfig] - Optional player config for local multiplayer
      */
-    initGame() {
+    initGame(playerConfig) {
         // Reset state
         this.gameOver = false;
         this.winner = null;
@@ -1151,14 +773,27 @@ class GameState {
         this.discardPile = [];
         this.isProcessingTurn = false;
         this.pendingColorChoice = false;
+        this.drawPenalty = 0;
+        this.hasDrawnThisTurn = false;
+        this.shieldedPlayerIndex = -1;
+        this.pendingPeekSteal = null;
+        this.justPassedTo = false;
+        this.playerPins = {};
 
-        // Create players
-        this.players = [
-            new Player('You', true, 0),
-            new Player('Bot 1', false, 1),
-            new Player('Bot 2', false, 2),
-            new Player('Bot 3', false, 3)
-        ];
+        // Create players from config or default
+        if (playerConfig && playerConfig.length > 0) {
+            this.players = playerConfig.map((cfg, i) => new Player(cfg.name, cfg.isHuman, i));
+            playerConfig.forEach((cfg, i) => {
+                if (cfg.pin) this.playerPins[i] = cfg.pin;
+            });
+        } else {
+            this.players = [
+                new Player('You', true, 0),
+                new Player('Bot 1', false, 1),
+                new Player('Bot 2', false, 2),
+                new Player('Bot 3', false, 3)
+            ];
+        }
 
         // Create and shuffle deck
         this.drawPile = new Deck();
@@ -1307,10 +942,10 @@ class GameState {
         // Add to discard pile
         this.discardPile.push(playedCard);
 
-        // Update current color
+        // Update current color (pink cards don't change color)
         if (playedCard.isWild()) {
             this.currentColor = chosenColor;
-        } else {
+        } else if (!playedCard.isPink()) {
             this.currentColor = playedCard.color;
         }
 
@@ -1355,7 +990,15 @@ class GameState {
 
         switch (card.value) {
             case 'Skip':
-                // Skip next player
+                // Shield blocks Skip
+                if (nextIndex === this.shieldedPlayerIndex) {
+                    this.shieldedPlayerIndex = -1;
+                    this.playSound('skip');
+                    triggerFlyingUnicorn();
+                    this.showPinkEffect('🛡️ Shield blocked Skip!');
+                    this.advanceTurn();
+                    break;
+                }
                 this.playSound('skip');
                 triggerFlyingUnicorn();
                 this.currentPlayerIndex = this.getNextPlayerIndex();
@@ -1363,7 +1006,6 @@ class GameState {
                 break;
 
             case 'Reverse':
-                // Reverse direction
                 this.playSound('reverse');
                 triggerFlyingUnicorn();
                 this.direction *= -1;
@@ -1371,27 +1013,42 @@ class GameState {
                 break;
 
             case 'Draw_2':
-                // Next player draws 2 and is skipped
                 this.playSound('draw2');
                 this.playSound('yell');
                 triggerFlyingUnicorn();
-                if (!nextPlayer.isHuman) {
-                    this.playSound('penalty');
+                // Shield absorbs Draw_2
+                if (nextIndex === this.shieldedPlayerIndex) {
+                    this.shieldedPlayerIndex = -1;
+                    this.showPinkEffect('🛡️ Shield blocked Draw 2!');
+                    this.drawPenalty = 0;
+                    this.advanceTurn();
+                    break;
                 }
-                nextPlayer.addCards(this.drawCards(2));
-                this.currentPlayerIndex = this.getNextPlayerIndex();
-                this.advanceTurn();
+                this.drawPenalty += 2;
+                if (this.canStackDraw(nextPlayer)) {
+                    this.advanceTurn();
+                } else {
+                    if (!nextPlayer.isHuman) this.playSound('penalty');
+                    nextPlayer.addCards(this.drawCards(this.drawPenalty));
+                    this.drawPenalty = 0;
+                    this.currentPlayerIndex = this.getNextPlayerIndex();
+                    this.advanceTurn();
+                }
                 break;
 
             case 'Wild_Draw_4':
-                // Next player draws 4 and is skipped
                 this.playSound('wild4');
                 this.playSound('yell');
                 triggerFlyingUnicorn();
+                // Shield absorbs Wild Draw 4
+                if (nextIndex === this.shieldedPlayerIndex) {
+                    this.shieldedPlayerIndex = -1;
+                    this.showPinkEffect('🛡️ Shield blocked Wild Draw 4!');
+                    this.advanceTurn();
+                    break;
+                }
                 setTimeout(() => {
-                    if (!nextPlayer.isHuman) {
-                        this.playSound('penalty');
-                    }
+                    if (!nextPlayer.isHuman) this.playSound('penalty');
                 }, 400);
                 nextPlayer.addCards(this.drawCards(4));
                 this.currentPlayerIndex = this.getNextPlayerIndex();
@@ -1399,15 +1056,119 @@ class GameState {
                 break;
 
             case 'Wild':
-                // Wild card played - trigger unicorn!
                 triggerFlyingUnicorn();
                 this.advanceTurn();
                 break;
 
+            // Pink card effects
+            case 'Pink_Bomb':
+                this.applyPinkBomb();
+                break;
+
+            case 'Pink_Shuffle':
+                this.applyPinkShuffle();
+                break;
+
+            case 'Pink_Peek':
+                // Handled separately in UIRenderer for human, AI handled in processAITurn
+                this.advanceTurn();
+                break;
+
+            case 'Pink_Shield':
+                this.applyPinkShield();
+                break;
+
             default:
-                // Regular card, just advance turn
                 this.advanceTurn();
         }
+    }
+
+    /**
+     * Pink Bomb: all other players draw 2
+     */
+    applyPinkBomb() {
+        triggerGlitterRain();
+        this.playSound('draw2');
+        for (const player of this.players) {
+            if (player.index !== this.currentPlayerIndex) {
+                player.addCards(this.drawCards(2));
+                if (!player.isHuman) this.playSound('penalty');
+            }
+        }
+        this.showPinkEffect('💥 Pink Bomb! Everyone else draws 2!');
+        this.advanceTurn();
+    }
+
+    /**
+     * Pink Shuffle: all hands collected, shuffled, redistributed
+     */
+    applyPinkShuffle() {
+        triggerGlitterRain();
+        this.playSound('shuffle');
+        // Collect all cards from all hands
+        const allCards = [];
+        const handSizes = this.players.map(p => p.hand.length);
+        for (const player of this.players) {
+            allCards.push(...player.hand.splice(0));
+        }
+        // Fisher-Yates shuffle
+        for (let i = allCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allCards[i], allCards[j]] = [allCards[j], allCards[i]];
+        }
+        // Redistribute same hand sizes
+        let idx = 0;
+        for (let p = 0; p < this.players.length; p++) {
+            const size = handSizes[p];
+            this.players[p].hand = allCards.splice(0, size);
+        }
+        // Any leftover cards go back to draw pile bottom
+        if (allCards.length > 0) {
+            this.drawPile.addToBottom(allCards);
+        }
+        this.showPinkEffect('🔀 Pink Shuffle! All hands redistributed!');
+        this.advanceTurn();
+    }
+
+    /**
+     * Pink Shield: protect current player from next targeting action
+     */
+    applyPinkShield() {
+        this.shieldedPlayerIndex = this.currentPlayerIndex;
+        triggerGlitterRain();
+        this.showPinkEffect('🛡️ Pink Shield activated! Next action is blocked!');
+        this.advanceTurn();
+    }
+
+    /**
+     * Show a pink card effect banner
+     * @param {string} message
+     */
+    showPinkEffect(message) {
+        let banner = document.getElementById('pink-effect-banner');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'pink-effect-banner';
+            banner.className = 'pink-effect-banner';
+            document.getElementById('game-container').appendChild(banner);
+        }
+        banner.textContent = message;
+        banner.classList.remove('hidden');
+        banner.classList.add('show');
+        clearTimeout(this._pinkBannerTimeout);
+        this._pinkBannerTimeout = setTimeout(() => {
+            banner.classList.remove('show');
+            banner.classList.add('hidden');
+        }, 2500);
+    }
+
+    /**
+     * Check if a player can stack a Draw_2 on the current penalty
+     * @param {Player} player
+     * @returns {boolean}
+     */
+    canStackDraw(player) {
+        return player.hand.some(card => card.value === 'Draw_2');
     }
 
     /**
@@ -1415,6 +1176,11 @@ class GameState {
      */
     advanceTurn() {
         this.currentPlayerIndex = this.getNextPlayerIndex();
+        this.hasDrawnThisTurn = false;
+        // In local multiplayer, flag that the next human player needs a pass screen
+        if (this.localMultiplayer && this.players[this.currentPlayerIndex]?.isHuman) {
+            this.justPassedTo = true;
+        }
     }
 
     /**
@@ -1427,11 +1193,27 @@ class GameState {
             return null;
         }
 
+        // Enforce single draw per turn
+        if (this.hasDrawnThisTurn) {
+            return null;
+        }
+
+        // If there's a draw penalty, player must draw the full penalty
+        if (this.drawPenalty > 0) {
+            const cards = this.drawCards(this.drawPenalty);
+            player.addCards(cards);
+            this.playSound('draw');
+            this.playSound('penalty');
+            this.drawPenalty = 0;
+            this.hasDrawnThisTurn = true;
+            return null; // Return null since multiple cards drawn — turn ends
+        }
+
         const cards = this.drawCards(1);
         if (cards.length > 0) {
             player.addCard(cards[0]);
             this.playSound('draw');
-            this.playSound('yell');
+            this.hasDrawnThisTurn = true;
             return cards[0];
         }
         return null;
@@ -1478,7 +1260,11 @@ class GameState {
         // Show winner modal
         const modal = document.getElementById('winner-modal');
         const winnerName = modal.querySelector('.winner-name');
-        winnerName.textContent = winner.isHuman ? 'You Win!' : `${winner.name} Wins!`;
+        if (this.localMultiplayer) {
+            winnerName.textContent = `${winner.name} Wins!`;
+        } else {
+            winnerName.textContent = winner.isHuman ? 'You Win!' : `${winner.name} Wins!`;
+        }
         modal.classList.remove('hidden');
     }
 
@@ -1635,113 +1421,6 @@ class GameState {
         }
     }
 
-    // ===========================================
-    // MULTIPLAYER METHODS
-    // ===========================================
-
-    /**
-     * Set multiplayer mode
-     * @param {boolean} isMultiplayer
-     * @param {string} roomCode
-     * @param {string} localPlayerId
-     * @param {boolean} isSpectator
-     */
-    setMultiplayerMode(isMultiplayer, roomCode = null, localPlayerId = null, isSpectator = false) {
-        this.isMultiplayer = isMultiplayer;
-        this.roomCode = roomCode;
-        this.localPlayerId = localPlayerId;
-        this.isSpectator = isSpectator;
-    }
-
-    /**
-     * Update game state from server data
-     * @param {Object} serverState
-     */
-    updateFromServer(serverState) {
-        if (!serverState) return;
-
-        // Update players
-        this.players = serverState.players.map((p, index) => {
-            const player = new Player(p.name, p.id === this.localPlayerId, index);
-            player.id = p.id;
-            
-            // Set cards - only show full cards for local player
-            if (p.id === this.localPlayerId && p.hand) {
-                player.hand = p.hand.map(cardData => new Card(cardData.color, cardData.value, cardData.id));
-            } else {
-                // For other players, create placeholder cards based on cardCount
-                player.hand = [];
-                for (let i = 0; i < (p.cardCount || 0); i++) {
-                    player.hand.push(new Card(null, null, `hidden_${i}`));
-                }
-            }
-            
-            player.saidUno = p.saidUno || false;
-            return player;
-        });
-
-        // Update player statuses
-        this.playerStatuses = {};
-        serverState.players.forEach(p => {
-            this.playerStatuses[p.id] = p.status || 'connected';
-        });
-
-        // Update discard pile (server sends top card)
-        if (serverState.discardPile && serverState.discardPile.length > 0) {
-            const topCardData = serverState.discardPile[serverState.discardPile.length - 1];
-            this.discardPile = [new Card(topCardData.color, topCardData.value, topCardData.id)];
-        }
-
-        // Update draw pile count
-        this.drawPileCount = serverState.drawPileCount || 0;
-
-        // Update game properties
-        this.currentPlayerIndex = serverState.currentPlayerIndex;
-        this.direction = serverState.direction;
-        this.currentColor = serverState.currentColor;
-        this.gameOver = serverState.gameOver || false;
-        this.pendingColorChoice = serverState.pendingColorChoice || false;
-
-        if (serverState.winner) {
-            const winnerIndex = this.players.findIndex(p => p.id === serverState.winner);
-            this.winner = winnerIndex >= 0 ? this.players[winnerIndex] : null;
-        }
-    }
-
-    /**
-     * Get the local player (in multiplayer mode)
-     * @returns {Player|null}
-     */
-    getLocalPlayer() {
-        if (!this.isMultiplayer) return this.players[0];
-        return this.players.find(p => p.id === this.localPlayerId);
-    }
-
-    /**
-     * Check if it's the local player's turn
-     * @returns {boolean}
-     */
-    isLocalPlayerTurn() {
-        if (!this.isMultiplayer) return this.currentPlayerIndex === 0;
-        if (this.isSpectator) return false;
-        const localPlayer = this.getLocalPlayer();
-        return localPlayer && this.players[this.currentPlayerIndex]?.id === localPlayer.id;
-    }
-
-    /**
-     * Get player status emoji
-     * @param {Player} player
-     * @returns {string}
-     */
-    getPlayerStatusEmoji(player) {
-        const status = this.playerStatuses[player.id];
-        switch (status) {
-            case 'connected': return '🟢';
-            case 'disconnected': return '🟡';
-            case 'ai': return '🤖';
-            default: return '🟢';
-        }
-    }
 }
 
 // ===========================================
@@ -1878,19 +1557,10 @@ class UIRenderer {
      */
     renderPlayers() {
         const positions = ['bottom', 'left', 'top', 'right'];
-        const localPlayer = this.gameState.getLocalPlayer();
-        const localPlayerIndex = localPlayer ? this.gameState.players.indexOf(localPlayer) : 0;
         
         for (let i = 0; i < this.gameState.players.length; i++) {
             const player = this.gameState.players[i];
-            
-            // Calculate position relative to local player (local player always at bottom)
-            let positionIndex = i;
-            if (this.gameState.isMultiplayer && localPlayerIndex >= 0) {
-                positionIndex = (i - localPlayerIndex + this.gameState.players.length) % this.gameState.players.length;
-            }
-            
-            const position = positions[positionIndex];
+            const position = positions[i];
             const playerArea = document.getElementById(`player-${position}`);
             if (!playerArea) continue;
             
@@ -1898,11 +1568,7 @@ class UIRenderer {
             const cardCount = playerArea.querySelector('.card-count');
             const nameEl = playerArea.querySelector('.player-name');
             
-            // Update player name with status in multiplayer
-            if (this.gameState.isMultiplayer && nameEl) {
-                const statusEmoji = this.gameState.getPlayerStatusEmoji(player);
-                nameEl.innerHTML = `${statusEmoji} ${player.name}`;
-            } else if (nameEl) {
+            if (nameEl) {
                 nameEl.textContent = player.name;
             }
             
@@ -1912,12 +1578,11 @@ class UIRenderer {
             // Clear hand
             handContainer.innerHTML = '';
             
-            // Render cards based on player type and multiplayer mode
-            const isLocalPlayer = this.gameState.isMultiplayer 
-                ? (player.id === this.gameState.localPlayerId)
-                : player.isHuman;
-            
-            if (isLocalPlayer && !this.gameState.isSpectator) {
+            // Render cards based on player type
+            // In local multiplayer, only the active human sees their hand face-up
+            const isActiveHuman = player.isHuman && i === this.gameState.currentPlayerIndex;
+            const showFaceUp = !this.gameState.localMultiplayer ? player.isHuman : isActiveHuman;
+            if (showFaceUp) {
                 this.renderHumanHand(player, handContainer);
             } else {
                 this.renderAIHand(player, handContainer);
@@ -1929,17 +1594,42 @@ class UIRenderer {
             } else {
                 playerArea.classList.remove('active');
             }
-        }
-        
-        // Show spectator banner if spectating
-        const spectatorBanner = document.getElementById('spectator-game-banner');
-        if (spectatorBanner) {
-            if (this.gameState.isSpectator) {
-                spectatorBanner.classList.remove('hidden');
+
+            // Shield indicator
+            if (i === this.gameState.shieldedPlayerIndex) {
+                playerArea.classList.add('shielded');
             } else {
-                spectatorBanner.classList.add('hidden');
+                playerArea.classList.remove('shielded');
             }
         }
+    }
+
+    /**
+     * Build a card DOM element, using CSS rendering for pink cards
+     * @param {Card} card
+     * @returns {HTMLElement}
+     */
+    buildCardElement(card) {
+        const cardEl = document.createElement('div');
+        if (card.isPink()) {
+            cardEl.className = 'card pink-card';
+            const icons = {
+                Pink_Bomb: { icon: '💥', label: 'Pink Bomb' },
+                Pink_Shuffle: { icon: '🔀', label: 'Pink Shuffle' },
+                Pink_Peek: { icon: '👁️', label: 'Peek & Steal' },
+                Pink_Shield: { icon: '🛡️', label: 'Pink Shield' }
+            };
+            const info = icons[card.value] || { icon: '🩷', label: card.value };
+            cardEl.innerHTML = `<span class="pink-icon" aria-hidden="true">${info.icon}</span><span class="pink-label">${info.label}</span>`;
+            cardEl.setAttribute('aria-label', info.label);
+        } else {
+            cardEl.className = 'card';
+            cardEl.style.backgroundImage = `url('${card.getImagePath()}')`;
+            const colorName = card.color ? card.color.charAt(0).toUpperCase() + card.color.slice(1) : '';
+            const valueName = card.value.replace('_', ' ');
+            cardEl.setAttribute('aria-label', colorName ? `${colorName} ${valueName}` : valueName);
+        }
+        return cardEl;
     }
 
     /**
@@ -1950,27 +1640,46 @@ class UIRenderer {
     renderHumanHand(player, container) {
         const topCard = this.gameState.getTopCard();
         const currentColor = this.gameState.currentColor;
-        const isMyTurn = this.gameState.isMultiplayer 
-            ? this.gameState.isLocalPlayerTurn()
-            : this.gameState.currentPlayerIndex === player.index;
+        const isMyTurn = this.gameState.currentPlayerIndex === player.index;
+        const prevCardIds = this._prevHandIds || new Set();
+        const newPrevIds = new Set();
         
         for (const card of player.hand) {
-            const cardEl = document.createElement('div');
-            cardEl.className = 'card';
-            cardEl.style.backgroundImage = `url('${card.getImagePath()}')`;
+            const cardEl = this.buildCardElement(card);
             cardEl.dataset.cardId = card.id;
+            newPrevIds.add(card.id);
             
-            // Check if playable
-            const isPlayable = player.canPlay(card, topCard, currentColor);
+            // Bounce-in animation for newly added cards
+            if (!prevCardIds.has(card.id)) {
+                cardEl.classList.add('bounce-in');
+            }
+            
+            // Check if playable — when draw penalty is active, only Draw_2 can be stacked
+            let isPlayable;
+            if (this.gameState.drawPenalty > 0) {
+                isPlayable = card.value === 'Draw_2';
+            } else {
+                isPlayable = player.canPlay(card, topCard, currentColor);
+            }
             
             if (isMyTurn && isPlayable && !this.gameState.isProcessingTurn && !this.gameState.pendingColorChoice) {
                 cardEl.classList.add('playable');
+                cardEl.setAttribute('role', 'button');
+                cardEl.setAttribute('tabindex', '0');
+                cardEl.setAttribute('aria-label', (cardEl.getAttribute('aria-label') || '') + ' — playable');
                 cardEl.addEventListener('click', () => this.handleCardClick(card));
+                cardEl.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.handleCardClick(card);
+                    }
+                });
                 cardEl.addEventListener('mouseenter', () => this.gameState.playSound('hover'));
             }
             
             container.appendChild(cardEl);
         }
+        this._prevHandIds = newPrevIds;
     }
 
     /**
@@ -1992,42 +1701,105 @@ class UIRenderer {
      */
     handleCardClick(card) {
         if (this.gameState.isProcessingTurn || this.gameState.gameOver) return;
-        if (this.gameState.isSpectator) return;
         
-        // In multiplayer, check if it's our turn
-        if (this.gameState.isMultiplayer) {
-            if (!this.gameState.isLocalPlayerTurn()) return;
-            
-            // If wild card, show color picker
-            if (card.isWild()) {
-                this.gameState.playSound('wild');
-                this.showColorPicker((color) => {
-                    this.gameState.playSound('colorselect');
-                    networkManager.playCard(card.id, color);
-                });
-            } else {
-                this.gameState.playSound('play');
-                networkManager.playCard(card.id);
-            }
-        } else {
-            // Single player mode - original logic
-            const player = this.gameState.getCurrentPlayer();
-            if (!player.isHuman) return;
-            
-            // If wild card, show color picker
-            if (card.isWild()) {
-                this.gameState.playSound('wild');
-                this.showColorPicker((color) => {
-                    this.gameState.playSound('colorselect');
-                    this.gameState.playCard(player, card, color);
-                    this.render();
-                    this.processTurn();
-                });
-            } else {
-                this.gameState.playCard(player, card);
+        const player = this.gameState.getCurrentPlayer();
+        if (!player.isHuman) return;
+        
+        // Animate the card before playing it
+        const cardEl = document.querySelector(`[data-card-id="${card.id}"]`);
+        if (cardEl) cardEl.classList.add('playing');
+        
+        // Pink_Peek requires a special interaction
+        if (card.value === 'Pink_Peek') {
+            this.gameState.playSound('wild');
+            this.gameState.playCard(player, card);
+            this.render();
+            this.showPeekStealPicker(player);
+            return;
+        }
+        
+        // If wild card, show color picker
+        if (card.isWild()) {
+            this.gameState.playSound('wild');
+            this.showColorPicker((color) => {
+                this.gameState.playSound('colorselect');
+                this.gameState.playCard(player, card, color);
                 this.render();
                 this.processTurn();
-            }
+            });
+        } else {
+            this.gameState.playCard(player, card);
+            this.render();
+            this.processTurn();
+        }
+    }
+
+    /**
+     * Show picker to choose a target for Pink Peek & Steal
+     * @param {Player} human
+     */
+    showPeekStealPicker(human) {
+        const opponents = this.gameState.players.filter(p => p.index !== human.index);
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'modal peek-steal-modal';
+        overlay.id = 'peek-steal-modal';
+        overlay.innerHTML = `
+            <div class="modal-content peek-steal-content">
+                <h2 class="peek-steal-title">🩷 Pink Peek & Steal</h2>
+                <p class="peek-steal-sub">Choose a player to peek at their hand and steal a card:</p>
+                <div class="peek-steal-targets" id="peek-steal-targets"></div>
+            </div>
+        `;
+        document.getElementById('game-container').appendChild(overlay);
+        
+        const targetsDiv = overlay.querySelector('#peek-steal-targets');
+        opponents.forEach(opponent => {
+            const btn = document.createElement('button');
+            btn.className = 'peek-target-btn';
+            btn.textContent = `${opponent.name} (${opponent.cardCount()} cards)`;
+            btn.addEventListener('click', () => {
+                overlay.remove();
+                this.showStealPicker(human, opponent);
+            });
+            targetsDiv.appendChild(btn);
+        });
+    }
+
+    /**
+     * Show the target player's hand and let the human steal a card
+     * @param {Player} human
+     * @param {Player} target
+     */
+    showStealPicker(human, target) {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal peek-steal-modal';
+        overlay.innerHTML = `
+            <div class="modal-content peek-steal-content">
+                <h2 class="peek-steal-title">🩷 Steal from ${target.name}</h2>
+                <p class="peek-steal-sub">Click a card to steal it:</p>
+                <div class="peek-hand" id="peek-hand"></div>
+            </div>
+        `;
+        document.getElementById('game-container').appendChild(overlay);
+        
+        const handDiv = overlay.querySelector('#peek-hand');
+        for (const card of target.hand) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card peek-card';
+            cardEl.style.backgroundImage = `url('${card.getImagePath()}')`;
+            cardEl.addEventListener('click', () => {
+                // Steal the card
+                target.removeCard(card.id);
+                human.addCard(card);
+                overlay.remove();
+                this.gameState.showPinkEffect(`🩷 You stole a card from ${target.name}!`);
+                triggerGlitterRain();
+                this.render();
+                this.processTurn();
+            });
+            handDiv.appendChild(cardEl);
         }
     }
 
@@ -2072,10 +1844,31 @@ class UIRenderer {
     renderDiscardPile() {
         const topCard = this.gameState.getTopCard();
         const discardEl = document.querySelector('#discard-pile .card');
+        const discardPile = document.getElementById('discard-pile');
         
         if (topCard) {
-            discardEl.className = 'card discard-top';
-            discardEl.style.backgroundImage = `url('${topCard.getImagePath()}')`;
+            const prevId = discardEl.dataset.topCardId;
+            const changed = prevId !== String(topCard.id);
+
+            if (topCard.isPink()) {
+                const built = this.buildCardElement(topCard);
+                discardEl.className = built.className + ' discard-top';
+                discardEl.style.backgroundImage = '';
+                discardEl.innerHTML = built.innerHTML;
+            } else {
+                discardEl.className = 'card discard-top';
+                discardEl.innerHTML = '';
+                discardEl.style.backgroundImage = `url('${topCard.getImagePath()}')`;
+            }
+            discardEl.dataset.topCardId = topCard.id;
+
+            // Trigger pop animation when top card changes
+            if (changed) {
+                discardPile.classList.remove('card-landed');
+                void discardPile.offsetWidth; // reflow to restart animation
+                discardPile.classList.add('card-landed');
+                setTimeout(() => discardPile.classList.remove('card-landed'), 350);
+            }
         }
     }
 
@@ -2085,13 +1878,15 @@ class UIRenderer {
     renderDrawPile() {
         const drawPile = document.getElementById('draw-pile');
         const pileLabel = drawPile.querySelector('.pile-label');
+        const count = this.gameState.drawPile.count();
         
-        // In multiplayer, use the count from server
-        const count = this.gameState.isMultiplayer 
-            ? (this.gameState.drawPileCount || 0)
-            : this.gameState.drawPile.count();
-        
-        pileLabel.textContent = `DRAW (${count})`;
+        if (this.gameState.drawPenalty > 0) {
+            pileLabel.textContent = `DRAW +${this.gameState.drawPenalty}`;
+            drawPile.setAttribute('aria-label', `Draw pile — penalty: draw ${this.gameState.drawPenalty} cards`);
+        } else {
+            pileLabel.textContent = `DRAW (${count})`;
+            drawPile.setAttribute('aria-label', `Draw pile — ${count} cards remaining`);
+        }
     }
 
     /**
@@ -2130,13 +1925,12 @@ class UIRenderer {
         
         if (this.gameState.gameOver) {
             turnText.textContent = 'Game Over';
-        } else if (this.gameState.isSpectator) {
-            turnText.textContent = `${currentPlayer?.name || 'Player'}'s Turn`;
-        } else if (this.gameState.isMultiplayer) {
-            const isMyTurn = this.gameState.isLocalPlayerTurn();
-            turnText.textContent = isMyTurn ? 'Your Turn' : `${currentPlayer?.name || 'Player'}'s Turn`;
         } else if (currentPlayer?.isHuman) {
-            turnText.textContent = 'Your Turn';
+            if (this.gameState.localMultiplayer) {
+                turnText.textContent = `${currentPlayer.name}'s Turn`;
+            } else {
+                turnText.textContent = 'Your Turn';
+            }
         } else {
             turnText.textContent = `${currentPlayer?.name || 'AI'}'s Turn`;
         }
@@ -2153,9 +1947,95 @@ class UIRenderer {
         if (!currentPlayer.isHuman) {
             this.processAITurn(currentPlayer);
         } else {
-            // It's the human player's turn - play notification sound
-            this.gameState.playSound('yourturn');
+            // In local multiplayer, show pass screen before revealing hand
+            if (this.gameState.localMultiplayer && this.gameState.justPassedTo) {
+                this.gameState.justPassedTo = false;
+                const pin = this.gameState.playerPins[currentPlayer.index] || null;
+                this.showPassScreen(currentPlayer.name, pin, () => {
+                    this.render();
+                    this.gameState.playSound('yourturn');
+                });
+            } else {
+                // It's the human player's turn - play notification sound
+                this.gameState.playSound('yourturn');
+            }
         }
+    }
+
+    /**
+     * Show pass screen between turns in local multiplayer
+     * @param {string} playerName
+     * @param {string|null} pin
+     * @param {Function} onReveal
+     */
+    showPassScreen(playerName, pin, onReveal) {
+        const screen = document.getElementById('pass-screen');
+        const titleEl = document.getElementById('pass-screen-title');
+        const pinSection = document.getElementById('pass-pin-section');
+        const revealBtn = document.getElementById('pass-reveal-btn');
+        const pinError = document.getElementById('pass-pin-error');
+        const pinInputs = document.querySelectorAll('.pass-pin-digit');
+
+        // Reset state
+        titleEl.textContent = `Pass to ${playerName}`;
+        pinError.classList.add('hidden');
+        pinInputs.forEach(inp => { inp.value = ''; });
+
+        if (pin) {
+            pinSection.classList.remove('hidden');
+            revealBtn.classList.add('hidden');
+
+            // Auto-focus first pin digit
+            setTimeout(() => pinInputs[0].focus(), 100);
+
+            // Auto-advance through PIN digits
+            pinInputs.forEach((inp, i) => {
+                inp.addEventListener('input', () => {
+                    inp.value = inp.value.replace(/\D/, '');
+                    if (inp.value.length === 1 && i < pinInputs.length - 1) {
+                        pinInputs[i + 1].focus();
+                    }
+                    // Check complete PIN
+                    const entered = Array.from(pinInputs).map(d => d.value).join('');
+                    if (entered.length === 4) {
+                        if (entered === pin) {
+                            screen.classList.add('hidden');
+                            onReveal();
+                        } else {
+                            pinError.classList.remove('hidden');
+                            setTimeout(() => {
+                                pinError.classList.add('hidden');
+                                pinInputs.forEach(d => { d.value = ''; });
+                                pinInputs[0].focus();
+                            }, 1200);
+                        }
+                    }
+                });
+                inp.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && inp.value === '' && i > 0) {
+                        pinInputs[i - 1].focus();
+                    }
+                });
+            });
+
+            // Clean up listeners when screen hides
+            const oldRevealHandler = revealBtn._handler;
+            if (oldRevealHandler) revealBtn.removeEventListener('click', oldRevealHandler);
+
+        } else {
+            pinSection.classList.add('hidden');
+            revealBtn.classList.remove('hidden');
+
+            const handler = () => {
+                revealBtn.removeEventListener('click', handler);
+                screen.classList.add('hidden');
+                onReveal();
+            };
+            revealBtn._handler = handler;
+            revealBtn.addEventListener('click', handler);
+        }
+
+        screen.classList.remove('hidden');
     }
 
     /**
@@ -2167,6 +2047,27 @@ class UIRenderer {
         this.render();
         
         setTimeout(() => {
+            // If there's a draw penalty, AI must stack or draw
+            if (this.gameState.drawPenalty > 0) {
+                const draw2Cards = aiPlayer.hand.filter(c => c.value === 'Draw_2');
+                if (draw2Cards.length > 0) {
+                    // AI stacks a Draw_2
+                    const cardToPlay = draw2Cards[0];
+                    this.gameState.playSound('opponent');
+                    this.gameState.playCard(aiPlayer, cardToPlay);
+                } else {
+                    // AI must draw the penalty
+                    this.gameState.drawCardForPlayer(aiPlayer);
+                    this.gameState.advanceTurn();
+                }
+                this.gameState.isProcessingTurn = false;
+                this.render();
+                if (!this.gameState.gameOver) {
+                    this.processTurn();
+                }
+                return;
+            }
+
             const playableCards = aiPlayer.getPlayableCards(
                 this.gameState.getTopCard(),
                 this.gameState.currentColor
@@ -2187,6 +2088,18 @@ class UIRenderer {
                 
                 // Play the card
                 this.gameState.playCard(aiPlayer, cardToPlay, chosenColor);
+
+                // Handle Pink_Peek: AI auto-steals from player with most cards
+                if (cardToPlay.value === 'Pink_Peek') {
+                    const targets = this.gameState.players.filter(p => p.index !== aiPlayer.index && p.hand.length > 0);
+                    if (targets.length > 0) {
+                        const target = targets.reduce((a, b) => a.hand.length > b.hand.length ? a : b);
+                        const stolenCard = target.hand[Math.floor(Math.random() * target.hand.length)];
+                        target.removeCard(stolenCard.id);
+                        aiPlayer.addCard(stolenCard);
+                        this.gameState.showPinkEffect(`🩷 ${aiPlayer.name} peeked and stole from ${target.name}!`);
+                    }
+                }
             } else {
                 // AI draws a card
                 const drawnCard = this.gameState.drawCardForPlayer(aiPlayer);
@@ -2227,46 +2140,38 @@ class UIRenderer {
      */
     handleDrawClick() {
         if (this.gameState.isProcessingTurn || this.gameState.gameOver) return;
-        if (this.gameState.isSpectator) return;
         
-        // In multiplayer, use network manager
-        if (this.gameState.isMultiplayer) {
-            if (!this.gameState.isLocalPlayerTurn()) return;
-            this.gameState.playSound('draw');
-            networkManager.drawCard();
-        } else {
-            // Single player mode - original logic
-            const player = this.gameState.getCurrentPlayer();
-            if (!player.isHuman) return;
-            
-            // Check if player has playable cards
-            const playableCards = player.getPlayableCards(
-                this.gameState.getTopCard(),
-                this.gameState.currentColor
-            );
-            
-            // Draw a card
-            const drawnCard = this.gameState.drawCardForPlayer(player);
-            
-            if (drawnCard) {
+        const player = this.gameState.getCurrentPlayer();
+        if (!player.isHuman) return;
+        
+        // If there's a draw penalty, player must accept it
+        if (this.gameState.drawPenalty > 0) {
+            this.gameState.drawCardForPlayer(player);
+            this.render();
+            setTimeout(() => {
+                this.gameState.advanceTurn();
                 this.render();
-                
-                // Check if drawn card is playable
-                if (player.canPlay(drawnCard, this.gameState.getTopCard(), this.gameState.currentColor)) {
-                    // Allow playing the drawn card (it will be highlighted)
-                    // Player can choose to play it or pass
-                    setTimeout(() => {
-                        // If player doesn't play within 3 seconds, auto-advance
-                        // But for now, just let them click it
-                    }, 100);
-                } else {
-                    // Can't play, advance turn
-                    setTimeout(() => {
-                        this.gameState.advanceTurn();
-                        this.render();
-                        this.processTurn();
-                    }, 500);
-                }
+                this.processTurn();
+            }, 500);
+            return;
+        }
+        
+        // Draw a card
+        const drawnCard = this.gameState.drawCardForPlayer(player);
+        
+        if (drawnCard) {
+            this.render();
+            
+            // Check if drawn card is playable
+            if (player.canPlay(drawnCard, this.gameState.getTopCard(), this.gameState.currentColor)) {
+                // Allow playing the drawn card (it will be highlighted)
+            } else {
+                // Can't play, advance turn
+                setTimeout(() => {
+                    this.gameState.advanceTurn();
+                    this.render();
+                    this.processTurn();
+                }, 500);
             }
         }
     }
@@ -2285,102 +2190,21 @@ class GameController {
         this.renderer = new UIRenderer(this.gameState);
         this.currentView = 'mode-selection';
         this.setupEventListeners();
-        this.setupNetworkListeners();
     }
 
     /**
      * Setup all event listeners
      */
     setupEventListeners() {
-        // Mode selection buttons
+        // Play vs AI button
         const playAiBtn = document.getElementById('play-ai-btn');
         if (playAiBtn) {
             playAiBtn.addEventListener('click', () => {
                 this.startGame();
             });
         }
-        
-        const createRoomBtn = document.getElementById('create-room-btn');
-        if (createRoomBtn) {
-            createRoomBtn.addEventListener('click', () => {
-                this.showView('create-room-view');
-            });
-        }
-        
-        const joinRoomBtn = document.getElementById('join-room-btn');
-        if (joinRoomBtn) {
-            joinRoomBtn.addEventListener('click', () => {
-                this.showView('join-room-view');
-            });
-        }
-        
-        // Create room form
-        const createRoomForm = document.getElementById('create-room-form');
-        if (createRoomForm) {
-            createRoomForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('create-player-name').value.trim() || 'Player';
-                this.createRoom(name);
-            });
-        }
-        
-        // Join room form
-        const joinRoomForm = document.getElementById('join-room-form');
-        if (joinRoomForm) {
-            joinRoomForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('join-player-name').value.trim() || 'Player';
-                const code = document.getElementById('room-code-input').value.trim().toUpperCase();
-                if (code.length === 4) {
-                    this.joinRoom(code, name, false);
-                }
-            });
-        }
-        
-        // Spectate button
-        const spectateBtn = document.getElementById('spectate-btn');
-        if (spectateBtn) {
-            spectateBtn.addEventListener('click', () => {
-                const code = document.getElementById('room-code-input').value.trim().toUpperCase();
-                if (code.length === 4) {
-                    this.joinRoom(code, 'Spectator', true);
-                }
-            });
-        }
-        
-        // Back buttons
-        document.querySelectorAll('.back-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                this.showView('mode-selection');
-            });
-        });
-        
-        // Lobby ready toggle
-        const readyToggle = document.getElementById('ready-toggle');
-        if (readyToggle) {
-            readyToggle.addEventListener('click', () => {
-                networkManager.toggleReady();
-            });
-        }
-        
-        // Lobby start game button
-        const lobbyStartBtn = document.getElementById('lobby-start-btn');
-        if (lobbyStartBtn) {
-            lobbyStartBtn.addEventListener('click', () => {
-                networkManager.startGame();
-            });
-        }
-        
-        // Leave lobby button
-        const leaveLobbyBtn = document.getElementById('leave-lobby-btn');
-        if (leaveLobbyBtn) {
-            leaveLobbyBtn.addEventListener('click', () => {
-                networkManager.leaveRoom();
-                this.showView('mode-selection');
-            });
-        }
 
-        // Start game button (single player - legacy support)
+        // Start game button (legacy support)
         const startGameBtn = document.getElementById('start-game-btn');
         if (startGameBtn) {
             startGameBtn.addEventListener('click', () => {
@@ -2388,23 +2212,19 @@ class GameController {
             });
         }
 
-        // New game button
+        // New game button — show mode selection screen
         document.getElementById('new-game-btn').addEventListener('click', () => {
-            if (this.gameState.isMultiplayer) {
-                // In multiplayer, go back to mode selection
-                networkManager.leaveRoom();
-                this.showView('mode-selection');
-            } else {
-                this.startGame();
-            }
+            document.getElementById('local-setup').classList.add('hidden');
+            document.getElementById('mode-selection').classList.remove('hidden');
+            const startModal = document.getElementById('start-modal');
+            if (startModal) startModal.classList.remove('hidden');
         });
 
         // Play again button
         document.getElementById('play-again-btn').addEventListener('click', () => {
             document.getElementById('winner-modal').classList.add('hidden');
-            if (this.gameState.isMultiplayer) {
-                networkManager.leaveRoom();
-                this.showView('mode-selection');
+            if (this.gameState.localMultiplayer && this._lastPlayerConfig) {
+                this.startGame(this._lastPlayerConfig);
             } else {
                 this.startGame();
             }
@@ -2431,270 +2251,168 @@ class GameController {
         document.addEventListener('mozfullscreenchange', () => this.updateFullscreenButton());
         document.addEventListener('MSFullscreenChange', () => this.updateFullscreenButton());
 
-        // Draw pile click
-        document.getElementById('draw-pile').addEventListener('click', () => {
+        // Draw pile click + keyboard activation
+        const drawPileEl = document.getElementById('draw-pile');
+        drawPileEl.addEventListener('click', () => {
             this.renderer.handleDrawClick();
         });
-    }
-    
-    /**
-     * Setup network event listeners
-     */
-    setupNetworkListeners() {
-        networkManager.on('roomCreated', (data) => {
-            this.showLobby(data.roomCode, true);
-        });
-        
-        networkManager.on('roomJoined', (data) => {
-            if (data.isSpectator) {
-                this.showView('spectator-view');
-                this.gameState.setMultiplayerMode(true, data.roomCode, null, true);
-            } else {
-                this.showLobby(data.roomCode, false);
-            }
-        });
-        
-        networkManager.on('lobbyState', (data) => {
-            this.updateLobbyUI(data);
-        });
-        
-        networkManager.on('gameStarted', (data) => {
-            this.startMultiplayerGame();
-        });
-        
-        networkManager.on('gameState', (data) => {
-            this.handleGameStateUpdate(data);
-        });
-        
-        networkManager.on('chooseColor', () => {
-            this.renderer.showColorPicker((color) => {
-                this.gameState.playSound('colorselect');
-                networkManager.chooseColor(color);
-            });
-        });
-        
-        networkManager.on('colorChosen', (data) => {
-            this.gameState.currentColor = data.color;
-            this.renderer.render();
-        });
-        
-        networkManager.on('unoDeclared', (data) => {
-            const player = this.gameState.players.find(p => p.id === data.playerId);
-            if (player) {
-                this.gameState.triggerUnoAlert(player);
-            }
-        });
-        
-        networkManager.on('playerAction', (data) => {
-            // Play appropriate sound
-            if (data.action === 'playCard') {
-                this.gameState.playSound('play');
-            } else if (data.action === 'drawCard') {
-                this.gameState.playSound('draw');
+        drawPileEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.renderer.handleDrawClick();
             }
         });
 
-        networkManager.on('error', (data) => {
-            if (data.code === 'ROOM_NOT_FOUND') {
-                this.showView('join-room-view');
+        // Rules button
+        document.getElementById('rules-btn').addEventListener('click', () => {
+            document.getElementById('rules-modal').classList.remove('hidden');
+        });
+
+        // Rules close button
+        document.getElementById('rules-close-btn').addEventListener('click', () => {
+            document.getElementById('rules-modal').classList.add('hidden');
+        });
+
+        // Close rules modal on backdrop click
+        document.getElementById('rules-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('rules-modal')) {
+                document.getElementById('rules-modal').classList.add('hidden');
             }
         });
+
+        // Local Multiplayer button
+        const playLocalBtn = document.getElementById('play-local-btn');
+        if (playLocalBtn) {
+            playLocalBtn.addEventListener('click', () => {
+                this.showLocalSetup();
+            });
+        }
+
+        // Cancel local setup
+        const cancelLocalBtn = document.getElementById('cancel-local-btn');
+        if (cancelLocalBtn) {
+            cancelLocalBtn.addEventListener('click', () => {
+                document.getElementById('local-setup').classList.add('hidden');
+                document.getElementById('mode-selection').classList.remove('hidden');
+            });
+        }
+
+        // Player count buttons
+        const countMinus = document.getElementById('count-minus');
+        const countPlus = document.getElementById('count-plus');
+        if (countMinus && countPlus) {
+            countMinus.addEventListener('click', () => this.adjustPlayerCount(-1));
+            countPlus.addEventListener('click', () => this.adjustPlayerCount(1));
+        }
+
+        // Start local game button
+        const startLocalBtn = document.getElementById('start-local-btn');
+        if (startLocalBtn) {
+            startLocalBtn.addEventListener('click', () => {
+                this.startLocalGame();
+            });
+        }
     }
-    
+
     /**
-     * Show a specific view
-     * @param {string} viewId
+     * Show local multiplayer setup screen
      */
-    showView(viewId) {
-        const views = [
-            'mode-selection', 'start-modal', 'create-room-view', 
-            'join-room-view', 'lobby-view', 'spectator-view'
-        ];
-        
-        views.forEach(v => {
-            const el = document.getElementById(v);
-            if (el) {
-                if (v === viewId) {
-                    el.classList.remove('hidden');
+    showLocalSetup() {
+        document.getElementById('mode-selection').classList.add('hidden');
+        document.getElementById('local-setup').classList.remove('hidden');
+        this._localPlayerCount = 2;
+        document.getElementById('player-count-display').textContent = '2';
+        this.renderPlayerNameInputs();
+    }
+
+    /**
+     * Adjust local player count (+1 or -1)
+     * @param {number} delta
+     */
+    adjustPlayerCount(delta) {
+        const min = 2, max = 4;
+        this._localPlayerCount = Math.min(max, Math.max(min, (this._localPlayerCount || 2) + delta));
+        document.getElementById('player-count-display').textContent = this._localPlayerCount;
+        this.renderPlayerNameInputs();
+    }
+
+    /**
+     * Render player name + optional PIN input rows
+     */
+    renderPlayerNameInputs() {
+        const container = document.getElementById('player-name-inputs');
+        container.innerHTML = '';
+        const count = this._localPlayerCount || 2;
+        for (let i = 0; i < count; i++) {
+            const row = document.createElement('div');
+            row.className = 'player-name-row';
+            row.innerHTML = `
+                <input type="text" class="player-name-input" id="player-name-${i}"
+                    placeholder="Player ${i + 1}" maxlength="12" value="Player ${i + 1}">
+                <label class="player-pin-toggle">
+                    <input type="checkbox" id="use-pin-${i}"> Use PIN
+                </label>
+            `;
+            container.appendChild(row);
+
+            // PIN input row (hidden by default)
+            const pinRow = document.createElement('div');
+            pinRow.className = 'player-pin-row hidden';
+            pinRow.id = `pin-row-${i}`;
+            pinRow.innerHTML = `
+                <p class="player-pin-label">4-digit PIN for Player ${i + 1}:</p>
+                <input type="password" class="player-pin-input" id="player-pin-${i}"
+                    maxlength="4" placeholder="••••" inputmode="numeric" pattern="[0-9]*">
+            `;
+            container.appendChild(pinRow);
+
+            // Toggle PIN row visibility
+            const checkbox = row.querySelector(`#use-pin-${i}`);
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    pinRow.classList.remove('hidden');
                 } else {
-                    el.classList.add('hidden');
+                    pinRow.classList.add('hidden');
                 }
-            }
-        });
-        
-        this.currentView = viewId;
-    }
-    
-    /**
-     * Create a new multiplayer room
-     * @param {string} playerName
-     */
-    async createRoom(playerName) {
-        try {
-            await networkManager.connect();
-            networkManager.createRoom(playerName);
-        } catch (error) {
-            networkManager.showToast('Failed to connect to server', 'error');
-        }
-    }
-    
-    /**
-     * Join an existing room
-     * @param {string} roomCode
-     * @param {string} playerName
-     * @param {boolean} asSpectator
-     */
-    async joinRoom(roomCode, playerName, asSpectator = false) {
-        try {
-            await networkManager.connect();
-            networkManager.joinRoom(roomCode, playerName, asSpectator);
-        } catch (error) {
-            networkManager.showToast('Failed to connect to server', 'error');
-        }
-    }
-    
-    /**
-     * Show lobby view
-     * @param {string} roomCode
-     * @param {boolean} isHost
-     */
-    showLobby(roomCode, isHost) {
-        this.showView('lobby-view');
-        
-        const codeDisplay = document.getElementById('lobby-room-code');
-        if (codeDisplay) {
-            codeDisplay.textContent = roomCode;
-        }
-        
-        const startBtn = document.getElementById('lobby-start-btn');
-        if (startBtn) {
-            startBtn.classList.toggle('hidden', !isHost);
-        }
-    }
-    
-    /**
-     * Update lobby UI with player list
-     * @param {Object} data
-     */
-    updateLobbyUI(data) {
-        const playerList = document.getElementById('lobby-player-list');
-        if (!playerList) return;
-        
-        playerList.innerHTML = '';
-        
-        data.players.forEach(player => {
-            const li = document.createElement('li');
-            li.className = 'player-item';
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'player-name';
-            nameSpan.textContent = player.name;
-            if (player.isHost) {
-                nameSpan.textContent += ' 👑';
-            }
-            
-            const statusSpan = document.createElement('span');
-            statusSpan.className = `status-badge ${player.isReady ? 'ready' : 'not-ready'}`;
-            statusSpan.textContent = player.isReady ? 'Ready' : 'Not Ready';
-            
-            li.appendChild(nameSpan);
-            li.appendChild(statusSpan);
-            playerList.appendChild(li);
-        });
-        
-        // Update spectator count
-        const spectatorCount = document.getElementById('spectator-count');
-        if (spectatorCount && data.spectatorCount !== undefined) {
-            spectatorCount.textContent = `${data.spectatorCount} spectator(s)`;
-        }
-        
-        // Update ready toggle button state
-        const readyToggle = document.getElementById('ready-toggle');
-        if (readyToggle) {
-            const localPlayer = data.players.find(p => p.id === networkManager.playerId);
-            if (localPlayer) {
-                readyToggle.textContent = localPlayer.isReady ? 'Not Ready' : 'Ready Up';
-                readyToggle.classList.toggle('ready', localPlayer.isReady);
-            }
-        }
-        
-        // Enable/disable start button
-        const startBtn = document.getElementById('lobby-start-btn');
-        if (startBtn && networkManager.isHost) {
-            const allReady = data.players.length >= 2 && data.players.every(p => p.isReady);
-            startBtn.disabled = !allReady;
-            startBtn.title = allReady ? 'Start the game' : 'Need 2+ players, all ready';
-        }
-    }
-    
-    /**
-     * Start multiplayer game
-     */
-    startMultiplayerGame() {
-        this.showView('game'); // Hide all modals
-        
-        // Hide all modal views
-        ['mode-selection', 'start-modal', 'create-room-view', 'join-room-view', 'lobby-view', 'spectator-view']
-            .forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
             });
-        
-        // Set multiplayer mode
-        this.gameState.setMultiplayerMode(
-            true, 
-            networkManager.roomCode, 
-            networkManager.playerId,
-            networkManager.isSpectator
-        );
-        
-        // Initialize audio
-        if (!soundManager.audioContext) {
-            soundManager.init();
-        }
-        
-        this.gameState.startBackgroundMusic();
-        this.gameState.playSound('gamestart');
-    }
-    
-    /**
-     * Handle game state update from server
-     * @param {Object} data
-     */
-    handleGameStateUpdate(data) {
-        const wasMyTurn = this.gameState.isLocalPlayerTurn();
-        
-        // Update local game state from server
-        this.gameState.updateFromServer(data);
-        
-        // Render
-        this.renderer.render();
-        
-        // Play turn notification if it became our turn
-        const isMyTurn = this.gameState.isLocalPlayerTurn();
-        if (!wasMyTurn && isMyTurn && !this.gameState.gameOver) {
-            this.gameState.playSound('yourturn');
-        }
-        
-        // Check for game over
-        if (this.gameState.gameOver && this.gameState.winner) {
-            this.gameState.endGame(this.gameState.winner);
         }
     }
 
     /**
-     * Start a new game (single player)
+     * Start a local pass-and-play game with the configured players
      */
-    startGame() {
-        // Hide all modal views for single-player
-        ['mode-selection', 'start-modal', 'create-room-view', 'join-room-view', 'lobby-view', 'spectator-view']
-            .forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-        
-        // Reset to single-player mode
-        this.gameState.setMultiplayerMode(false);
+    startLocalGame() {
+        const count = this._localPlayerCount || 2;
+        const playerConfig = [];
+
+        for (let i = 0; i < count; i++) {
+            const nameInput = document.getElementById(`player-name-${i}`);
+            const pinInput = document.getElementById(`player-pin-${i}`);
+            const usePinCheckbox = document.getElementById(`use-pin-${i}`);
+            const name = (nameInput?.value.trim()) || `Player ${i + 1}`;
+            const pin = (usePinCheckbox?.checked && pinInput?.value.length === 4) ? pinInput.value : null;
+            playerConfig.push({ name, isHuman: true, pin });
+        }
+
+        // Fill remaining seats with AI (always 4 players total)
+        const aiCount = 4 - count;
+        for (let i = 0; i < aiCount; i++) {
+            playerConfig.push({ name: `Bot ${i + 1}`, isHuman: false, pin: null });
+        }
+
+        this.gameState.localMultiplayer = true;
+        this.gameState.justPassedTo = false;
+        this.startGame(playerConfig);
+    }
+
+    /**
+     * Start a new game
+     * @param {Array} [playerConfig] - Optional player config for local multiplayer
+     */
+    startGame(playerConfig) {
+        // Hide start modal
+        const startModal = document.getElementById('start-modal');
+        if (startModal) startModal.classList.add('hidden');
         
         // Initialize audio context on user interaction
         if (!soundManager.audioContext) {
@@ -2707,8 +2425,17 @@ class GameController {
         // Play game start jingle
         this.gameState.playSound('gamestart');
         
+        // If no playerConfig, reset localMultiplayer mode
+        if (!playerConfig) {
+            this.gameState.localMultiplayer = false;
+            this.gameState.justPassedTo = false;
+            this._lastPlayerConfig = null;
+        } else {
+            this._lastPlayerConfig = playerConfig;
+        }
+
         // Initialize game
-        this.gameState.initGame();
+        this.gameState.initGame(playerConfig);
         
         // Render
         this.renderer.render();
