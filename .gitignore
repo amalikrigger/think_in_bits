@@ -30,3 +30,6 @@ npm-debug.log*
 # Temp files
 *.tmp
 *.temp
+
+# Excluded project folders
+new/

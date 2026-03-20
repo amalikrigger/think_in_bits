@@ -642,7 +642,7 @@ td {
     box-shadow: 0 0 4px rgba(0,0,0,0.8), inset -2px -2px 4px rgba(0,0,0,0.2);
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg) translateY(calc(-1 * min(200px, 45vw)));
+    transform: translate(-50%, -50%) rotate(0deg) translateY(calc(-1 * (min(360px, 80vw) / 2 - 8px)));
 }
 
 .pointer {
@@ -1087,9 +1087,30 @@ input[type="text"]:focus-visible {
 }
 
 /* --- Accessibility: Color-Blind Safe Indicators --- */
-.number-badge.red::before   { content: "R "; font-size: 0.6em; opacity: 0.6; }
-.number-badge.black::before { content: "B "; font-size: 0.6em; opacity: 0.6; }
-.number-badge.green::before { content: "G "; font-size: 0.6em; opacity: 0.6; }
+.number-badge {
+    position: relative;
+}
+.number-badge.red::before,
+.number-badge.black::before,
+.number-badge.green::before {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 0.55em;
+    line-height: 1;
+    opacity: 0.7;
+    pointer-events: none;
+}
+.number-badge.red::before   { content: "R"; }
+.number-badge.black::before { content: "B"; }
+.number-badge.green::before { content: "G"; }
+.large-badge.red::before,
+.large-badge.black::before,
+.large-badge.green::before {
+    top: 2px;
+    right: 2px;
+    font-size: 0.35em;
+}
 
 /* --- Enhanced Visual Feedback --- */
 

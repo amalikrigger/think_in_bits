@@ -79,6 +79,10 @@ class GameController {
             if (key === 'R') { this.repeatBet(); return; }
             if (key === 'ESCAPE') {
                 if (!this.ui.settingsModal.classList.contains('hidden')) this.saveSettings();
+                else if (!this.ui.helpModal.classList.contains('hidden')) {
+                    this.ui.helpModal.classList.add('hidden');
+                    this.ui._releaseFocus();
+                }
                 return;
             }
             const map = { 'H': 'hit-btn', 'S': 'stand-btn', 'D': 'double-btn', 'P': 'split-btn', 'Q': 'surrender-btn', 'ENTER': 'deal-btn' };
@@ -197,7 +201,22 @@ class GameController {
             const dealerVal = this.dealerHand.calculateValue(); // This calculates including hidden card
             if (dealerVal === 21) {
                 this.dealerHand.cards[1].isHidden = false;
-                this.resolveRound();
+                // Visually reveal the hole card with flip animation
+                const dealerCardEls = this.ui.dealerHand.querySelectorAll('.card');
+                if (dealerCardEls[1]) {
+                    dealerCardEls[1].classList.remove('card-hidden');
+                    dealerCardEls[1].classList.add('flipping');
+                    setTimeout(() => {
+                        dealerCardEls[1].style.backgroundImage = `url(${this.dealerHand.cards[1].imagePath})`;
+                    }, 300);
+                    setTimeout(() => {
+                        dealerCardEls[1].classList.remove('flipping');
+                    }, 600);
+                }
+                if (window.soundManager) window.soundManager.play('flip');
+                this.ui.dealerScore.textContent = dealerVal;
+                // Delay resolve to let flip animation complete
+                setTimeout(() => this.resolveRound(), 700);
                 return;
             }
         }

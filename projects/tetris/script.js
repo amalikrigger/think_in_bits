@@ -279,7 +279,7 @@ function drawBoard() {
 }
 
 function drawGhost() {
-    if (!currentTetromino || clearingRows.length > 0) return;
+    if (!currentTetromino || clearingRows.length > 0 || ghostY === 0) return;
     const shape = currentTetromino.shape;
     for (let y = 0; y < shape.length; y++) {
         for (let x = 0; x < shape[y].length; x++) {
@@ -373,6 +373,8 @@ function removeRows(rows) {
     rows.sort((a, b) => b - a);
     for (const row of rows) {
         board.splice(row, 1);
+    }
+    while (board.length < ROWS) {
         board.unshift(Array(COLS).fill(null));
     }
     const count = rows.length;
@@ -441,6 +443,7 @@ function moveDown() {
     if (!currentTetromino) return;
     if (!hasCollision(0, 1)) {
         currentPos.y++;
+        ghostY--;
         if (isLocking) resetLockDelay();
         return true;
     }
@@ -452,6 +455,7 @@ function hardDrop() {
     const cellsDropped = ghostY;
     currentPos.y += ghostY;
     score += cellsDropped * 2;
+    updateStats();
     lockPiece();
 }
 
@@ -645,7 +649,7 @@ document.addEventListener('keydown', (e) => {
         return;
     }
 
-    if (gameOver || paused) return;
+    if (gameOver || paused || clearingRows.length > 0) return;
 
     switch (e.key) {
         case 'ArrowLeft':
@@ -701,7 +705,7 @@ function createTouchControls() {
         btn.setAttribute('aria-label', label);
         btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (!gameOver && !paused || label === '\u23F8') action();
+            if ((!gameOver && !paused && clearingRows.length === 0) || label === '\u23F8') action();
         });
         container.appendChild(btn);
     });

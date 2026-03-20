@@ -49,15 +49,15 @@ body {
     letter-spacing: 1px;
 }
 
-/* Drag feedback */
-.dragging {
-    opacity: 0.5;
-    transform: scale(0.9);
+/* Invalid swap feedback */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
 
-.drag-over {
-    transform: scale(1.1);
-    filter: brightness(1.2);
+.invalid-swap {
+    animation: shake 300ms ease;
 }
 
 /* Crush animation */

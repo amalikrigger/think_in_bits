@@ -878,9 +878,13 @@ async function spin() {
 
 function animateBallSpiral(startRotation, finalRotation, duration) {
     const startTime = performance.now();
-    const wheelSize = elements.wheel.getBoundingClientRect().width;
-    const startRadius = -(wheelSize / 2 + 8);
-    const endRadius = -(wheelSize / 2 - 15);
+    // Use clientWidth — immune to CSS transform rotation unlike getBoundingClientRect
+    const wheelRadius = elements.wheel.clientWidth / 2;
+    const startRadius = -(wheelRadius - 8);
+    const endRadius = -(wheelRadius - 35);
+
+    // Reset ball to outer edge before each spin (like a real roulette launch)
+    elements.ball.style.transform = `translate(-50%, -50%) rotate(${startRotation}deg) translateY(${startRadius}px)`;
     
     const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 

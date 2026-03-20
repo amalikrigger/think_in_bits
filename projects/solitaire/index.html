@@ -194,6 +194,8 @@ kbd{background:rgba(255,255,255,.12);border-radius:4px;padding:1px 5px;font-size
 .win-box,.lose-box{max-width:500px;width:92%;}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;}}
 @media(hover:none){.card:not(.back):hover{transform:none;box-shadow:0 5px 16px rgba(0,0,0,.24),0 1px 4px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.7);}}
+.card,.pile{touch-action:manipulation;}
+.card:not(.back):active{transform:scale(0.96);transition-duration:0.05s;}
 
 /* ── smooth theme transitions ── */
 html,body{transition:background .4s ease;}
@@ -714,6 +716,31 @@ function updateHUD(){
   el=document.getElementById('time');if(el)el.textContent=timeFmt();
 }
 
+/* partial render - rebuilds only the game table area */
+function renderTable(){
+  var sw=document.getElementById('stockWaste');
+  var fnd=document.getElementById('foundations');
+  var tab=document.getElementById('tableau');
+  if(!sw||!fnd||!tab)return;
+  sw.innerHTML='';fnd.innerHTML='';tab.innerHTML='';
+  sw.appendChild(buildStock());
+  sw.appendChild(buildWaste());
+  for(var i=0;i<SUITS.length;i++)fnd.appendChild(buildFoundation(SUITS[i]));
+  for(var c=0;c<7;c++)tab.appendChild(buildColumn(c));
+  var undoBtn=document.getElementById('btnUndo');
+  if(undoBtn)undoBtn.disabled=state.history.length===0||state.ended;
+  var autoBtn=document.getElementById('btnAuto');
+  if(autoBtn){
+    if(canAutoComplete()&&!state.ended){autoBtn.className='autocomplete-hint';autoBtn.textContent='\u2713 Auto-Complete';}
+    else{autoBtn.className='';autoBtn.textContent='Auto';}
+  }
+  var piles=document.querySelectorAll('.pile');
+  for(var i=0;i<piles.length;i++)piles[i].tabIndex=i===ui.focusIndex?0:-1;
+  if(document.hasFocus()){var fp=piles[ui.focusIndex];if(fp)fp.focus({preventScroll:true});}
+  if(!state.ended)requestAnimationFrame(checkLose);
+  ui.justFlipped=[];
+}
+
 /* new game */
 function newGame(){
   if(timerInterval)clearInterval(timerInterval);
@@ -766,7 +793,7 @@ function checkLose(){
     updateStats(false);
     clearGameState();
     say('No legal moves remain. Game over.');
-    render();
+    renderTable();updateHUD();
     setTimeout(showLose,400);
   }
 }
@@ -799,7 +826,7 @@ function drawStock(){
   var n=Math.min(CFG.drawCount,state.stock.length);
   for(var i=0;i<n;i++){var c=state.stock.pop();c.up=true;state.waste.push(c);}
   state.moves++;
-  say('Drew '+n+' card'+(n>1?'s':'')+'.');tone('deal');render();return true;
+  say('Drew '+n+' card'+(n>1?'s':'')+'.');tone('deal');renderTable();updateHUD();return true;
 }
 function wasteToFoundation(){
   if(state.ended||!state.waste.length)return false;
@@ -807,7 +834,7 @@ function wasteToFoundation(){
   if(!canF(c,state.foundations[c.suit]))return false;
   push();state.waste.pop();state.foundations[c.suit].push(c);
   state.moves++;state.score+=10;state.bankroll+=CFG.fPayout;
-  say(lbl(c)+' \u2192 foundation.');tone('foundation');checkFoundationComplete(c.suit);checkWin();render();return true;
+  say(lbl(c)+' \u2192 foundation.');tone('foundation');checkFoundationComplete(c.suit);checkWin();renderTable();updateHUD();return true;
 }
 function tableauToFoundation(col){
   if(state.ended)return false;
@@ -820,7 +847,7 @@ function tableauToFoundation(col){
     ui.justFlipped.push({col:col,idx:pile.length-1});
   }
   state.moves++;state.score+=10;state.bankroll+=CFG.fPayout;
-  say(lbl(c)+' \u2192 foundation.');tone('foundation');checkFoundationComplete(c.suit);checkWin();render();return true;
+  say(lbl(c)+' \u2192 foundation.');tone('foundation');checkFoundationComplete(c.suit);checkWin();renderTable();updateHUD();return true;
 }
 function wasteToTableau(col){
   if(state.ended||!state.waste.length)return false;
@@ -830,7 +857,7 @@ function wasteToTableau(col){
   if(!canT(c,top))return false;
   push();state.waste.pop();tgt.push(c);
   state.moves++;state.score+=5;
-  say(lbl(c)+' \u2192 column '+(col+1)+'.');tone('move');render();return true;
+  say(lbl(c)+' \u2192 column '+(col+1)+'.');tone('move');renderTable();updateHUD();return true;
 }
 function tableauRun(fc,start,tc){
   if(state.ended||fc===tc)return false;
@@ -847,11 +874,11 @@ function tableauRun(fc,start,tc){
     ui.justFlipped.push({col:fc,idx:from.length-1});
   }
   state.moves++;state.score+=3;
-  say('Moved '+run.length+' card'+(run.length>1?'s':'')+'.');tone('move');render();return true;
+  say('Moved '+run.length+' card'+(run.length>1?'s':'')+'.');tone('move');renderTable();updateHUD();return true;
 }
 function doUndo(){
   if(!state.history.length){say('Nothing to undo.');tone('bad');return;}
-  restoreSnap(state.history.pop());ui.selected=null;say('Undo.');render();
+  restoreSnap(state.history.pop());ui.selected=null;say('Undo.');renderTable();updateHUD();
 }
 
 /* hint - smart cycling */
@@ -925,7 +952,7 @@ function autoMove(){
   var iv=setInterval(function(){
     if(!autoOnce()){
       clearInterval(iv);ui.autoRunning=false;
-      saveGameState(); /* single save after chain completes */
+      if(!state.ended)saveGameState(); /* single save after chain completes */
       // after animated auto-complete, check if we've won
       var total=0;for(var i=0;i<SUITS.length;i++)total+=state.foundations[SUITS[i]].length;
       if(total===52){}// checkWin already called by tableauToFoundation
@@ -980,12 +1007,12 @@ function sameSrc(a,b){return a.type===b.type&&a.col===b.col&&a.index===b.index&&
 function pickOrDrop(src){
   if(!ui.selected){
     if(src.type==='foundation')return;
-    ui.selected=src;say('Selected - tap destination.');render();return;
+    ui.selected=src;say('Selected - tap destination.');renderTable();return;
   }
-  if(sameSrc(ui.selected,src)){ui.selected=null;say('Deselected.');render();return;}
+  if(sameSrc(ui.selected,src)){ui.selected=null;say('Deselected.');renderTable();return;}
   var ok=attempt(src);
   if(!ok){var reason=describeFail(ui.selected,src);say(reason);tone('bad');shakeTarget(src);}
-  ui.selected=null;render();
+  ui.selected=null;renderTable();
 }
 
 /* drag & touch */
@@ -1004,7 +1031,7 @@ function bindDrag(node,payload){
   });
   node.addEventListener('touchend',function(e){
     e.preventDefault();touchLock=true;setTimeout(function(){touchLock=false;},TOUCH_LOCK_MS);
-    ui.selected=payload;render();
+    ui.selected=payload;renderTable();
   },{passive:false});
 }
 function bindDrop(node,dest){
@@ -1016,14 +1043,14 @@ function bindDrop(node,dest){
     var src;try{src=JSON.parse(raw);}catch(ex){return;}
     ui.selected=src;
     if(!attempt(dest)){var reason=describeFail(src,dest);say(reason);tone('bad');shakeTarget(dest);}
-    ui.selected=null;render();
+    ui.selected=null;renderTable();
   });
   node.addEventListener('touchend',function(e){
     e.preventDefault();
     if(!ui.selected)return;
     touchLock=true;setTimeout(function(){touchLock=false;},TOUCH_LOCK_MS);
     if(!attempt(dest)){var reason=describeFail(ui.selected,dest);say(reason);tone('bad');shakeTarget(dest);}
-    ui.selected=null;render();
+    ui.selected=null;renderTable();
   },{passive:false});
 }
 
@@ -1051,6 +1078,7 @@ function buildStock(){
   var p=document.createElement('button');
   p.type='button';p.className='pile';
   p.setAttribute('aria-label','Stock: '+state.stock.length+' cards');
+  p.setAttribute('aria-keyshortcuts','d');
   if(state.stock.length){
     p.dataset.label=state.stock.length+'';
     var c=cardEl({suit:'S',rank:0},{back:true});c.tabIndex=-1;p.appendChild(c);
@@ -1090,9 +1118,12 @@ function buildWaste(){
 
 function buildFoundation(suit){
   var pile=state.foundations[suit];
-  var p=document.createElement('div');p.className='pile';
+  var p=document.createElement('div');p.className='pile'+(pile.length===13?' foundation-complete':'');
   p.dataset.label=SYM[suit];p.tabIndex=0;
-  p.setAttribute('aria-label',SUIT_NAME[suit]+' foundation: '+pile.length+' cards');
+  var fLabel=SUIT_NAME[suit]+' foundation: ';
+  if(!pile.length)fLabel+='empty';
+  else fLabel+=pile.length+' card'+(pile.length>1?'s':'')+', '+RANK[pile[pile.length-1].rank]+' on top';
+  p.setAttribute('aria-label',fLabel);
   var dest={type:'foundation',suit:suit};
   p.addEventListener('click',function(){if(!touchLock)pickOrDrop(dest);});
   bindDrop(p,dest);
@@ -1108,7 +1139,15 @@ function buildColumn(col){
   var wrap=document.createElement('div');wrap.className='col';
   var shell=document.createElement('div');shell.className='pile';
   shell.dataset.label=''+(col+1);shell.tabIndex=0;
-  shell.setAttribute('aria-label','Column '+(col+1)+': '+state.tableau[col].length+' cards');
+  var colCards=state.tableau[col],colUp=firstUp(colCards);
+  var colLabel='Column '+(col+1)+': ';
+  if(!colCards.length){colLabel+='empty';}
+  else{
+    var topC=colCards[colCards.length-1];
+    colLabel+=colCards.length+' card'+(colCards.length>1?'s':'');
+    if(colUp>=0)colLabel+=', '+lbl(topC)+' on top';
+  }
+  shell.setAttribute('aria-label',colLabel);
   var dest={type:'tableau',col:col};
   shell.addEventListener('click',function(){
     if(touchLock)return;
@@ -1167,7 +1206,7 @@ function render(){
     swatchHTML+='<button class="tswatch sw-'+t.id+(ui.theme===t.id?' active':'')+'" data-th="'+t.id+'" title="'+t.label+'" aria-label="'+t.label+' theme" aria-pressed="'+(ui.theme===t.id)+'"></button>';
   }
 
-  var acBtn=canAutoComplete()&&!state.ended?'<button id="btnAuto" type="button" class="autocomplete-hint">\u2713 Auto-Complete</button>':'<button id="btnAuto" type="button">Auto</button>';
+  var acBtn=canAutoComplete()&&!state.ended?'<button id="btnAuto" type="button" class="autocomplete-hint" aria-keyshortcuts="a">\u2713 Auto-Complete</button>':'<button id="btnAuto" type="button" aria-keyshortcuts="a">Auto</button>';
 
   r.innerHTML=
     '<div class="app" id="app">'+
@@ -1176,8 +1215,8 @@ function render(){
     '<div class="controls" role="group" aria-label="Game controls">'+
     '<div class="theme-picker" role="group" aria-label="Theme">'+swatchHTML+'</div>'+
     '<button id="btnNew" type="button">New Game</button>'+
-    '<button id="btnUndo" type="button"'+(state.history.length===0||state.ended?' disabled':'')+'>Undo</button>'+
-    '<button id="btnHint" type="button">Hint</button>'+
+    '<button id="btnUndo" type="button" aria-keyshortcuts="u"'+(state.history.length===0||state.ended?' disabled':'')+'>Undo</button>'+
+    '<button id="btnHint" type="button" aria-keyshortcuts="h">Hint</button>'+
     acBtn+
     '<button id="btnSound" type="button" aria-pressed="'+ui.soundOn+'">'+(ui.soundOn?'\uD83D\uDD0A':'\uD83D\uDD07')+'</button>'+
     '<button id="btnSettings" type="button" aria-label="Settings & Stats">\u2699\uFE0F</button>'+
@@ -1268,11 +1307,11 @@ document.addEventListener('keydown',function(e){
   if(k==='escape'){
     var dr=document.getElementById('settingsDrawer');
     if(dr&&dr.classList.contains('open')){closeDrawer();return;}
-    ui.selected=null;say('Cleared.');render();return;
+    ui.selected=null;say('Cleared.');renderTable();return;
   }
   var targets=kbTargets();
-  if(k==='arrowright'||k==='arrowdown'){ui.focusIndex=(ui.focusIndex+1)%targets.length;render();kbFocus();return;}
-  if(k==='arrowleft'||k==='arrowup'){ui.focusIndex=(ui.focusIndex-1+targets.length)%targets.length;render();kbFocus();return;}
+  if(k==='arrowright'||k==='arrowdown'){ui.focusIndex=(ui.focusIndex+1)%targets.length;renderTable();kbFocus();return;}
+  if(k==='arrowleft'||k==='arrowup'){ui.focusIndex=(ui.focusIndex-1+targets.length)%targets.length;renderTable();kbFocus();return;}
   if(k==='enter'||k===' ')kbActivate(targets[ui.focusIndex]);
 });
 

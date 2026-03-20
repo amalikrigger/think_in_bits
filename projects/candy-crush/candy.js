@@ -24,8 +24,6 @@ const CANDY_SHAPES = {
 let board = [];       // board[r][c] = DOM <img> element
 let candyData = [];   // candyData[r][c] = { color: string|null, special: "none"|"striped-h"|"striped-v"|"wrapped"|"bomb" }
 let score = 0;
-let currTile = null;
-let otherTile = null;
 let gameState = "idle";   // "idle" | "processing"
 let cascadeLevel = 0;
 let lastSwap = null;       // { r1, c1, r2, c2 } of last player swap
@@ -217,19 +215,15 @@ function startGame() {
             tile.setAttribute("aria-label", candy + " candy");
             tile.setAttribute("tabindex", "0");
 
-            tile.addEventListener("dragstart", dragStart);
-            tile.addEventListener("dragover", dragOver);
-            tile.addEventListener("dragenter", dragEnter);
-            tile.addEventListener("dragleave", dragLeave);
-            tile.addEventListener("drop", dragDrop);
-            tile.addEventListener("dragend", dragEnd);
+            tile.draggable = false;
+            tile.addEventListener("mousedown", tileMouseDown);
+            tile.addEventListener("mouseup", tileMouseUp);
 
             tile.addEventListener("touchstart", touchStart, { passive: false });
             tile.addEventListener("touchend", touchEnd, { passive: false });
             tile.addEventListener("touchmove", touchMove, { passive: false });
 
             tile.addEventListener("keydown", handleKeyboard);
-            tile.addEventListener("click", tileClick);
 
             let shape = document.createElement("span");
             shape.className = "candy-shape";
@@ -246,70 +240,74 @@ function startGame() {
 }
 
 // =========================================================================
-// DRAG & DROP
+// SWAP LOGIC
 // =========================================================================
 
-function dragStart() {
+function attemptSwap(r1, c1, r2, c2) {
     if (gameState !== "idle") return;
-    currTile = this;
-    this.classList.add('dragging');
-}
+    if (!colorAt(r1, c1) || !colorAt(r2, c2)) return;
 
-function dragOver(e) { e.preventDefault(); }
-function dragEnter(e) { e.preventDefault(); this.classList.add('drag-over'); }
-function dragLeave() { this.classList.remove('drag-over'); }
+    let isAdjacent = (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
+    if (!isAdjacent) return;
 
-function dragDrop() {
-    if (gameState !== "idle") return;
-    this.classList.remove('drag-over');
-    otherTile = this;
-}
-
-function dragEnd() {
-    if (currTile) currTile.classList.remove('dragging');
-    if (gameState !== "idle") { currTile = null; otherTile = null; return; }
-    if (!currTile || !otherTile) { currTile = null; otherTile = null; return; }
-
-    let pos1 = parseTileId(currTile);
-    let pos2 = parseTileId(otherTile);
-    let r = pos1.r, c = pos1.c, r2 = pos2.r, c2 = pos2.c;
-
-    // Can't swap blanks
-    if (!colorAt(r, c) || !colorAt(r2, c2)) { currTile = null; otherTile = null; return; }
-
-    let isAdjacent = (Math.abs(r - r2) + Math.abs(c - c2)) === 1;
-    if (!isAdjacent) { currTile = null; otherTile = null; return; }
-
-    let s1 = specialAt(r, c);
+    let s1 = specialAt(r1, c1);
     let s2 = specialAt(r2, c2);
 
-    // --- Special + Special or Color Bomb swaps ---
     if (s1 === "bomb" || s2 === "bomb" || (s1 !== "none" && s2 !== "none")) {
-        handleSpecialSwap(r, c, r2, c2);
-        currTile = null;
-        otherTile = null;
+        deselectTile();
+        handleSpecialSwap(r1, c1, r2, c2);
         return;
     }
 
-    // --- Normal swap ---
-    swapCandyData(r, c, r2, c2);
+    swapCandyData(r1, c1, r2, c2);
 
     let matches = findAllMatches();
     if (matches.length === 0) {
-        // No match — swap back
-        swapCandyData(r, c, r2, c2);
+        swapCandyData(r1, c1, r2, c2);
+        board[r1][c1].classList.add('invalid-swap');
+        board[r2][c2].classList.add('invalid-swap');
+        setTimeout(function() {
+            board[r1][c1].classList.remove('invalid-swap');
+            board[r2][c2].classList.remove('invalid-swap');
+        }, 300);
     } else {
         movesLeft--;
         document.getElementById('moves').innerText = movesLeft;
         cascadeLevel = 0;
         gameState = "processing";
-        lastSwap = { r1: r, c1: c, r2: r2, c2: c2 };
+        lastSwap = { r1: r1, c1: c1, r2: r2, c2: c2 };
+        deselectTile();
         processCascade();
     }
+}
 
-    currTile = null;
-    otherTile = null;
-    deselectTile();
+// =========================================================================
+// MOUSE INTERACTION
+// =========================================================================
+
+let mouseDownTile = null;
+
+function tileMouseDown(e) {
+    if (gameState !== "idle") return;
+    e.preventDefault();
+    mouseDownTile = this;
+}
+
+function tileMouseUp() {
+    if (!mouseDownTile || gameState !== "idle") {
+        mouseDownTile = null;
+        return;
+    }
+
+    let startPos = parseTileId(mouseDownTile);
+    let endPos = parseTileId(this);
+    mouseDownTile = null;
+
+    if (startPos.r === endPos.r && startPos.c === endPos.c) {
+        handleTileSelect(startPos.r, startPos.c);
+    } else {
+        attemptSwap(startPos.r, startPos.c, endPos.r, endPos.c);
+    }
 }
 
 // =========================================================================
@@ -321,8 +319,8 @@ let touchStartX = 0;
 let touchStartY = 0;
 
 function touchStart(e) {
-    if (gameState !== "idle") return;
     e.preventDefault();
+    if (gameState !== "idle") return;
     touchStartTile = this;
     let touch = e.touches[0];
     touchStartX = touch.clientX;
@@ -345,6 +343,8 @@ function touchEnd(e) {
 
     let minSwipe = 20;
     if (Math.abs(deltaX) < minSwipe && Math.abs(deltaY) < minSwipe) {
+        let pos = parseTileId(touchStartTile);
+        handleTileSelect(pos.r, pos.c);
         touchStartTile = null;
         return;
     }
@@ -359,27 +359,11 @@ function touchEnd(e) {
         targetR += deltaY > 0 ? 1 : -1;
     }
 
-    if (targetR < 0 || targetR >= ROWS || targetC < 0 || targetC >= COLUMNS) {
-        touchStartTile = null;
-        return;
-    }
-
-    // Reuse the swap logic from dragEnd
-    currTile = touchStartTile;
-    otherTile = board[targetR][targetC];
-    dragEnd();
-
     touchStartTile = null;
-}
 
-// =========================================================================
-// CLICK SUPPORT
-// =========================================================================
+    if (targetR < 0 || targetR >= ROWS || targetC < 0 || targetC >= COLUMNS) return;
 
-function tileClick() {
-    if (gameState !== "idle") return;
-    let pos = parseTileId(this);
-    handleTileSelect(pos.r, pos.c);
+    attemptSwap(pos.r, pos.c, targetR, targetC);
 }
 
 // =========================================================================
@@ -430,11 +414,9 @@ function handleTileSelect(r, c) {
     } else {
         let isAdj = (Math.abs(selectedTile.r - r) + Math.abs(selectedTile.c - c)) === 1;
         if (isAdj) {
-            currTile = board[selectedTile.r][selectedTile.c];
-            otherTile = board[r][c];
-            board[selectedTile.r][selectedTile.c].classList.remove("selected");
-            selectedTile = null;
-            dragEnd();
+            let sr = selectedTile.r, sc = selectedTile.c;
+            deselectTile();
+            attemptSwap(sr, sc, r, c);
         } else {
             board[selectedTile.r][selectedTile.c].classList.remove("selected");
             selectedTile = { r: r, c: c };
@@ -594,6 +576,7 @@ function clearAllOfColor(targetColor) {
         for (let c = 0; c < COLUMNS; c++)
             if (colorAt(r, c) === targetColor) { markForCrush(r, c); n++; }
     score += Math.floor(n / 3) * MATCH_SCORE * (cascadeLevel + 1);
+    document.getElementById("score").innerText = score;
 }
 
 // Add a special candy's cells to toClear (for chain activations of specials hit by a bomb combo)
@@ -950,6 +933,10 @@ function processCascade() {
     if (matches.length === 0) {
         lastSwap = null;
         checkNoValidMoves();
+        if (findAllMatches().length > 0) {
+            processCascade();
+            return;
+        }
         document.getElementById("score").innerText = score;
         if (movesLeft <= 0) {
             showGameOver();
@@ -1071,6 +1058,12 @@ function hasValidMoves() {
                     (r - 1 >= 0 && colorAt(r - 1, c))) return true;
             }
 
+            // Two adjacent specials can always be swapped
+            if (specialAt(r, c) !== "none") {
+                if (c + 1 < COLUMNS && specialAt(r, c + 1) !== "none") return true;
+                if (r + 1 < ROWS && specialAt(r + 1, c) !== "none") return true;
+            }
+
             // Try swap right
             if (c + 1 < COLUMNS && colorAt(r, c + 1)) {
                 swapDataOnly(r, c, r, c + 1);
@@ -1138,6 +1131,7 @@ window.onload = function() {
     document.getElementById('moves').innerText = MAX_MOVES;
     startGame();
     document.getElementById('play-again').addEventListener('click', resetGame);
+    document.addEventListener('mouseup', function() { mouseDownTile = null; });
     gameState = "processing";
     cascadeLevel = 0;
     lastSwap = null;
