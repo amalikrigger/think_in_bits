@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+</head>
+<body>
+<title>Vertex Form Explorer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the session decks, mirrored from www.thinkinbits.site.
+   Committed dark, single theme, so a tool a student opens on a
+   phone looks like the deck they saw projected.
+   ============================================================ */
+:root {
+  --ground:          #0a0a0a;
+  --ground-far:      #1a1a2e;
+  --surface:         #1a1a1a;
+  --surface-lift:    #2a2a2a;
+
+  --accent:          #00e5ff;
+  --accent-deep:     #0099cc;
+  --accent-wash:     rgba(0,229,255,0.10);
+  --accent-line:     rgba(0,229,255,0.30);
+
+  --text:            #ffffff;
+  --text-2:          #b0b0b0;
+  --ghost:           rgba(176,176,176,0.55);
+
+  --hairline:        rgba(255,255,255,0.07);
+  --hairline-strong: rgba(255,255,255,0.16);
+  --axis:            rgba(255,255,255,0.85);
+
+  --ok:              #4fe08a;
+  --ok-soft:         rgba(79,224,138,0.14);
+  --warn:            #ff6b6b;
+  --warn-soft:       rgba(255,107,107,0.14);
+
+  --shadow-card:     0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:     0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3.5vw, 36px);
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  header { margin-bottom: 18px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11.5px; letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 6px;
+  }
+  h1 {
+    color: var(--accent);
+    font-size: clamp(23px, 3.6vw, 31px); font-weight: 600;
+    letter-spacing: -0.015em; margin: 0 0 7px; text-wrap: balance;
+  }
+  .lede { color: var(--text-2); font-size: 14.5px; max-width: 64ch; margin: 0; }
+  .lede b { color: var(--text); font-weight: 600; }
+
+  .instrument {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.1fr) minmax(275px, 0.9fr);
+    gap: 18px;
+  }
+  @media (max-width: 800px) { .instrument { grid-template-columns: 1fr; } }
+
+  .screen {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 12px;
+    box-shadow: var(--shadow-card);
+  }
+  .screen svg { display: block; width: 100%; height: auto; overflow: hidden; touch-action: none; cursor: grab; }
+  .screen svg.grabbing { cursor: grabbing; }
+  .hint {
+    font-size: 12px; color: var(--text-2); text-align: center;
+    margin: 8px 2px 0;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .eqbox { border-bottom: 1px solid var(--hairline); padding-bottom: 14px; }
+  .lbl {
+    color: var(--text-2); font-size: 10.5px; letter-spacing: 0.09em;
+    text-transform: uppercase; display: block; margin-bottom: 3px;
+  }
+  .eq {
+    font-family: var(--mono);
+    font-size: 17px; font-variant-numeric: tabular-nums; color: var(--text);
+  }
+
+  .reveals { display: flex; flex-direction: column; gap: 9px; }
+  .reveals .rhead {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  }
+  .reveals .rhead .note { font-size: 11.5px; color: var(--text-2); }
+  .chk { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 13.5px; }
+  .chk input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; margin: 0; flex: none; }
+  .chk .k { flex: 1; }
+  .chk .v {
+    font-family: var(--mono);
+    font-size: 13px; font-variant-numeric: tabular-nums;
+    text-align: right; color: var(--text-2);
+  }
+  .chk .v.on { color: var(--text); }
+  .chk .v.roots-real { color: var(--ok); }
+  .chk .v.roots-none { color: var(--warn); }
+  .chk .v .approx { color: var(--text-2); font-size: 11.5px; }
+  .chk.hidden-val .v { opacity: 0.35; }
+
+  .sliders { display: flex; flex-direction: column; gap: 14px; }
+  .srow label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+  .srow .val {
+    font-family: var(--mono);
+    color: var(--accent); font-variant-numeric: tabular-nums;
+  }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 2px;
+    background: var(--surface-lift); outline-offset: 4px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--accent-line), 0 0 10px rgba(0,229,255,0.45); cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--accent-line), 0 0 10px rgba(0,229,255,0.45); cursor: pointer;
+  }
+
+  .snap { display: flex; gap: 8px; border-top: 1px solid var(--hairline); padding-top: 14px; }
+  .snap button {
+    flex: 1; padding: 9px 8px; font-size: 13px; font-weight: 600;
+    border-radius: 50px; border: 1px solid var(--hairline-strong);
+    background: var(--surface-lift); color: var(--text);
+    transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
+  }
+  .snap button:hover:not(:disabled) { border-color: var(--accent-line); color: var(--accent); box-shadow: var(--shadow-glow); }
+  .snap button:disabled { opacity: 0.4; cursor: default; }
+  .snapnote { font-size: 11.5px; color: var(--text-2); margin: 8px 2px 0; text-align: center; }
+
+  footer {
+    margin-top: 16px; font-size: 12.5px; color: var(--text-2);
+    border-top: 1px solid var(--hairline); padding-top: 12px;
+  }
+  footer code {
+    font-family: var(--mono);
+    background: var(--accent-wash); padding: 1px 5px; border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .chk .v { transition: color 0.2s ease, opacity 0.2s ease; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">9709 · 1.1 Quadratics · Session 1</p>
+    <h1>Vertex Form Explorer</h1>
+    <p class="lede">Drag the vertex on the graph, or use the sliders. <b>Predict before you reveal.</b> Work out the roots or the expanded form in your head first, then tick the box to check yourself.</p>
+  </header>
+
+  <div class="instrument">
+    <div>
+      <div class="screen">
+        <svg id="plot" viewBox="0 0 600 600" role="img" aria-label="Graph of a quadratic in vertex form, with a draggable vertex"></svg>
+      </div>
+      <p class="hint">Drag the cyan dot to move the vertex. Values snap to the nearest half-unit.</p>
+    </div>
+
+    <div class="panel">
+      <div class="eqbox">
+        <span class="lbl">Vertex form</span>
+        <div class="eq" id="eqVertex"></div>
+      </div>
+
+      <div class="reveals">
+        <div class="rhead"><span class="lbl" style="margin:0">Reveal</span><span class="note">predict first</span></div>
+        <label class="chk" id="rowVertex">
+          <input type="checkbox" id="cbVertex">
+          <span class="k">Vertex</span>
+          <span class="v" id="vVertex"></span>
+        </label>
+        <label class="chk" id="rowExpanded">
+          <input type="checkbox" id="cbExpanded">
+          <span class="k">Expanded form</span>
+          <span class="v" id="vExpanded"></span>
+        </label>
+        <label class="chk" id="rowDisc">
+          <input type="checkbox" id="cbDisc">
+          <span class="k">Discriminant Δ = b² − 4ac</span>
+          <span class="v" id="vDisc"></span>
+        </label>
+        <label class="chk" id="rowRoots">
+          <input type="checkbox" id="cbRoots">
+          <span class="k">Roots (exact)</span>
+          <span class="v" id="vRoots"></span>
+        </label>
+      </div>
+
+      <div class="sliders">
+        <div class="srow">
+          <label>a <span class="val" id="valA"></span></label>
+          <input type="range" id="a" min="-3" max="3" step="0.5" value="1">
+        </div>
+        <div class="srow">
+          <label>h <span class="val" id="valH"></span></label>
+          <input type="range" id="h" min="-6" max="6" step="0.5" value="2">
+        </div>
+        <div class="srow">
+          <label>k <span class="val" id="valK"></span></label>
+          <input type="range" id="k" min="-8" max="8" step="0.5" value="-4">
+        </div>
+      </div>
+
+      <div>
+        <div class="snap">
+          <button id="snapBtn">Keep this curve</button>
+          <button id="clearBtn" disabled>Clear kept</button>
+        </div>
+        <p class="snapnote" id="snapNote">Keep a curve to compare the next one against it.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>Roots are shown in <b>exact form</b>, <code>3 ± √2</code> rather than <code>1.59</code> and <code>4.41</code>. Cambridge marks the exact answer; a decimal loses the mark.</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var W = 600, H = 600, RX = 10, RY = 10;
+  function toPx(x, y) { return [ (x + RX) / (2*RX) * W, H - (y + RY) / (2*RY) * H ]; }
+  function toGraph(px, py) { return [ px / W * (2*RX) - RX, (H - py) / H * (2*RY) - RY ]; }
+
+  var MINUS = '\u2212';                       // house style: a real minus sign, never a hyphen
+  var NS = 'http://www.w3.org/2000/svg';
+  var svg = document.getElementById('plot');
+  function el(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    for (var key in attrs) e.setAttribute(key, attrs[key]);
+    return e;
+  }
+
+  /* ---------- static layers ---------- */
+  svg.appendChild(el('rect', { x:0, y:0, width:W, height:H, fill:'var(--surface)' }));
+  var grid = el('g', {}); svg.appendChild(grid);
+  for (var i = -RX; i <= RX; i++) {
+    var strong = (i === 0);
+    var p1 = toPx(i, -RY), p2 = toPx(i, RY);
+    grid.appendChild(el('line', { x1:p1[0], y1:p1[1], x2:p2[0], y2:p2[1],
+      stroke: strong ? 'var(--axis)' : 'var(--hairline)', 'stroke-width': strong ? 1.5 : 1 }));
+    var q1 = toPx(-RX, i), q2 = toPx(RX, i);
+    grid.appendChild(el('line', { x1:q1[0], y1:q1[1], x2:q2[0], y2:q2[1],
+      stroke: strong ? 'var(--axis)' : 'var(--hairline)', 'stroke-width': strong ? 1.5 : 1 }));
+    if (i !== 0 && i % 2 === 0) {
+      var lx = toPx(i, 0);
+      var t1 = el('text', { x: lx[0]+3, y: H/2+13, 'font-size':10, fill:'var(--text-2)', 'font-family':'JetBrains Mono, monospace' });
+      t1.textContent = String(i).replace('-', MINUS); grid.appendChild(t1);
+      var ly = toPx(0, i);
+      var t2 = el('text', { x: W/2+4, y: ly[1]-3, 'font-size':10, fill:'var(--text-2)', 'font-family':'JetBrains Mono, monospace' });
+      t2.textContent = String(i).replace('-', MINUS); grid.appendChild(t2);
+    }
+  }
+
+  var ghostCurve = el('path', { fill:'none', stroke:'var(--ghost)', 'stroke-width':2, 'stroke-dasharray':'6 5', 'stroke-linecap':'round' });
+  ghostCurve.style.display = 'none';
+  svg.appendChild(ghostCurve);
+  var ghostLabel = el('text', { 'font-size':13, fill:'var(--ghost)', 'font-family':'JetBrains Mono, monospace' });
+  ghostLabel.style.display = 'none';
+  svg.appendChild(ghostLabel);
+
+  var curve = el('path', { fill:'none', stroke:'var(--accent)', 'stroke-width':2.5, 'stroke-linecap':'round' });
+  svg.appendChild(curve);
+
+  var rootG = el('g', {}); svg.appendChild(rootG);
+  var vertexHalo = el('circle', { r:13, fill:'var(--accent-wash)' });
+  var vertexDot = el('circle', { r:7, fill:'var(--accent)', stroke:'var(--surface)', 'stroke-width':2.5 });
+  svg.appendChild(vertexHalo); svg.appendChild(vertexDot);
+  var vertexLabel = el('text', { 'font-size':13, fill:'var(--text)', 'font-family':'JetBrains Mono, monospace', 'text-anchor':'middle' });
+  vertexLabel.style.display = 'none';
+  svg.appendChild(vertexLabel);
+
+  /* ---------- exact-value helpers ---------- */
+  function gcd(x, y) { x = Math.abs(x); y = Math.abs(y); while (y) { var t = y; y = x % y; x = t; } return x; }
+  function frac(n, d) {                       // exact rational -> string
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1; n /= g; d /= g;
+    return (d === 1 ? String(n) : (n + '/' + d)).replace('-', MINUS);
+  }
+  function simplifySurd(n) {                  // n -> [m, r] meaning m*sqrt(r)
+    var m = 1, r = n;
+    for (var i = 2; i * i <= r; i++) {
+      while (r % (i * i) === 0) { r /= (i * i); m *= i; }
+    }
+    return [m, r];
+  }
+  function num(v) {                           // tidy number for display
+    var n = Math.round(v * 1000) / 1000;
+    if (Object.is(n, -0)) n = 0;
+    return String(n).replace('-', MINUS);
+  }
+  function signed(v, unit) {
+    var t = Math.round(v * 1000) / 1000;
+    if (t === 0) return '';
+    return (t < 0 ? ' − ' : ' + ') + num(Math.abs(t)) + unit;
+  }
+
+  /* Roots of a(x-h)^2 + k = 0  ->  x = h ± sqrt(-k/a), rendered exactly.
+     a and h and k all move in halves, so -k/a is rational: with
+     a = A/2, k = K/2  ->  -k/a = -K/A. */
+  function exactRoots(a, h, k) {
+    if (a === 0) return { kind: 'notquad' };
+    var A = Math.round(a * 2), K = Math.round(k * 2), Hn = Math.round(h * 2);
+    var n = -K, d = A;                        // -k/a as n/d
+    if (d < 0) { n = -n; d = -d; }
+    if (n < 0) return { kind: 'none' };
+    if (n === 0) return { kind: 'repeated', text: 'x = ' + frac(Hn, 2) + '  (repeated)' };
+
+    // sqrt(n/d) = sqrt(n*d)/d
+    var s = simplifySurd(n * d);
+    var m = s[0], r = s[1];                   // sqrt(n*d) = m*sqrt(r)
+
+    if (r === 1) {                            // rational roots
+      // h ± m/d  ->  (Hn*d ± 2m) / (2d)
+      var r1 = frac(Hn * d - 2 * m, 2 * d);
+      var r2 = frac(Hn * d + 2 * m, 2 * d);
+      return { kind: 'rational', text: 'x = ' + r1 + '  or  ' + r2 };
+    }
+    var coef = frac(m, d);
+    var surdStr;
+    if (coef === '1') surdStr = '√' + r;
+    else if (coef.indexOf('/') === -1) surdStr = coef + '√' + r;
+    else {                                   // p/q -> (p√r)/q, and 1/q -> √r/q
+      var parts = coef.split('/');
+      surdStr = (parts[0] === '1' ? '√' + r : parts[0] + '√' + r) + '/' + parts[1];
+    }
+    var hStr = frac(Hn, 2);
+    return { kind: 'surd', text: 'x = ' + hStr + ' ± ' + surdStr };
+  }
+
+  /* ---------- state ---------- */
+  var aIn = document.getElementById('a'), hIn = document.getElementById('h'), kIn = document.getElementById('k');
+  var kept = null;
+
+  function vals() {
+    return { a: parseFloat(aIn.value), h: parseFloat(hIn.value), k: parseFloat(kIn.value) };
+  }
+
+  function pathFor(a, h, k) {
+    var pts = [];
+    for (var i = 0; i <= 240; i++) {
+      var x = -RX + (2 * RX) * i / 240;
+      var y = a * (x - h) * (x - h) + k;
+      pts.push(toPx(x, Math.max(-RY - 1.5, Math.min(RY + 1.5, y))));
+    }
+    return 'M ' + pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L ');
+  }
+
+  function vertexFormStr(a, h, k) {
+    var hTerm = h === 0 ? 'x' : ('x' + (h > 0 ? ' − ' + num(h) : ' + ' + num(Math.abs(h))));
+    var aTerm = a === 1 ? '' : (a === -1 ? '−' : num(a));
+    if (a === 0) return 'y = ' + num(k) + '   (a = 0, not a quadratic)';
+    return 'y = ' + aTerm + '(' + hTerm + ')²' + signed(k, '');
+  }
+
+  function render() {
+    var v = vals(), a = v.a, h = v.h, k = v.k;
+    document.getElementById('valA').textContent = num(a);
+    document.getElementById('valH').textContent = num(h);
+    document.getElementById('valK').textContent = num(k);
+
+    document.getElementById('eqVertex').textContent = vertexFormStr(a, h, k);
+
+    // expanded form
+    var b = -2 * a * h, c = a * h * h + k;
+    var aStd = a === 1 ? '' : (a === -1 ? '−' : num(a));
+    var expanded = a === 0 ? ('y = ' + num(k)) : ('y = ' + aStd + 'x²' + signed(b, 'x') + signed(c, ''));
+    document.getElementById('vExpanded').textContent = expanded;
+
+    // vertex
+    document.getElementById('vVertex').textContent = '(' + num(h) + ', ' + num(k) + ')';
+
+    // discriminant  Δ = b² − 4ac = −4ak   (exact: a=A/2, k=K/2 -> Δ = −AK)
+    var A = Math.round(a * 2), K = Math.round(k * 2);
+    var discExact = -A * K;
+    var dEl = document.getElementById('vDisc');
+    dEl.textContent = a === 0 ? 'n/a' : String(discExact);
+    dEl.className = 'v' + (a === 0 ? '' : (discExact > 0 ? ' roots-real' : (discExact === 0 ? '' : ' roots-none')));
+
+    // roots
+    var rt = exactRoots(a, h, k);
+    var rEl = document.getElementById('vRoots');
+    if (rt.kind === 'none') { rEl.textContent = 'no real roots'; rEl.className = 'v roots-none'; }
+    else if (rt.kind === 'notquad') { rEl.textContent = 'n/a'; rEl.className = 'v'; }
+    else { rEl.textContent = rt.text; rEl.className = 'v roots-real'; }
+
+    // curve
+    curve.setAttribute('d', pathFor(a, h, k));
+
+    // vertex marker
+    var vp = toPx(h, k);
+    vertexDot.setAttribute('cx', vp[0]); vertexDot.setAttribute('cy', vp[1]);
+    vertexHalo.setAttribute('cx', vp[0]); vertexHalo.setAttribute('cy', vp[1]);
+    vertexLabel.setAttribute('x', vp[0]);
+    vertexLabel.setAttribute('y', vp[1] + (a >= 0 ? 26 : -16));
+    vertexLabel.textContent = '(' + num(h) + ', ' + num(k) + ')';
+
+    // root markers on the axis
+    while (rootG.firstChild) rootG.removeChild(rootG.firstChild);
+    if (document.getElementById('cbRoots').checked && a !== 0 && -k / a >= 0) {
+      var off = Math.sqrt(-k / a);
+      [h - off, h + off].forEach(function (x) {
+        if (x < -RX || x > RX) return;
+        var p = toPx(x, 0);
+        rootG.appendChild(el('circle', { cx:p[0], cy:p[1], r:5.5,
+          fill:'var(--surface)', stroke:'var(--ok)', 'stroke-width':2.5 }));
+      });
+    }
+
+    syncReveals();
+  }
+
+  function syncReveals() {
+    [['cbVertex','rowVertex','vVertex'], ['cbExpanded','rowExpanded','vExpanded'],
+     ['cbDisc','rowDisc','vDisc'], ['cbRoots','rowRoots','vRoots']].forEach(function (t) {
+      var on = document.getElementById(t[0]).checked;
+      var valEl = document.getElementById(t[2]);
+      valEl.style.visibility = on ? 'visible' : 'hidden';
+      document.getElementById(t[1]).classList.toggle('hidden-val', !on);
+    });
+    vertexLabel.style.display = document.getElementById('cbVertex').checked ? '' : 'none';
+  }
+
+  /* ---------- drag the vertex ---------- */
+  var dragging = false;
+  function pointToGraph(evt) {
+    var rect = svg.getBoundingClientRect();
+    var px = (evt.clientX - rect.left) / rect.width * W;
+    var py = (evt.clientY - rect.top) / rect.height * H;
+    return toGraph(px, py);
+  }
+  function snapHalf(v) { return Math.round(v * 2) / 2; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function beginDrag(evt) {
+    var g = pointToGraph(evt);
+    var v = vals();
+    // start dragging if the press is near the vertex
+    if (Math.abs(g[0] - v.h) < 1.4 && Math.abs(g[1] - v.k) < 1.4) {
+      dragging = true;
+      svg.classList.add('grabbing');
+      svg.setPointerCapture(evt.pointerId);
+      evt.preventDefault();
+    }
+  }
+  function moveDrag(evt) {
+    if (!dragging) return;
+    var g = pointToGraph(evt);
+    hIn.value = clamp(snapHalf(g[0]), -6, 6);
+    kIn.value = clamp(snapHalf(g[1]), -8, 8);
+    render();
+    evt.preventDefault();
+  }
+  function endDrag(evt) {
+    if (!dragging) return;
+    dragging = false;
+    svg.classList.remove('grabbing');
+    try { svg.releasePointerCapture(evt.pointerId); } catch (e) {}
+  }
+  svg.addEventListener('pointerdown', beginDrag);
+  svg.addEventListener('pointermove', moveDrag);
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  /* ---------- keep / compare ---------- */
+  function drawGhost() {
+    if (!kept) {
+      ghostCurve.style.display = 'none';
+      ghostLabel.style.display = 'none';
+      document.getElementById('snapNote').textContent = 'Keep a curve to compare the next one against it.';
+      document.getElementById('clearBtn').disabled = true;
+      return;
+    }
+    ghostCurve.setAttribute('d', pathFor(kept.a, kept.h, kept.k));
+    ghostCurve.style.display = '';
+    var lp = toPx(kept.h, kept.k);
+    ghostLabel.setAttribute('x', clamp(lp[0], 60, W - 60));
+    ghostLabel.setAttribute('y', clamp(lp[1] + (kept.a >= 0 ? 44 : -32), 20, H - 12));
+    ghostLabel.setAttribute('text-anchor', 'middle');
+    ghostLabel.textContent = 'kept';
+    ghostLabel.style.display = '';
+    document.getElementById('snapNote').textContent = 'Kept: ' + vertexFormStr(kept.a, kept.h, kept.k).replace('y = ', '');
+    document.getElementById('clearBtn').disabled = false;
+  }
+  document.getElementById('snapBtn').addEventListener('click', function () {
+    kept = vals(); drawGhost();
+  });
+  document.getElementById('clearBtn').addEventListener('click', function () {
+    kept = null; drawGhost();
+  });
+
+  /* ---------- wiring ---------- */
+  [aIn, hIn, kIn].forEach(function (inp) { inp.addEventListener('input', render); });
+  ['cbVertex','cbExpanded','cbDisc','cbRoots'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', render);
+  });
+
+  drawGhost();
+  render();
+})();
+</script>
+</body>
+</html>

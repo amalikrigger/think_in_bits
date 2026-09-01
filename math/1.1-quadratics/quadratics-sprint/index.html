@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+</head>
+<body>
+<title>Quadratics Sprint</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the session decks, mirrored from www.thinkinbits.site.
+   Committed dark, single theme, so a tool a student opens on a
+   phone looks like the deck they saw projected.
+   ============================================================ */
+:root {
+  --ground:          #0a0a0a;
+  --ground-far:      #1a1a2e;
+  --surface:         #1a1a1a;
+  --surface-lift:    #2a2a2a;
+
+  --accent:          #00e5ff;
+  --accent-deep:     #0099cc;
+  --accent-wash:     rgba(0,229,255,0.10);
+  --accent-line:     rgba(0,229,255,0.30);
+
+  --text:            #ffffff;
+  --text-2:          #b0b0b0;
+  --ghost:           rgba(176,176,176,0.55);
+
+  --hairline:        rgba(255,255,255,0.07);
+  --hairline-strong: rgba(255,255,255,0.16);
+  --axis:            rgba(255,255,255,0.85);
+
+  --ok:              #4fe08a;
+  --ok-soft:         rgba(79,224,138,0.14);
+  --warn:            #ff6b6b;
+  --warn-soft:       rgba(255,107,107,0.14);
+
+  --shadow-card:     0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:     0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3.5vw, 34px);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hidden { display: none !important; }
+
+  .kicker {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 42px);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin: 0 0 8px;
+    color: var(--accent);
+  }
+  .sub { color: var(--text-2); margin: 0; font-size: 15px; }
+  header { margin-bottom: 20px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 18px 20px;
+  }
+
+  /* start */
+  #startView .card { max-width: 540px; }
+  .why { font-size: 14.5px; margin: 0 0 14px; }
+  .why b { color: var(--accent); }
+  .specs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .spec {
+    flex: 1 1 120px;
+    background: var(--surface-lift);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .spec .sv {
+    font-family: var(--font); font-weight: 700;
+    font-size: 21px; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .spec .sl { font-size: 11.5px; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; }
+  .bestrow {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px dashed var(--hairline-strong); border-radius: 14px;
+    padding: 10px 12px; font-size: 14px; margin-bottom: 16px;
+  }
+  .bestrow .lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+  .bestrow .bv { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .go {
+    display: block; width: 100%;
+    background: var(--accent); color: var(--ground);
+    border: none; border-radius: 50px;
+    padding: 15px; font-size: 17px; font-weight: 600;
+    font-family: var(--font);
+    letter-spacing: 0.01em;
+    transition: box-shadow .2s ease, transform .15s ease;
+  }
+  .go:hover { box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+
+  /* hud */
+  .hud { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .hud .qn {
+    font-family: var(--mono); font-size: 12.5px;
+    color: var(--text-2); font-variant-numeric: tabular-nums;
+  }
+  .hud .right { display: flex; align-items: center; gap: 12px; }
+  .streak {
+    display: flex; align-items: center; gap: 4px;
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    color: var(--warn); font-variant-numeric: tabular-nums;
+    opacity: 0;
+  }
+  .streak.on { opacity: 1; }
+  .score {
+    font-family: var(--font); font-weight: 700;
+    font-size: 19px; color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .clockrow { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .clocknum {
+    font-family: var(--mono); font-weight: 500;
+    font-size: 14px; font-variant-numeric: tabular-nums;
+    color: var(--text-2); flex: none; width: 34px;
+  }
+  .track {
+    flex: 1; height: 7px; border-radius: 4px;
+    background: var(--surface-lift); overflow: hidden;
+  }
+  .fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); border-radius: 4px; box-shadow: 0 0 10px rgba(0,229,255,0.35); }
+  .fill.warn { background: var(--warn); box-shadow: 0 0 10px rgba(255,107,107,0.35); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fill { transition: width 0.1s linear, background 0.3s ease; }
+  }
+
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .qcard .qtag {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-2); margin-bottom: 8px;
+  }
+  .qcard .qt {
+    font-size: clamp(18px, 4vw, 22px);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .qcard .qt sup { font-size: 0.6em; }
+
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 460px) { .opts { grid-template-columns: 1fr; } }
+  .opts button {
+    background: var(--surface);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 14px;
+    padding: 14px 12px;
+    transition: border-color .15s ease, background .15s ease;
+    color: var(--text);
+    font-size: 16.5px;
+    font-family: var(--mono);
+    text-align: center;
+  }
+  .opts button sup { font-size: 0.6em; }
+  .opts button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-wash); }
+  .opts button:disabled { cursor: default; }
+  .opts button.right { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 500; }
+  .opts button.wrong { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); }
+  .opts button.dim { opacity: 0.4; }
+
+  .verdict {
+    margin-top: 12px;
+    border-radius: 14px;
+    padding: 13px 16px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+  }
+  .verdict .vh {
+    font-family: var(--font); font-weight: 700;
+    font-size: 15px; letter-spacing: 0.01em;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    margin-bottom: 5px;
+  }
+  .verdict.ok .vh { color: var(--ok); }
+  .verdict.no .vh { color: var(--warn); }
+  .verdict .pts {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 500;
+  }
+  .verdict .vw { font-size: 14.5px; color: var(--text-2); }
+  .verdict .vw sup { font-size: 0.62em; }
+  .next {
+    display: block; width: 100%; margin-top: 12px;
+    background: var(--accent); color: var(--ground);
+    border: none; border-radius: 50px; padding: 12px;
+    font-size: 15px; font-weight: 600;
+    font-family: var(--font);
+    transition: box-shadow .2s ease;
+  }
+  .next:hover { box-shadow: var(--shadow-glow); }
+
+  /* end */
+  #endView .card { max-width: 540px; text-align: center; }
+  .rank {
+    display: inline-block;
+    font-family: var(--font); font-weight: 700;
+    font-size: clamp(22px, 4.6vw, 30px);
+    letter-spacing: -0.01em;
+    padding: 10px 26px; border-radius: 50px;
+    border: 2px solid; margin: 12px 0 8px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rank { animation: slam 0.32s cubic-bezier(0.2,1.3,0.4,1) both; }
+    @keyframes slam { from { transform: scale(1.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  }
+  .bigscore {
+    font-family: var(--font); font-weight: 700;
+    font-size: clamp(44px, 11vw, 68px); line-height: 1;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    margin: 6px 0 2px;
+  }
+  .bn { color: var(--accent); font-weight: 700; font-size: 14px; min-height: 20px; }
+  .rl { color: var(--text-2); font-size: 14px; margin: 6px 0 16px; }
+  .breakdown { display: flex; gap: 8px; margin: 16px 0; }
+  .breakdown .spec { flex: 1; }
+  .missed {
+    text-align: left; margin-top: 4px;
+    border-top: 1px solid var(--hairline); padding-top: 14px;
+  }
+  .missed .mh {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+    margin-bottom: 8px;
+  }
+  .missed .mi { font-size: 14px; padding: 7px 0; border-bottom: 1px solid var(--hairline); }
+  .missed .mi:last-child { border-bottom: none; }
+  .missed .mi sup { font-size: 0.62em; }
+  .missed .mq { font-family: var(--mono); font-size: 13.5px; }
+  .missed .mw { color: var(--text-2); font-size: 13.5px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">Cambridge 9709 · 1.1 Quadratics</div>
+    <h1>Quadratics Sprint</h1>
+    <p class="sub">Twelve moves that should be automatic. Beat the clock on these and you buy time for the hard questions.</p>
+  </header>
+
+  <section id="startView">
+    <div class="card">
+      <p class="why"><b>Why race?</b> A 9709 paper gives you roughly 1.5 minutes per mark. If a one-step move eats 90 seconds, the 5-mark question at the end never gets finished. You already know quadratics. This is about making the basic moves cost you almost nothing, so your time goes where the marks are hard to get.</p>
+      <div class="specs">
+        <div class="spec"><div class="sv">12</div><div class="sl">questions</div></div>
+        <div class="spec"><div class="sv">30–45s</div><div class="sl">each</div></div>
+        <div class="spec"><div class="sv">Fast = more</div><div class="sl">points</div></div>
+      </div>
+      <div class="bestrow">
+        <div><div class="lbl">Personal best</div><div id="bestVal"></div></div>
+        <div class="bv" id="bestPts"></div>
+      </div>
+      <button class="go" id="goBtn">Start the clock</button>
+    </div>
+  </section>
+
+  <section id="playView" class="hidden">
+    <div class="hud">
+      <span class="qn" id="qn"></span>
+      <div class="right">
+        <span class="streak" id="streak"></span>
+        <span class="score" id="score">0</span>
+      </div>
+    </div>
+    <div class="clockrow">
+      <span class="clocknum" id="clocknum"></span>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="qcard">
+      <div class="qtag" id="qtag"></div>
+      <div class="qt" id="qt"></div>
+    </div>
+    <div class="opts" id="opts"></div>
+    <div id="verdictHost"></div>
+  </section>
+
+  <section id="endView" class="hidden">
+    <div class="card">
+      <div class="kicker">Clock stopped</div>
+      <div class="bigscore" id="finalPts">0</div>
+      <div><span class="rank" id="rank"></span></div>
+      <p class="bn" id="bestNote"></p>
+      <p class="rl" id="rankLine"></p>
+      <div class="breakdown">
+        <div class="spec"><div class="sv" id="statRight"></div><div class="sl">correct</div></div>
+        <div class="spec"><div class="sv" id="statStreak"></div><div class="sl">best streak</div></div>
+        <div class="spec"><div class="sv" id="statAvg"></div><div class="sl">avg time</div></div>
+      </div>
+      <div class="missed hidden" id="missedHost"></div>
+      <button class="go" id="againBtn" style="margin-top:16px">Run it again</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===== PACK: 1.1 Quadratics =====
+     Pack-writing standard (all future packs follow this):
+     - Fluency items only: one step, no extended working. If it needs
+       scratch paper, it belongs in the drill layer, not here.
+     - why: plain, short, no unexplained jargon. States the rule, not just the answer.
+     - secs: 30 for recall, 40-45 for one-step calculation. */
+  var PACKS = {
+    '1.1': {
+      name: '1.1 Quadratics',
+      items: [
+        { tag: 'Discriminant', q: 'Find the discriminant of 2x<sup>2</sup> &minus; 4x + 3.',
+          opts: ['&minus;8', '8', '40', '&minus;20'], a: 0, secs: 40,
+          why: 'b<sup>2</sup> &minus; 4ac with a = 2, b = &minus;4, c = 3: (&minus;4)<sup>2</sup> &minus; 4(2)(3) = 16 &minus; 24 = &minus;8.' },
+
+        { tag: 'Discriminant', q: 'If b<sup>2</sup> &minus; 4ac = 0, how many real roots?',
+          opts: ['One repeated root', 'Two different roots', 'No real roots', 'Three roots'], a: 0, secs: 30,
+          why: 'Zero under the square root means the &plusmn; adds nothing, so both roots land on the same value. Cambridge wants the words "repeated root".' },
+
+        { tag: 'Completing the square', q: 'Write x<sup>2</sup> + 6x in completed-square form.',
+          opts: ['(x + 3)<sup>2</sup> &minus; 9', '(x + 6)<sup>2</sup> &minus; 36', '(x + 3)<sup>2</sup> + 9', '(x + 3)<sup>2</sup>'], a: 0, secs: 40,
+          why: 'Halve the 6 to get 3. Then check: (x + 3)<sup>2</sup> expands to x<sup>2</sup> + 6x + 9, which is 9 more than you want, so subtract 9.' },
+
+        { tag: 'Vertex', q: 'Where is the vertex of y = (x &minus; 4)<sup>2</sup> + 3?',
+          opts: ['(4, 3)', '(&minus;4, 3)', '(4, &minus;3)', '(3, 4)'], a: 0, secs: 30,
+          why: 'The bracket is zero when x = 4, and a squared bracket can never go below zero, so that is the lowest y can go. All that is left is y = 3.' },
+
+        { tag: 'Roots', q: 'Solve x<sup>2</sup> = 9.',
+          opts: ['x = &plusmn;3', 'x = 3', 'x = 81', 'x = 4.5'], a: 0, secs: 30,
+          why: 'Two numbers square to 9: 3 and &minus;3, because a negative times a negative is positive.' },
+
+        { tag: 'Factorised form', q: 'Solve (x &minus; 2)(x + 5) = 0.',
+          opts: ['x = 2 or x = &minus;5', 'x = &minus;2 or x = 5', 'x = 2 or x = 5', 'x = &minus;10'], a: 0, secs: 30,
+          why: 'If two things multiply to zero, one of them is zero. Each bracket gives a root, with the sign flipped.' },
+
+        { tag: 'Critical values', q: 'Critical values of x<sup>2</sup> &minus; 7x + 12?',
+          opts: ['3 and 4', '&minus;3 and &minus;4', '7 and 12', '1 and 12'], a: 0, secs: 40,
+          why: 'Factorise: two numbers multiplying to 12 and adding to &minus;7 are &minus;3 and &minus;4, so (x &minus; 3)(x &minus; 4) and roots 3, 4.' },
+
+        { tag: 'Inequalities', q: 'Solve x<sup>2</sup> &minus; 9 &lt; 0.',
+          opts: ['&minus;3 &lt; x &lt; 3', 'x &lt; &minus;3 or x &gt; 3', 'x &lt; 3', 'x &gt; 3'], a: 0, secs: 40,
+          why: 'Roots at &plusmn;3, and the parabola opens upward, so it is below the axis only in the dip between them. Test x = 0: &minus;9, negative ✓' },
+
+        { tag: 'Disguised quadratics', q: 'For x<sup>4</sup> &minus; 13x<sup>2</sup> + 36 = 0, the substitution is:',
+          opts: ['u = x<sup>2</sup>', 'u = x<sup>4</sup>', 'u = 2x', 'u = &radic;x'], a: 0, secs: 30,
+          why: 'Let u = x<sup>2</sup>, then x<sup>4</sup> = (x<sup>2</sup>)<sup>2</sup> = u<sup>2</sup> and it becomes an ordinary quadratic.' },
+
+        { tag: 'Discriminant', q: 'No real roots means:',
+          opts: ['b<sup>2</sup> &minus; 4ac &lt; 0', 'b<sup>2</sup> &minus; 4ac = 0', 'b<sup>2</sup> &minus; 4ac &gt; 0', 'b<sup>2</sup> = 4ac'], a: 0, secs: 30,
+          why: 'You cannot square-root a negative and get a real number, so a negative discriminant means the curve never touches the x-axis.' },
+
+        { tag: 'Completing the square', q: 'Write 2x<sup>2</sup> + 8x in completed-square form.',
+          opts: ['2(x + 2)<sup>2</sup> &minus; 8', '2(x + 2)<sup>2</sup> &minus; 4', '2(x + 4)<sup>2</sup> &minus; 16', '(2x + 4)<sup>2</sup> &minus; 8'], a: 0, secs: 45,
+          why: 'Take the 2 out: 2(x<sup>2</sup> + 4x). Inside, x<sup>2</sup> + 4x = (x + 2)<sup>2</sup> &minus; 4. The 2 multiplies that &minus;4 as well, giving &minus;8.' },
+
+        { tag: 'Simultaneous', q: 'Substituting y = x + 2 into x<sup>2</sup> + y<sup>2</sup> = 10 gives:',
+          opts: ['x<sup>2</sup> + (x + 2)<sup>2</sup> = 10', 'x<sup>2</sup> + x + 2 = 10', 'x<sup>2</sup> + x<sup>2</sup> + 4 = 10', '2x<sup>2</sup> + 2 = 10'], a: 0, secs: 40,
+          why: 'Every y becomes (x + 2), brackets included. You are squaring the whole thing, not just the x.' }
+      ]
+    }
+  };
+
+  var PACK_ID = '1.1';
+  var pack = PACKS[PACK_ID];
+  var BEST_KEY = 'quadratics-sprint-best-' + PACK_ID;
+
+  var order = [], idx = 0, score = 0, streak = 0, bestStreak = 0, nRight = 0;
+  var totalTime = 0, remaining = 0, timerId = null, answered = false;
+  var missed = [];
+
+  function $(id) { return document.getElementById(id); }
+  var startView = $('startView'), playView = $('playView'), endView = $('endView');
+
+  function readBest() { try { var v = localStorage.getItem(BEST_KEY); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+  function writeBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) {} }
+
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function showStart() {
+    startView.classList.remove('hidden'); playView.classList.add('hidden'); endView.classList.add('hidden');
+    var b = readBest();
+    $('bestVal').textContent = b === null ? 'No run yet' : 'Beat it';
+    $('bestPts').textContent = b === null ? '' : (b + ' pts');
+  }
+
+  function begin() {
+    order = shuffle(pack.items);
+    idx = 0; score = 0; streak = 0; bestStreak = 0; nRight = 0; totalTime = 0; missed = [];
+    startView.classList.add('hidden'); endView.classList.add('hidden'); playView.classList.remove('hidden');
+    loadQ();
+  }
+  $('goBtn').addEventListener('click', begin);
+  $('againBtn').addEventListener('click', begin);
+
+  function loadQ() {
+    stopTimer();
+    answered = false;
+    var it = order[idx];
+    $('qn').textContent = 'Q' + (idx + 1) + ' / ' + order.length;
+    $('qtag').innerHTML = it.tag;
+    $('qt').innerHTML = it.q;
+    $('score').textContent = score;
+    var st = $('streak');
+    if (streak >= 2) { st.classList.add('on'); st.textContent = '🔥 ' + streak; }
+    else { st.classList.remove('on'); st.textContent = ''; }
+    $('verdictHost').innerHTML = '';
+
+    var host = $('opts'); host.innerHTML = '';
+    // shuffle option order, tracking the correct index
+    var pairs = it.opts.map(function (o, i) { return { html: o, correct: i === it.a }; });
+    pairs = shuffle(pairs);
+    pairs.forEach(function (p) {
+      var b = document.createElement('button');
+      b.innerHTML = p.html;
+      b.dataset.correct = p.correct ? '1' : '0';
+      b.addEventListener('click', function () { answer(p.correct, b, host); });
+      host.appendChild(b);
+    });
+
+    remaining = it.secs * 10; // tenths
+    updateClock();
+    timerId = setInterval(tick, 100);
+  }
+
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+
+  function tick() {
+    remaining--;
+    if (remaining <= 0) {
+      remaining = 0;
+      updateClock();
+      timeUp();
+      return;
+    }
+    updateClock();
+  }
+
+  function updateClock() {
+    var it = order[idx];
+    var frac = remaining / (it.secs * 10);
+    var f = $('fill');
+    f.style.width = (frac * 100) + '%';
+    f.className = 'fill' + (frac < 0.34 ? ' warn' : '');
+    $('clocknum').textContent = Math.ceil(remaining / 10) + 's';
+  }
+
+  function answer(isRight, btn, host) {
+    if (answered) return;
+    answered = true;
+    stopTimer();
+    var it = order[idx];
+    var used = it.secs - (remaining / 10);
+    totalTime += used;
+
+    Array.prototype.forEach.call(host.children, function (b) {
+      b.disabled = true;
+      if (b !== btn) b.classList.add('dim');
+    });
+
+    var gained = 0;
+    if (isRight) {
+      nRight++;
+      streak++;
+      if (streak > bestStreak) bestStreak = streak;
+      var speed = Math.round(10 * (remaining / (it.secs * 10)));
+      gained = 10 + speed + (streak >= 3 ? 5 : 0);
+      score += gained;
+      btn.classList.add('right');
+      showVerdict(true, gained, speed, it);
+    } else {
+      streak = 0;
+      btn.classList.add('wrong');
+      // reveal the right one
+      Array.prototype.forEach.call(host.children, function (b) {
+        if (b.dataset.correct === '1') { b.classList.remove('dim'); b.classList.add('right'); }
+      });
+      missed.push(it);
+      showVerdict(false, 0, 0, it);
+    }
+    $('score').textContent = score;
+  }
+
+  function timeUp() {
+    if (answered) return;
+    answered = true;
+    stopTimer();
+    var it = order[idx];
+    totalTime += it.secs;
+    streak = 0;
+    var host = $('opts');
+    Array.prototype.forEach.call(host.children, function (b) {
+      b.disabled = true;
+      if (b.dataset.correct === '1') b.classList.add('right');
+      else b.classList.add('dim');
+    });
+    missed.push(it);
+    showVerdict(false, 0, 0, it, true);
+  }
+
+  function showVerdict(ok, gained, speed, it, ranOut) {
+    var v = document.createElement('div');
+    v.className = 'verdict ' + (ok ? 'ok' : 'no');
+    var head = ok ? 'Correct' : (ranOut ? 'Out of time' : 'Not quite');
+    var pts = ok ? ('+' + gained + (speed > 0 ? '  (10 base + ' + speed + ' speed' + (gained > 10 + speed ? ' + 5 streak' : '') + ')' : '')) : '+0';
+    v.innerHTML = '<div class="vh"><span>' + head + '</span><span class="pts">' + pts + '</span></div><div class="vw">' + it.why + '</div>';
+    $('verdictHost').appendChild(v);
+
+    var nb = document.createElement('button');
+    nb.className = 'next';
+    nb.textContent = idx + 1 < order.length ? 'Next →' : 'Final score →';
+    nb.addEventListener('click', function () {
+      idx++;
+      if (idx < order.length) loadQ();
+      else showEnd();
+    });
+    $('verdictHost').appendChild(nb);
+    nb.focus();
+  }
+
+  function rankFor(pct) {
+    if (pct >= 0.92) return { t: 'Exam Pace', c: 'var(--accent)', d: 'Automatic. These will cost you almost nothing in May.' };
+    if (pct >= 0.72) return { t: 'Nearly There', c: 'var(--ok)', d: 'Solid. A couple still need thinking time you cannot spare.' };
+    if (pct >= 0.45) return { t: 'Warming Up', c: 'var(--text)', d: 'You know these. You are not fast at them yet, and speed comes from repeats.' };
+    return { t: 'Cold Start', c: 'var(--warn)', d: 'Go back to the worksheets first, then race again.' };
+  }
+
+  function showEnd() {
+    stopTimer();
+    playView.classList.add('hidden'); endView.classList.remove('hidden');
+    $('finalPts').textContent = score;
+    var maxPts = order.length * 25;
+    var r = rankFor(score / maxPts);
+    var rb = $('rank');
+    rb.textContent = r.t; rb.style.color = r.c; rb.style.borderColor = r.c;
+    $('rankLine').textContent = r.d;
+    $('statRight').textContent = nRight + '/' + order.length;
+    $('statStreak').textContent = bestStreak;
+    $('statAvg').textContent = (totalTime / order.length).toFixed(0) + 's';
+
+    var b = readBest();
+    if (b === null || score > b) {
+      writeBest(score);
+      $('bestNote').textContent = b === null ? 'First run recorded.' : 'New personal best. Beat ' + b + '.';
+    } else {
+      $('bestNote').textContent = 'Personal best: ' + b + ' pts.';
+    }
+
+    var mh = $('missedHost');
+    if (missed.length) {
+      mh.classList.remove('hidden');
+      mh.innerHTML = '<div class="mh">Worth another look</div>' + missed.map(function (m) {
+        return '<div class="mi"><div class="mq">' + m.q + '</div><div class="mw">' + m.why + '</div></div>';
+      }).join('');
+    } else {
+      mh.classList.add('hidden');
+      mh.innerHTML = '';
+    }
+  }
+
+  showStart();
+})();
+</script>
+</body>
+</html>

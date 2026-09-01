@@ -1,0 +1,165 @@
+<!-- ========================================
+     Maths Grid Section (9709 decks & tools)
+     ======================================== 
+     
+     USAGE: Embed in WordPress Elementor HTML widget
+     REQUIRES: variables.css and shared-components.css
+     ======================================== -->
+
+<style>
+/* Maths Grid Specific Styles */
+.tib-math-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tib-math-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+@media (hover: none) {
+  .tib-math-card:hover {
+    transform: none;
+    box-shadow: var(--tib-shadow-card);
+    border-color: var(--tib-border-subtle);
+  }
+}
+
+.tib-math-kind {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--tib-border-radius-btn);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--tib-primary-color);
+  z-index: 1;
+}
+
+.tib-math-kind.tool {
+  background: var(--tib-accent-website-alpha);
+  color: var(--tib-accent-website);
+  border-color: var(--tib-accent-website);
+}
+
+.tib-topic-heading {
+  max-width: var(--tib-max-width);
+  margin: 0 auto 1.5rem;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tib-topic-heading h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--tib-text-color);
+}
+
+.tib-topic-heading span {
+  font-size: 0.85rem;
+  color: var(--tib-secondary-color);
+}
+
+.tib-math-card .tib-card-content { flex: 1; }
+
+.tib-math-links {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 2rem 1.75rem;
+  flex-wrap: wrap;
+}
+
+.tib-math-links .tib-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+.tib-math-note {
+  max-width: var(--tib-max-width);
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 1.75rem;
+  border: 1px dashed var(--tib-primary-alpha-30);
+  border-radius: var(--tib-border-radius-card);
+  color: var(--tib-secondary-color);
+  font-size: 0.9rem;
+  text-align: center;
+}
+</style>
+
+<!-- Base styles from shared-components.css -->
+
+<section id="maths" class="tib-section-alt">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Pure Mathematics 1</h2>
+  </div>
+
+  <div class="tib-topic-heading">
+    <h3>1.1 Quadratics</h3>
+    <span>Completing the square &middot; the discriminant &middot; tangency</span>
+  </div>
+
+  <div class="tib-container">
+    <div class="tib-cards-grid">
+
+      <!-- Session 1 deck -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">📐</span></div>
+        <span class="tib-math-kind">Lesson</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Completing the Square &amp; the Discriminant</h3>
+          <p class="tib-card-description">The full Session 1 lesson. Work through it at your own pace, drag the sliders, and tap any practice question to check your answer.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="math/1.1-quadratics/completing-the-square/" class="tib-btn tib-btn-primary">Open the lesson</a>
+        </div>
+      </div>
+
+      <!-- Vertex Form Explorer -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🎯</span></div>
+        <span class="tib-math-kind tool">Tool</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Vertex Form Explorer</h3>
+          <p class="tib-card-description">Drag the vertex and watch the equation change. Predict the roots or the expanded form first, then tick the box to check yourself. Roots are given in exact form.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="math/1.1-quadratics/vertex-form-explorer/" class="tib-btn tib-btn-primary">Open the tool</a>
+        </div>
+      </div>
+
+      <!-- Quadratics Sprint -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">⏱️</span></div>
+        <span class="tib-math-kind tool">Tool</span>
+        <div class="tib-card-description-spacer"></div>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Quadratics Sprint</h3>
+          <p class="tib-card-description">Twelve moves that should be automatic. Beat the clock on these and you buy yourself time for the hard questions in the exam.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="math/1.1-quadratics/quadratics-sprint/" class="tib-btn tib-btn-primary">Start the sprint</a>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="tib-math-note">More topics arrive as we cover them. Everything here stays up, so you can come back to it before a test.</p>
+  </div>
+</section>
