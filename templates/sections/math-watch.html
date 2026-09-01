@@ -1,0 +1,158 @@
+<!-- ========================================
+     Maths Watch Section (outside video explainers)
+     ========================================
+
+     USAGE: sits directly under math-grid.html on math.html
+     REQUIRES: variables.css and shared-components.css
+     ======================================== -->
+
+<style>
+.tib-watch-wrap {
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.tib-watch-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.tib-watch-heading h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--tib-text-color);
+}
+
+.tib-watch-heading span {
+  font-size: 0.85rem;
+  color: var(--tib-secondary-color);
+}
+
+.tib-watch-intro {
+  color: var(--tib-secondary-color);
+  font-size: 0.95rem;
+  max-width: 60ch;
+  margin-bottom: 2rem;
+}
+
+.tib-watch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tib-watch-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem 1.75rem;
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-card);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tib-watch-item:hover {
+  transform: translateY(-4px);
+  border-color: var(--tib-primary-alpha-30);
+  box-shadow: var(--tib-shadow-hover);
+}
+
+@media (hover: none) {
+  .tib-watch-item:hover {
+    transform: none;
+    border-color: var(--tib-border-subtle);
+    box-shadow: none;
+  }
+}
+
+.tib-watch-play {
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--tib-primary-alpha-10);
+  border: 1px solid var(--tib-primary-color);
+  color: var(--tib-primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.tib-watch-body { flex: 1; min-width: 0; }
+
+.tib-watch-body h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tib-text-color);
+  margin-bottom: 0.35rem;
+}
+
+.tib-watch-meta {
+  font-size: 0.8rem;
+  color: var(--tib-primary-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.tib-watch-body p {
+  font-size: 0.9rem;
+  color: var(--tib-secondary-color);
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .tib-watch-item { padding: 1.25rem; gap: 1rem; }
+  .tib-watch-play { width: 2.25rem; height: 2.25rem; }
+}
+</style>
+
+<section id="watch" class="tib-section">
+  <div class="tib-watch-wrap">
+
+    <div class="tib-watch-heading">
+      <h3>Watch someone else explain it</h3>
+      <span>1.1 Quadratics &middot; completing the square</span>
+    </div>
+
+    <p class="tib-watch-intro">These are the videos that helped me when I was relearning this topic. If something in the lesson did not land, hearing a different voice say it a different way often fixes it. Start with whichever one matches what you are stuck on.</p>
+
+    <div class="tib-watch-list">
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=QhapLEU9FVE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Solving Quadratic Equations by Completing the Square</h4>
+          <span class="tib-watch-meta">Teacher MJ &middot; Math Tutorial</span>
+          <p>A slow, full walkthrough of the method, step by step, with nothing skipped. Watch this one if you can follow the steps in class but lose the thread when you try it alone.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/0VUC6NLgYg8" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Why completing the square actually works</h4>
+          <span class="tib-watch-meta">Onlock &middot; a Short, under a minute</span>
+          <p>Where the name comes from: you are literally completing a square. Watch this one if the method feels like a rule you memorised rather than something that makes sense.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=2MKigAgPZMQ" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Solving Quadratic Equations By Completing The Square</h4>
+          <span class="tib-watch-meta">The Organic Chemistry Tutor</span>
+          <p>Worked example after worked example, including the harder cases where the number in front of the x squared is not 1. Watch this one when you want more practice than the worksheet gives you.</p>
+        </span>
+      </a>
+
+    </div>
+  </div>
+</section>
