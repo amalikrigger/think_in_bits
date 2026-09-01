@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+</head>
+<body>
+<title>The Snow Cone Stand</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Tokens mirror www.thinkinbits.site. Committed dark, single
+   theme, so a tool opened on a phone matches the projected deck.
+   ============================================================ */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-lift: #2a2a2a;
+  --accent: #00e5ff;  --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --axis: rgba(255,255,255,0.85);
+  --ok: #4fe08a; --ok-soft: rgba(79,224,138,0.14);
+  --warn: #ff6b6b; --warn-soft: rgba(255,107,107,0.14);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow: 0 8px 20px rgba(0,229,255,0.3);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.55;
+  padding: clamp(14px, 3.5vw, 34px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+button, input { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* back to the maths page */
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+
+header { margin: 34px 0 20px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 7px;
+}
+h1 {
+  font-size: clamp(26px, 4.2vw, 36px); font-weight: 600;
+  letter-spacing: -0.02em; margin: 0 0 8px; color: var(--accent);
+}
+.lede { color: var(--text-2); font-size: 15px; max-width: 68ch; margin: 0; }
+.lede b { color: var(--text); font-weight: 600; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+}
+.lbl {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-2); display: block; margin-bottom: 6px;
+}
+
+/* the setup */
+.setup { margin-bottom: 18px; }
+.setup p { margin: 0 0 10px; font-size: 15px; }
+.rules { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.rule {
+  flex: 1 1 200px; background: var(--surface-lift);
+  border-radius: 14px; padding: 11px 14px;
+}
+.rule .rv { font-family: var(--mono); font-size: 15px; color: var(--accent); }
+.rule .rk { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+
+/* instrument */
+.instrument { display: grid; grid-template-columns: minmax(300px, 1.15fr) minmax(280px, 0.85fr); gap: 18px; }
+@media (max-width: 860px) { .instrument { grid-template-columns: 1fr; } }
+.screen { padding: 12px; }
+.screen svg { display: block; width: 100%; height: auto; }
+.hint { font-size: 12px; color: var(--text-2); text-align: center; margin: 8px 2px 0; }
+
+.panel { display: flex; flex-direction: column; gap: 15px; }
+
+/* verdict */
+.verdict {
+  border-radius: 14px; padding: 12px 16px; text-align: center;
+  border: 1px solid var(--hairline); background: var(--surface-lift);
+  transition: background .2s ease, border-color .2s ease;
+}
+.verdict .vt { font-size: 20px; font-weight: 700; font-family: var(--mono); }
+.verdict .vs { font-size: 12.5px; color: var(--text-2); margin-top: 1px; }
+.verdict.profit { background: var(--ok-soft); border-color: var(--ok); }
+.verdict.profit .vt { color: var(--ok); }
+.verdict.even { background: var(--accent-wash); border-color: var(--accent-line); }
+.verdict.even .vt { color: var(--accent); }
+.verdict.loss { background: var(--warn-soft); border-color: var(--warn); }
+.verdict.loss .vt { color: var(--warn); }
+
+/* sliders */
+.srow label { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; font-weight: 500; margin-bottom: 6px; }
+.srow .val { font-family: var(--mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+input[type=range] {
+  -webkit-appearance: none; appearance: none; width: 100%;
+  height: 4px; border-radius: 2px; background: var(--surface-lift); outline-offset: 5px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 17px; height: 17px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface); cursor: pointer;
+  box-shadow: 0 0 0 1px var(--accent-line), 0 0 10px rgba(0,229,255,0.45);
+}
+input[type=range]::-moz-range-thumb {
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface); cursor: pointer;
+  box-shadow: 0 0 0 1px var(--accent-line), 0 0 10px rgba(0,229,255,0.45);
+}
+
+/* the takings, line by line */
+.till { display: flex; flex-direction: column; gap: 0; }
+.till .r {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 6px 0; border-bottom: 1px solid var(--hairline);
+  font-size: 13.5px;
+}
+.till .r:last-child { border-bottom: none; padding-top: 10px; }
+.till .r .n { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); }
+.till .r.sub .n, .till .r.sub span { color: var(--text-2); }
+.till .r.total { font-weight: 600; font-size: 15.5px; }
+.till .r.total .n { font-weight: 700; }
+
+/* reveals */
+.reveal { display: flex; flex-direction: column; gap: 9px; }
+.chk { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 13.5px; }
+.chk input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; margin: 0; flex: none; }
+.chk .k { flex: 1; }
+.chk .v { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--accent); font-variant-numeric: tabular-nums; }
+.chk.off .v { visibility: hidden; }
+
+.math {
+  font-family: var(--mono); font-size: 14px; color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 12px; padding: 10px 13px; font-variant-numeric: tabular-nums;
+  overflow-x: auto;
+}
+.math.result { background: var(--accent-wash); border-color: var(--accent-line); color: var(--accent); }
+.math.bad { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+
+/* teaching sections */
+.teach { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 860px) { .teach { grid-template-columns: 1fr; } }
+.teach h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; color: var(--text); }
+.teach p { font-size: 14px; margin: 0 0 10px; color: var(--text-2); }
+.teach p b { color: var(--text); font-weight: 600; }
+.steps { display: flex; flex-direction: column; gap: 7px; }
+.steps .s { display: flex; gap: 11px; align-items: baseline; font-size: 13px; }
+.steps .s .n { font-family: var(--mono); color: var(--accent); font-weight: 700; flex: none; }
+.steps .s .t { color: var(--text-2); }
+.steps .s .t code { font-family: var(--mono); color: var(--text); }
+
+.regimes { display: flex; flex-direction: column; gap: 8px; }
+.regime {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 9px 12px; border-radius: 12px; border: 1px solid var(--hairline);
+  background: var(--surface-lift); font-size: 13px;
+  transition: border-color .2s ease, background .2s ease;
+}
+.regime .rl { font-family: var(--mono); flex: none; }
+.regime.two .rl { color: var(--ok); }
+.regime.one .rl { color: var(--accent); }
+.regime.none .rl { color: var(--warn); }
+.regime.live { background: var(--accent-wash); border-color: var(--accent); }
+
+footer {
+  margin-top: 22px; padding-top: 14px; font-size: 12.5px; color: var(--text-2);
+  border-top: 1px solid var(--hairline);
+}
+footer code { font-family: var(--mono); background: var(--accent-wash); color: var(--accent); padding: 1px 6px; border-radius: 5px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Maths</a>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">9709 · 1.1 Quadratics · where the maths is actually used</p>
+    <h1>The Snow Cone Stand</h1>
+    <p class="lede">You are running a snow cone stand. You pick the price. Everything else follows, and it follows a <b>parabola</b>. Find the price that makes the most money, then push your costs up until the whole thing stops being possible.</p>
+  </header>
+
+  <div class="card setup">
+    <span class="lbl">The setup</span>
+    <p>Charge too little and you barely cover your costs. Charge too much and nobody buys. Somewhere in between is the best price, and completing the square finds it exactly.</p>
+    <div class="rules">
+      <div class="rule"><div class="rv">cones sold = 180 &minus; 20 &times; price</div><div class="rk">Every dollar you add loses you 20 customers.</div></div>
+      <div class="rule"><div class="rv">$1 per cone</div><div class="rk">Ice and syrup, for each cone you actually sell.</div></div>
+      <div class="rule"><div class="rv">fixed cost</div><div class="rk">The stand and the ice machine. You pay it whether you sell any or not.</div></div>
+    </div>
+  </div>
+
+  <div class="instrument">
+    <div>
+      <div class="card screen">
+        <svg viewBox="0 0 560 400" role="img" aria-label="Profit plotted against the price you charge per cone">
+          <g id="grid"></g>
+          <line id="zeroline" x1="62" x2="534" stroke="var(--axis)" stroke-width="2"/>
+          <line x1="62" y1="24" x2="62" y2="344" stroke="var(--hairline-strong)" stroke-width="1.5"/>
+          <path id="curve" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+          <g id="roots"></g>
+          <circle id="vtx" r="5.5" fill="none" stroke="var(--accent)" stroke-width="2.5" style="display:none"/>
+          <line id="plumb" stroke="var(--hairline-strong)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle id="dot" r="7" fill="var(--accent)" stroke="var(--surface)" stroke-width="2.5"/>
+          <text id="dotlab" font-family="JetBrains Mono, monospace" font-size="13" fill="var(--text)" text-anchor="middle"></text>
+          <text x="298" y="384" font-family="JetBrains Mono, monospace" font-size="12" fill="var(--text-2)" text-anchor="middle">price you charge per cone</text>
+        </svg>
+      </div>
+      <p class="hint">The curve is your profit at every possible price. The horizontal line is breaking even.</p>
+    </div>
+
+    <div class="panel">
+      <div class="verdict" id="verdict">
+        <div class="vt" id="vtext"></div>
+        <div class="vs" id="vsub"></div>
+      </div>
+
+      <div class="card">
+        <div class="srow" style="margin-bottom:14px">
+          <label for="price">Price per cone <span class="val" id="pv"></span></label>
+          <input type="range" id="price" min="0" max="9" step="0.25" value="3">
+        </div>
+        <div class="srow">
+          <label for="fixed">Fixed cost for the day <span class="val" id="fv"></span></label>
+          <input type="range" id="fixed" min="0" max="420" step="20" value="140">
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="lbl">What the till says</span>
+        <div class="till">
+          <div class="r"><span>Cones sold</span><span class="n" id="tQ"></span></div>
+          <div class="r"><span>Money taken in</span><span class="n" id="tR"></span></div>
+          <div class="r sub"><span>Ice and syrup</span><span class="n" id="tI"></span></div>
+          <div class="r sub"><span>Stand and machine</span><span class="n" id="tF"></span></div>
+          <div class="r total"><span>Profit</span><span class="n" id="tP"></span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="lbl">The maths behind it</span>
+        <div class="math" id="mPoly" style="margin-bottom:9px"></div>
+        <div class="math result" id="mSq" style="margin-bottom:12px"></div>
+        <div class="reveal">
+          <label class="chk off" id="rowBest">
+            <input type="checkbox" id="cbBest">
+            <span class="k">Best price, and the most you can make</span>
+            <span class="v" id="vBest"></span>
+          </label>
+          <label class="chk off" id="rowEven">
+            <input type="checkbox" id="cbEven">
+            <span class="k">Prices where you break even</span>
+            <span class="v" id="vEven"></span>
+          </label>
+          <label class="chk off" id="rowDisc">
+            <input type="checkbox" id="cbDisc">
+            <span class="k">Discriminant &Delta;</span>
+            <span class="v" id="vDisc"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="teach">
+    <div class="card">
+      <h2>Why is it a parabola?</h2>
+      <p>Nobody handed you this equation. It comes out of the stand itself, and the <b>p&sup2;</b> appears the moment you multiply price by how many you sell.</p>
+      <div class="steps">
+        <div class="s"><span class="n">1</span><span class="t">Money in is price times cones: <code>p(180 &minus; 20p)</code></span></div>
+        <div class="s"><span class="n">2</span><span class="t">There it is. A price times something containing a price gives <code>&minus;20p&sup2;</code>.</span></div>
+        <div class="s"><span class="n">3</span><span class="t">Ice and syrup cost <code>1 &times; (180 &minus; 20p)</code>, and the stand costs <code>C</code> whatever happens.</span></div>
+        <div class="s"><span class="n">4</span><span class="t">Profit is what is left: <code>(p &minus; 1)(180 &minus; 20p) &minus; C</code></span></div>
+        <div class="s"><span class="n">5</span><span class="t">Multiply out: <code>&minus;20p&sup2; + 200p &minus; (180 + C)</code></span></div>
+      </div>
+      <p style="margin-top:12px"><b>a is negative</b>, so the curve opens downward and the vertex is the highest point. That has to be right: profit climbs, peaks, then falls again once you price yourself out.</p>
+    </div>
+
+    <div class="card">
+      <h2>What &Delta; decides here</h2>
+      <p>Breaking even means profit is zero, so the break-even prices are the <b>roots</b>. How many there are is exactly what the discriminant counts, and here it answers a real question: can this stand work at all?</p>
+      <div class="regimes">
+        <div class="regime two" id="regTwo">
+          <span>Two break-even prices, and profit between them</span><span class="rl">&Delta; &gt; 0</span>
+        </div>
+        <div class="regime one" id="regOne">
+          <span>One price that exactly breaks even, and nothing better</span><span class="rl">&Delta; = 0</span>
+        </div>
+        <div class="regime none" id="regNone">
+          <span>No price works. You lose money whatever you charge.</span><span class="rl">&Delta; &lt; 0</span>
+        </div>
+      </div>
+      <p style="margin-top:12px">Push the fixed cost up and watch the two break-even points slide toward each other. They meet at <b>$320</b>, and past that the curve never reaches the line. That is the same moment the top of the parabola touches zero, because the highest profit you can reach is <code>320 &minus; C</code>.</p>
+    </div>
+  </div>
+
+  <footer>Everything here is one quadratic, <code>P(p) = &minus;20p&sup2; + 200p &minus; (180 + C)</code>, read three ways: its <b>vertex</b> is the best price, its <b>roots</b> are break-even, and its <b>discriminant</b> says whether breaking even is possible at all.</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var MINUS = '−';
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* stand model: q = 180 - 20p, $1 per cone, fixed cost C
+     P(p) = (p - 1)(180 - 20p) - C = -20p^2 + 200p - (180 + C)
+     completed square: -20(p - 5)^2 + (320 - C)                 */
+  var A = -20, B = 200;
+  function con(C) { return -(180 + C); }
+  function P(p, C) { return A * p * p + B * p + con(C); }
+
+  /* plot: price 0..9 across, profit +400..-600 down */
+  function px(p) { return 62 + (p / 9) * 472; }
+  function py(v) { return 24 + ((400 - v) / 1000) * 320; }
+
+  function money(v) {
+    var n = Math.round(v * 100) / 100;
+    var s = (Math.abs(n) % 1 === 0) ? String(Math.abs(n)) : Math.abs(n).toFixed(2);
+    return (n < 0 ? MINUS + '$' : '$') + s;
+  }
+  function el(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  /* static grid, drawn once */
+  (function () {
+    var g = $('grid');
+    for (var v = 400; v >= -600; v -= 200) {
+      var y = py(v);
+      g.appendChild(el('line', { x1: 62, y1: y, x2: 534, y2: y,
+        stroke: 'var(--hairline)', 'stroke-width': 1 }));
+      var t = el('text', { x: 56, y: y + 4, 'font-family': 'JetBrains Mono, monospace',
+        'font-size': 11, fill: 'var(--text-2)', 'text-anchor': 'end' });
+      t.textContent = (v < 0 ? MINUS : '') + '$' + Math.abs(v);
+      g.appendChild(t);
+    }
+    for (var p = 0; p <= 9; p++) {
+      var x = px(p);
+      g.appendChild(el('line', { x1: x, y1: 24, x2: x, y2: 344,
+        stroke: 'var(--hairline)', 'stroke-width': 1 }));
+      var lt = el('text', { x: x, y: 362, 'font-family': 'JetBrains Mono, monospace',
+        'font-size': 11, fill: 'var(--text-2)', 'text-anchor': 'middle' });
+      lt.textContent = '$' + p;
+      g.appendChild(lt);
+    }
+    $('zeroline').setAttribute('y1', py(0));
+    $('zeroline').setAttribute('y2', py(0));
+  })();
+
+  var priceIn = $('price'), fixedIn = $('fixed');
+
+  function render() {
+    var p = parseFloat(priceIn.value), C = parseFloat(fixedIn.value);
+    var q = 180 - 20 * p;
+    var rev = p * q, ing = q, prof = rev - ing - C;
+    var best = 320 - C, disc = B * B - 4 * A * con(C);
+
+    $('pv').textContent = '$' + p.toFixed(2);
+    $('fv').textContent = '$' + C;
+
+    /* the till */
+    $('tQ').textContent = q + (q === 1 ? ' cone' : ' cones');
+    $('tR').textContent = money(rev);
+    $('tI').textContent = MINUS + money(ing).replace(MINUS, '');
+    $('tF').textContent = MINUS + '$' + C;
+    $('tP').textContent = money(prof);
+    $('tP').style.color = prof > 0 ? 'var(--ok)' : (prof < 0 ? 'var(--warn)' : 'var(--accent)');
+
+    /* verdict */
+    var v = $('verdict');
+    v.className = 'verdict ' + (prof > 0.001 ? 'profit' : (prof < -0.001 ? 'loss' : 'even'));
+    $('vtext').textContent = money(prof);
+    $('vsub').textContent = prof > 0.001
+      ? 'profit at $' + p.toFixed(2) + ' a cone'
+      : (prof < -0.001 ? 'lost at $' + p.toFixed(2) + ' a cone' : 'exactly breaking even');
+
+    /* the algebra */
+    var k = 180 + C;
+    $('mPoly').innerHTML = 'P(p) = ' + MINUS + '20p<sup>2</sup> + 200p ' + MINUS + ' ' + k;
+    var sq = MINUS + '20(p ' + MINUS + ' 5)<sup>2</sup>' +
+             (best === 0 ? '' : (best < 0 ? ' ' + MINUS + ' ' + Math.abs(best) : ' + ' + best));
+    $('mSq').innerHTML = '= ' + sq;
+    $('mSq').className = 'math ' + (best < 0 ? 'bad' : 'result');
+
+    $('vBest').textContent = best >= 0
+      ? '$5.00 → ' + money(best)
+      : 'best is ' + money(best) + ', still a loss';
+
+    var haveRoots = disc > 0, oneRoot = Math.abs(disc) < 1e-9;
+    if (haveRoots) {
+      var r = Math.sqrt(disc);
+      var r1 = (-B + r) / (2 * A), r2 = (-B - r) / (2 * A);
+      var lo = Math.min(r1, r2), hi = Math.max(r1, r2);
+      $('vEven').textContent = '$' + lo.toFixed(2) + ' and $' + hi.toFixed(2);
+    } else if (oneRoot) {
+      $('vEven').textContent = '$5.00 only';
+    } else {
+      $('vEven').textContent = 'never';
+    }
+    $('vDisc').textContent = (disc < 0 ? MINUS : '') + Math.abs(disc).toLocaleString('en-US');
+
+    /* which regime is live */
+    $('regTwo').classList.toggle('live', haveRoots);
+    $('regOne').classList.toggle('live', oneRoot);
+    $('regNone').classList.toggle('live', disc < 0);
+
+    /* curve */
+    var pts = [];
+    for (var i = 0; i <= 180; i++) {
+      var xx = 9 * i / 180;
+      pts.push(px(xx).toFixed(1) + ',' + py(Math.max(-640, P(xx, C))).toFixed(1));
+    }
+    $('curve').setAttribute('d', 'M ' + pts.join(' L '));
+
+    /* break-even markers */
+    var rg = $('roots');
+    while (rg.firstChild) rg.removeChild(rg.firstChild);
+    if ($('cbEven').checked) {
+      var marks = haveRoots
+        ? [(-B + Math.sqrt(disc)) / (2 * A), (-B - Math.sqrt(disc)) / (2 * A)]
+        : (oneRoot ? [5] : []);
+      marks.forEach(function (x) {
+        if (x < 0 || x > 9) return;
+        rg.appendChild(el('circle', { cx: px(x), cy: py(0), r: 5.5,
+          fill: 'var(--surface)', stroke: 'var(--ok)', 'stroke-width': 2.5 }));
+      });
+    }
+
+    /* vertex marker */
+    var vt = $('vtx');
+    if ($('cbBest').checked) {
+      vt.style.display = ''; vt.setAttribute('cx', px(5)); vt.setAttribute('cy', py(best));
+    } else { vt.style.display = 'none'; }
+
+    /* where you are now */
+    var y = py(prof);
+    $('plumb').setAttribute('x1', px(p)); $('plumb').setAttribute('x2', px(p));
+    $('plumb').setAttribute('y1', y);     $('plumb').setAttribute('y2', py(0));
+    $('dot').setAttribute('cx', px(p));   $('dot').setAttribute('cy', y);
+    var lab = $('dotlab');
+    lab.setAttribute('x', Math.max(96, Math.min(500, px(p))));
+    lab.setAttribute('y', y - 14 < 34 ? y + 26 : y - 14);
+    lab.textContent = money(prof);
+
+    /* reveal rows dim until ticked */
+    [['cbBest','rowBest'], ['cbEven','rowEven'], ['cbDisc','rowDisc']].forEach(function (t) {
+      $(t[1]).classList.toggle('off', !$(t[0]).checked);
+    });
+  }
+
+  [priceIn, fixedIn].forEach(function (i) { i.addEventListener('input', render); });
+  ['cbBest','cbEven','cbDisc'].forEach(function (id) {
+    $(id).addEventListener('change', render);
+  });
+  render();
+})();
+</script>
+</body>
+</html>
