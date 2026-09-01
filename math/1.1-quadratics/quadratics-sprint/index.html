@@ -95,6 +95,21 @@
     padding: 18px 20px;
   }
 
+
+  /* back to the maths page */
+  .tib-back {
+    position: fixed; top: 14px; left: 16px; z-index: 30;
+    display: inline-flex; align-items: center; gap: 0.5em;
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text-2); text-decoration: none;
+    background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+    border-radius: 50px; padding: 7px 15px 7px 12px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+  .tib-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media print { .tib-back { display: none !important; } }
   /* start */
   #startView .card { max-width: 540px; }
   .why { font-size: 14.5px; margin: 0 0 14px; }
@@ -278,6 +293,7 @@
   .missed .mw { color: var(--text-2); font-size: 13.5px; }
 </style>
 
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Maths</a>
 <div class="wrap">
   <header>
     <div class="kicker">Cambridge 9709 · 1.1 Quadratics</div>

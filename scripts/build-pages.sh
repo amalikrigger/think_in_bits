@@ -223,9 +223,9 @@ build_all() {
         local page_name=$(basename "$config_file" .conf)
         
         if build_page "$page_name"; then
-            ((count++))
+            count=$((count + 1))
         else
-            ((errors++))
+            errors=$((errors + 1))
         fi
     done
     
