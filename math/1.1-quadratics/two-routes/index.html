@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+</head>
+<body>
+<title>Two Routes, One Answer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Tokens mirror www.thinkinbits.site. Committed dark, single
+   theme, so a tool opened on a phone matches the projected deck.
+   ============================================================ */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-lift: #2a2a2a;
+  --accent: #00e5ff;  --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --ok: #4fe08a; --ok-soft: rgba(79,224,138,0.14);
+  --warn: #ff6b6b; --warn-soft: rgba(255,107,107,0.14);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow: 0 8px 20px rgba(0,229,255,0.3);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.55;
+  padding: clamp(14px, 3.5vw, 34px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+button, input, select { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+
+header { margin: 34px 0 20px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 7px;
+}
+h1 {
+  font-size: clamp(27px, 5vw, 42px); font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 10px;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+}
+.lede { color: var(--text-2); font-size: clamp(14px, 1.9vw, 17px); max-width: 62ch; margin: 0; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: clamp(15px, 2.4vw, 24px);
+  box-shadow: var(--shadow-card); margin-bottom: 18px;
+}
+.panel > h2 {
+  font-size: clamp(15px, 2vw, 18px); font-weight: 600; color: var(--accent);
+  margin: 0 0 12px; letter-spacing: -0.01em;
+}
+.hint { color: var(--text-2); font-size: clamp(12.5px, 1.6vw, 14.5px); margin: 10px 0 0; }
+.hint.tight { margin-top: 6px; }
+
+/* ---------- pickers ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-size: clamp(12.5px, 1.7vw, 14.5px); font-weight: 500; cursor: pointer;
+  font-family: var(--mono);
+  color: var(--text-2); background: var(--surface-lift);
+  border: 1px solid var(--hairline); border-radius: 50px;
+  padding: 7px 15px; transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+.chip:hover { color: var(--text); border-color: var(--hairline-strong); }
+.chip[aria-pressed="true"] {
+  color: var(--accent); background: var(--accent-wash);
+  border-color: var(--accent-line); box-shadow: var(--shadow-glow);
+}
+.chip .tag {
+  font-family: var(--font); font-size: 0.8em; color: var(--text-2);
+  margin-left: 0.6em; letter-spacing: 0.02em;
+}
+
+.modes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.mode {
+  flex: 1 1 230px; text-align: left; cursor: pointer;
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 14px; padding: 11px 15px; color: var(--text-2);
+  transition: color .15s ease, background .15s ease, border-color .15s ease;
+}
+.mode b { display: block; color: var(--text); font-size: clamp(13.5px, 1.8vw, 15.5px); font-weight: 600; }
+.mode span { font-size: clamp(11.5px, 1.5vw, 13px); }
+.mode:hover { border-color: var(--hairline-strong); }
+.mode[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent-line); color: var(--text-2); }
+.mode[aria-pressed="true"] b { color: var(--accent); }
+
+.custom { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 13px; }
+.custom label { font-size: clamp(12.5px, 1.6vw, 14px); color: var(--text-2); font-family: var(--mono); }
+.custom input {
+  width: 68px; font-family: var(--mono); font-size: 15px; color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 10px; padding: 7px 9px; text-align: center;
+}
+.custom input:invalid { border-color: var(--warn); }
+.btn {
+  font-size: clamp(13px, 1.7vw, 15px); font-weight: 500; cursor: pointer;
+  color: var(--text); background: var(--surface-lift);
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 8px 18px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.btn:hover { background: #333; border-color: var(--accent-line); }
+.btn.primary { color: var(--accent); background: var(--accent-wash); border-color: var(--accent-line); }
+.btn.primary:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
+.btn[disabled] { opacity: 0.4; cursor: default; }
+.btn[disabled]:hover { background: var(--surface-lift); border-color: var(--hairline); }
+
+/* ---------- the two routes ---------- */
+.given {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: clamp(17px, 2.9vw, 26px); color: var(--accent);
+  background: var(--accent-wash); border: 1px solid var(--accent-line);
+  border-radius: 14px; padding: 12px 18px; margin: 0 0 16px;
+  display: inline-block; box-shadow: var(--shadow-glow);
+}
+.routes { display: flex; gap: clamp(12px, 2vw, 22px); flex-wrap: wrap; align-items: flex-start; }
+.route { flex: 1 1 300px; min-width: 0; }
+.route h3 {
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 11px;
+}
+.route h3 .who { color: var(--text-2); letter-spacing: 0.06em; }
+
+.step {
+  border-left: 2px solid var(--hairline); padding: 0 0 14px 14px; margin: 0;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.step.on { opacity: 1; transform: none; }
+.step:last-child { padding-bottom: 0; }
+.step .say { font-size: clamp(12.5px, 1.65vw, 14.5px); color: var(--text-2); margin: 0 0 7px; }
+.step .math {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: clamp(13px, 1.85vw, 17px); color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 12px; padding: 9px 12px; margin: 0;
+  overflow-x: auto; white-space: nowrap;
+}
+.step.final .math {
+  background: var(--accent-wash); border-color: var(--accent-line);
+  color: var(--accent); box-shadow: var(--shadow-glow);
+}
+.step.extra { border-left-color: var(--warn); }
+.step.extra .say { color: var(--warn); }
+.step.trap .math { border-color: var(--warn); color: var(--warn); background: var(--warn-soft); }
+
+.verdict {
+  border-radius: 14px; padding: 14px 17px; margin-top: 18px;
+  border: 1px solid var(--hairline); background: var(--surface-lift);
+  opacity: 0; transition: opacity .3s ease;
+}
+.verdict.on { opacity: 1; }
+.verdict.agree { background: var(--ok-soft); border-color: var(--ok); }
+.verdict h4 { margin: 0 0 6px; font-size: clamp(14px, 1.9vw, 16px); font-weight: 600; color: var(--text); }
+.verdict p { margin: 0; font-size: clamp(12.5px, 1.65vw, 14.5px); color: var(--text-2); }
+.verdict p + p { margin-top: 7px; }
+.verdict .k { font-family: var(--mono); color: var(--text); }
+.verdict .bad { color: var(--warn); font-family: var(--mono); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; margin-top: 18px; }
+.tally { font-family: var(--mono); font-size: 12.5px; color: var(--text-2); margin-left: auto; }
+
+footer { color: var(--text-2); font-size: 12.5px; margin: 26px 0 8px; text-align: center; }
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 560px) {
+  .tib-back { position: static; margin-bottom: 16px; }
+  header { margin-top: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .step, .verdict { transition: none; }
+}
+</style>
+
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">9709 · 1.1 Quadratics · completing the square when a ≠ 1</p>
+    <h1>Two Routes, One Answer</h1>
+    <p class="lede">There are two ways to complete the square when the number in front of x<sup>2</sup> is not 1. You can factor it out, or you can divide by it. Both are correct. Run them side by side and watch where they agree, and the one place they do not.</p>
+  </header>
+
+  <div class="panel">
+    <h2>1 · Pick a quadratic</h2>
+    <div class="chips" id="presets" role="group" aria-label="Preset quadratics"></div>
+    <div class="custom">
+      <label for="ia">a</label><input id="ia" type="number" value="3" step="1" aria-label="coefficient a">
+      <label for="ib">b</label><input id="ib" type="number" value="4" step="1" aria-label="coefficient b">
+      <label for="ic">c</label><input id="ic" type="number" value="-15" step="1" aria-label="constant c">
+      <button class="btn" id="useCustom" type="button">Use these</button>
+    </div>
+    <p class="hint tight">Whole numbers only, and a cannot be 0. Type a minus sign as a plain hyphen.</p>
+  </div>
+
+  <div class="panel">
+    <h2>2 · What is the question asking?</h2>
+    <div class="modes" role="group" aria-label="Question type">
+      <button class="mode" id="mEq" type="button" aria-pressed="true">
+        <b>Solve it</b>
+        <span>The question ends in = 0 and wants the values of x.</span>
+      </button>
+      <button class="mode" id="mEx" type="button" aria-pressed="false">
+        <b>Write in the form A(x + B)<sup>2</sup> + C</b>
+        <span>No equals sign. Rewrite the expression itself.</span>
+      </button>
+    </div>
+    <p class="hint" id="modeNote"></p>
+  </div>
+
+  <div class="panel">
+    <p class="given" id="given"></p>
+    <div class="routes">
+      <div class="route">
+        <h3>Route 1 <span class="who">· factor the a out</span></h3>
+        <div id="r1"></div>
+      </div>
+      <div class="route">
+        <h3>Route 2 <span class="who">· divide by the a</span></h3>
+        <div id="r2"></div>
+      </div>
+    </div>
+    <div class="verdict" id="verdict"></div>
+    <div class="controls">
+      <button class="btn primary" id="stepBtn" type="button">Next step</button>
+      <button class="btn" id="allBtn" type="button">Show everything</button>
+      <button class="btn" id="resetBtn" type="button">Start over</button>
+      <span class="tally" id="tally"></span>
+    </div>
+  </div>
+
+  <footer>
+    <a href="../two-routes-handout.pdf" target="_blank" rel="noopener">Print the one-page summary</a> &nbsp;·&nbsp;
+    <a href="../completing-the-square/">Back to the Session 1 slides</a> &nbsp;·&nbsp;
+    <a href="../vertex-form-explorer/">Vertex Form Explorer</a> &nbsp;·&nbsp;
+    <a href="../quadratics-sprint/">Quadratics Sprint</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var MINUS = '−', SQ = '²', RAD = '√', PM = '±';
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- exact rational arithmetic, integers only ---------- */
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function fr(n, d) { if (d < 0) { n = -n; d = -d; } var g = gcd(n, d) || 1; return { n: n / g, d: d / g }; }
+  function I(n) { return fr(n, 1); }
+  function add(x, y) { return fr(x.n * y.d + y.n * x.d, x.d * y.d); }
+  function sub(x, y) { return fr(x.n * y.d - y.n * x.d, x.d * y.d); }
+  function mul(x, y) { return fr(x.n * y.n, x.d * y.d); }
+  function dv(x, y) { return fr(x.n * y.d, x.d * y.n); }
+  function neg(x) { return fr(-x.n, x.d); }
+  function abs(x) { return fr(Math.abs(x.n), x.d); }
+  function zero(x) { return x.n === 0; }
+
+  /* ---------- rendering. every minus is U+2212, never a hyphen ---------- */
+  function f(x) { return (x.n < 0 ? MINUS : '') + Math.abs(x.n) + (x.d === 1 ? '' : '/' + x.d); }
+  function pm(x) { return zero(x) ? '' : (x.n < 0 ? ' ' + MINUS + ' ' : ' + ') + f(abs(x)); }
+  function times(x, s) {            /* coefficient in front of a bracket or letter */
+    if (x.d === 1 && x.n === 1) return s;
+    if (x.d === 1 && x.n === -1) return MINUS + s;
+    return f(x) + s;
+  }
+  function xterm(r) {               /* "x² + 4/3 x" or "x² − 6x" */
+    if (zero(r)) return 'x' + SQ;
+    var a = abs(r), body = a.d === 1 ? f(a) + 'x' : f(a) + ' x';
+    return 'x' + SQ + (r.n < 0 ? ' ' + MINUS + ' ' : ' + ') + body;
+  }
+  function brk(B) { return zero(B) ? 'x' + SQ : '(x' + (B.n < 0 ? ' ' + MINUS + ' ' : ' + ') + f(abs(B)) + ')' + SQ; }
+
+  function sqrtFrac(R) {            /* sqrt(n/d) = k*sqrt(rad), k rational */
+    var nd = R.n * R.d, k = 1, m = nd;
+    for (var i = 2; i * i <= m; i++) { while (m % (i * i) === 0) { m /= i * i; k *= i; } }
+    return { k: fr(k, R.d), rad: m };
+  }
+  function surd(R) {
+    var s = sqrtFrac(R);
+    if (s.rad === 1) return f(s.k);
+    var num = (s.k.n === 1 ? '' : s.k.n) + RAD + s.rad;
+    return s.k.d === 1 ? num : num + '/' + s.k.d;
+  }
+  function rootsOf(B, R) {          /* (x + B)² = R */
+    if (R.n < 0) return null;
+    var s = sqrtFrac(R), mB = neg(B);
+    if (s.rad === 1) {
+      if (zero(s.k)) return 'x = ' + f(mB) + '   (repeated root)';
+      return 'x = ' + f(add(mB, s.k)) + '   or   x = ' + f(sub(mB, s.k));
+    }
+    return 'x = ' + (zero(mB) ? '' : f(mB) + ' ') + PM + ' ' + surd(R);
+  }
+  function quad(a, b, c) {          /* the given, as written */
+    var s = times(I(a), 'x' + SQ);
+    if (b !== 0) s += (b < 0 ? ' ' + MINUS + ' ' : ' + ') + (Math.abs(b) === 1 ? 'x' : Math.abs(b) + 'x');
+    if (c !== 0) s += (c < 0 ? ' ' + MINUS + ' ' : ' + ') + Math.abs(c);
+    return s;
+  }
+
+  /* ---------- the two routes, step by step ---------- */
+  function build(a, b, c, solving) {
+    var A = I(a), B = fr(b, 2 * a), Bsq = mul(B, B);
+    var q = sub(I(c), mul(A, Bsq));          /* a(x+B)² + q  is the given expression */
+    var k = sub(fr(c, a), Bsq);              /* (x+B)² + k   is the given divided by a */
+    var R = neg(k);                          /* (x+B)² = R   on both routes */
+    var tail = solving ? ' = 0' : '';
+    var r1 = [], r2 = [];
+
+    r1.push(['Factor the ' + f(A) + ' out of the x' + SQ + ' and x terms. Leave the ' + f(I(c)) + ' outside.',
+             times(A, '(' + xterm(fr(b, a)) + ')') + pm(I(c)) + tail]);
+    r1.push(['Half of ' + f(fr(b, a)) + ' is ' + f(B) + '. Square it, ' + f(Bsq) + ', and subtract it inside the bracket.',
+             times(A, '[' + brk(B) + ' ' + MINUS + ' ' + f(Bsq) + ']') + pm(I(c)) + tail]);
+    r1.push(['Multiply back out by ' + f(A) + '. The ' + f(Bsq) + ' is inside, so it gets multiplied too.',
+             times(A, brk(B)) + pm(neg(mul(A, Bsq))) + pm(I(c)) + tail]);
+    r1.push(['Combine the two numbers outside the bracket.',
+             times(A, brk(B)) + pm(q) + tail, solving ? '' : 'final']);
+    if (solving) {
+      r1.push(['Move the ' + f(q) + ' across, then divide both sides by ' + f(A) + '.', brk(B) + ' = ' + f(R)]);
+      r1.push(['Square root both sides.', rootsOf(B, R) || 'nothing squared is negative, so there are no real roots', 'final']);
+    }
+
+    r2.push([solving
+              ? 'Divide every term by ' + f(A) + '. The other side is 0, and 0 divided by ' + f(A) + ' is still 0.'
+              : 'Divide every term by ' + f(A) + '. Careful: what you have now is ' + f(A) + ' times smaller than the question.',
+             xterm(fr(b, a)) + pm(fr(c, a)) + tail]);
+    if (solving) {
+      r2.push(['Move the ' + f(fr(c, a)) + ' across.', xterm(fr(b, a)) + ' = ' + f(fr(-c, a))]);
+      r2.push(['Half of ' + f(fr(b, a)) + ' is ' + f(B) + '. Square it, ' + f(Bsq) + ', and add it to both sides.',
+               brk(B) + ' = ' + f(fr(-c, a)) + pm(Bsq)]);
+      r2.push(['Tidy the right side.', brk(B) + ' = ' + f(R)]);
+      r2.push(['Square root both sides.', rootsOf(B, R) || 'nothing squared is negative, so there are no real roots', 'final']);
+    } else {
+      r2.push(['Half of ' + f(fr(b, a)) + ' is ' + f(B) + '. Square it, ' + f(Bsq) + ', and subtract it.',
+               brk(B) + ' ' + MINUS + ' ' + f(Bsq) + pm(fr(c, a))]);
+      r2.push(['Tidy up. This is the completed square of the divided version, not of the question.',
+               brk(B) + pm(k), a === 1 ? '' : 'trap']);
+      if (a === 1) { r2[r2.length - 1][2] = 'final'; }
+      else {
+        r2.push(['Multiply the whole thing back by ' + f(A) + '. This is the line people forget.',
+                 times(A, '[' + brk(B) + pm(k) + ']') + '  =  ' + times(A, brk(B)) + pm(q), 'final extra']);
+      }
+    }
+    return { r1: r1, r2: r2, A: A, B: B, q: q, k: k, R: R };
+  }
+
+  /* ---------- state ---------- */
+  var PRESETS = [
+    { a: 3, b: 4,   c: -15, tag: 'the video' },
+    { a: 2, b: -12, c: 5,   tag: 'wkshtA Q3' },
+    { a: 4, b: -12, c: 5,   tag: 'wkshtA Q4' },
+    { a: 2, b: 5,   c: -3,  tag: 'wkshtC Q4' },
+    { a: 3, b: -2,  c: 7,   tag: 'wkshtC Q7' },
+    { a: 4, b: -4,  c: -3,  tag: 'wkshtC Q8' },
+    { a: 1, b: -6,  c: 5,   tag: 'a = 1' }
+  ];
+  var a = 3, b = 4, c = -15, solving = true, model = null, shown = 0, total = 0;
+
+  function stepHTML(s) {
+    return '<div class="step ' + (s[2] || '') + '"><p class="say">' + s[0] + '</p><p class="math">' + s[1] + '</p></div>';
+  }
+
+  function verdict(v) {
+    var m = model, h;
+    v.className = 'verdict on agree';
+    if (a === 1) {
+      v.className = 'verdict on';
+      h = '<h4>a is 1 here, so the two routes are one method.</h4>' +
+          '<p>Nothing to factor out, nothing to divide by. The extra line only appears once a stops being 1. Pick any other quadratic above and watch it show up.</p>';
+    } else if (solving) {
+      h = '<h4>Both routes reached the same line, then the same answer.</h4>' +
+          '<p>Route 1 arrived at <span class="k">' + brk(m.B) + ' = ' + f(m.R) + '</span>. So did Route 2. Dividing is shorter here for exactly one reason: the other side is 0, and dividing 0 costs nothing.</p>' +
+          '<p>' + (m.R.n < 0
+            ? 'The right side is negative, and nothing squared is negative. <span class="k">No real roots.</span>'
+            : 'Answer: <span class="k">' + rootsOf(m.B, m.R) + '</span>') + '</p>';
+    } else {
+      h = '<h4>Both routes finish in the same place. Route 2 needs one more line to get there.</h4>' +
+          '<p>Correct answer: <span class="k">' + times(m.A, brk(m.B)) + pm(m.q) + '</span></p>' +
+          '<p>Stop one line early and you have written <span class="bad">' + brk(m.B) + pm(m.k) + '</span>, which is ' + f(m.A) +
+          ' times smaller than the question. The bracket is right either way, so the line of symmetry x = ' + f(neg(m.B)) +
+          ' survives. The ' + (a > 0 ? 'minimum' : 'maximum') + ' value does not: it is <span class="k">' + f(m.q) +
+          '</span>, not ' + f(m.k) + '.</p>';
+    }
+    v.innerHTML = h;
+  }
+
+  function reveal() {
+    var s1 = $('r1').children, s2 = $('r2').children, i;
+    for (i = 0; i < s1.length; i++) s1[i].classList.toggle('on', i < shown);
+    for (i = 0; i < s2.length; i++) s2[i].classList.toggle('on', i < shown);
+    $('tally').textContent = shown >= total ? 'all ' + total + ' steps' : 'step ' + shown + ' of ' + total;
+    $('stepBtn').disabled = shown >= total;
+    var v = $('verdict');
+    if (shown >= total) { verdict(v); } else { v.className = 'verdict'; v.innerHTML = ''; }
+  }
+
+  function draw() {
+    model = build(a, b, c, solving);
+    $('given').textContent = quad(a, b, c) + (solving ? ' = 0' : '');
+    $('r1').innerHTML = model.r1.map(stepHTML).join('');
+    $('r2').innerHTML = model.r2.map(stepHTML).join('');
+    total = Math.max(model.r1.length, model.r2.length);
+    shown = 0;
+    reveal();
+    markPresets();
+  }
+
+  /* ---------- pickers ---------- */
+  var pc = $('presets');
+  PRESETS.forEach(function (p, i) {
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'chip'; btn.setAttribute('aria-pressed', 'false');
+    btn.innerHTML = quad(p.a, p.b, p.c) + '<span class="tag">' + p.tag + '</span>';
+    btn.addEventListener('click', function () {
+      a = p.a; b = p.b; c = p.c;
+      $('ia').value = a; $('ib').value = b; $('ic').value = c;
+      draw();
+    });
+    pc.appendChild(btn);
+  });
+  function markPresets() {
+    [].slice.call(pc.children).forEach(function (btn, i) {
+      var p = PRESETS[i];
+      btn.setAttribute('aria-pressed', (p.a === a && p.b === b && p.c === c) ? 'true' : 'false');
+    });
+  }
+
+  function setMode(s) {
+    solving = s;
+    $('mEq').setAttribute('aria-pressed', s ? 'true' : 'false');
+    $('mEx').setAttribute('aria-pressed', s ? 'false' : 'true');
+    $('modeNote').textContent = s
+      ? 'There is an equals sign, so use Route 2 and divide. Both routes land on the same line, but dividing is free here because the other side is 0.'
+      : 'No equals sign, so use Route 1 and factor the a out. Route 2 still works, it just owes you one more line, and that line is where the marks go.';
+    draw();
+  }
+  $('mEq').addEventListener('click', function () { setMode(true); });
+  $('mEx').addEventListener('click', function () { setMode(false); });
+
+  function readInt(el, fallback) {
+    var v = parseInt(String(el.value).replace(/−/g, '-'), 10);
+    if (!isFinite(v) || Math.abs(v) > 999) return fallback;
+    return v;
+  }
+  $('useCustom').addEventListener('click', function () {
+    var na = readInt($('ia'), a);
+    if (na === 0) { $('ia').value = a; return; }
+    a = na; b = readInt($('ib'), b); c = readInt($('ic'), c);
+    $('ia').value = a; $('ib').value = b; $('ic').value = c;
+    draw();
+  });
+
+  /* ---------- controls ---------- */
+  function nextStep() { if (shown < total) { shown++; reveal(); } }
+  $('stepBtn').addEventListener('click', nextStep);
+  $('allBtn').addEventListener('click', function () { shown = total; reveal(); });
+  $('resetBtn').addEventListener('click', function () { shown = 0; reveal(); });
+  document.addEventListener('keydown', function (e) {
+    if (/^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextStep(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); if (shown > 0) { shown--; reveal(); } }
+  });
+
+  setMode(true);
+})();
+</script>
+</body>
+</html>

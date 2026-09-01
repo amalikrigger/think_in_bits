@@ -237,6 +237,22 @@ li + li { margin-top: 1.2vh; }
 .cases .lab b { color: var(--text); }
 svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
 
+/* ---------- two-route compare slides ----------
+   Both columns plus a shared answer have to fit a 900px projector
+   without scrolling mid-explanation, so this archetype runs denser
+   than the rest of the deck. */
+.slide.duo { gap: 0.75vh; padding-top: 5vh; padding-bottom: 9.5vh; }
+.slide.duo h2 { font-size: clamp(22px, 3.1vw, 35px); }
+.slide.duo .cols { gap: 2vw; }
+.slide.duo .card { padding: 1.3vh 1.3vw; gap: 0.42vh; }
+.slide.duo .card .small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.34; }
+.slide.duo .card .math { padding: 0.85vh 1vw; font-size: clamp(12.5px, 1.5vw, 17.5px); }
+.slide.duo > .math { padding: 1vh 1.2vw; }
+.slide.duo .card ul { padding-left: 1.05em; margin: 0; }
+.slide.duo .card li + li { margin-top: 0.35vh; }
+.slide.duo .card li.small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.32; }
+.slide.duo .card .math.result { font-size: clamp(15px, 1.95vw, 23px); padding: 0.8vh 1.1vw; }
+
 /* ---------- stepped reveal ---------- */
 .frag { visibility: hidden; opacity: 0; transform: translateY(8px); transition: opacity .28s ease, transform .28s ease; }
 .frag.on { visibility: visible; opacity: 1; transform: none; }
@@ -470,7 +486,7 @@ kbd {
   <h1>Completing the Square &amp; the Discriminant</h1>
   <div class="agenda">
     <div class="row"><span>Do Now: three quadratics, cold</span></div>
-    <div class="row"><span>Completing the square, and what the vertex is for</span></div>
+    <div class="row"><span>Completing the square two ways, and which one the question wants</span></div>
     <div class="row"><span>The discriminant: counting roots without finding them</span></div>
     <div class="row"><span>Tangency, and a real June 2023 exam question</span></div>
     <div class="row"><span>Practice: together, then on your own</span></div>
@@ -490,7 +506,7 @@ kbd {
 
 <!-- 3 · three methods -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 1 of 9</p>
+  <p class="eyebrow">Direct instruction · 1 of 12</p>
   <h2>Three ways to solve a quadratic. Pick the cheap one.</h2>
   <ul>
     <li><b>Factor.</b> First choice. Ten seconds when the numbers are small and whole.</li>
@@ -502,7 +518,7 @@ kbd {
 
 <!-- 4 · completing the square, a = 1 -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 2 of 9</p>
+  <p class="eyebrow">Direct instruction · 2 of 12</p>
   <h2>Completing the square: halve, then correct.</h2>
   <div class="math">x<sup>2</sup> − 6x + 5</div>
   <div class="math frag result">(x − 3)<sup>2</sup> − 9 + 5 &nbsp;=&nbsp; (x − 3)<sup>2</sup> − 4</div>
@@ -513,25 +529,130 @@ kbd {
   <p class="frag" style="margin-top:1.2vh"><a class="toolchip" href="../vertex-form-explorer/" target="_blank" rel="noopener">Vertex Form Explorer: drag the vertex and watch the equation change</a></p>
 </section>
 
-<!-- 5 · the method, a ≠ 1 -->
-<section class="slide">
-  <p class="eyebrow">Direct instruction · 3 of 9</p>
-  <h2>The method, every time.</h2>
-  <p class="small">Step 1 does nothing when a = 1. Every other step is the same. Step 3 subtracts B<sup>2</sup> for the reason you just saw: (x + B)<sup>2</sup> always carries an extra B<sup>2</sup> you did not ask for.</p>
-  <div class="math">2x<sup>2</sup> − 12x + 5</div>
-  <div class="agenda steps">
-    <div class="row frag"><span><span class="n">1</span>Factor a out of the x<sup>2</sup> and x terms. Leave c outside.</span><span class="t">2(x<sup>2</sup> − 6x) + 5</span></div>
-    <div class="row frag"><span><span class="n">2</span>Halve the x coefficient inside. That is B.</span><span class="t">B = −3</span></div>
-    <div class="row frag"><span><span class="n">3</span>Write (x + B)<sup>2</sup>, then subtract B<sup>2</sup>.</span><span class="t">2[(x − 3)<sup>2</sup> − 9] + 5</span></div>
-    <div class="row frag"><span><span class="n">4</span>Multiply back out by a.</span><span class="t">2(x − 3)<sup>2</sup> − 18 + 5</span></div>
-    <div class="row frag"><span><span class="n">5</span>Combine with c.</span><span class="t">2(x − 3)<sup>2</sup> − 13</span></div>
+<!-- 5 · two routes when a ≠ 1 -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 3 of 12</p>
+  <h2>When a ≠ 1 there are two routes. Both are right.</h2>
+  <div class="math">3x<sup>2</sup> + 4x − 15 = 0</div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Route 1 · factor the a out</p>
+        <p class="small">Pull the 3 out of the x<sup>2</sup> and x terms. Leave the −15 outside.</p>
+        <div class="math small">3(x<sup>2</sup> + 4/3 x) − 15 = 0</div>
+        <p class="small">Half of 4/3 is 2/3. Square it, 4/9, and subtract it inside.</p>
+        <div class="math small">3[(x + 2/3)<sup>2</sup> − 4/9] − 15 = 0</div>
+        <p class="small">Multiply back out. The 4/9 sits inside, so it becomes 4/3.</p>
+        <div class="math small">3(x + 2/3)<sup>2</sup> − 49/3 = 0</div>
+        <p class="small">Add 49/3 to both sides, then divide by 3.</p>
+        <div class="math small">(x + 2/3)<sup>2</sup> = 49/9</div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Route 2 · divide the whole line by a</p>
+        <p class="small">Divide every term by 3. The other side is 0, and 0 ÷ 3 is still 0.</p>
+        <div class="math small">x<sup>2</sup> + 4/3 x − 5 = 0</div>
+        <p class="small">Move the −5 across.</p>
+        <div class="math small">x<sup>2</sup> + 4/3 x = 5</div>
+        <p class="small">Half of 4/3 is 2/3. Square it, 4/9, and add it to <b>both</b> sides.</p>
+        <div class="math small">(x + 2/3)<sup>2</sup> = 5 + 4/9</div>
+        <p class="small">Tidy the right side.</p>
+        <div class="math small">(x + 2/3)<sup>2</sup> = 49/9</div>
+      </div>
+    </div>
   </div>
-  <p class="frag small bad" style="margin-top:1.2vh">Step 4 loses more marks than any other step. The −9 is <b>inside</b> the bracket, so when the 2 comes back through it becomes <b>−18</b>, not −9.</p>
+  <div class="math result frag">x + 2/3 = ± 7/3 &nbsp;→&nbsp; x = 5/3 or x = −3</div>
+  <p class="frag small">Same bracket, same answer. Route 2 is shorter <b>here</b> only because the other side is 0, so dividing costs nothing. <b>On a question like this one, divide.</b></p>
+  <p class="frag" style="margin-top:0.8vh"><a class="toolchip" href="../two-routes/" target="_blank" rel="noopener">Two Routes, One Answer: run any quadratic down both at once</a></p>
+</section>
+
+<!-- 6 · dividing when there is no equals sign -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 12</p>
+  <h2>No equals sign? Then dividing needs one more step.</h2>
+  <p class="small">wkshtA and wkshtC never say "= 0". They say <b>write in the form A(x + B)<sup>2</sup> + C</b>. There is no other side to divide into, and setting it equal to zero yourself just solves for x instead.</p>
+  <div class="math">2x<sup>2</sup> − 12x + 5</div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Route 1 · factor the a out</p>
+        <div class="math small">2(x<sup>2</sup> − 6x) + 5</div>
+        <div class="math small">2[(x − 3)<sup>2</sup> − 9] + 5</div>
+        <div class="math small">2(x − 3)<sup>2</sup> − 18 + 5</div>
+        <div class="math small result">2(x − 3)<sup>2</sup> − 13</div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Route 2 · divide, then put the a back</p>
+        <div class="math small">x<sup>2</sup> − 6x + 5/2</div>
+        <div class="math small">(x − 3)<sup>2</sup> − 9 + 5/2</div>
+        <div class="math small">(x − 3)<sup>2</sup> − 13/2 &nbsp;<span style="color:var(--warn)">not finished</span></div>
+        <div class="math small result">× 2 &nbsp;→&nbsp; 2(x − 3)<sup>2</sup> − 13</div>
+      </div>
+    </div>
+  </div>
+  <p class="frag small bad">Same trap on both routes, and it is the a: Route 1 brings the −9 back out as −9 instead of <b>−18</b>, Route 2 stops one line early. The bracket survives either way, so x = 3 is right. The minimum value is not: it is <b>−13</b>.</p>
+  <p class="frag small">So the whole thing comes down to one question, asked <b>before</b> you start. Next slide.</p>
+</section>
+
+<!-- 7 · which route -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 12</p>
+  <h2>Which route? Read the question first.</h2>
+  <p class="small">You do not choose by looking at the quadratic. You choose by looking at what is being <b>asked</b>. One thing decides it.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.6vh">If there is an = 0</p>
+        <div class="math result">divide by a</div>
+        <p class="small" style="margin-top:0.8vh">It looks like one of these:</p>
+        <ul style="margin:0.4vh 0 0"><li class="small">Solve 3x<sup>2</sup> + 4x − 15 = 0</li>
+        <li class="small">Find the roots of 2x<sup>2</sup> − 7x + 3 = 0</li>
+        <li class="small">Find the values of k for which x<sup>2</sup> + kx + 9 = 0 has a repeated root</li>
+        <li class="small">Find where the line meets the curve</li></ul>
+        <p class="small" style="margin-top:0.8vh">The other side is 0, so dividing is free. You never need the a again.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.6vh">If there is no equals sign</p>
+        <div class="math result">factor a out</div>
+        <p class="small" style="margin-top:0.8vh">It looks like one of these:</p>
+        <ul style="margin:0.4vh 0 0"><li class="small">Express 3x<sup>2</sup> + 4x − 15 in the form a(x + p)<sup>2</sup> + q</li>
+        <li class="small">Write 2x<sup>2</sup> − 12x + 5 as A(x + B)<sup>2</sup> + C</li>
+        <li class="small">Find the vertex, or the turning point</li>
+        <li class="small">Find the minimum value, or the maximum value</li>
+        <li class="small">State the range</li></ul>
+        <p class="small" style="margin-top:0.8vh">The a stays on the page the whole way, so there is nothing to put back.</p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">The right-hand list is one question wearing five hats. Vertex, turning point, minimum, maximum, range are all <b>read straight off a(x + p)<sup>2</sup> + q</b>, which is why every one of them needs the a to be right.</p>
+</section>
+
+<!-- 7 · route check -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 6 of 12</p>
+  <h2>Route check. Do not solve these.</h2>
+  <p class="small">Read each one and say which route you would take. That is the whole task. Ten seconds each.</p>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0"><div class="math small">1.&nbsp; Solve 5x<sup>2</sup> + 3x − 2 = 0</div><div class="math small result ans">divide by 5</div></div>
+      <div class="check" tabindex="0"><div class="math small">2.&nbsp; Express 3x<sup>2</sup> − 12x + 7 in the<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form a(x + p)<sup>2</sup> + q</div><div class="math small result ans">factor the 3 out</div></div>
+    </div>
+    <div>
+      <div class="check" tabindex="0"><div class="math small">3.&nbsp; Find the minimum value of<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2x<sup>2</sup> − 8x + 1</div><div class="math small result ans">factor the 2 out</div></div>
+      <div class="check" tabindex="0"><div class="math small">4.&nbsp; Find x when 4x<sup>2</sup> − 4x − 3 = 0</div><div class="math small result ans">divide by 4</div></div>
+    </div>
+  </div>
+  <p class="frag small">Number 3 is the one that catches people. There is no equals sign anywhere in it, and the minimum value <b>is</b> the q, so you need the a on the page to get it right.</p>
 </section>
 
 <!-- 6 · what the vertex tells you -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 4 of 9</p>
+  <p class="eyebrow">Direct instruction · 7 of 12</p>
   <h2>What the vertex tells you.</h2>
   <div class="cases" style="margin-bottom:1.6vh">
     <div class="c">
@@ -565,7 +686,7 @@ kbd {
 
 <!-- 7 · applications -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 5 of 9</p>
+  <p class="eyebrow">Direct instruction · 8 of 12</p>
   <h2>Where the vertex shows up outside this room.</h2>
   <div class="cols">
     <div class="card">
@@ -593,7 +714,7 @@ kbd {
 
 <!-- 6 · discriminant -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 6 of 9</p>
+  <p class="eyebrow">Direct instruction · 9 of 12</p>
   <h2>First: what is a root?</h2>
   <p>A <b>root</b> is a value of x that makes the expression equal zero. On the graph, the roots are <b>where the curve crosses the x-axis</b>, because the x-axis is the line y = 0.</p>
   <div class="math">x = [−b ± √(b<sup>2</sup> − 4ac)] / 2a</div>
@@ -609,7 +730,7 @@ kbd {
 
 <!-- three cases -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 7 of 9</p>
+  <p class="eyebrow">Direct instruction · 10 of 12</p>
   <h2>The three cases, drawn.</h2>
   <div class="cases">
     <div class="c">
@@ -647,7 +768,7 @@ kbd {
 
 <!-- 7 · tangency -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 8 of 9</p>
+  <p class="eyebrow">Direct instruction · 11 of 12</p>
   <h2>When does a line meet a curve?</h2>
   <p>A meeting point sits on <b>both</b> graphs at the same time. So it has one y-value, and both equations have to give it.</p>
   <div class="cols">
@@ -667,7 +788,7 @@ kbd {
 
 <!-- tangency -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 9 of 9</p>
+  <p class="eyebrow">Direct instruction · 12 of 12</p>
   <h2>Tangency: the same three cases, with a different line.</h2>
   <p>The x-axis is just the line y = 0. It is not special. Swap it for any other line and everything carries over.</p>
   <div class="cases frag">
@@ -779,7 +900,8 @@ kbd {
   <h2>Write each in the form A(x + B)<sup>2</sup> + C.</h2>
   <div class="check" tabindex="0"><div class="math">3.&nbsp; 2x<sup>2</sup> − 12x + 5</div><div class="math result ans">2(x − 3)<sup>2</sup> − 13 &nbsp;·&nbsp; vertex (3, −13)</div></div>
   <div class="check" tabindex="0"><div class="math">4.&nbsp; 4x<sup>2</sup> − 12x + 5</div><div class="math result ans">4(x − 3/2)<sup>2</sup> − 4 &nbsp;·&nbsp; vertex (3/2, −4)</div></div>
-  <p class="small">Factor out · halve · subtract B<sup>2</sup> · multiply back out · combine</p>
+  <div class="check" tabindex="0"><div class="math">5.&nbsp; Solve 2x<sup>2</sup> + 5x − 3 = 0</div><div class="math result ans">divide by 2 &nbsp;→&nbsp; (x + 5/4)<sup>2</sup> = 49/16 &nbsp;→&nbsp; x = 1/2 or x = −3</div></div>
+  <p class="small">Numbers 3 and 4 say "write in the form", so factor the A out. Number 5 has an equals sign, so divide. It is also wkshtC number 4 with an equals sign bolted on. Same quadratic, different question, different route.</p>
   <p class="frag small">Number 4 gives you a fraction inside the bracket. Keep it as a fraction. Halving −3 gives <b>−3/2</b>, not −1.5 and not −1.</p>
 </section>
 
@@ -787,6 +909,7 @@ kbd {
 <section class="slide">
   <p class="eyebrow">Practice · on your own · 10 min · wkshtC Q4–8</p>
   <h2>Complete the square for each.</h2>
+  <p class="small">No equals signs on this sheet, so whichever route you take, the number in front has to come back.</p>
   <div class="cols">
     <div>
       <div class="check" tabindex="0"><div class="math small">4.&nbsp; 2x<sup>2</sup> + 5x − 3</div><div class="math small result ans">2(x + 5/4)<sup>2</sup> − 49/8</div></div>
@@ -820,7 +943,7 @@ kbd {
       <div class="check" tabindex="0"><div class="math">4.&nbsp; x<sup>2</sup> − 3x − 18 = 0</div><div class="math result ans">(x − 6)(x + 3) = 0 &nbsp;→&nbsp; x = 6 or −3</div></div>
     </div>
   </div>
-  <p class="frag small">Number 3 has a ≠ 1, so the two numbers you need multiply to a × c = −45 and add to 4.</p>
+  <p class="frag small">Number 3 has a ≠ 1, so the two numbers you need multiply to a × c = −45 and add to 4. It is also the one we completed the square on both ways earlier. Three routes, one answer. Factoring wins when it factors, and this one does.</p>
 </section>
 
 <!-- 11 · exit + homework -->
@@ -832,6 +955,8 @@ kbd {
   <p class="frag">
     <a class="toolchip" href="../vertex-form-explorer/" target="_blank" rel="noopener">Vertex Form Explorer</a>
     <a class="toolchip" href="../quadratics-sprint/" target="_blank" rel="noopener">Quadratics Sprint</a>
+    <a class="toolchip" href="../two-routes/" target="_blank" rel="noopener">Two Routes, One Answer</a>
+    <a class="toolchip" href="../two-routes-handout.pdf" target="_blank" rel="noopener">One-page summary (print it)</a>
   </p>
 </section>
 
