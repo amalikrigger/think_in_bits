@@ -40,7 +40,7 @@ get_page_title() {
         projects) echo "Projects & Games - Think In Bits" ;;
         blog)     echo "Blog & News - Think In Bits" ;;
         about)    echo "About Us - Think In Bits" ;;
-        math)     echo "AS \& A Level Maths - Think In Bits" ;;
+        math)     echo "AS \& A Level Math - Think In Bits" ;;
         *)        echo "Think In Bits" ;;
     esac
 }
