@@ -296,28 +296,6 @@ svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
 .board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
 .board.light .board-bar .pg { color: #55555f; }
 
-/* ---------- touchscreen navigation ----------
-   Tapping ANYWHERE on the slide advances, the way Keynote and Google Slides
-   behave; the left 22% goes back. Handled by one document-level click
-   listener, so it works whether the board reports touch or synthesises a
-   mouse click, which is what the classroom BenQ does over HDMI.
-   These two elements are only the visible affordance. They carry no click
-   handler of their own. */
-.tapzone {
-  position: fixed; top: 50%; transform: translateY(-50%);
-  width: 4vw; max-width: 62px; height: 22vh;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 3; pointer-events: none;
-  font-family: var(--font); font-size: clamp(26px, 3vw, 44px); font-weight: 300;
-  color: rgba(255,255,255,0.16);
-  transition: color .25s ease;
-}
-.tapzone.left { left: 0; } .tapzone.right { right: 0; }
-.tapzone::after { content: "\2039"; }
-.tapzone.right::after { content: "\203A"; }
-body.tapped .tapzone { color: rgba(255,255,255,0.07); }
-body.boarding .tapzone { display: none; }
-
 /* ---------- progress rail + HUD ---------- */
 .progress {
   position: fixed; top: 0; left: 0;
@@ -525,7 +503,7 @@ kbd {
     padding: 4vh 5vw;
   }
   .frag { visibility: visible; opacity: 1; transform: none; }
-  .hud, .progress, .hint, .overlay, .board, .tapzone { display: none !important; }
+  .hud, .progress, .hint, .overlay, .board { display: none !important; }
   svg.mini path { stroke-dashoffset: 0 !important; animation: none !important; }
   svg.mini circle { opacity: 1 !important; }
   .check .ans { display: block; }
@@ -1021,9 +999,6 @@ kbd {
   </p>
 </section>
 
-<div class="tapzone left" id="tapPrev" aria-hidden="true"></div>
-<div class="tapzone right" id="tapNext" aria-hidden="true"></div>
-
 <div class="board" id="board" role="dialog" aria-modal="true" aria-label="Blank board">
   <canvas id="boardCanvas"></canvas>
   <div class="board-bar">
@@ -1047,7 +1022,7 @@ kbd {
 </div>
 
 <div class="progress" id="progress"></div>
-<div class="hint" id="hint">← → move · Space next step · W blank board · tap anywhere on a touchscreen · ? for every key</div>
+<div class="hint" id="hint">← → move · Space next step · W blank board · ? for every key</div>
 
 <div class="hud">
   <div class="left">
@@ -1084,7 +1059,7 @@ kbd {
     <kbd>End</kbd><span>Last slide, everything revealed.</span>
     <kbd>?</kbd><span>This list.</span>
   </div>
-  <p class="small" style="margin-top:3vh">On a touchscreen board, tap anywhere to go forward and tap the left edge to go back. Swipe works too. Tap any practice question to check the answer. Drag the sliders on the discriminant and tangency slides.</p>
+  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. Drag the sliders on the discriminant and tangency slides.</p>
 </div>
 
 <script>
@@ -1412,22 +1387,6 @@ kbd {
     };
   })();
   $('boardBtn').addEventListener('click', function () { toggleBoard(); });
-
-  /* ---------- tap anywhere to advance ----------
-     One listener on the document, so it fires for a real touch AND for the
-     synthetic mouse click a BenQ-style board sends over HDMI. Anything
-     genuinely interactive is excluded, so tapping a practice question still
-     reveals its answer and dragging a slider still drags. */
-  var TAP_SKIP = 'a, button, input, select, textarea, label, .check, .toolchip, .hud, .overlay, .board, .timer, kbd';
-  document.addEventListener('click', function (e) {
-    if (boardOn || anyOpen()) return;
-    if (e.target && e.target.closest && e.target.closest(TAP_SKIP)) return;
-    var sel = window.getSelection && window.getSelection();
-    if (sel && String(sel).length > 1) return;           /* they were selecting text, not tapping */
-    if (e.clientX < window.innerWidth * 0.22) prev(); else next();
-    document.body.classList.add('tapped');               /* dim the chevrons once she has found them */
-    hideHint();
-  });
 
   /* ---------- keys ---------- */
   document.addEventListener('keydown', function (e) {
