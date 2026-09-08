@@ -860,8 +860,8 @@ kbd {
       <circle id="ex-tan-r2" r="5" fill="var(--ok)"/>
     </svg>
     <div class="panel">
-      <label for="ex-tan-c">Slide the line · y = c, against y = x<sup>2</sup></label>
-      <input type="range" id="ex-tan-c" min="-2" max="4" step="0.1" value="4" list="ex-tan-ticks" aria-label="c, the height of the line">
+      <label for="ex-tan-h">Slide the line · y = h, against y = x<sup>2</sup></label>
+      <input type="range" id="ex-tan-h" min="-2" max="4" step="0.1" value="4" list="ex-tan-ticks" aria-label="h, the height of the line">
       <datalist id="ex-tan-ticks"><option value="0"></option></datalist>
       <div class="read" id="ex-tan-read"></div>
       <div class="verdict" id="ex-tan-verdict"></div>
@@ -1213,7 +1213,7 @@ kbd {
 
   /* ---------- explorer: slide the line through the parabola ---------- */
   (function () {
-    var c = $('ex-tan-c'); if (!c) return;
+    var h = $('ex-tan-h'); if (!h) return;
     var curve = $('ex-tan-curve'), line = $('ex-tan-line'), r1 = $('ex-tan-r1'), r2 = $('ex-tan-r2'),
         read = $('ex-tan-read'), verdict = $('ex-tan-verdict');
     var SX = function (x) { return 150 + x * 30; }, SY = function (y) { return 130 - y * 18; };
@@ -1221,14 +1221,14 @@ kbd {
     for (var x = -2.6; x <= 2.601; x += 0.1) pts.push(SX(x).toFixed(1) + ',' + SY(x * x).toFixed(1));
     curve.setAttribute('points', pts.join(' '));
     function draw() {
-      var cv = parseFloat(c.value); if (Math.abs(cv) < 0.05) cv = 0;
-      line.setAttribute('y1', SY(cv)); line.setAttribute('y2', SY(cv));
-      var D = 4 * cv;
-      read.innerHTML = 'c = ' + m(cv.toFixed(1)) + ' &nbsp;·&nbsp; x<sup>2</sup> − c = 0 &nbsp;·&nbsp; Δ = 4c = <b>' + m(D.toFixed(1)) + '</b>';
+      var hv = parseFloat(h.value); if (Math.abs(hv) < 0.05) hv = 0;
+      line.setAttribute('y1', SY(hv)); line.setAttribute('y2', SY(hv));
+      var D = 4 * hv;
+      read.innerHTML = 'h = ' + m(hv.toFixed(1)) + ' &nbsp;·&nbsp; x<sup>2</sup> − h = 0 &nbsp;·&nbsp; Δ = 4h = <b>' + m(D.toFixed(1)) + '</b>';
       if (D > 0) {
-        var r = Math.sqrt(cv);
-        r1.setAttribute('cx', SX(-r)); r1.setAttribute('cy', SY(cv));
-        r2.setAttribute('cx', SX(r));  r2.setAttribute('cy', SY(cv));
+        var r = Math.sqrt(hv);
+        r1.setAttribute('cx', SX(-r)); r1.setAttribute('cy', SY(hv));
+        r2.setAttribute('cx', SX(r));  r2.setAttribute('cy', SY(hv));
         r1.style.display = ''; r2.style.display = '';
         verdict.textContent = 'cuts twice, x = ±' + r.toFixed(2); verdict.className = 'verdict two';
       } else if (D === 0) {
@@ -1240,7 +1240,7 @@ kbd {
         verdict.textContent = 'misses the curve'; verdict.className = 'verdict none';
       }
     }
-    c.addEventListener('input', draw); draw();
+    h.addEventListener('input', draw); draw();
   })();
 
   /* ---------- first-load hint ---------- */
