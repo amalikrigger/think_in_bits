@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Safety and Secrets - Think In Bits</title>
+  <meta name="description" content="Lock down your own accounts, then learn how programmers keep secrets out of their code. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Fundamentals &middot; Lesson 1</p>
+    <h1>Digital Safety and Secrets</h1>
+    <p class="promise">Lock down your own accounts, then learn to handle the keys your code depends on</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 2 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">You already have accounts worth stealing. Over two days you will make your passwords hard to crack, turn on the one setting that stops most break-ins, learn to spot a fake message even when it is written perfectly, and then learn how programmers keep <strong>secrets</strong> out of their code. That last part is the reason you will not leak a password in every project you build this year.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to build a <strong>passphrase</strong> that would take centuries to crack</li>
+      <li>How <strong>two-factor authentication</strong> stops someone who already has your password</li>
+      <li>How to spot <strong>phishing</strong> even when the grammar is perfect and the sender looks real</li>
+      <li>What a <strong>secret</strong> is in programming, and why it never goes in your code</li>
+      <li>How a <strong>.env</strong> file keeps a key out of the file you share</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>A computer with a web browser</li>
+      <li>One account you actually control and can change settings on. A personal account is fine and is usually easier than a school one.</li>
+      <li>A text editor for the Day 2 stretch. <a href="https://code.visualstudio.com/">VS Code</a> is on the lab machines.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. day 1 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 1</p>
+    <h2>Lock down your accounts</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you have three passphrases you can actually remember, two-factor authentication switched on somewhere real, and the ability to look at a message and say why it is fake.</p>
+  </section>
+
+  <!-- ============ 3. step 1 ============ -->
+  <section class="slide">
+    <h2>Step 1: Watch a bad password die</h2>
+    <p>These show up at the top of the leaked-password lists every single year.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Rank</th><th>Password</th><th>Time to crack</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><code>123456</code></td><td>under a second</td></tr>
+        <tr><td>2</td><td><code>password</code></td><td>under a second</td></tr>
+        <tr><td>3</td><td><code>qwerty</code></td><td>under a second</td></tr>
+        <tr><td>4</td><td><code>abc123</code></td><td>under a second</td></tr>
+        <tr><td>5</td><td>Your birthday</td><td>minutes to hours</td></tr>
+      </tbody>
+    </table></div>
+    <p>Attackers do not sit there typing guesses. They run software that tries millions of combinations a second against a stolen list. Anything on that table is gone before you finish reading this sentence.</p>
+    <p>Open the <a href="https://www.security.org/how-secure-is-my-password/">password strength checker</a>, type in something close to a password you have used before, and read the crack time.</p>
+    <div class="callout warn"><b>Never type a password you actually use into any website.</b> Type something similar instead. This applies to every "check your password" tool on the internet, including that one.</div>
+    <div class="callout check"><b>Checkpoint:</b> you have seen a real crack-time estimate for a weak password on your own screen.</div>
+  </section>
+
+  <!-- ============ 4. step 2 ============ -->
+  <section class="slide">
+    <h2>Step 2: Build a passphrase</h2>
+    <p>Length beats everything else. Each character you add multiplies the work an attacker has to do.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Length</th><th>Time to crack by brute force</th></tr></thead>
+      <tbody>
+        <tr><td>6 characters</td><td>seconds</td></tr>
+        <tr><td>8 characters</td><td>hours</td></tr>
+        <tr><td>12 characters</td><td>centuries</td></tr>
+        <tr><td>16+ characters</td><td>effectively impossible</td></tr>
+      </tbody>
+    </table></div>
+    <p>The easiest way to get long and still remember it is to string together four or five unrelated words.</p>
+<pre><code>mango-bicycle-cloud-seventeen
+purple-guitar-elephant-sunrise
+Tamarind-Ferry-Lantern-42!</code></pre>
+    <p>Unrelated is the important part. <code>saint-croix-high-school</code> is four words and still weak, because it is a phrase someone could guess about you.</p>
+    <p>Write three passphrases of four or more unrelated words each, test each one in the checker, and write down the crack time next to each.</p>
+    <div class="callout check"><b>Checkpoint:</b> three passphrases, each showing a crack time measured in centuries or longer.</div>
+  </section>
+
+  <!-- ============ 5. mini lesson ============ -->
+  <section class="slide">
+    <h2>Why length beats symbols</h2>
+    <p>Schools and websites spent years telling people to add a capital, a number, and a symbol. That advice produced <code>Password1!</code>, which is short, predictable, and cracks fast.</p>
+    <p>Think of it as a combination lock. Adding symbols gives you more choices per dial. Adding length gives you more dials. Another dial multiplies the total combinations, so it wins every time.</p>
+    <p>Four random words give you enough dials that no amount of computing power gets through in a human lifetime. That is why a long phrase you can remember beats a short mess you have to write on a sticky note.</p>
+  </section>
+
+  <!-- ============ 6. step 3 ============ -->
+  <section class="slide">
+    <h2>Step 3: Turn on two-factor authentication</h2>
+    <p>Two-factor means logging in takes two things: something you <strong>know</strong> (your passphrase) and something you <strong>have</strong> (your phone). Someone who steals your password still cannot get in.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Method</th><th>Security</th><th>How it works</th></tr></thead>
+      <tbody>
+        <tr><td>Text message code</td><td>Good</td><td>A code is texted to your phone</td></tr>
+        <tr><td>Authenticator app</td><td>Better</td><td>An app generates a code that changes every 30 seconds</td></tr>
+        <tr><td>Hardware key</td><td>Best</td><td>A physical device you plug in</td></tr>
+        <tr><td>Fingerprint or face</td><td>Good</td><td>Your device confirms it is you</td></tr>
+      </tbody>
+    </table></div>
+    <p>Text codes are the weakest of the four because of SIM swapping, which you will read about in a moment. They are still far better than nothing.</p>
+    <p>Turn it on somewhere that matters. Email first if you can, because password resets for everything else land there. Open the account's security settings, find two-factor authentication (the name changes by site), turn it on, and screenshot the confirmation with anything private blurred.</p>
+    <div class="callout check"><b>Checkpoint:</b> a screenshot showing two-factor authentication is on.</div>
+  </section>
+
+  <!-- ============ 7. step 4a ============ -->
+  <section class="slide">
+    <h2>Step 4: Spot the phish</h2>
+    <p>Phishing is someone pretending to be a company or a person you trust so you hand over something. It is how most people actually get hacked, and the movie version where someone breaks the encryption almost never happens.</p>
+    <p>Broken grammar used to give these away. AI ended that, so check the structure instead of the tone.</p>
+    <ul class="flags">
+      <li><b>Read the sender address itself.</b> The display name is free to type. The name says Apple Support and the address says <code>support@apple-security-update-2026.com</code>.</li>
+      <li><b>Urgency and threats.</b> "Your account will be DELETED in 24 hours." Real companies do not work this way.</li>
+      <li><b>A generic greeting.</b> "Dear Customer" from a company that knows your name.</li>
+      <li><b>The link does not match.</b> Hover first. <code>paypa1.com</code> uses a number one. <code>paypal.security-update.com</code> belongs to <code>security-update.com</code>. The real domain is the part right before the first single slash.</li>
+      <li><b>An attachment you did not ask for.</b> Especially <code>.exe</code>, <code>.zip</code>, and <code>.scr</code>.</li>
+      <li><b>Too good to be true.</b> It is not true.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 8. step 4b ============ -->
+  <section class="slide">
+    <h2>Now judge these three</h2>
+    <div class="msg"><b>From:</b> netflix-support@netflix.com
+<b>Subject:</b> Your payment failed
+
+"Hi Amali, we could not process your last payment. Update your billing at https://netflix.com/account/billing"</div>
+    <div class="msg"><b>From:</b> security@amaz0n-alerts.com
+<b>Subject:</b> Unusual sign-in activity
+
+"Dear Customer, we detected suspicious activity. Click here immediately to secure your account or it will be locked within 12 hours."</div>
+    <div class="msg"><b>From:</b> your teacher's real address
+<b>Subject:</b> Assignment update
+
+"Hi class, I updated the rubric for the capstone. Check Schoology for the new version."</div>
+    <div class="callout note"><b>Answers:</b> the first is real. The second is phishing: a zero in the domain, a generic greeting, and a deadline. The third is real.</div>
+    <div class="callout check"><b>Checkpoint:</b> you can say which red flag gives the second one away.</div>
+  </section>
+
+  <!-- ============ 9. day 1 deliverables ============ -->
+  <section class="slide">
+    <h2>End of Day 1</h2>
+    <ul class="turnin">
+      <li>Three passphrases with the crack time for each</li>
+      <li>Screenshot of two-factor authentication enabled, private parts blurred</li>
+    </ul>
+  </section>
+
+  <!-- ============ 10. day 2 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Protect your data and your code</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you know what you are giving away without meaning to, and you know where a password belongs in a project you are going to share.</p>
+  </section>
+
+  <!-- ============ 11. day 2 step 1 ============ -->
+  <section class="slide">
+    <h2>Step 1: See what a photo gives away</h2>
+    <p>Here is what someone builds from pieces that each feel harmless.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>What they get</th><th>What they do with it</th></tr></thead>
+      <tbody>
+        <tr><td>Full name and birthday</td><td>Open accounts in your name</td></tr>
+        <tr><td>Email and password</td><td>Get into your other accounts, then message your friends as you</td></tr>
+        <tr><td>Phone number</td><td>SIM swap, taking over your number and every code sent to it</td></tr>
+        <tr><td>School or workplace</td><td>Write a phishing message convincing enough to fool you</td></tr>
+        <tr><td>Location, live</td><td>Know when your house is empty</td></tr>
+      </tbody>
+    </table></div>
+    <p>Look at the last five photos on your phone without opening anything private. Check the backgrounds for a house number, a street sign, a school logo, a license plate, a package label, or a screen with a name on it.</p>
+    <p>The rules that follow are short. Keep profiles private. Post the vacation photos after you get home. Check the background before you post. Ask whether you would be fine with a stranger, a teacher, and an employer all seeing it.</p>
+    <div class="callout check"><b>Checkpoint:</b> you found at least one identifying detail in the background of a photo, yours or a classmate's.</div>
+  </section>
+
+  <!-- ============ 12. day 2 step 2 ============ -->
+  <section class="slide">
+    <h2>Step 2: Assume the voice can be faked</h2>
+    <p>A few seconds of audio is enough to clone a voice. Video of a real person saying things they never said is cheap to make now. A profile photo of a person who does not exist takes one click.</p>
+    <p>You cannot win this by looking harder at the video. The fakes get better every year and your eyes do not. So the defense is procedural instead of visual.</p>
+    <div class="callout note"><b>Verify through a different channel.</b> A call from a panicked family member asking for money gets hung up on and called back on the number you already have. A message from a friend asking for a code gets a text to that friend. A news claim gets checked against a second source you went and found yourself.</div>
+    <p>This one habit covers voice cloning, deepfake video, hacked accounts, and every scam that has not been invented yet, because it never depends on you detecting the fake.</p>
+  </section>
+
+  <!-- ============ 13. day 2 step 3 ============ -->
+  <section class="slide">
+    <h2>Step 3: Learn what a secret is</h2>
+    <p>A <strong>secret</strong> is any value that proves who you are to a computer. A password. An <strong>API key</strong>. A Wi-Fi password. A database login. A token an app uses to talk to a service.</p>
+    <p>Here is the problem, and it is the reason this sits in a Computer Science class instead of a health class.</p>
+<pre><code># BAD. Never do this.
+api_key = "sk-a83ff20c9d4e1b77c5"
+
+response = ask_the_ai(api_key, "explain recursion")</code></pre>
+    <p>That key is now inside your code. Every place the code goes, the key goes. You post the project to GitHub, the key is public. You share the folder with a partner, they have your key. You submit a screenshot, the key is in the picture. Bots scan public code for keys around the clock and start spending on them within minutes.</p>
+    <p>Putting a key in your code is like taping your house key to your front door and then handing out photos of your door.</p>
+    <div class="callout note"><b>The rule:</b> the code goes in the file you share. The secret goes in a file you never share.</div>
+  </section>
+
+  <!-- ============ 14. day 2 step 4a ============ -->
+  <section class="slide">
+    <h2>Step 4: Put the secret somewhere safe</h2>
+    <p>A <code>.env</code> file holds the secrets. It sits next to your code and it never leaves your machine.</p>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p class="filename">app.py</p>
+<pre><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("API_KEY")</code></pre>
+        <p class="filename">.env</p>
+<pre><code>API_KEY=sk-a83ff20c9d4e1b77c5</code></pre>
+      </div>
+      <div class="tier stretch">
+        <h4>Answer these three</h4>
+        <ol>
+          <li>Which of these two files is safe to post publicly?</li>
+          <li>If you emailed a classmate only <code>app.py</code>, would they have your key?</li>
+          <li>What would happen if you posted <code>.env</code> to GitHub?</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 15. day 2 step 4b ============ -->
+  <section class="slide">
+    <h2>Stretch: build it and prove it works</h2>
+    <p>Required for high school, bonus for middle school.</p>
+    <p class="filename">.env</p>
+<pre><code>API_KEY=not-a-real-key-12345</code></pre>
+    <p class="filename">.gitignore</p>
+<pre><code>.env</code></pre>
+    <p class="filename">read_secret.py</p>
+<pre><code>import os
+from dotenv import load_dotenv
+
+load_dotenv()
+print("Loaded key:", os.getenv("API_KEY"))</code></pre>
+    <p>Install the library and run it:</p>
+<pre><code>pip install python-dotenv
+python read_secret.py</code></pre>
+    <p>You should see <code>Loaded key: not-a-real-key-12345</code>.</p>
+    <div class="callout check"><b>Checkpoint:</b> your terminal printed the key, and the key is nowhere inside <code>read_secret.py</code>.</div>
+  </section>
+
+  <!-- ============ 16. mini lesson ============ -->
+  <section class="slide">
+    <h2>Why .gitignore is the part people forget</h2>
+    <p><code>load_dotenv()</code> reads the <code>.env</code> file and hands the values to your program at the moment it runs. Your code asks for <code>API_KEY</code> by name and never contains the value.</p>
+    <p><code>.gitignore</code> is the second half, and skipping it is the single most common way keys leak. It is a list of files Git refuses to include when you save or upload your work. Without that one line, the moment you push your project the <code>.env</code> goes with it, and everything you just did was for nothing.</p>
+    <p>Real keys get leaked by real companies, regularly. This is not a beginner mistake. It is the mistake.</p>
+  </section>
+
+  <!-- ============ 17. day 2 deliverables ============ -->
+  <section class="slide">
+    <h2>End of Day 2</h2>
+    <ul class="turnin">
+      <li>Your three answers from the base tier</li>
+      <li>Stretch only: screenshot of the terminal printing the key, plus your <code>.gitignore</code></li>
+    </ul>
+  </section>
+
+  <!-- ============ 18. base and stretch ============ -->
+  <section class="slide">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>Three passphrases with crack times, two-factor authentication turned on with a screenshot, the phishing red flag identified, and the three secret-handling questions answered correctly.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>A working <code>.env</code> setup: the <code>.env</code> file, a <code>.gitignore</code> containing it, and a script that prints the key without the key appearing anywhere in the script. Screenshot the terminal output.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 19. turn in ============ -->
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <ul class="turnin">
+      <li><b>Three passphrases</b> with the crack time for each. Make up new ones, never submit a password you use.</li>
+      <li><b>Screenshot of two-factor authentication</b> enabled on an account, private details blurred</li>
+      <li><b>Phishing analysis</b>: two example messages with the red flags labeled</li>
+      <li><b>Secrets questions</b>: your three answers, or the stretch screenshots if you did the stretch</li>
+      <li><b>Reflection</b>, 3 to 5 sentences: what is the biggest security mistake you have been making, and what are you changing?</li>
+    </ul>
+    <div class="callout note"><b>Where it goes:</b> everything is submitted in Schoology, along with the exit ticket for this lesson.</div>
+  </section>
+
+  <!-- ============ 20. vocabulary ============ -->
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Passphrase</b></td><td>A password built from several unrelated words, long enough that guessing it is hopeless</td></tr>
+        <tr><td><b>Two-Factor Authentication</b></td><td>Needing two different proofs to log in, usually a password plus a code on your phone</td></tr>
+        <tr><td><b>Phishing</b></td><td>Pretending to be someone trustworthy to trick you into handing over information</td></tr>
+        <tr><td><b>Social Engineering</b></td><td>Attacking the person instead of the computer</td></tr>
+        <tr><td><b>SIM Swap</b></td><td>Taking over someone's phone number so every code sent to it arrives at the attacker instead</td></tr>
+        <tr><td><b>Data Breach</b></td><td>A company's stored logins getting stolen</td></tr>
+        <tr><td><b>Deepfake</b></td><td>Video or audio of a real person, generated by AI, showing something that never happened</td></tr>
+        <tr><td><b>Secret</b></td><td>Any value that proves identity to a computer: a password, an API key, a token</td></tr>
+        <tr><td><b>API Key</b></td><td>A string that identifies your account to an outside service, usually attached to money or private data</td></tr>
+        <tr><td><b>.env file</b></td><td>A file holding secrets, kept next to your code and never shared</td></tr>
+        <tr><td><b>.gitignore</b></td><td>A list of files Git refuses to upload, which is what keeps <code>.env</code> off the internet</td></tr>
+        <tr><td><b>Brute Force</b></td><td>Trying every possible combination until one works</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 21. troubleshooting ============ -->
+  <section class="slide">
+    <h2>Stuck?</h2>
+    <div class="trouble">
+      <details><summary>My school account will not let me turn on two-factor.</summary>
+        <div class="fix">It is probably managed by the school and locked. Use a personal account instead. Any account you control counts for this assignment.</div></details>
+      <details><summary>I do not want to screenshot my real account.</summary>
+        <div class="fix">Blur everything except the confirmation that two-factor is on. That is all that is being checked.</div></details>
+      <details><summary>The checker says my passphrase is weak.</summary>
+        <div class="fix">Your words are probably related to each other or to you. Swap in words that have nothing to do with each other or with your life.</div></details>
+      <details><summary>pip install python-dotenv says pip is not found.</summary>
+        <div class="fix">Try <code>pip3 install python-dotenv</code>, or <code>python3 -m pip install python-dotenv</code>.</div></details>
+      <details><summary>My script prints "Loaded key: None".</summary>
+        <div class="fix">Three usual causes. The file is named <code>.env.txt</code> instead of <code>.env</code>, the file is in a different folder than the script, or there are spaces around the <code>=</code>. It must read <code>API_KEY=value</code> with nothing between.</div></details>
+      <details><summary>I cannot see the .env file in my folder.</summary>
+        <div class="fix">Files starting with a dot are hidden. On Mac press <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>.</kbd> in Finder. On Windows turn on hidden items in the View tab.</div></details>
+      <details><summary>I do not have anything worth stealing.</summary>
+        <div class="fix">Your accounts are worth money to someone who resells them, and your identity is worth more. Your phone number alone can be used to reset logins you have forgotten you own.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+</body>
+</html>

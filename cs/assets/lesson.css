@@ -1,0 +1,380 @@
+/* ============================================================
+   THINK IN BITS - CS lesson system
+   One stylesheet for every CS lesson page. Each lesson is a
+   single HTML file that runs in two modes:
+
+     Read    - continuous scroll, full detail, what students use
+     Present - one section at a time, projected, what Mr. Krigger uses
+
+   Same content, same file, no second copy to keep in sync.
+   Tokens mirror the 9709 decks so a CS lesson and a math deck
+   feel like the same site.
+   ============================================================ */
+
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-lift: #2a2a2a;
+  --accent: #00e5ff;  --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0; --text-3: #7d7d7d;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --ok: #4fe08a; --ok-soft: rgba(79,224,138,0.12); --ok-line: rgba(79,224,138,0.32);
+  --warn: #ff6b6b; --warn-soft: rgba(255,107,107,0.12); --warn-line: rgba(255,107,107,0.32);
+  --gold: #ffc857; --gold-soft: rgba(255,200,87,0.12); --gold-line: rgba(255,200,87,0.30);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  --measure: 74ch;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ============================================================
+   CHROME
+   ============================================================ */
+
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+
+.modebar {
+  position: fixed; top: 14px; right: 16px; z-index: 30;
+  display: flex; gap: 3px; padding: 4px;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.modebar button {
+  border: 0; background: transparent; color: var(--text-2);
+  font-size: 12.5px; font-weight: 600; letter-spacing: .01em;
+  padding: 6px 15px; border-radius: 50px; cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.modebar button:hover { color: var(--text); }
+.modebar button[aria-pressed="true"] {
+  background: var(--accent); color: #05222a;
+}
+
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  box-shadow: 0 0 12px rgba(0,229,255,0.5);
+  transition: width .3s ease; z-index: 40;
+}
+body:not(.present) .progress { display: none; }
+
+.hud {
+  position: fixed; bottom: 16px; right: 18px; z-index: 30;
+  font-family: var(--mono); font-size: 12px; color: var(--text-3);
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 5px 13px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+body:not(.present) .hud { display: none; }
+
+.keyhint {
+  position: fixed; bottom: 16px; left: 18px; z-index: 30;
+  font-size: 11.5px; color: var(--text-3);
+}
+body:not(.present) .keyhint { display: none; }
+.keyhint kbd {
+  font-family: var(--mono); font-size: 10.5px;
+  background: var(--surface-lift); border: 1px solid var(--hairline-strong);
+  border-radius: 5px; padding: 1px 5px; color: var(--text-2);
+}
+
+/* ============================================================
+   READ MODE (default)
+   ============================================================ */
+
+.deck { display: block; }
+
+.lesson-head {
+  max-width: var(--measure); margin: 0 auto;
+  padding: 84px 22px 0;
+}
+.lesson-head .eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 10px;
+}
+.lesson-head h1 {
+  font-size: clamp(30px, 5vw, 46px); line-height: 1.1; letter-spacing: -0.02em;
+  margin: 0 0 12px; text-wrap: balance;
+}
+.lesson-head .promise {
+  font-size: clamp(16px, 2.1vw, 19px); color: var(--accent);
+  font-weight: 500; margin: 0 0 18px;
+}
+.meta {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none;
+}
+.meta li {
+  font-size: 12.5px; color: var(--text-2);
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 5px 13px;
+}
+.meta li b { color: var(--text); font-weight: 600; }
+.lesson-head .lede { color: var(--text-2); font-size: 15.5px; margin: 0; }
+
+.slide {
+  max-width: var(--measure); margin: 0 auto;
+  padding: 30px 22px;
+}
+.slide + .slide { border-top: 1px solid var(--hairline); }
+
+.slide h2 {
+  font-size: clamp(22px, 3vw, 30px); line-height: 1.2; letter-spacing: -0.015em;
+  margin: 0 0 14px; text-wrap: balance;
+}
+.slide h3 {
+  font-size: clamp(17px, 2.2vw, 21px); margin: 26px 0 10px; color: var(--text);
+}
+.slide .daymark {
+  display: inline-block; font-family: var(--mono); font-size: 11.5px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+  background: var(--accent-wash); border: 1px solid var(--accent-line);
+  border-radius: 50px; padding: 4px 12px; margin: 0 0 12px;
+}
+.slide p { margin: 0 0 14px; }
+.slide p:last-child, .slide ul:last-child, .slide ol:last-child { margin-bottom: 0; }
+.slide ul, .slide ol { margin: 0 0 14px; padding-left: 1.4em; }
+.slide li { margin-bottom: 7px; }
+.slide li::marker { color: var(--accent); }
+.slide strong { color: var(--text); font-weight: 600; }
+.slide a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.goal {
+  color: var(--text-2); font-size: 15px; font-style: normal;
+  border-left: 2px solid var(--accent-line); padding-left: 14px; margin: 0 0 18px;
+}
+
+/* ---------- tables ---------- */
+.twrap { overflow-x: auto; margin: 0 0 16px; -webkit-overflow-scrolling: touch; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 14px;
+  background: var(--surface); border-radius: 12px; overflow: hidden;
+}
+th, td { padding: 9px 13px; text-align: left; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+th {
+  background: var(--surface-lift); font-weight: 600; font-size: 12.5px;
+  letter-spacing: .02em; color: var(--text);
+}
+tbody tr:last-child td { border-bottom: 0; }
+td code, th code { white-space: nowrap; }
+
+/* ---------- code ---------- */
+pre {
+  margin: 0 0 16px; padding: 15px 17px; overflow-x: auto;
+  background: #0d0d14; border: 1px solid var(--hairline);
+  border-radius: 12px; box-shadow: var(--shadow-card);
+}
+pre code { font-family: var(--mono); font-size: 13px; line-height: 1.62; color: #dfe6ee; }
+:not(pre) > code {
+  font-family: var(--mono); font-size: 0.9em;
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 6px; padding: 1px 6px; color: var(--accent);
+}
+.filename {
+  font-family: var(--mono); font-size: 11.5px; color: var(--text-3);
+  margin: 0 0 5px; letter-spacing: .02em;
+}
+
+/* ---------- callouts ---------- */
+.callout {
+  margin: 0 0 16px; padding: 13px 16px;
+  border-radius: 12px; border: 1px solid var(--hairline);
+  background: var(--surface); font-size: 14.5px;
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout b:first-child { color: var(--text); }
+.callout.check { background: var(--ok-soft); border-color: var(--ok-line); }
+.callout.check b:first-child { color: var(--ok); }
+.callout.warn { background: var(--warn-soft); border-color: var(--warn-line); }
+.callout.warn b:first-child { color: var(--warn); }
+.callout.note { background: var(--accent-wash); border-color: var(--accent-line); }
+.callout.note b:first-child { color: var(--accent); }
+.callout.flag { background: var(--gold-soft); border-color: var(--gold-line); }
+.callout.flag b:first-child { color: var(--gold); }
+
+/* ---------- red flag list ---------- */
+.flags { list-style: none; padding: 0; margin: 0 0 16px; }
+.flags li {
+  padding: 11px 14px; margin-bottom: 8px;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-left: 3px solid var(--warn); border-radius: 10px;
+  font-size: 14.5px;
+}
+.flags li b { color: var(--text); }
+
+/* ---------- message samples ---------- */
+.msg {
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.6;
+  background: #0d0d14; border: 1px solid var(--hairline);
+  border-radius: 12px; padding: 13px 15px; margin: 0 0 10px;
+  color: var(--text-2); white-space: pre-wrap; word-break: break-word;
+}
+.msg b { color: var(--text); font-weight: 600; }
+
+/* ---------- base and stretch ---------- */
+.tiers { display: grid; gap: 12px; margin: 0 0 16px; }
+@media (min-width: 720px) { .tiers { grid-template-columns: 1fr 1fr; } }
+.tier {
+  padding: 15px 17px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--hairline);
+}
+.tier h4 {
+  margin: 0 0 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: .11em; text-transform: uppercase;
+}
+.tier.base { border-top: 3px solid var(--accent); }
+.tier.base h4 { color: var(--accent); }
+.tier.stretch { border-top: 3px solid var(--gold); }
+.tier.stretch h4 { color: var(--gold); }
+.tier p, .tier li { font-size: 14px; }
+.tier > :last-child { margin-bottom: 0; }
+
+/* ---------- deliverables checklist ---------- */
+.turnin { list-style: none; padding: 0; margin: 0 0 16px; }
+.turnin li {
+  position: relative; padding: 10px 14px 10px 40px; margin-bottom: 8px;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 10px; font-size: 14.5px;
+}
+.turnin li::before {
+  content: ""; position: absolute; left: 15px; top: 14px;
+  width: 13px; height: 13px; border-radius: 4px;
+  border: 1.5px solid var(--accent-line); background: var(--accent-wash);
+}
+
+/* ---------- troubleshooting ---------- */
+.trouble { margin: 0 0 16px; }
+.trouble details {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 10px; margin-bottom: 8px; overflow: hidden;
+}
+.trouble summary {
+  cursor: pointer; padding: 11px 15px; font-size: 14.5px; font-weight: 500;
+  color: var(--text); list-style: none;
+}
+.trouble summary::-webkit-details-marker { display: none; }
+.trouble summary::before { content: "▸ "; color: var(--accent); }
+.trouble details[open] summary::before { content: "▾ "; }
+.trouble details[open] summary { border-bottom: 1px solid var(--hairline); }
+.trouble .fix { padding: 12px 15px; font-size: 14.5px; color: var(--text-2); }
+.trouble .fix > :last-child { margin-bottom: 0; }
+
+.lesson-foot {
+  max-width: var(--measure); margin: 0 auto;
+  padding: 26px 22px 70px; border-top: 1px solid var(--hairline);
+  font-size: 13px; color: var(--text-3);
+}
+.lesson-foot a { color: var(--text-2); }
+body.present .lesson-foot { display: none; }
+
+/* ============================================================
+   PRESENT MODE
+   One section at a time, sized for a projector.
+   ============================================================ */
+
+body.present { overflow: hidden; }
+body.present .deck {
+  position: fixed; inset: 0;
+}
+body.present .lesson-head,
+body.present .slide {
+  position: absolute; inset: 0; max-width: none; margin: 0;
+  display: flex; flex-direction: column; justify-content: safe center;
+  gap: 1.4vh; padding: 9vh 7vw 12vh; overflow-y: auto;
+  visibility: hidden; opacity: 0; transform: translateY(10px);
+  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
+  border-top: 0;
+}
+body.present .lesson-head.active,
+body.present .slide.active {
+  visibility: visible; opacity: 1; transform: none;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s;
+}
+
+/* scale type up for the room */
+body.present .lesson-head h1 { font-size: clamp(34px, 5.6vw, 66px); }
+body.present .lesson-head .promise { font-size: clamp(17px, 2.5vw, 28px); }
+body.present .lesson-head .lede { font-size: clamp(14px, 1.7vw, 20px); }
+body.present .slide h2 { font-size: clamp(24px, 3.5vw, 44px); margin-bottom: 0.6vh; }
+body.present .slide h3 { font-size: clamp(17px, 2.1vw, 27px); margin: 1.4vh 0 0.5vh; }
+body.present .slide p,
+body.present .slide li { font-size: clamp(14px, 1.62vw, 22px); }
+body.present .slide p { margin-bottom: 0.9vh; }
+body.present .goal { font-size: clamp(14px, 1.7vw, 22px); margin-bottom: 1.2vh; }
+body.present table { font-size: clamp(12px, 1.3vw, 18px); }
+body.present th, body.present td { padding: 0.75vh 1vw; }
+body.present pre { padding: 1.2vh 1.4vw; margin-bottom: 1vh; }
+body.present pre code { font-size: clamp(12px, 1.3vw, 18px); }
+body.present .callout { font-size: clamp(13px, 1.5vw, 20px); padding: 1.1vh 1.4vw; margin-bottom: 1vh; }
+body.present .flags li { font-size: clamp(13px, 1.45vw, 19px); padding: 0.9vh 1.2vw; margin-bottom: 0.7vh; }
+body.present .msg { font-size: clamp(11.5px, 1.25vw, 16px); padding: 1vh 1.2vw; }
+body.present .tier p, body.present .tier li { font-size: clamp(13px, 1.4vw, 18px); }
+body.present .turnin li { font-size: clamp(13px, 1.45vw, 19px); }
+body.present .tumbrel, body.present .trouble { font-size: clamp(13px, 1.45vw, 19px); }
+
+/* troubleshooting opens flat when projected, nothing to click */
+body.present .trouble details { border: 0; background: transparent; margin-bottom: 0.6vh; }
+body.present .trouble details[open] summary { border-bottom: 0; }
+body.present .trouble .fix { padding: 0 0 0 18px; }
+
+/* ============================================================
+   PHONE
+   ============================================================ */
+
+@media (max-width: 560px) {
+  :root { --measure: 100%; }
+  .lesson-head { padding-top: 76px; }
+  .modebar { top: auto; bottom: 14px; right: 50%; transform: translateX(50%); }
+  .hud { bottom: 60px; }
+  .keyhint { display: none !important; }
+  body.present .lesson-head,
+  body.present .slide { padding: 8vh 6vw 15vh; }
+  th, td { padding: 8px 10px; }
+
+  /* On a phone these pills float over a scrolling page, so make them opaque
+     enough that text passing underneath does not read through them. */
+  .tib-back, .modebar, .hud { background: rgba(20,20,26,0.95); }
+
+  /* the bottom mode bar would otherwise cover the last line of the footer */
+  .lesson-foot { padding-bottom: 96px; }
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* print the lesson as a handout */
+@media print {
+  body { background: #fff; color: #000; }
+  .tib-back, .modebar, .progress, .hud, .keyhint { display: none !important; }
+  .slide, .lesson-head { position: static !important; visibility: visible !important; opacity: 1 !important; page-break-inside: avoid; }
+  table, pre, .callout { border: 1px solid #999; }
+  pre code, code { color: #000; }
+}

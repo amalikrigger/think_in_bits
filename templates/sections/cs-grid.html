@@ -1,0 +1,148 @@
+<!-- ========================================
+     CS Grid Section (Computer Science lessons)
+     ========================================
+     REQUIRES: variables.css and shared-components.css
+     Card styles mirror math-grid.html so a CS lesson card and a
+     math deck card are visually identical.
+     ======================================== -->
+<style>
+/* Math Grid Specific Styles */
+.tib-math-card {
+  background: var(--tib-surface-color);
+  border-radius: var(--tib-border-radius-card);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  box-shadow: var(--tib-shadow-card);
+  border: 1px solid var(--tib-border-subtle);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tib-math-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--tib-shadow-hover);
+  border-color: var(--tib-primary-alpha-30);
+}
+
+@media (hover: none) {
+  .tib-math-card:hover {
+    transform: none;
+    box-shadow: var(--tib-shadow-card);
+    border-color: var(--tib-border-subtle);
+  }
+}
+
+.tib-math-kind {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--tib-border-radius-btn);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--tib-primary-color);
+  z-index: 1;
+}
+
+.tib-math-kind.tool {
+  background: var(--tib-accent-website-alpha);
+  color: var(--tib-accent-website);
+  border-color: var(--tib-accent-website);
+}
+
+.tib-topic-heading {
+  max-width: var(--tib-max-width);
+  margin: 0 auto 1.5rem;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tib-topic-heading h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--tib-text-color);
+}
+
+.tib-topic-heading span {
+  font-size: 0.85rem;
+  color: var(--tib-secondary-color);
+}
+
+.tib-math-card .tib-card-content { flex: 1; }
+
+.tib-math-links {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 2rem 1.75rem;
+  flex-wrap: wrap;
+}
+
+.tib-math-links .tib-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+.tib-math-note {
+  max-width: var(--tib-max-width);
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 1.75rem;
+  border: 1px dashed var(--tib-primary-alpha-30);
+  border-radius: var(--tib-border-radius-card);
+  color: var(--tib-secondary-color);
+  font-size: 0.9rem;
+  text-align: center;
+}
+</style>
+
+<!-- Base styles from shared-components.css -->
+
+<section id="cs" class="tib-section-alt">
+  <div class="tib-container">
+    <h2 class="tib-section-title">Fundamentals</h2>
+  </div>
+
+  <div class="tib-topic-heading">
+    <h3>Before you build anything</h3>
+    <span>Accounts and secrets &middot; research and AI</span>
+  </div>
+
+  <div class="tib-container">
+    <div class="tib-cards-grid">
+
+      <!-- Lesson 1 -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🔒</span></div>
+        <span class="tib-math-kind">Lesson</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Digital Safety and Secrets</h3>
+          <p class="tib-card-description">Make your passwords hard to crack, turn on the setting that stops most break-ins, spot a fake message written by AI, and learn where a password belongs in a project you are going to share.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="cs/fundamentals/digital-safety/" class="tib-btn tib-btn-primary">Open the lesson</a>
+        </div>
+      </div>
+
+      <!-- Lesson 2 -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🔍</span></div>
+        <span class="tib-math-kind">Lesson</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Research and AI</h3>
+          <p class="tib-card-description">Search with operators instead of whole questions, run the SIFT check before you trust a source, and catch an AI stating something false in the same confident tone it uses for the truth.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="cs/fundamentals/research-and-ai/" class="tib-btn tib-btn-primary">Open the lesson</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

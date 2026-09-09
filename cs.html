@@ -8,7 +8,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Prints Shop - Think In Bits</title>
+  <title>Computer Science - Think In Bits</title>
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -783,12 +783,10 @@
 })();
 </script>
 
-  <!-- Section: hero-shop.html -->
+  <!-- Section: hero-cs.html -->
 <!-- ========================================
-     Hero Section - Shop Page
-     ======================================== 
-     
-     USAGE: Embed in WordPress Elementor HTML widget
+     Hero Section - Computer Science Page
+     ========================================
      REQUIRES: variables.css and shared-components.css
      ======================================== -->
 
@@ -796,210 +794,161 @@
 
 <section class="tib-hero">
   <div class="tib-hero-content">
-    <h1>3D Printing Services</h1>
-    <p>Buy ready-made prints or upload your own design for a custom quote.</p>
+    <h1>Computer Science</h1>
+    <p>Every lesson from the CS elective, in one place. Read them at your own pace, or hit Present to run them full screen. Open them on any device, as many times as you like.</p>
     <div class="tib-hero-buttons">
-      <a href="#featured" class="tib-btn tib-btn-primary">Browse Prints</a>
-      <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-secondary">Request Custom Print</a>
+      <a href="#cs" class="tib-btn tib-btn-primary">Browse Lessons</a>
     </div>
   </div>
 </section>
 
-  <!-- Section: product-grid.html -->
+  <!-- Section: cs-grid.html -->
 <!-- ========================================
-     Product Grid Section (3D Prints)
-     ======================================== 
-     
-     USAGE: Embed in WordPress Elementor HTML widget
+     CS Grid Section (Computer Science lessons)
+     ========================================
      REQUIRES: variables.css and shared-components.css
+     Card styles mirror math-grid.html so a CS lesson card and a
+     math deck card are visually identical.
      ======================================== -->
-
 <style>
-/* Product Grid Specific Styles */
-.tib-products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-}
-
-.tib-product-card {
+/* Math Grid Specific Styles */
+.tib-math-card {
   background: var(--tib-surface-color);
   border-radius: var(--tib-border-radius-card);
   overflow: hidden;
   transition: all 0.4s ease;
   box-shadow: var(--tib-shadow-card);
   border: 1px solid var(--tib-border-subtle);
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.tib-product-card:hover {
+.tib-math-card:hover {
   transform: translateY(-10px);
   box-shadow: var(--tib-shadow-hover);
   border-color: var(--tib-primary-alpha-30);
 }
 
-.tib-product-image {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  background: var(--tib-surface-light);
+@media (hover: none) {
+  .tib-math-card:hover {
+    transform: none;
+    box-shadow: var(--tib-shadow-card);
+    border-color: var(--tib-border-subtle);
+  }
 }
 
-.tib-product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.tib-product-info {
-  padding: 2rem;
-}
-
-.tib-product-title {
-  font-size: 1.5rem;
+.tib-math-kind {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--tib-border-radius-btn);
+  font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--tib-primary-color);
+  z-index: 1;
+}
+
+.tib-math-kind.tool {
+  background: var(--tib-accent-website-alpha);
+  color: var(--tib-accent-website);
+  border-color: var(--tib-accent-website);
+}
+
+.tib-topic-heading {
+  max-width: var(--tib-max-width);
+  margin: 0 auto 1.5rem;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tib-topic-heading h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--tib-text-color);
 }
 
-.tib-product-description {
-  font-size: 0.95rem;
+.tib-topic-heading span {
+  font-size: 0.85rem;
   color: var(--tib-secondary-color);
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
 }
 
-@media (max-width: 768px) {
-  .tib-products-grid { grid-template-columns: 1fr; gap: 2rem; }
+.tib-math-card .tib-card-content { flex: 1; }
+
+.tib-math-links {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 2rem 1.75rem;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 480px) {
-  .tib-product-info { padding: 1.5rem; }
-  .tib-product-title { font-size: 1.25rem; }
+.tib-math-links .tib-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+.tib-math-note {
+  max-width: var(--tib-max-width);
+  margin: 2.5rem auto 0;
+  padding: 1.25rem 1.75rem;
+  border: 1px dashed var(--tib-primary-alpha-30);
+  border-radius: var(--tib-border-radius-card);
+  color: var(--tib-secondary-color);
+  font-size: 0.9rem;
+  text-align: center;
 }
 </style>
 
 <!-- Base styles from shared-components.css -->
 
-<section id="featured" class="tib-section-alt">
+<section id="cs" class="tib-section-alt">
   <div class="tib-container">
-    <h2 class="tib-section-title">Featured 3D Prints</h2>
-    <div class="tib-products-grid">
-      <!-- Product 1 -->
-      <div class="tib-product-card">
-        <div class="tib-product-image">
-          <img src="https://cdn.goengineer.com/complex-hinges-3d-printing-services-goengineer.png?format=webp" alt="Complex Mechanical Hinges">
-        </div>
-        <div class="tib-product-info">
-          <h3 class="tib-product-title">Complex Mechanical Hinges</h3>
-          <p class="tib-product-description">Precision-engineered interlocking hinges perfect for functional prototypes and mechanical assemblies.</p>
-          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
-        </div>
-      </div>
-
-      <!-- Product 2 -->
-      <div class="tib-product-card">
-        <div class="tib-product-image">
-          <img src="https://makeitquick.co.uk/wp-content/uploads/2020/05/SLA-Clipped.png" alt="High-Resolution SLA Parts">
-        </div>
-        <div class="tib-product-info">
-          <h3 class="tib-product-title">High-Resolution SLA Parts</h3>
-          <p class="tib-product-description">Ultra-smooth surface finish with exceptional detail, ideal for jewelry, dental models, and miniatures.</p>
-          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
-        </div>
-      </div>
-
-      <!-- Product 3 -->
-      <div class="tib-product-card">
-        <div class="tib-product-image">
-          <img src="https://printrealm.co.uk/wp-content/uploads/2025/02/Hero-Image.png" alt="Custom Design Prints">
-        </div>
-        <div class="tib-product-info">
-          <h3 class="tib-product-title">Custom Design Prints</h3>
-          <p class="tib-product-description">Bring your unique vision to life with our custom printing service. Any design, any complexity.</p>
-          <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Get Quote</a>
-        </div>
-      </div>
-    </div>
+    <h2 class="tib-section-title">Fundamentals</h2>
   </div>
-</section>
 
-  <!-- Section: cta-banner.html -->
-<!-- ========================================
-     CTA Banner Section
-     ======================================== 
-     
-     USAGE: Embed in WordPress Elementor HTML widget
-     REQUIRES: variables.css and shared-components.css
-     
-     NOTE: Update icon, title, description, and button
-     text/link as needed for different use cases:
-     - Shop: Custom prints CTA
-     - Blog: Newsletter subscription
-     - Home: About Us CTA
-     ======================================== -->
+  <div class="tib-topic-heading">
+    <h3>Before you build anything</h3>
+    <span>Accounts and secrets &middot; research and AI</span>
+  </div>
 
-<style>
-/* CTA Section Specific Styles */
-.tib-cta-section {
-  padding: var(--tib-section-padding);
-  background: linear-gradient(135deg, var(--tib-bg-gradient-end) 0%, var(--tib-bg-color) 100%);
-  text-align: center;
-  font-family: var(--tib-font-family);
-}
+  <div class="tib-container">
+    <div class="tib-cards-grid">
 
-.tib-cta-container {
-  max-width: var(--tib-max-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
+      <!-- Lesson 1 -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🔒</span></div>
+        <span class="tib-math-kind">Lesson</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Digital Safety and Secrets</h3>
+          <p class="tib-card-description">Make your passwords hard to crack, turn on the setting that stops most break-ins, spot a fake message written by AI, and learn where a password belongs in a project you are going to share.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="cs/fundamentals/digital-safety/" class="tib-btn tib-btn-primary">Open the lesson</a>
+        </div>
+      </div>
 
-.tib-cta-icon {
-  font-size: 4rem;
-  margin-bottom: 2rem;
-}
+      <!-- Lesson 2 -->
+      <div class="tib-math-card tib-animate">
+        <div class="tib-card-image"><span class="icon">🔍</span></div>
+        <span class="tib-math-kind">Lesson</span>
+        <div class="tib-card-content">
+          <h3 class="tib-card-title">Research and AI</h3>
+          <p class="tib-card-description">Search with operators instead of whole questions, run the SIFT check before you trust a source, and catch an AI stating something false in the same confident tone it uses for the truth.</p>
+        </div>
+        <div class="tib-math-links">
+          <a href="cs/fundamentals/research-and-ai/" class="tib-btn tib-btn-primary">Open the lesson</a>
+        </div>
+      </div>
 
-.tib-cta-content {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.tib-cta-section h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--tib-text-color);
-}
-
-.tib-cta-section p {
-  font-size: 1.125rem;
-  color: var(--tib-secondary-color);
-  margin-bottom: 2.5rem;
-  line-height: 1.7;
-}
-
-@media (max-width: 768px) {
-  .tib-cta-section h2 { font-size: 2rem; }
-}
-
-@media (max-width: 480px) {
-  .tib-cta-section { padding: 3rem 1rem; }
-  .tib-cta-icon { font-size: 3rem; }
-  .tib-cta-section h2 { font-size: 1.5rem; }
-  .tib-cta-section p { font-size: 1rem; }
-}
-</style>
-
-<!-- Button styles from shared-components.css -->
-
-<!-- CTA Variant: Custom Print (for Shop page) -->
-<section class="tib-cta-section">
-  <div class="tib-cta-container">
-    <div class="tib-cta-icon">🎨</div>
-    <h2>Need Something Custom?</h2>
-    <p>Upload your STL file and get a personalized quote within 24 hours.</p>
-    <a href="https://forms.google.com/placeholder" class="tib-btn tib-btn-primary">Request a Quote</a>
+    </div>
   </div>
 </section>
 

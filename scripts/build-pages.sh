@@ -41,6 +41,7 @@ get_page_title() {
         blog)     echo "Blog & News - Think In Bits" ;;
         about)    echo "About Us - Think In Bits" ;;
         math)     echo "AS \& A Level Math - Think In Bits" ;;
+        cs)       echo "Computer Science - Think In Bits" ;;
         *)        echo "Think In Bits" ;;
     esac
 }

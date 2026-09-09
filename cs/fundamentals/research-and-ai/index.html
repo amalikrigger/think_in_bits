@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research and AI - Think In Bits</title>
+  <meta name="description" content="Find real answers, catch the fake ones, and use AI without letting it think for you. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Fundamentals &middot; Lesson 2</p>
+    <h1>Research and AI</h1>
+    <p class="promise">Find real answers, catch the fake ones, and use AI without letting it think for you</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 2 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">The internet holds the answer to almost anything you will ever need to know. It also holds a confident, well written, completely wrong answer to the same question. Over two days you will learn to search like someone who knows what they are doing, check whether a source deserves your trust, and use AI as a tool that makes you smarter instead of one that does your thinking and leaves you unable to explain your own work.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to search with <strong>operators</strong> instead of typing whole questions</li>
+      <li>How to run the <strong>SIFT</strong> check on a source before you trust it</li>
+      <li>How to tell a <strong>primary source</strong> from someone's summary of one</li>
+      <li>How to use AI to understand something, and where that crosses into cheating</li>
+      <li>How to catch a <strong>hallucination</strong>, which is AI stating something false with total confidence</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>A computer with a web browser</li>
+      <li>An AI tool you are old enough to use. <strong>Check the age table on Day 2 before you pick one.</strong></li>
+      <li>Something you are actually stuck on from another class, for the Day 2 activity</li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. day 1 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 1</p>
+    <h2>Find it and check it</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you can find a specific fact fast, and you can say out loud why you do or do not trust the page you found it on.</p>
+  </section>
+
+  <!-- ============ 3. step 1 ============ -->
+  <section class="slide">
+    <h2>Step 1: Stop typing questions</h2>
+    <p>Most people type a whole sentence into the search bar.</p>
+<pre><code>What is the best programming language to learn to get a job in 2026?</code></pre>
+    <p>That works, and it is slow. Search engines throw away most of those words anyway. Here are five operators that do the actual work.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Operator</th><th>What you type</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Keywords</td><td><code>best programming language jobs 2026</code></td><td>Says the same thing with nothing wasted</td></tr>
+        <tr><td>Quotes</td><td><code>"entry level" developer salary</code></td><td>Demands that exact phrase, in that order</td></tr>
+        <tr><td>Minus</td><td><code>python tutorial -youtube</code></td><td>Removes results containing a word</td></tr>
+        <tr><td><code>site:</code></td><td><code>site:nhc.noaa.gov st croix</code></td><td>Searches inside one website only</td></tr>
+        <tr><td><code>filetype:</code></td><td><code>raspberry pi projects filetype:pdf</code></td><td>Finds one kind of file</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>site: is the one that changes how you work.</b> It lets you search a source you already trust instead of searching the whole internet and hoping.</div>
+    <div class="callout check"><b>Checkpoint:</b> you have run all five and can say what each one did to your results.</div>
+  </section>
+
+  <!-- ============ 4. step 2 ============ -->
+  <section class="slide">
+    <h2>Step 2: The Search Challenge</h2>
+    <p>Three questions. For each one, write down <strong>the exact query you typed</strong> and <strong>the source you landed on</strong>. The query matters as much as the answer.</p>
+    <ol>
+      <li>Find a beginner Raspberry Pi project guide as a PDF. Use <code>filetype:</code>.</li>
+      <li>Find what the National Hurricane Center itself published about a storm that affected St. Croix. Use <code>site:nhc.noaa.gov</code>.</li>
+      <li>Find the salary range for a job you would actually want, in the Virgin Islands. Use quotes around the exact phrase.</li>
+    </ol>
+    <p>Question 3 is harder than it looks. Territory specific salary data is thin, and you may not find a clean number.</p>
+    <div class="callout flag"><b>If you cannot find it, write "I could not find this" and say where you looked.</b> That is a real research result. Inventing a number, or grabbing a US national average and calling it a Virgin Islands number, is how bad information gets made.</div>
+    <div class="callout check"><b>Checkpoint:</b> three queries written down, three sources named, and an honest answer on any you could not find.</div>
+  </section>
+
+  <!-- ============ 5. SIFT ============ -->
+  <section class="slide">
+    <h2>Step 3: Run SIFT before you trust it</h2>
+    <p>Four moves, in order, before you believe anything.</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>Move</th><th>What you actually do</th></tr></thead>
+      <tbody>
+        <tr><td><b>S</b></td><td>Stop</td><td>Do not share it yet. Do not screenshot it yet. Pause.</td></tr>
+        <tr><td><b>I</b></td><td>Investigate the source</td><td>Who wrote this. What is this site. Are they selling something.</td></tr>
+        <tr><td><b>F</b></td><td>Find better coverage</td><td>Search the same claim. Does anyone credible say it too.</td></tr>
+        <tr><td><b>T</b></td><td>Trace to the original</td><td>Articles cite studies. Go read the study.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>T is the one people skip, and it is where the errors hide.</b> An article says "a study found teenagers who code earn more." You trace it, and the study surveyed 200 adults in one city. The claim was not wrong exactly, it was just much smaller than the headline made it sound.</div>
+  </section>
+
+  <!-- ============ 6. red flags + tiers ============ -->
+  <section class="slide">
+    <h2>What a weak source looks like</h2>
+    <ul class="flags">
+      <li><b>No author.</b> "Staff Writer", or nothing at all.</li>
+      <li><b>No date.</b> You cannot tell if this is from last month or 2014.</li>
+      <li><b>Emotional headline.</b> "SHOCKING", "You Won't Believe".</li>
+      <li><b>Ads outnumber content.</b> A low effort site making money on clicks.</li>
+      <li><b>Nothing cited.</b> Big claims, no links to evidence.</li>
+      <li><b>Only one site says it.</b> Nobody credible repeated it.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 7. source tiers ============ -->
+  <section class="slide">
+    <h2>How much a source is worth</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Tier</th><th>What it is</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Best</td><td>The original thing</td><td>Published studies, government data, official documentation</td></tr>
+        <tr><td>Good</td><td>Established outlets and schools</td><td>AP, Reuters, BBC, <code>.edu</code> sites, MDN Web Docs</td></tr>
+        <tr><td>Okay to start</td><td>Community checked</td><td>Stack Overflow answers with high votes, Wikipedia, then follow its sources</td></tr>
+        <tr><td>Careful</td><td>One person's take</td><td>Blog posts, videos, social media</td></tr>
+        <tr><td>Avoid</td><td>Made for clicks</td><td>No author, filler articles, sites that exist to rank on search</td></tr>
+      </tbody>
+    </table></div>
+    <p>Find one source you trust and one you do not, on any tech topic. Run SIFT on both. Screenshot both and write which SIFT move gave the bad one away.</p>
+    <div class="callout check"><b>Checkpoint:</b> two sources, two verdicts, and you can name the move that exposed the weak one.</div>
+  </section>
+
+  <!-- ============ 8. day 1 deliverables ============ -->
+  <section class="slide">
+    <h2>End of Day 1</h2>
+    <ul class="turnin">
+      <li>Three Search Challenge queries, with the exact text you typed and the source you found</li>
+      <li>Two screenshots, one trustworthy source and one not, with your SIFT reasoning</li>
+    </ul>
+  </section>
+
+  <!-- ============ 9. day 2 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Use AI without outsourcing your thinking</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you can use an AI tool to understand something you were stuck on, and you can catch it being confidently wrong.</p>
+  </section>
+
+  <!-- ============ 10. age table ============ -->
+  <section class="slide">
+    <h2>Step 1: Pick a tool you are allowed to use</h2>
+    <p>Age rules are real and they are not the same across tools. Checked 9 September 2026.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Tool</th><th>Minimum age</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Microsoft Copilot</b></td><td>13</td><td>The school supplies this. <b>Default choice for this class.</b></td></tr>
+        <tr><td><b>Google Gemini</b></td><td>13</td><td>Under 13 needs a parent managed account</td></tr>
+        <tr><td><b>NotebookLM</b></td><td>Follows your Google account</td><td>Upload your own notes, get a study guide back</td></tr>
+        <tr><td><b>ChatGPT</b></td><td>13, and 13 to 17 need a parent's permission</td><td></td></tr>
+        <tr><td><b>Claude</b></td><td><b>18</b></td><td>Most of you cannot use this one</td></tr>
+        <tr><td><b>Wolfram Alpha</b></td><td>Basic use needs no account</td><td>Math, science, data</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>About Claude.</b> Anthropic requires every user to be at least 18. There is no school or education exception, so if you are under 18 you may not use it for this class. Use Copilot instead.</div>
+    <div class="callout note"><b>The rule for the rest of the year:</b> before you sign up for any tool for this class, check its minimum age, and ask Mr. Krigger if you are not sure. This applies to every tool, not only AI ones.</div>
+  </section>
+
+  <!-- ============ 11. the line ============ -->
+  <section class="slide">
+    <h2>Step 2: Know where the line is</h2>
+    <p>Same assignment, two ways of using the same tool.</p>
+    <p class="filename">This is cheating</p>
+<pre><code>Write my essay about the American Revolution.</code></pre>
+    <p>You learned nothing, you submitted work that is not yours, and you cannot answer a single follow up question about it.</p>
+    <p class="filename">This is learning</p>
+<pre><code>I am writing an essay about the American Revolution. Explain the main
+causes simply so I understand them before I write anything.</code></pre>
+    <div class="callout note"><b>The test is one question:</b> am I using this to understand, or to avoid understanding?</div>
+    <p>You may use AI to explain things, to help you debug, and to write code when Mr. Krigger approves it or the assignment asks for it. What you submit has to be yours, and you have to be able to explain any part of it on demand.</p>
+  </section>
+
+  <!-- ============ 12. prompt patterns ============ -->
+  <section class="slide">
+    <h2>Step 3: Prompt patterns worth keeping</h2>
+    <p>Try at least two of these on something you are stuck on right now, from any class.</p>
+    <p class="filename">Explain it at my level</p>
+<pre><code>Explain how CSS Flexbox works to an 8th grader. Use one real example.</code></pre>
+    <p class="filename">Quiz me, and do not give it away</p>
+<pre><code>Give me 5 practice questions on Python loops. Do not show any answers
+until I have tried each one.</code></pre>
+    <p class="filename">Check my wrong idea</p>
+<pre><code>I think a for loop in Python always runs exactly 10 times. Am I right?
+If not, explain why.</code></pre>
+    <p class="filename">Explain why, not just what</p>
+<pre><code>Walk me through setting up a Raspberry Pi web server. For every step,
+explain why the step is there.</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> two patterns run on something real, and you understand something you did not understand at the start of the period.</div>
+  </section>
+
+  <!-- ============ 13. mini lesson ============ -->
+  <section class="slide">
+    <h2>Why a confident answer can still be invented</h2>
+    <p>An AI does not look things up and report back. It predicts what text should come next, one piece at a time, based on patterns in an enormous amount of writing it was trained on.</p>
+    <p>That is why it writes so well and why it can be so wrong. Fluent writing and true writing are produced by the same machinery, so it has no internal signal telling it which one it just did. When it does not know something, it does not stop. It produces the most plausible looking text, which is exactly what a correct answer would also look like.</p>
+    <div class="callout warn"><b>This is called a hallucination.</b> It will cite studies that were never published, quote people who never said it, and give you a street address for a business that does not exist, all in the same confident tone it uses for things that are true.</div>
+    <p>Three other limits. It has a <strong>knowledge cutoff</strong>, so it can be confidently out of date. It reflects the <strong>bias</strong> in what it was trained on. And if you let it answer everything for you, your own ability quietly stops developing, which is the slowest and most expensive problem on this list.</p>
+    <p>The fix for all four is the same, and you already learned it yesterday. Trace it to the original.</p>
+  </section>
+
+  <!-- ============ 14. catch one ============ -->
+  <section class="slide">
+    <h2>Step 4: Catch one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>Ask your AI tool something specific and local, where you can check the answer yourself:</p>
+        <ul>
+          <li>The address or opening hours of a specific business on St. Croix</li>
+          <li>Who currently holds a specific local office</li>
+          <li>What a particular store charges for something</li>
+        </ul>
+        <p>Then verify it against the real source. Write down what it said, what is actually true, and how you checked.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>Make it cite something, then chase the citation.</p>
+        <ol>
+          <li>Ask a factual question and add: <code>Cite your sources with links.</code></li>
+          <li>Take every citation it gives you and try to open it</li>
+          <li>For each one, record: does the page exist, does it say what the AI claimed, is it a real source</li>
+        </ol>
+      </div>
+    </div>
+    <div class="callout flag"><b>The most dangerous case</b> is a link that works but does not contain the claim. It looks verified until you actually read it.</div>
+    <div class="callout check"><b>Checkpoint:</b> one documented case of the AI being wrong, out of date, or citing something that does not support its claim. If everything checked out, say so and show your checking.</div>
+  </section>
+
+  <!-- ============ 15. day 2 deliverables ============ -->
+  <section class="slide">
+    <h2>End of Day 2</h2>
+    <ul class="turnin">
+      <li>Screenshot of two prompt patterns you ran and what you learned</li>
+      <li>Your verification write up: what it said, what is true, how you checked</li>
+    </ul>
+  </section>
+
+  <!-- ============ 16. base and stretch ============ -->
+  <section class="slide">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>Three Search Challenge queries with sources, SIFT on one good and one bad source, two prompt patterns run on real work, and one fact checked against the real source.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>The citation chase. Make the AI cite sources, open every one, and report which exist, which say what it claimed, and which do not. A case where the link works but does not support the claim is the best possible finding.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 17. turn in ============ -->
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <ul class="turnin">
+      <li><b>Search Challenge</b>: three questions, the exact query you typed for each, the source you found</li>
+      <li><b>Source evaluation</b>: two screenshots, one reliable and one not, with your SIFT reasoning</li>
+      <li><b>AI study session</b>: screenshot of two prompt patterns, plus 2 to 3 sentences on what you understand now that you did not before</li>
+      <li><b>Verification</b>: the base fact check, or the stretch citation chase</li>
+      <li><b>Reflection</b>, 3 to 5 sentences: what will you change about how you search or how you use AI?</li>
+    </ul>
+    <div class="callout note"><b>Where it goes:</b> everything is submitted in Schoology, along with the exit ticket for this lesson.</div>
+  </section>
+
+  <!-- ============ 18. vocabulary ============ -->
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Operator</b></td><td>A search command like <code>site:</code> or <code>filetype:</code> that narrows results instead of adding words</td></tr>
+        <tr><td><b>SIFT</b></td><td>Stop, Investigate, Find better coverage, Trace to the original</td></tr>
+        <tr><td><b>Primary Source</b></td><td>The original: the study itself, the official data, the person who was there</td></tr>
+        <tr><td><b>Secondary Source</b></td><td>Somebody's account of a primary source, like a news article about a study</td></tr>
+        <tr><td><b>Hallucination</b></td><td>AI stating something false in the same confident tone it uses for true things</td></tr>
+        <tr><td><b>Knowledge Cutoff</b></td><td>The date an AI's training data stops, after which it does not know what happened</td></tr>
+        <tr><td><b>Bias</b></td><td>A slant an AI inherits from the writing it was trained on</td></tr>
+        <tr><td><b>Prompt</b></td><td>What you type to an AI tool</td></tr>
+        <tr><td><b>Content Farm</b></td><td>A site that publishes low effort articles to collect ad clicks</td></tr>
+        <tr><td><b>Paywall</b></td><td>A page that requires payment to read, which is a real research obstacle and not a reason to use a worse source</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 19. troubleshooting ============ -->
+  <section class="slide">
+    <h2>Stuck?</h2>
+    <div class="trouble">
+      <details><summary>My site: search returns nothing.</summary>
+        <div class="fix">Check the domain is spelled exactly right and drop the <code>https://</code> and <code>www.</code>. It should read <code>site:nhc.noaa.gov</code>, with no space after the colon.</div></details>
+      <details><summary>I cannot find the Virgin Islands salary number.</summary>
+        <div class="fix">Good. That is the real answer for a lot of territory specific data. Write down where you looked and say you could not find it.</div></details>
+      <details><summary>The AI gave me a source but the link is dead.</summary>
+        <div class="fix">Write that down, it is exactly what the assignment is looking for. Then search the title separately to see whether the source ever existed.</div></details>
+      <details><summary>I am under 18, so what do I use?</summary>
+        <div class="fix">Microsoft Copilot. The school supplies it and the minimum age is 13. Ask Mr. Krigger if you cannot get into it.</div></details>
+      <details><summary>The article I need is behind a paywall.</summary>
+        <div class="fix">Check whether your library gives you access, look for the original study the article is describing, or note the paywall and use a different source. Do not pay for anything for this class.</div></details>
+      <details><summary>Everything the AI told me checked out.</summary>
+        <div class="fix">Then say so and show your checking. Being unable to find a mistake is a legitimate result, as long as you actually looked.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+</body>
+</html>
