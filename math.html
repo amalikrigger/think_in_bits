@@ -1026,13 +1026,14 @@
 
   <!-- Section: math-watch.html -->
 <!-- ========================================
-     Math Watch Section (outside video explainers)
+     Math Watch Section (video + reading resources)
      ========================================
-
-     USAGE: sits directly under math-grid.html on math.html
      REQUIRES: variables.css and shared-components.css
-     ======================================== -->
 
+     Grouped by what the student is stuck on, not by source. Every item
+     carries the method it actually teaches, because "factoring trick"
+     tells a student nothing about which trick.
+     ======================================== -->
 <style>
 .tib-watch-wrap {
   max-width: var(--tib-max-width);
@@ -1064,6 +1065,34 @@
   font-size: 0.95rem;
   max-width: 60ch;
   margin-bottom: 2rem;
+}
+
+/* a band inside the section: one thing a student might be stuck on */
+.tib-watch-group {
+  margin: 3rem 0 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--tib-border-subtle);
+}
+
+.tib-watch-group:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.tib-watch-group h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--tib-text-color);
+  margin-bottom: 0.4rem;
+}
+
+.tib-watch-group p {
+  font-size: 0.9rem;
+  color: var(--tib-secondary-color);
+  max-width: 62ch;
+  margin: 0;
+  line-height: 1.6;
 }
 
 .tib-watch-list {
@@ -1112,6 +1141,13 @@
   font-size: 0.9rem;
 }
 
+/* a reading, not a video */
+.tib-watch-play.read {
+  background: var(--tib-accent-website-alpha);
+  border-color: var(--tib-accent-website);
+  color: var(--tib-accent-website);
+}
+
 .tib-watch-body { flex: 1; min-width: 0; }
 
 .tib-watch-body h4 {
@@ -1126,6 +1162,7 @@
   color: var(--tib-primary-color);
   font-weight: 500;
   margin-bottom: 0.5rem;
+  display: block;
 }
 
 .tib-watch-body p {
@@ -1134,6 +1171,42 @@
   line-height: 1.6;
   margin: 0;
 }
+
+/* the method it actually teaches, so a student can pick one and stay with it */
+.tib-watch-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.tib-watch-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--tib-border-radius-btn);
+  background: var(--tib-primary-alpha-10);
+  color: var(--tib-primary-color);
+  border: 1px solid var(--tib-primary-alpha-30);
+}
+
+.tib-watch-tag.short { background: var(--tib-accent-website-alpha); color: var(--tib-accent-website); border-color: var(--tib-accent-website); }
+.tib-watch-tag.warn  { background: rgba(255,107,107,0.12); color: #ff6b6b; border-color: rgba(255,107,107,0.45); }
+
+.tib-watch-note {
+  max-width: var(--tib-max-width);
+  margin: 1.25rem 0 0;
+  padding: 1.1rem 1.5rem;
+  border: 1px dashed var(--tib-primary-alpha-30);
+  border-radius: var(--tib-border-radius-card);
+  color: var(--tib-secondary-color);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.tib-watch-note b { color: var(--tib-text-color); }
 
 @media (max-width: 600px) {
   .tib-watch-item { padding: 1.25rem; gap: 1rem; }
@@ -1145,11 +1218,17 @@
   <div class="tib-watch-wrap">
 
     <div class="tib-watch-heading">
-      <h3>Watch someone else explain it</h3>
-      <span>1.1 Quadratics &middot; completing the square</span>
+      <h3>Stuck? Watch someone else explain it</h3>
+      <span>1.1 Quadratics &middot; every link checked and working</span>
     </div>
 
-    <p class="tib-watch-intro">These are the videos that helped me when I was relearning this topic. If something in the lesson did not land, hearing a different voice say it a different way often fixes it. Start with whichever one matches what you are stuck on.</p>
+    <p class="tib-watch-intro">These are grouped by what you are stuck on, not by who made them. Each one says which method it uses, so you can pick one way of doing it and stay with it instead of collecting four half-methods. If something in the lesson did not land, hearing a different voice say it a different way often fixes it.</p>
+
+    <!-- ============ COMPLETING THE SQUARE (existing, kept) ============ -->
+    <div class="tib-watch-group">
+      <h4>Completing the square</h4>
+      <p>From Session 1. These are the videos that helped when I was relearning this myself. Still here because the discriminant work builds straight on top of them.</p>
+    </div>
 
     <div class="tib-watch-list">
 
@@ -1158,6 +1237,7 @@
         <span class="tib-watch-body">
           <h4>Solving Quadratic Equations by Completing the Square</h4>
           <span class="tib-watch-meta">Teacher MJ &middot; Math Tutorial</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Divide by a first</span></span>
           <p>A slow, full walkthrough of the method, step by step, with nothing skipped. This is the divide-by-a route, the one we use in class. Watch it if you can follow the steps in the lesson but lose the thread when you try it alone.</p>
         </span>
       </a>
@@ -1166,8 +1246,9 @@
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Why completing the square actually works</h4>
-          <span class="tib-watch-meta">Onlock &middot; a Short, under a minute</span>
-          <p>Where the name comes from: you are literally completing a square. Watch this one if the method feels like a rule you memorised rather than something that makes sense.</p>
+          <span class="tib-watch-meta">Onlock &middot; Short, 1 min 46</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Why it works</span></span>
+          <p>Where the name comes from: you are literally completing a square. Watch this one if the method feels like a rule you memorized rather than something that makes sense.</p>
         </span>
       </a>
 
@@ -1176,11 +1257,378 @@
         <span class="tib-watch-body">
           <h4>Solving Quadratic Equations By Completing The Square</h4>
           <span class="tib-watch-meta">The Organic Chemistry Tutor</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Worked examples</span></span>
           <p>Worked example after worked example, including the harder cases where the number in front of the x squared is not 1. Watch this one when you want more practice than the worksheet gives you.</p>
         </span>
       </a>
 
     </div>
+
+    <!-- ============ FACTORING: a = 1 ============ -->
+    <div class="tib-watch-group">
+      <h4>Factoring, when there is just x&sup2; at the front</h4>
+      <p>Expressions like x&sup2; + 7x + 12, with nothing in front of the x&sup2;. Find two numbers that multiply to the last number and add to the middle one. Start here if factoring itself is the problem, before you touch anything harder.</p>
+    </div>
+
+    <div class="tib-watch-list">
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/gRPEJcn_0M8" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Basic Factoring</h4>
+          <span class="tib-watch-meta">Mr H Tutoring &middot; Short, 53 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Factor pairs</span></span>
+          <p>Three worked ones in under a minute, including the sign rules for when the last number is negative. The fastest way to see the whole idea.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/VU2rEcBBEbU" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Solving Quadratic Equations by Factoring</h4>
+          <span class="tib-watch-meta">Math Teacher Gon &middot; Short, 60 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Factor pairs</span></span>
+          <p>Takes it one step further than factoring: factors x&sup2; &minus; 10x + 16 and then uses it to solve. Watch this one if you can factor but do not see what factoring is for.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/mI-liCDG3Wk" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring Made Easy: Box Method Explained</h4>
+          <span class="tib-watch-meta">CaretMath &middot; Short, 46 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Box method</span></span>
+          <p>The same job done in a two-by-two grid instead of in your head. Worth watching even if factor pairs work for you, because the box is what scales up to the harder ones below.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/csdHDkq3DR4" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factorisation Method, Factorise Trick</h4>
+          <span class="tib-watch-meta">Maths Meet &middot; Short, 14 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Sum and product</span></span>
+          <p>Fourteen seconds, one example, no talking. Good as a last-second reminder before a test. On-screen text is partly in Hindi.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/PczzB6H2yAM" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Mastering Factorisation: Splitting the Middle Term</h4>
+          <span class="tib-watch-meta">Padhai Academy &middot; Short, 43 seconds &middot; narrated in Hindi</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Splitting the middle</span></span>
+          <p>Splitting the middle term, which is the method the harder ones are built on. The narration is in Hindi, but the written work carries it on its own.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-intro/a/factoring-quadratics-leading-coefficient-1" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring quadratics: leading coefficient = 1</h4>
+          <span class="tib-watch-meta">Khan Academy &middot; article with practice</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Reading</span><span class="tib-watch-tag">Sum and product</span></span>
+          <p>Reading rather than watching, and it does the thing the videos skip: it shows <b>why</b> the two numbers have to multiply to the last term and add to the middle one. Practice questions at the bottom mark themselves.</p>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- ============ FACTORING: a > 1 ============ -->
+    <div class="tib-watch-group">
+      <h4>Factoring, when there is a number in front of the x&sup2;</h4>
+      <p>Expressions like 2x&sup2; + 7x + 3 or 10t&sup2; &minus; t &minus; 3. This is the one that trips people up, and it is the one that shows up most in exam questions. Pick <b>one</b> of the two methods below and get good at it. They both work, every time.</p>
+    </div>
+
+    <div class="tib-watch-list">
+
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hs-cgcpbc0I" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring trinomials when a is NOT equal to 1</h4>
+          <span class="tib-watch-meta">iteachalgebra &middot; Short, 1 min 42 &middot; start with this one</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">AC method</span><span class="tib-watch-tag">Grouping</span></span>
+          <p>The clearest one here, and the only one that names the problem out loud. Multiply the outside two numbers, split the middle, factor in pairs, check by expanding. If you watch one video on this page, watch this one.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/zuys2RS_3YE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Quick Tutorial: Factoring Trinomials Using the AC Method</h4>
+          <span class="tib-watch-meta">PeachPI Math &middot; Short, 59 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">AC method</span><span class="tib-watch-tag">Grouping</span></span>
+          <p>The same method on 2x&sup2; + 11x + 5, tighter and faster. Watch it straight after the one above to see the method twice on different numbers, which is what makes it stick.</p>
+        </span>
+      </a>
+
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hsSR_Xfh_30" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Using the Box Method to Factor Trinomials, ax&sup2; + bx + c</h4>
+          <span class="tib-watch-meta">Mathispower4u &middot; Short, 1 min 27</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Box method</span><span class="tib-watch-tag">AC method</span></span>
+          <p>The box and the AC method combined on 5x&sup2; + 17x + 6, narrated the whole way. This is the one to watch if the silent box video went too fast, because it says out loud where each number in the grid comes from.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/OARbnuV19IE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factor a quadratic with the box method</h4>
+          <span class="tib-watch-meta">Scaffolded Math and Science &middot; Short, 35 seconds &middot; no narration</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Box method</span></span>
+          <p>3x&sup2; + 7x + 2 done silently in a box, start to finish. If you are a person who needs to see the shape of it rather than hear it, this is your one. No sound needed.</p>
+        </span>
+      </a>
+
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/MVjJAGXqwo8" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factorization Hack: Middle Term Splitting Explained</h4>
+          <span class="tib-watch-meta">Maths Tricks with Ritu &middot; Short, 11 seconds &middot; no narration</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Cross method</span></span>
+          <p>Eleven seconds. 3x&sup2; + 8x + 4 through a cross grid with no explanation at all. Useless as a first look, excellent as a reminder once you already know the method.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-grouping/a/factoring-quadratics-leading-coefficient-not-1" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring quadratics: leading coefficient &ne; 1</h4>
+          <span class="tib-watch-meta">Khan Academy &middot; article with practice</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Reading</span><span class="tib-watch-tag">AC method</span><span class="tib-watch-tag">Grouping</span></span>
+          <p>Two full worked examples, 2x&sup2; + 7x + 3 and 6x&sup2; &minus; 5x &minus; 4, and then the part no short has room for: why grouping works at all. Read this when you can do it but do not trust it.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=ISPxJ6JXT8o" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring trinomials with a non-1 leading coefficient by grouping</h4>
+          <span class="tib-watch-meta">Khan Academy &middot; 5 min 38</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">AC method</span><span class="tib-watch-tag">Grouping</span></span>
+          <p>The unhurried version of the shorts above. Every line explained as it is written. Watch this when a 60-second video went past too fast to follow.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://corbettmaths.com/2019/12/31/factorising-harder-quadratics-videos/" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factorising Harder Quadratics</h4>
+          <span class="tib-watch-meta">Corbettmaths &middot; two videos</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Inspection</span><span class="tib-watch-tag">Splitting the middle</span></span>
+          <p>Two different routes to the same answer, side by side: guessing the brackets and checking, or splitting the middle term properly. Useful for deciding which one suits you.</p>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- ============ FACTORING: shortcuts ============ -->
+    <div class="tib-watch-group">
+      <h4>Shortcuts, and what they cost you</h4>
+      <p>These get the right answer fast, and they are worth knowing. But read the warning under each one before you use it in a written answer, because Cambridge marks your <b>method</b>, not just your final line.</p>
+    </div>
+
+    <div class="tib-watch-list">
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/fZy_UJgnOpo" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factor a quadratic in less than a minute</h4>
+          <span class="tib-watch-meta">ChillMath &middot; Short, 43 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag warn">Slide and divide</span></span>
+          <p><b>The catch:</b> the second line he writes is not equal to the expression you started with. He multiplies it by 2, factors the easier version, then divides back at the end. It works, and he does complete the divide-back step, but if you write that middle line in an exam you cannot justify it and you will lose method marks. Use it to check an answer, not to produce one.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/y1fyMqJJx1E" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring Trinomials in an Easy Way</h4>
+          <span class="tib-watch-meta">Engineering Math Shorts &middot; Short, 58 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag warn">Slide and divide</span></span>
+          <p>The same shortcut on a nastier example, 10x&sup2; &minus; 11x + 3. <b>Same catch as above:</b> the middle line is a different expression from the one in the question. Fine for checking, risky for writing down.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hh3BD1VisNE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Split the Middle Term Easily</h4>
+          <span class="tib-watch-meta">Suresh Aggarwal &middot; Short, 1 min 37</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag warn">Gives roots, not factors</span></span>
+          <p>Handles a genuinely ugly one, 72x&sup2; + 11x &minus; 35, and the method is sound. <b>But it stops at the roots</b> and never writes the factorised form. If the question says "factorise", this does not finish the job. If it says "solve", it does.</p>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- ============ FACTORING: the long ones ============ -->
+    <div class="tib-watch-group">
+      <h4>If a minute was not enough</h4>
+      <p>Full lessons and practice sets. Go here when the shorts made sense while you watched them and then fell apart the moment you tried one on your own, which is normal and is not a sign you are bad at this.</p>
+    </div>
+
+    <div class="tib-watch-list">
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=YtN9_tCaRQc" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring Quadratics... How?</h4>
+          <span class="tib-watch-meta">NancyPi &middot; 9 min 14</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Both cases</span></span>
+          <p>Covers the easy case and the harder case in one sitting, slowly, with the reasoning said out loud rather than assumed. The best single video here if you are starting from not really getting it.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=9MUDAr1PnlE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factoring Trinomials and Polynomials, Basic Introduction</h4>
+          <span class="tib-watch-meta">The Organic Chemistry Tutor &middot; 34 min 45</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">AC method</span><span class="tib-watch-tag">Grouping</span><span class="tib-watch-tag">Special cases</span></span>
+          <p>Half an hour, example after example, including common factors and the difference of two squares. Nobody watches this end to end. Skip to the bit you need.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=v2sPNXdabI0" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Factorising Harder Quadratics</h4>
+          <span class="tib-watch-meta">Maths Genie &middot; 12 min 58</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Exam style</span></span>
+          <p>Worked the way an examiner wants to see it written. Watch this one when you can get the answer but are not sure how much working to show.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://corbettmaths.com/2018/04/04/factorising-quadratics/" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Factorising Quadratics: practice questions</h4>
+          <span class="tib-watch-meta">Corbettmaths &middot; questions PDF and answers PDF</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Practice</span><span class="tib-watch-tag">Answers included</span></span>
+          <p>Print it, do it, mark it yourself. The answers are a separate PDF on the same page, so you cannot accidentally see them while you work.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://mathsgenie.co.uk/gcse/maths/edexcel/grade-7-7-5-factorising-harder-quadratics/booklet" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Factorising Harder Quadratics: exam booklet</h4>
+          <span class="tib-watch-meta">Maths Genie &middot; online booklet with answers</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Practice</span><span class="tib-watch-tag">Answers included</span></span>
+          <p>Real exam questions on the harder case only, so every question is the one you actually need practice at. Answers are built in.</p>
+        </span>
+      </a>
+
+    </div>
+
+    <!-- ============ QUADRATIC INEQUALITIES ============ -->
+    <div class="tib-watch-group">
+      <h4>Quadratic inequalities</h4>
+      <p>Things like x&sup2; &minus; 5x + 4 &lt; 0, where the answer is a stretch of the number line rather than a couple of numbers. Everything below assumes you can already factor, so if that is shaky, go back up this page first.</p>
+    </div>
+
+    <div class="tib-watch-list">
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/VgOx7vn4_nA" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic inequalities</h4>
+          <span class="tib-watch-meta">Learning G2O &middot; Short, 49 seconds &middot; watch this one first</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Sketch the parabola</span><span class="tib-watch-tag">Between</span></span>
+          <p>x&sup2; + 3x &minus; 4 &le; 0, sketched, with the part of the curve below the axis coloured in. The clearest picture of what a "between" answer actually means. It is also the only one of the three that models the &le; case.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/zeLuPtB055s" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequalities, GCSE Maths</h4>
+          <span class="tib-watch-meta">Matt, MyGCSEMaths &middot; Short, 59 seconds &middot; do not skip this one</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Sketch the parabola</span><span class="tib-watch-tag">Outside</span></span>
+          <p>The other shape of answer: x &gt; &minus;1 <b>or</b> x &lt; &minus;3, written as two pieces joined by "or". This is the only video here that shows the outside case, and it is the case people get wrong.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/shorts/ePG2ac9NXhQ" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Solving Quadratic Inequality</h4>
+          <span class="tib-watch-meta">Mr H Tutoring &middot; Short, 60 seconds</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag short">Short</span><span class="tib-watch-tag">Number line</span><span class="tib-watch-tag">Test points</span></span>
+          <p>The other route, with no picture of a curve at all. He puts the critical values on a number line and tests an actual number in each region. Watch this if sketching the parabola does not click for you.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.thinkinbits.site/math/1.1-quadratics/quadratic-inequality-explorer/" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequality Explorer</h4>
+          <span class="tib-watch-meta">Think In Bits &middot; practice you tap, not watch</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Practice</span><span class="tib-watch-tag">Checks your answer</span></span>
+          <p>Our own. It gives you an inequality, you tap the stretches of the number line you think are the answer, and it tells you which half you got wrong and why. The place to go once the videos make sense and you need reps.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=_gWjLKsFOPE" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequalities</h4>
+          <span class="tib-watch-meta">The Organic Chemistry Tutor &middot; 12 min 12</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Sign analysis</span><span class="tib-watch-tag">Interval notation</span></span>
+          <p>The full version of the number-line route, with several examples and the notation written out properly. Closest to how we do it in class.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=aTB2pdLvIqw" target="_blank" rel="noopener">
+        <span class="tib-watch-play">&#9654;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequalities, top grade series</h4>
+          <span class="tib-watch-meta">The GCSE Maths Tutor &middot; 23 min 44</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Exam style</span></span>
+          <p>Longer, and works through real exam questions rather than made-up ones. Good once you have the method and want to see harder wording.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://thirdspacelearning.com/gcse-maths/algebra/quadratic-inequalities/" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequalities: steps, examples and worksheet</h4>
+          <span class="tib-watch-meta">Third Space Learning &middot; reading and practice</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Reading</span><span class="tib-watch-tag">Practice</span></span>
+          <p>Nine worked examples, then eight questions to try, then three exam questions. If you want one page that takes you from nothing to exam-ready, this is it.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://www.examsolutions.net/tutorials/exam-questions-quadratic-inequalities/" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Exam questions: quadratic inequalities</h4>
+          <span class="tib-watch-meta">ExamSolutions &middot; 9 past questions, video solutions</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Exam questions</span><span class="tib-watch-tag">Worked solutions</span></span>
+          <p>Real past-paper questions from 2008 to 2023, each with a video of someone working it. Free, no account needed. This is the closest thing here to sitting the real thing.</p>
+        </span>
+      </a>
+
+      <a class="tib-watch-item" href="https://corbettmaths.com/2019/09/09/quadratic-inequalities-practice-questions/" target="_blank" rel="noopener">
+        <span class="tib-watch-play read">&#9998;</span>
+        <span class="tib-watch-body">
+          <h4>Quadratic Inequalities: practice questions</h4>
+          <span class="tib-watch-meta">Corbettmaths &middot; 19 questions with answers</span>
+          <span class="tib-watch-tags"><span class="tib-watch-tag">Practice</span><span class="tib-watch-tag">Answers included</span></span>
+          <p>The homework set. Nineteen questions, answers on the same page, mark yourself and bring in anything that did not come out.</p>
+        </span>
+      </a>
+
+    </div>
+
+    <p class="tib-watch-note"><b>A note on the endpoints.</b> None of the three inequality shorts explains why x = 1 is sometimes included in the answer and sometimes not. The short version: if the question uses &lt; or &gt;, the critical values are <b>out</b>, because at those values the expression equals exactly zero and zero is not less than zero. If it uses &le; or &ge;, they are <b>in</b>. Slide 8 of the lesson covers this properly.</p>
+
   </div>
 </section>
 
