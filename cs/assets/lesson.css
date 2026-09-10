@@ -568,3 +568,59 @@ body.present [data-widget="inbox"] { padding-bottom: 1vh; }
 .w-goal b { color: var(--text); }
 body.present .w-ops li { font-size: clamp(12px, 1.35vw, 18px); }
 body.present .w-goal { font-size: clamp(12.5px, 1.4vw, 18px); }
+
+/* bits widget */
+.w-bitgrid { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0 10px; }
+.w-byte {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: #0d0d14; border: 1px solid var(--hairline); border-radius: 9px;
+  padding: 8px 10px; min-width: 78px;
+}
+.w-char { font-size: 19px; font-weight: 600; color: var(--accent); line-height: 1.1; }
+.w-bin { font-family: var(--mono); font-size: 11.5px; color: var(--text-2); letter-spacing: .04em; }
+.w-dec { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); }
+.w-bitcount { font-size: 14px; color: var(--text-2); margin: 0; }
+.w-bitcount b { color: var(--text); }
+
+/* cpu stepper */
+.w-cpu { display: grid; gap: 12px; margin: 13px 0; }
+@media (min-width: 720px) { .w-cpu { grid-template-columns: 1.35fr 1fr; } }
+.w-code {
+  list-style: none; counter-reset: ln; margin: 0; padding: 12px 0;
+  background: #07070c; border: 1px solid var(--hairline); border-radius: 11px;
+}
+.w-code li {
+  counter-increment: ln; display: flex; gap: 12px; padding: 3px 14px; margin: 0;
+  border-left: 3px solid transparent;
+}
+.w-code li::before {
+  content: counter(ln); font-family: var(--mono); font-size: 11.5px;
+  color: var(--text-3); min-width: 14px; text-align: right; padding-top: 2px;
+}
+.w-code li code {
+  font-family: var(--mono); font-size: 13px; color: var(--text-2);
+  background: transparent; border: 0; padding: 0; white-space: pre;
+}
+.w-code li.now { background: var(--accent-wash); border-left-color: var(--accent); }
+.w-code li.now code { color: var(--accent); }
+.w-side { display: flex; flex-direction: column; gap: 10px; }
+.w-mem, .w-out {
+  background: #0d0d14; border: 1px solid var(--hairline); border-radius: 11px; padding: 11px 13px;
+}
+.w-mem b, .w-out b {
+  display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 7px;
+}
+.w-mem table { background: transparent; font-size: 13px; }
+.w-mem td { padding: 3px 0; border: 0; }
+.w-mem td:last-child { text-align: right; font-family: var(--mono); color: var(--accent); }
+.w-mem .w-foot { margin: 0; }
+.w-out pre {
+  margin: 0; padding: 0; background: transparent; border: 0; box-shadow: none;
+  font-family: var(--mono); font-size: 13px; color: var(--ok); min-height: 2.4em; white-space: pre-wrap;
+}
+body.present .w-code li code { font-size: clamp(12px, 1.35vw, 18px); }
+body.present .w-char { font-size: clamp(16px, 1.9vw, 24px); }
+body.present .w-bin { font-size: clamp(10px, 1.1vw, 14px); }
+body.present .w-mem table, body.present .w-out pre { font-size: clamp(12px, 1.35vw, 18px); }
+body.present .w-bitcount { font-size: clamp(12.5px, 1.4vw, 18px); }

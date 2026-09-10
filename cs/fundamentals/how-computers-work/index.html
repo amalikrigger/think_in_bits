@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Computers Work - Think In Bits</title>
+  <meta name="description" content="Every machine in this lab is the same machine wearing different clothes. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <header class="lesson-head">
+    <p class="eyebrow">Fundamentals &middot; Lesson 1</p>
+    <h1>How Computers Work</h1>
+    <p class="promise">Every machine in this room is the same machine wearing different clothes</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 2 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">There is a 3D printer, a laser cutter, a robot, a tiny board with a screen made of lights, and a computer the size of a credit card in this room. They look nothing alike. Underneath, they are running the same four ideas, and once you can see those four ideas you stop being someone who uses machines and start being someone who understands them. That is the entire difference, and it takes about two periods.</p>
+  </header>
+
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>The four jobs every computer does: <strong>input</strong>, <strong>processing</strong>, <strong>output</strong>, <strong>storage</strong></li>
+      <li>Why everything inside is <strong>binary</strong>, and what that actually means</li>
+      <li>The difference between <strong>memory</strong> and <strong>storage</strong>, which almost everyone gets wrong</li>
+      <li>What a <strong>program</strong> is and what happens when one runs</li>
+      <li>How to look at any machine in this lab and name its four jobs</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>A computer with a web browser</li>
+      <li>Your eyes and the room. Day 2 is a walk around the lab.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 1</p>
+    <h2>The four jobs</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you can explain what a computer is doing, in order, and you know why the answer to "what is it storing" is always numbers.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: There are only four jobs</h2>
+    <p>Every computer ever built, from the room-sized ones that ran the moon landing to the one in your pocket, does these four things.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Job</th><th>What it means</th><th>On your laptop</th></tr></thead>
+      <tbody>
+        <tr><td><b>Input</b></td><td>Something comes in</td><td>Keyboard, trackpad, camera, microphone</td></tr>
+        <tr><td><b>Processing</b></td><td>Something decides what to do</td><td>The CPU, doing arithmetic very fast</td></tr>
+        <tr><td><b>Output</b></td><td>Something goes out</td><td>Screen, speakers, a file, a print job</td></tr>
+        <tr><td><b>Storage</b></td><td>Something is kept for later</td><td>Your drive, full of everything you have saved</td></tr>
+      </tbody>
+    </table></div>
+    <p>That is the whole shape. Everything else is detail, size and speed.</p>
+    <div class="callout note"><b>Why this matters here:</b> the laser cutter is not a mysterious box. It takes a file in, works out a path, and moves a laser along it. Once you can name the four jobs, you can reason about a machine you have never touched.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: It is all numbers, and there are only two of them</h2>
+    <p>Inside there are no letters, no colors and no sound. Just switches, each on (<code>1</code>) or off (<code>0</code>). One switch is a <strong>bit</strong>. Eight of them make a <strong>byte</strong>, which holds 256 patterns, enough to give every basic character its own number. Agree on which number means which letter, and switches can spell.</p>
+    <div data-widget="bits"></div>
+    <div class="callout check"><b>Checkpoint:</b> you can read off the byte for one letter of your name.</div>
+  </section>
+
+  <section class="slide">
+    <h2>The same trick, everywhere else</h2>
+    <p>Once you accept that a number can mean a letter, the rest follows without any new ideas.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Thing</th><th>What the number means</th></tr></thead>
+      <tbody>
+        <tr><td>A letter</td><td>Its agreed code. <code>H</code> is 72.</td></tr>
+        <tr><td>A color</td><td>Three numbers: how much red, green and blue</td></tr>
+        <tr><td>A photo</td><td>Millions of those color triplets, in a grid</td></tr>
+        <tr><td>A sound</td><td>The height of the wave, measured 44,100 times a second</td></tr>
+        <tr><td>A 3D model</td><td>Lists of points in space, and which points connect</td></tr>
+        <tr><td>A program</td><td>Numbers that the CPU reads as instructions</td></tr>
+      </tbody>
+    </table></div>
+    <p>That last row is the strange one and it is worth sitting with. The instructions are stored the same way the photos are. To the machine there is no difference. The difference is entirely in what reads them.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Memory and storage are not the same thing</h2>
+    <p>Nearly everyone mixes these up, including people who have owned computers for thirty years.</p>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Memory (RAM)</h4>
+        <p>Fast, small, and wiped the instant the power goes. It holds what you are working on <em>right now</em>.</p>
+        <p>This is your desk. Big enough for the things you are actively using, and everything on it hits the floor when you stand up too fast.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Storage (drive)</h4>
+        <p>Slower, much bigger, and it survives being switched off. It holds everything you have saved.</p>
+        <p>This is the filing cabinet. Slower to get things out of, and still there tomorrow.</p>
+      </div>
+    </div>
+    <div class="callout warn"><b>This is why unsaved work dies.</b> Your document lives on the desk until you save it. Saving is the act of copying it into the cabinet. The power cut does not delete your work, it just ends the only place your work existed.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: Watch a program actually run</h2>
+    <p>A <strong>program</strong> is a list of instructions. The CPU reads one, does it, moves to the next. It cannot skim.</p>
+    <div data-widget="cpu"></div>
+    <div class="callout check"><b>Checkpoint:</b> you can say why line 3 runs four times before giving up.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Fast, and profoundly stupid</h2>
+    <p>You just watched it take eighteen steps to add four numbers together. A person does that in their head. The machine needed every single instruction spelled out, in order, with nothing assumed.</p>
+    <p>Now the other half. Your laptop runs a few billion of those steps every second. It never gets bored, never loses its place, and never decides that is close enough.</p>
+    <div class="callout note"><b>This explains two things you already met.</b> Cracking a weak password means trying billions of guesses a second, which is only possible because each guess is a tiny stupid step. And an AI predicting the next word is the same story: a simple operation, run at a scale that stops feeling simple.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is at the end.</p>
+    <ul class="turnin">
+      <li>Your name converted to bits, screenshotted</li>
+      <li>You stepped the program to the end and can explain the loop</li>
+      <li>You can say the difference between memory and storage without looking</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Audit the lab</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you can walk up to any machine in this room and name its four jobs out loud.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: Same machine, different clothes</h2>
+    <p>Here are two you already know, filled in for you.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Machine</th><th>Input</th><th>Processing</th><th>Output</th><th>Storage</th></tr></thead>
+      <tbody>
+        <tr><td><b>Your phone</b></td><td>Touch, mic, camera</td><td>Chip inside</td><td>Screen, speaker</td><td>Its drive, plus the cloud</td></tr>
+        <tr><td><b>MakerBot printer</b></td><td>A sliced file on a USB stick</td><td>Board that reads the path</td><td>Motors, hot nozzle, an object</td><td>The stick, and its own memory</td></tr>
+      </tbody>
+    </table></div>
+    <p>Notice the printer's output is a physical object. That is the only unusual thing about it. Everything else is the same four jobs.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Now you do the rest</h2>
+    <p>Walk the room. For each machine, write the four jobs. Look at the actual thing rather than guessing from memory, and where you are not sure, say so and say why.</p>
+    <ul>
+      <li>The <b>Glowforge</b> laser cutter</li>
+      <li>A <b>RoboMaster</b></li>
+      <li>A <b>micro:bit</b></li>
+      <li>A <b>Raspberry Pi</b></li>
+      <li>One machine of your choice that is <em>not</em> in this room</li>
+    </ul>
+    <div class="callout note"><b>Two are deliberately awkward.</b> The micro:bit's storage is tiny and strange, and the RoboMaster's input includes a camera that it uses to make decisions on its own. If a machine does not fit neatly, that is the interesting part. Write down what does not fit.</div>
+    <div class="callout check"><b>Checkpoint:</b> five machines, four jobs each, and at least one honest "I am not sure, because".</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Find the edge</h2>
+    <p>Pick one machine from your list and answer one of these in a short paragraph.</p>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>What would happen if this machine lost one of its four jobs? Pick a job, remove it, and describe what the machine becomes.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>Find something in this room that stores information without being a computer at all. Explain what it stores, how it survives losing power, and why it is not a computer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is on the next screen.</p>
+    <ul class="turnin">
+      <li>Five machines audited, four jobs each</li>
+      <li>You noted at least one thing that did not fit neatly</li>
+      <li>Your paragraph on the missing job, or the stretch</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <p>The whole list. Every item comes out of an activity you already did.</p>
+    <ul class="turnin">
+      <li><b>Your name in bits</b>, screenshotted from the converter.</li>
+      <li><b>The lab audit</b>: five machines, four jobs each, including one from outside this room.</li>
+      <li><b>What did not fit</b>: at least one machine where a job was awkward to name, and why.</li>
+      <li><b>Your paragraph</b>: the missing job, or the stretch if you did it.</li>
+      <li><b>Reflection</b>, 3 to 5 sentences: what did you think a computer was before today, and what changed?</li>
+    </ul>
+    <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Handing it in</p>
+    <h2>Two things to hand in, not one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>1 &middot; The assignment</h4>
+        <p>Everything on the previous screen goes here, as file uploads.</p>
+        <ol>
+          <li>Open <b>How Computers Work</b> in Schoology</li>
+          <li>Click <b>Submit Assignment</b></li>
+          <li>Click <b>Upload</b></li>
+          <li>Select all your files at once, then <b>Submit</b></li>
+        </ol>
+        <div class="callout warn"><b>Do not click "Create".</b> Create is for typing text and will not let you attach a screenshot. Upload is the one you want. This is the single most common way work gets lost.</div>
+      </div>
+      <div class="tier stretch">
+        <h4>2 &middot; The exit ticket</h4>
+        <p>A separate item in Schoology, taken in class. Short quiz on this lesson, graded on its own.</p>
+        <p>Either order is fine. Both have to be done.</p>
+      </div>
+    </div>
+    <div class="callout note"><b>Name your files so they make sense.</b> <code>lab-audit.pdf</code> tells Mr. Krigger what he is opening. <code>Screenshot 2026-09-14 at 9.03.11 AM.png</code> does not.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Bit</b></td><td>One switch, on or off, written as 1 or 0. The smallest thing a computer holds.</td></tr>
+        <tr><td><b>Byte</b></td><td>Eight bits together, which is enough for one basic character</td></tr>
+        <tr><td><b>Binary</b></td><td>Counting with only two digits, because a switch has only two positions</td></tr>
+        <tr><td><b>CPU</b></td><td>The part that reads instructions and does them, one at a time, extremely fast</td></tr>
+        <tr><td><b>RAM</b></td><td>Working memory. Fast, small, and gone the moment the power is</td></tr>
+        <tr><td><b>Storage</b></td><td>The drive. Slower, far bigger, and still there tomorrow</td></tr>
+        <tr><td><b>Program</b></td><td>A list of instructions stored as numbers, like everything else</td></tr>
+        <tr><td><b>Loop</b></td><td>Instructions that send the CPU back to repeat a section</td></tr>
+        <tr><td><b>Input</b></td><td>Anything coming in: a key, a tap, a sensor reading, a file</td></tr>
+        <tr><td><b>Output</b></td><td>Anything going out: pixels, sound, a saved file, a printed object</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>The bits converter shows more than 8 digits for one character.</summary>
+        <div class="fix">You typed something outside the basic set, like an emoji or an accented letter. Those need more than one byte, which is exactly why they were a mess to get working on the early internet.</div></details>
+      <details><summary>I stepped the program and nothing changed.</summary>
+        <div class="fix">Some lines only check a condition and decide where to go next, so memory stays the same. That counts as a step. The CPU still had to do it.</div></details>
+      <details><summary>Why does it go back to line 2 instead of just repeating?</summary>
+        <div class="fix">Because the condition has to be checked every single time. If it did not check, it would loop forever, which is a bug you will write for real at some point.</div></details>
+      <details><summary>I cannot work out what the laser cutter stores.</summary>
+        <div class="fix">Good, that is the awkward one. Ask what it has to remember while a job is running, and whether it remembers anything after the job finishes. Write down what you conclude and why.</div></details>
+      <details><summary>Is a calculator a computer?</summary>
+        <div class="fix">Run it through the four jobs and see. It takes input, processes, and outputs. The interesting question is storage, and whether it can follow a list of instructions you wrote. That question is most of what separates a calculator from a computer.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
+</body>
+</html>

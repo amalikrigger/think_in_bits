@@ -463,6 +463,128 @@
   }
 
   /* ============================================================
+     8. BITS: text to binary, so "everything is numbers" stops being a slogan
+     ============================================================ */
+
+  function buildBits(host) {
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Try it</span>' +
+      '<span class="w-sub">Type anything. This is what the machine actually stores.</span></div>' +
+      '<label class="w-label" for="' + host.id + '-t">Your text</label>' +
+      '<input class="w-input" id="' + host.id + '-t" type="text" autocomplete="off" ' +
+        'spellcheck="false" maxlength="24" value="Hi">' +
+      '<div class="w-bitgrid"></div>' +
+      '<p class="w-bitcount"></p>' +
+      '<p class="w-foot">Eight bits make one byte, and one byte holds one basic character. Your name, a photo, a song and this whole page are all this, just more of it.</p>';
+
+    var input = $('.w-input', host), grid = $('.w-bitgrid', host), count = $('.w-bitcount', host);
+
+    function update() {
+      var s = input.value;
+      grid.innerHTML = s.split('').map(function (ch) {
+        var code = ch.charCodeAt(0);
+        var bin = code > 255 ? code.toString(2) : ('00000000' + code.toString(2)).slice(-8);
+        return '<div class="w-byte">' +
+          '<span class="w-char">' + (ch === ' ' ? '&nbsp;' : esc(ch)) + '</span>' +
+          '<span class="w-bin">' + bin + '</span>' +
+          '<span class="w-dec">' + code + '</span>' +
+        '</div>';
+      }).join('');
+      var bits = s.split('').reduce(function (n, c) {
+        return n + (c.charCodeAt(0) > 255 ? c.charCodeAt(0).toString(2).length : 8); }, 0);
+      count.innerHTML = s.length
+        ? '<b>' + s.length + '</b> character' + (s.length === 1 ? '' : 's') + ', <b>' + bits + '</b> bits'
+        : 'Type something.';
+    }
+    input.addEventListener('input', update);
+    update();
+  }
+
+  /* ============================================================
+     9. CPU STEPPER: one instruction at a time, which is the whole point
+     ============================================================ */
+
+  function buildCpu(host) {
+    var prog = [
+      { src: 'set count = 0',        run: function (s) { s.vars.count = 0; } },
+      { src: 'set total = 0',        run: function (s) { s.vars.total = 0; } },
+      { src: 'repeat while count < 4', run: function (s) {
+          if (!(s.vars.count < 4)) { s.pc = 6; return true; } } },
+      { src: '    total = total + count', run: function (s) { s.vars.total += s.vars.count; } },
+      { src: '    count = count + 1',     run: function (s) { s.vars.count += 1; } },
+      { src: '    go back and check again', run: function (s) { s.pc = 2; return true; } },
+      { src: 'print total',          run: function (s) { s.out.push(String(s.vars.total)); } }
+    ];
+
+    var s, timer = null;
+
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Try it</span>' +
+      '<span class="w-sub">A real program. Step it one line at a time and watch memory change.</span></div>' +
+      '<div class="w-cpu">' +
+        '<ol class="w-code"></ol>' +
+        '<div class="w-side">' +
+          '<div class="w-mem"></div>' +
+          '<div class="w-out"><b>Output</b><pre></pre></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="w-row">' +
+        '<button class="w-btn" type="button" data-act="step">Step</button>' +
+        '<button class="w-btn ghost" type="button" data-act="run">Run it</button>' +
+        '<button class="w-btn ghost" type="button" data-act="reset">Reset</button>' +
+      '</div>' +
+      '<p class="w-foot">Your laptop does this a few billion times a second. Not cleverer than you. Just relentless.</p>';
+
+    var codeEl = $('.w-code', host), memEl = $('.w-mem', host), outEl = $('.w-out pre', host);
+
+    function reset() {
+      if (timer) { clearInterval(timer); timer = null; }
+      s = { pc: 0, vars: {}, out: [], done: false, steps: 0 };
+      draw();
+    }
+
+    function draw() {
+      codeEl.innerHTML = prog.map(function (line, i) {
+        return '<li class="' + (i === s.pc && !s.done ? 'now' : '') + '"><code>' + esc(line.src) + '</code></li>';
+      }).join('');
+      var names = Object.keys(s.vars);
+      memEl.innerHTML = '<b>Memory</b>' + (names.length
+        ? '<table><tbody>' + names.map(function (k) {
+            return '<tr><td><code>' + esc(k) + '</code></td><td>' + s.vars[k] + '</td></tr>'; }).join('') + '</tbody></table>'
+        : '<p class="w-foot">nothing stored yet</p>');
+      outEl.textContent = s.out.length ? s.out.join('\n') : (s.done ? '' : '');
+      if (s.done) outEl.textContent = s.out.join('\n') + '\n\nfinished in ' + s.steps + ' steps';
+    }
+
+    function step() {
+      if (s.done) return;
+      var line = prog[s.pc];
+      if (!line) { s.done = true; draw(); return; }
+      s.steps++;
+      var jumped = line.run(s);
+      if (!jumped) s.pc++;
+      if (s.pc >= prog.length) s.done = true;
+      draw();
+    }
+
+    host.addEventListener('click', function (e) {
+      var act = e.target.getAttribute('data-act');
+      if (act === 'step') { if (timer) { clearInterval(timer); timer = null; } step(); }
+      else if (act === 'reset') reset();
+      else if (act === 'run') {
+        if (timer) { clearInterval(timer); timer = null; return; }
+        if (s.done) reset();
+        timer = setInterval(function () {
+          step();
+          if (s.done) { clearInterval(timer); timer = null; }
+        }, 420);
+      }
+    });
+
+    reset();
+  }
+
+  /* ============================================================
      BOOT
      ============================================================ */
 
@@ -478,6 +600,8 @@
         else if (kind === 'query') buildQuery(host);
         else if (kind === 'push') buildPush(host);
         else if (kind === 'choice') buildChoice(host);
+        else if (kind === 'bits') buildBits(host);
+        else if (kind === 'cpu') buildCpu(host);
       } catch (e) {
         // a broken widget must never take the lesson down
         host.innerHTML = '<p class="w-foot">This activity could not load. The lesson still works without it.</p>';

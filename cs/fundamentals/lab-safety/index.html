@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Safety and Earning Tool Access - Think In Bits</title>
+  <meta name="description" content="How to work safely in the makerspace and how to earn access to every tool in it. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <header class="lesson-head">
+    <p class="eyebrow">Fundamentals &middot; Lesson 2</p>
+    <h1>Lab Safety and Earning Tool Access</h1>
+    <p class="promise">Nothing in this room is locked away from you. It is waiting for you to earn it.</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 2 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">Most school labs work by keeping students away from the good equipment. This one does the opposite. There is a laser cutter, two 3D printers, robots and a shelf of kits, and every one of them is something you can earn the right to use on your own projects, during class and during academic time. The trade is simple. You learn how each machine hurts you, you prove you can shut it down safely, and then it is yours.</p>
+  </header>
+
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>The seven rules that apply to every tool in this room</li>
+      <li>How a <strong>safety check</strong> works and what it unlocks</li>
+      <li>The specific way each machine can hurt you or itself</li>
+      <li>The one material that must never go in the laser cutter</li>
+      <li>What to do when something goes wrong, and why reporting it protects you</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>Yourself, in the room, paying attention. This lesson happens at the machines.</li>
+      <li>Long hair tied back and loose sleeves pushed up before you touch anything</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 1</p>
+    <h2>The rules and the deal</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you know the seven rules without looking, you know how each machine can hurt you, and you know what you have to do to unlock each one.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: The deal</h2>
+    <p>Straight from your syllabus, which you already signed:</p>
+    <div class="callout note">"Every tool in this lab is something you earn access to, and once you have earned it, it is yours to use for your own projects, not only the assignment that introduced it. A safety check is short: I show you the tool, you show me you can use it and shut it down safely, and you answer a few questions."</div>
+    <p>Read that second sentence again. A safety check is not a test you can fail and be finished with. It is a short conversation at the machine, and you can take it again.</p>
+    <p>Safety checks are graded, under Informal Assessments. They are worth doing properly for that reason alone, and for the better reason that the Glowforge is genuinely more fun than anything else in this building.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: What each check unlocks</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Tool</th><th>What you pass first</th><th>Then you may</th></tr></thead>
+      <tbody>
+        <tr><td><b>3D printers</b><br>MakerBot, Formlabs</td><td>Printer safety check</td><td>Slice and queue your own prints in class and during academic time</td></tr>
+        <tr><td><b>micro:bit and Raspberry Pi</b></td><td>Handling and power check</td><td>Sign out a kit for a project</td></tr>
+        <tr><td><b>RoboMaster</b></td><td>Driving and battery care check</td><td>Build, drive and program it for your own projects</td></tr>
+        <tr><td><b>Glowforge laser cutter</b></td><td>Independent learning certification</td><td>Cut your own designs, with an adult in the room</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout check"><b>Checkpoint:</b> you can name which tool you most want access to and what you have to pass to get it.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: The seven rules</h2>
+    <p>These cover every tool in the room. They are quoted from your syllabus word for word.</p>
+    <ol>
+      <li>Tie back long hair and push up loose sleeves before using anything that spins, cuts, or heats.</li>
+      <li>Eye protection when cutting or soldering.</li>
+      <li>Never leave a running machine unattended, never reach into a printer that is moving, and never override a lid switch or guard.</li>
+      <li>The laser cutter is only used with an adult in the room.</li>
+      <li>Charge batteries at the charging station, in view, not overnight.</li>
+      <li>Report damage, a burn smell, or an injury right away. You will not be in trouble for reporting something. You will be for hiding it.</li>
+      <li>Breaking a safety rule on purpose costs you tool access and earns a 0 for the day. Getting access back means retaking the check.</li>
+    </ol>
+    <div class="callout note"><b>Rule 6 is the one that matters most.</b> Nearly every serious workshop accident is a small problem that somebody decided not to mention. You will never be in trouble for telling Mr. Krigger something is wrong.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: How each machine hurts you</h2>
+    <p>Not to frighten you. Knowing the specific hazard is what lets you work confidently instead of nervously.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Machine</th><th>The actual hazard</th><th>What you do about it</th></tr></thead>
+      <tbody>
+        <tr><td><b>MakerBot</b></td><td>The nozzle runs around 200&deg;C and the build plate is heated. The gantry moves without warning.</td><td>Hands out while it moves. Let the plate cool before removing a print. Use the scraper, away from your other hand.</td></tr>
+        <tr><td><b>Formlabs</b></td><td>Liquid resin irritates skin and can sensitize you to it permanently. The wash uses isopropyl alcohol, whose vapor is flammable.</td><td>Nitrile gloves for anything wet, every time. Keep the IPA bottle closed. Wash skin with soap and water immediately on contact.</td></tr>
+        <tr><td><b>Glowforge</b></td><td>A laser strong enough to burn wood, and a real fire risk. Some materials release poison gas.</td><td>Adult in the room. Lid stays shut. You stay and watch it. Approved materials only.</td></tr>
+        <tr><td><b>RoboMaster</b></td><td>Fires gel beads, and carries a battery that can vent or catch fire if damaged.</td><td>Eye protection during blaster events, never aim at a face, charge at the station, report a swollen or damaged battery.</td></tr>
+        <tr><td><b>micro:bit, Pi, CrowPi</b></td><td>Low risk. Mostly damage to the board from static or wrong power.</td><td>Hold boards by the edges. Power down before rewiring. Check voltage before plugging anything in.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 5: The material that must never go in the laser</h2>
+    <div class="callout warn"><b>Never cut or engrave vinyl or PVC.</b> Glowforge states it plainly: cutting vinyl "can release hazardous gases that can hurt you and damage your Glowforge." The gas is chlorine based. It corrodes the machine from the inside and it is genuinely dangerous to breathe.</div>
+    <p>Two more on the never list, for different reasons.</p>
+    <ul>
+      <li><b>Galvanized metal.</b> Also releases hazardous gases when cut or engraved.</li>
+      <li><b>Shiny soft metals</b>, meaning copper, chrome, gold, silver and brass. These reflect the beam instead of absorbing it, which Glowforge warns "can be hazardous to people and damage your Glowforge."</li>
+    </ul>
+    <div class="callout flag"><b>The rule you actually need:</b> if you did not get the material from Mr. Krigger, it does not go in the laser until he has looked at it. Sticker sheets and vinyl wrap from home are exactly the thing this rule exists to stop, because they look completely harmless.</div>
+    <div class="callout check"><b>Checkpoint:</b> you can say what happens if vinyl goes in the Glowforge, and why nobody would notice until it was too late.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 6: Now make the call</h2>
+    <p>Eight situations. Carry on, or stop?</p>
+    <div data-widget="inbox"
+         data-task="Open each situation. Carry on, or stop?"
+         data-yes="Carry on"
+         data-no="Stop"
+         data-bad="Stop."
+         data-good="Carry on.">
+      <script type="application/json">
+      [
+        {"from":"3D printer","address":"MakerBot, end of class","subject":"Your print just finished and you want it now","phish":true,
+         "body":"The print finished about thirty seconds ago. The bell goes in two minutes and you want to take it home. You reach in to pop it off the plate.",
+         "why":"The plate is heated and it is still hot, and so is the nozzle sitting just above your hand. Let it cool. A print you can lift off easily is a print that has cooled enough, which is the whole trick."},
+
+        {"from":"Glowforge","address":"a classmate, with a sticker sheet","subject":"Cutting vinyl stickers they brought from home","phish":true,
+         "body":"They found a pack of adhesive vinyl sticker sheets and want to cut a design out for their water bottle. It is thin, it is soft, it looks completely harmless.",
+         "why":"This is the one to remember. Vinyl is PVC, and cutting it releases chlorine based gas that harms you and corrodes the machine from the inside. It looks like the safest material in the room, which is exactly why it is on the never list. Stop them, then tell Mr. Krigger."},
+
+        {"from":"3D printer","address":"MakerBot, bell about to ring","subject":"Leaving a print running when you go","phish":true,
+         "body":"Your print has ten minutes left. Class is over. Nobody else is in the room next period and you would rather not restart it tomorrow.",
+         "why":"Rule three. Never leave a running machine unattended. Ten minutes is exactly how long a small problem needs to become a large one with nobody watching. Ask Mr. Krigger whether it can be supervised or stopped."},
+
+        {"from":"Formlabs","address":"wash station","subject":"Rinsing a resin print bare handed","phish":true,
+         "body":"The print is done and needs washing. The gloves box is across the room and you are only going to be a second.",
+         "why":"Formlabs requires nitrile or neoprene gloves for liquid resin and wash solvents, and the reason is worse than a rash. Repeated skin contact can sensitize you to resin permanently, meaning a reaction every time from then on. Walk across the room."},
+
+        {"from":"Anywhere","address":"you, mid-build","subject":"A faint burning smell near the printer","phish":true,
+         "body":"Something smells hot in a way it did not five minutes ago. It could be nothing. Nobody else seems to have noticed and you do not want to make a scene.",
+         "why":"Rule six, and it is the one that matters. Tell Mr. Krigger immediately. You will never be in trouble for reporting something. If it turns out to be nothing, you have lost thirty seconds."},
+
+        {"from":"RoboMaster","address":"battery shelf","subject":"A battery that looks slightly puffed up","phish":true,
+         "body":"You pick up a battery pack and it feels a bit rounded, like it has swollen slightly. It still clicks into the robot fine.",
+         "why":"A swollen battery is a damaged battery, and damaged lithium batteries vent and burn. Do not charge it, do not use it, do not put it back on the shelf. Put it down somewhere clear and get Mr. Krigger."},
+
+        {"from":"3D printer","address":"MakerBot, start of class","subject":"Queuing a print with everything checked","phish":false,
+         "body":"The plate is clean and level, there is filament loaded, your file is sliced and under an hour, and you are staying in the room for the whole print.",
+         "why":"That is exactly the routine. Clean plate, material loaded, a job short enough to finish while you are here, and you present to watch it. Carry on."},
+
+        {"from":"Glowforge","address":"lab, academic time","subject":"Cutting your own acrylic design","phish":false,
+         "body":"You passed the Glowforge certification. Mr. Krigger is in the room. The material is acrylic from the lab shelf, the lid is closed, and you are standing at the machine watching the cut.",
+         "why":"Every condition is met. Certified, adult present, approved material from the lab, lid closed, and you are watching. This is what earning access looks like."}
+      ]
+      </script>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> all eight judged.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is at the end.</p>
+    <ul class="turnin">
+      <li>You can recite the seven rules without looking</li>
+      <li>All eight situations judged</li>
+      <li>You know which material must never go in the Glowforge, and why</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Earn your first check</h2>
+    <p class="goal"><strong>Goal:</strong> by the end of today you have passed at least one safety check and unlocked a tool you can use on your own projects.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: What a check actually looks like</h2>
+    <p>It takes about five minutes and it happens at the machine, not on paper.</p>
+    <ol>
+      <li>Mr. Krigger shows you the tool and the parts that matter</li>
+      <li><b>You</b> run it, with him watching</li>
+      <li><b>You</b> shut it down safely and put it back the way you found it</li>
+      <li>He asks you a few questions, including at least one about what you would do if something went wrong</li>
+    </ol>
+    <div class="callout note"><b>You can retake it.</b> Nobody has ever been permanently locked out of a machine for not passing first time. The only thing that costs you access for real is breaking a rule on purpose.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Track your own access</h2>
+    <p>Tick these as you pass them. This page remembers on your own device, and Mr. Krigger keeps the real record.</p>
+    <ul class="turnin">
+      <li><b>Printer safety check</b>, unlocks slicing and queueing your own prints</li>
+      <li><b>Handling and power check</b>, unlocks signing out a micro:bit or Pi kit</li>
+      <li><b>Driving and battery care check</b>, unlocks building and programming a RoboMaster</li>
+      <li><b>Glowforge certification</b>, unlocks cutting your own designs with an adult in the room</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> at least one box ticked for real today.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Write the shutdown</h2>
+    <p>Pick the tool you got checked out on and write the shutdown procedure from memory, in order, as if for somebody who has never touched it.</p>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>The steps to safely finish and leave the machine, plus the one thing a person is most likely to get wrong.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>Add the emergency version. What you do if it starts smoking, jams, or a part comes loose mid-run. Say where the power is and who you tell.</p>
+      </div>
+    </div>
+    <div class="callout note"><b>Why writing it down matters:</b> the good ones go on the wall next to the machine. If yours is the clearest, it becomes what the next group learns from.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is on the next screen.</p>
+    <ul class="turnin">
+      <li>At least one safety check passed</li>
+      <li>Your shutdown procedure written from memory</li>
+      <li>High school: the emergency version too</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <p>The whole list. Every item comes out of an activity you already did.</p>
+    <ul class="turnin">
+      <li><b>The seven rules</b>, written in your own words. Not copied. If you can only manage five from memory, hand in five and say so.</li>
+      <li><b>Screenshot of your situations score</b>, plus one sentence on any you got wrong.</li>
+      <li><b>Which check you passed</b> and which tool it unlocked.</li>
+      <li><b>Your shutdown procedure</b>, written from memory. <b>High school also submits</b> the emergency version.</li>
+      <li><b>Reflection</b>, 3 to 5 sentences: which machine do you most want access to, and what is the thing about it you are most careful of?</li>
+    </ul>
+    <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Handing it in</p>
+    <h2>Two things to hand in, not one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>1 &middot; The assignment</h4>
+        <p>Everything on the previous screen goes here, as file uploads.</p>
+        <ol>
+          <li>Open <b>Lab Safety and Tool Access</b> in Schoology</li>
+          <li>Click <b>Submit Assignment</b></li>
+          <li>Click <b>Upload</b></li>
+          <li>Select all your files at once, then <b>Submit</b></li>
+        </ol>
+        <div class="callout warn"><b>Do not click "Create".</b> Create is for typing text and will not let you attach a screenshot. Upload is the one you want.</div>
+      </div>
+      <div class="tier stretch">
+        <h4>2 &middot; The exit ticket</h4>
+        <p>A separate item in Schoology, taken in class. Short quiz on this lesson, graded on its own.</p>
+        <p>The safety check itself is graded separately again, when you pass it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Safety check</b></td><td>A short demonstration at the machine that unlocks it for your own use. Graded, and retakeable.</td></tr>
+        <tr><td><b>Guard</b></td><td>A cover or switch that stops a machine when it is opened. Overriding one is the fastest way to lose access.</td></tr>
+        <tr><td><b>Build plate</b></td><td>The surface a 3D print is built on. Heated on the MakerBot, so it stays hot after the print ends.</td></tr>
+        <tr><td><b>Resin</b></td><td>The liquid a Formlabs printer builds from. Irritates skin, and repeated contact can sensitize you permanently.</td></tr>
+        <tr><td><b>IPA</b></td><td>Isopropyl alcohol, used to wash resin prints. Its vapor is flammable, so bottles stay closed.</td></tr>
+        <tr><td><b>PVC and vinyl</b></td><td>The plastic that must never go in the laser cutter. Releases chlorine based gas.</td></tr>
+        <tr><td><b>Sensitize</b></td><td>To develop a permanent allergic reaction to something after repeated exposure. Why gloves are not optional.</td></tr>
+        <tr><td><b>Venting</b></td><td>What a damaged lithium battery does before it burns. Swollen means damaged.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>I think I broke something.</summary>
+        <div class="fix">Tell Mr. Krigger now. Equipment gets replaced, and you are not in trouble for an accident you reported. Hiding it is the only version of this that goes badly for you.</div></details>
+      <details><summary>Resin got on my skin.</summary>
+        <div class="fix">Wash it with soap and water straight away, which is what Formlabs says to do. Then tell Mr. Krigger. Do not use IPA to clean your skin.</div></details>
+      <details><summary>The print is stuck to the plate and will not come off.</summary>
+        <div class="fix">Let the plate cool completely, which fixes it most of the time on its own. Then use the scraper with your other hand out of its path. If it still will not shift, stop and ask rather than applying more force.</div></details>
+      <details><summary>Something is on fire in the laser cutter.</summary>
+        <div class="fix">Small flare-ups happen and usually go out on their own, which is one reason you never leave it. Keep the lid closed, since opening it feeds the fire air. Stop the job and get Mr. Krigger immediately.</div></details>
+      <details><summary>I failed my safety check.</summary>
+        <div class="fix">Take it again. That is what it is for. Ask which part you got wrong and practice that bit specifically.</div></details>
+      <details><summary>Can I use the lab during academic time?</summary>
+        <div class="fix">Yes, once you are certified on the tool you need. That is the entire point of the checks. The Glowforge additionally needs an adult in the room.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
+</body>
+</html>
