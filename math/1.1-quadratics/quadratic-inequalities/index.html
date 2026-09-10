@@ -515,6 +515,7 @@ kbd {
 }
 .slide.duo .card .sgn { font-size: clamp(10.5px, 1.25vw, 14px); }
 .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 0.3vh 0.3vw; }
+.sgn td.zero { color: var(--accent); font-weight: 700; }
 
 /* the region readout on the between/outside explorer: colored by which
    shape the answer takes, so the swap is visible before it is read */
@@ -622,12 +623,37 @@ kbd {
 </section>
 
 <!-- 4 · DI 1 · not linear -->
-<section class="slide">
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 1 of 9</p>
   <h2>A quadratic inequality is not linear algebra with an extra term.</h2>
-  <p>A linear expression like 2x − 4 climbs steadily. It is negative, hits zero once, and is positive after that. Two regions, one changeover. Push the symbols around and the inequality follows you.</p>
-  <p class="frag">A quadratic does not do that. x<sup>2</sup> − 5x + 4 is positive, then negative, then positive again. <b>Three regions, two changeovers.</b> There is no single move that lands you on the answer.</p>
-  <p class="frag">So you are not solving for x. You are <b>finding the changeover points, then deciding which regions you want</b>.</p>
+  <p class="small">An <b>equation</b> asks where an expression <b>is</b> zero, and the answer is a couple of numbers. An <b>inequality</b> asks where it sits <b>above or below</b> zero, and the answer is a <b>stretch of the number line</b>. Same expression, different question, completely different kind of answer.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">A linear expression</p>
+        <div class="math small">2x − 4</div>
+        <table class="sgn">
+          <tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>
+          <tr><th>2x − 4</th><td class="bad">−4</td><td class="bad">−2</td><td class="zero">0</td><td class="good">2</td><td class="good">4</td></tr>
+        </table>
+        <p class="small">Negative, then zero, then positive, and it never comes back. <b>One crossing, two regions.</b></p>
+        <p class="small">Add 4 to both sides, divide by 2, and x is sitting on its own: <b>x &gt; 2</b>. The algebra is the answer.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">A quadratic</p>
+        <div class="math small">x<sup>2</sup> − 5x + 4</div>
+        <table class="sgn">
+          <tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>
+          <tr><th>x<sup>2</sup>−5x+4</th><td class="good">4</td><td class="zero">0</td><td class="bad">−2</td><td class="bad">−2</td><td class="zero">0</td><td class="good">4</td></tr>
+        </table>
+        <p class="small">Positive, zero, negative, zero, positive. It <b>changes its mind</b>. <b>Two crossings, three regions.</b></p>
+        <p class="small">No move gets x on its own. It is squared and not squared in the same line, so there is nothing to divide by that you know the sign of.</p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">So you are not solving for x. You are <b>finding the changeover points, then deciding which regions you want</b>. The rest of the lesson is those two halves.</p>
 </section>
 
 <!-- 5 · DI 2 · critical values -->
