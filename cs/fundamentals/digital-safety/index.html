@@ -28,13 +28,13 @@
   <header class="lesson-head">
     <p class="eyebrow">Fundamentals &middot; Lesson 1</p>
     <h1>Digital Safety and Secrets</h1>
-    <p class="promise">Lock down your own accounts, then learn to handle the keys your code depends on</p>
+    <p class="promise">Become a hard target, then learn how to actually keep a secret</p>
     <ul class="meta">
       <li><b>Grades</b> 7 to 12</li>
       <li><b>Time</b> 2 class periods</li>
       <li><b>Difficulty</b> Beginner</li>
     </ul>
-    <p class="lede">You already have accounts worth stealing. Over two days you will make your passwords hard to crack, turn on the one setting that stops most break-ins, learn to spot a fake message even when it is written perfectly, and then learn how programmers keep <strong>secrets</strong> out of their code. That last part is the reason you will not leak a password in every project you build this year.</p>
+    <p class="lede">You already own things worth stealing. Not your phone. Your accounts, which someone can resell in bulk without ever meeting you. Over two days you will make your passwords genuinely expensive to crack, switch on the one setting that stops most break-ins cold, learn to spot a fake message that has perfect spelling, and find out how programmers keep <strong>secrets</strong> out of code they put on the internet. That last part is why you will not accidentally publish a password in every project you build this year.</p>
   </header>
 
   <!-- ============ 1. learn / need ============ -->
@@ -65,7 +65,7 @@
   <!-- ============ 3. step 1 ============ -->
   <section class="slide">
     <h2>Step 1: Watch a bad password die</h2>
-    <p>These show up at the top of the leaked-password lists every single year.</p>
+    <p>Every year, security researchers publish the most common passwords found in leaked databases. Every year, it is basically this list. People are wonderfully predictable.</p>
     <div class="twrap"><table>
       <thead><tr><th>Rank</th><th>Password</th><th>Time to crack</th></tr></thead>
       <tbody>
@@ -76,7 +76,7 @@
         <tr><td>5</td><td>Your birthday</td><td>minutes to hours</td></tr>
       </tbody>
     </table></div>
-    <p>Attackers do not sit there typing guesses. They run software that tries millions of combinations a second against a stolen list. Anything on that table is gone before you finish reading this sentence.</p>
+    <p>Nobody is sitting at a keyboard typing guesses at your account. They run software against a stolen list at millions of tries per second. Anything on that table fell over before you finished reading this sentence.</p>
   </section>
 
   <!-- ============ 3b. the meter ============ -->
@@ -91,7 +91,7 @@
   <!-- ============ 4. step 2 ============ -->
   <section class="slide">
     <h2>Step 2: Build a passphrase</h2>
-    <p>Length beats everything else. Each character you add multiplies the work an attacker has to do.</p>
+    <p>Length beats cleverness. Every character you add multiplies the work, and multiplying gets out of hand fast, which is the one time that works in your favor.</p>
     <div class="twrap"><table>
       <thead><tr><th>Length</th><th>Time to crack by brute force</th></tr></thead>
       <tbody>
@@ -101,23 +101,23 @@
         <tr><td>16+ characters</td><td>effectively impossible</td></tr>
       </tbody>
     </table></div>
-    <p>The easiest way to get long and still remember it is to string together four or five unrelated words. Unrelated is the important part, because <code>saint-croix-high-school</code> is four words and still weak, being a phrase someone could guess about you.</p>
+    <p>Four or five unrelated words does it. Unrelated is the load-bearing word here, because <code>saint-croix-high-school</code> is four words and still weak. Anyone who knows you would guess it.</p>
     <div data-widget="passphrase" data-target="pwmeter"></div>
-    <p><b>Do this:</b> generate three passphrases, test each one in the meter above, and write down the crack time next to each. Those three go in your submission.</p>
+    <p><b>Do this:</b> generate three, test each in the meter above, and write down the crack time. Those three go in your submission.</p>
     <div class="callout check"><b>Checkpoint:</b> three passphrases written down, each showing centuries or longer.</div>
   </section>
 
   <!-- ============ 5. mini lesson ============ -->
   <section class="slide">
     <h2>Why length beats symbols</h2>
-    <p>Schools and websites spent years telling people to add a capital, a number, and a symbol. That advice produced <code>Password1!</code>, which is short, predictable, and cracks fast.</p>
-    <p>Think of it as a combination lock. Adding symbols gives you more choices per dial. Adding length gives you more dials. Another dial multiplies the total combinations, so it wins every time.</p>
-    <p>Four random words give you enough dials that no amount of computing power gets through in a human lifetime. That is why a long phrase you can remember beats a short mess you have to write on a sticky note.</p>
+    <p>Schools and websites spent twenty years demanding a capital, a number, and a symbol. What they got was <code>Password1!</code>, roughly two hundred million times. Everyone follows the rule the same lazy way, so attackers just try the lazy way first.</p>
+    <p>Picture a combination lock. Symbols give you more numbers on each dial. Length gives you more dials. Adding a dial multiplies everything that came before it, which is why length wins and it is not close.</p>
+    <p>Four random words give you enough dials that no computer on Earth gets through in your lifetime, or your grandchildren's. A long phrase you can actually remember beats a short scramble you end up writing on a sticky note under your keyboard, which is where roughly half of all strong passwords go to die.</p>
   </section>
 
   <!-- ============ 6. step 3 ============ -->
   <section class="slide">
-    <h2>Step 3: Turn on two-factor authentication</h2>
+    <h2>Step 3: Make a stolen password useless</h2>
     <p>Two-factor means logging in takes two things: something you <strong>know</strong> (your passphrase) and something you <strong>have</strong> (your phone). Someone who steals your password still cannot get in.</p>
     <div class="twrap"><table>
       <thead><tr><th>Method</th><th>Security</th><th>How it works</th></tr></thead>
@@ -136,15 +136,15 @@
   <!-- ============ 7. step 4a ============ -->
   <section class="slide">
     <h2>Step 4: Spot the phish</h2>
-    <p>Phishing is someone pretending to be a company or a person you trust so you hand over something. It is how most people actually get hacked, and the movie version where someone breaks the encryption almost never happens.</p>
-    <p>Broken grammar used to give these away. AI ended that, so check the structure instead of the tone.</p>
+    <p>Phishing is someone pretending to be a company or a person you trust so that you hand something over. This is how people actually get hacked. Nobody is in a dark room breaking your encryption with a progress bar. They just asked, politely, while wearing a costume.</p>
+    <p>Terrible spelling used to give these away for free. AI ended that overnight. So stop judging the writing and start checking the structure.</p>
     <ul class="flags">
       <li><b>Read the sender address itself.</b> The display name is free to type. The name says Apple Support and the address says <code>support@apple-security-update-2026.com</code>.</li>
-      <li><b>Urgency and threats.</b> "Your account will be DELETED in 24 hours." Real companies do not work this way.</li>
+      <li><b>Urgency and threats.</b> "Your account will be DELETED in 24 hours." Real companies spend a fortune trying to keep you. They are not deleting you on a Tuesday over an unclicked link.</li>
       <li><b>A generic greeting.</b> "Dear Customer" from a company that knows your name.</li>
       <li><b>The link does not match.</b> Hover first. <code>paypa1.com</code> uses a number one. <code>paypal.security-update.com</code> belongs to <code>security-update.com</code>. The real domain is the part right before the first single slash.</li>
       <li><b>An attachment you did not ask for.</b> Especially <code>.exe</code>, <code>.zip</code>, and <code>.scr</code>.</li>
-      <li><b>Too good to be true.</b> It is not true.</li>
+      <li><b>Too good to be true.</b> Reader, it is not true.</li>
     </ul>
   </section>
 
@@ -157,35 +157,35 @@
       [
         {"from":"Schoology","address":"no-reply@schoology-ghcds.net","subject":"Your password expires in 24 hours","phish":true,
          "body":"Your Schoology password expires in 24 hours. Students who do not update will lose access to all coursework.\n\nUpdate now: http://schoology-ghcds.net/login",
-         "why":"The real Schoology is schoology.com. This is schoology-ghcds.net, a lookalike registered by someone else. Add the 24 hour countdown and it is a textbook phish."},
+         "why":"Real Schoology lives at schoology.com. This is schoology-ghcds.net, which anyone can buy for the price of a sandwich. Bolt on a 24 hour countdown and you have a textbook phish."},
 
         {"from":"Mr. Krigger","address":"akrigger@ghcds.org","subject":"Rubric updated for the capstone","phish":false,
          "body":"Hi class, I updated the capstone rubric. It is posted in Schoology under Assignments. Bring questions to class on Thursday.",
-         "why":"Address is the real school domain, there is nothing to click, nothing is urgent, and it points you to a place you already log into yourself."},
+         "why":"Real school domain, nothing to click, nobody rushing you, and it sends you somewhere you already log into on your own. Boring. Boring is the tell."},
 
         {"from":"VI Carnival","address":"tickets@vicarnival-winners.info","subject":"You have WON 2 VIP Carnival passes","phish":true,
          "body":"Congratulations! Your number was selected for 2 VIP passes to this year's Carnival.\n\nClaim within 12 hours or they go to the next winner. A small $2.50 processing fee applies.\n\nCLAIM MY PASSES",
-         "why":"You did not enter anything. A .info lookalike domain, a countdown, and a small fee to collect a big prize. The fee is the whole point, it gets your card number."},
+         "why":"You did not enter a competition. That is the first problem. Then a .info lookalike domain, a countdown, and a small fee to unlock a big prize. The fee is not a formality, it is the entire business model. They want the card, not the $2.50."},
 
         {"from":"Popular Bank","address":"secure@popular-alerts-vi.com","subject":"Unusual sign-in blocked","phish":true,
          "body":"We blocked a sign-in to your account from a new device.\n\nIf this was not you, verify your identity immediately to avoid a hold on your account.\n\nVerify now",
-         "why":"Real banks do not use side domains like popular-alerts-vi.com. If you are worried, call the number on the back of your card. Never the number or link in the message."},
+         "why":"Banks do not run their security alerts off a side domain like popular-alerts-vi.com. If a message about your money makes your stomach drop, that is the moment to put the phone down and call the number printed on your actual card. Never the number in the message. The number in the message rings the person who sent it."},
 
         {"from":"Google","address":"no-reply@accounts.google.com","subject":"New sign-in on a Windows device","phish":false,
          "body":"Your Google Account was just signed in to on a new Windows device.\n\nIf this was you, no action is needed. If not, review your recent activity in your account settings.",
-         "why":"Correct Google domain, and it does not ask you to do anything or click to log in. It tells you where to look and lets you get there yourself. That is what a real alert does."},
+         "why":"Correct Google domain, and look at what it does not do. No link to log in. No demand. It tells you where to look and trusts you to walk there yourself. Real security alerts are weirdly relaxed."},
 
         {"from":"USPS","address":"delivery@usps-redelivery-fee.com","subject":"Package held, $1.99 redelivery fee","phish":true,
          "body":"Your package could not be delivered due to an incomplete address.\n\nPay the $1.99 redelivery fee within 48 hours or the package will be returned to sender.",
-         "why":"The real USPS is usps.com and it does not email you for a redelivery fee. The tiny amount is deliberate, it feels too small to bother checking, and they get your card."},
+         "why":"The real USPS is usps.com and does not email you chasing $1.99. That number is chosen with care. It is small enough that checking feels like more effort than paying, which is precisely the calculation they want you making."},
 
         {"from":"GitHub","address":"notifications@github.com","subject":"Krigger-CS commented on your pull request","phish":false,
          "body":"Krigger-CS commented on pull request #4 in your repository:\n\n\"Nice work on the .gitignore, this is exactly right.\"\n\nView it on GitHub",
-         "why":"Real GitHub domain, and it refers to something specific you actually did. Notifications that describe real activity in your own account are normally genuine."},
+         "why":"Real GitHub domain, and it references something specific that actually happened in your own repository. Scammers work in bulk and bulk cannot know what you did on Tuesday."},
 
         {"from":"Jayden (your friend)","address":"jayden.thomas.2011@gmail.com","subject":"is this you in this video??","phish":true,
          "body":"yo is this you in this video lmaooo\n\nhttp://bit.ly/3xKq9vT",
-         "why":"The address really is your friend's, which is exactly why this works. Their account is compromised and it is messaging their whole contact list. A real address does not make a message safe. Text them and ask."}
+         "why":"The address really is your friend's. That is exactly why this one works and why it is last. Their account is compromised and is now quietly messaging everyone they know. A real sender does not make a real message. Text them on a different app and ask, which takes about nine seconds."}
       ]
       </script>
     </div>
@@ -212,7 +212,7 @@
 
   <!-- ============ 11. day 2 step 1 ============ -->
   <section class="slide">
-    <h2>Step 1: See what a photo gives away</h2>
+    <h2>Step 1: What your photos tell strangers</h2>
     <p>Here is what someone builds from pieces that each feel harmless.</p>
     <div class="twrap"><table>
       <thead><tr><th>What they get</th><th>What they do with it</th></tr></thead>
@@ -232,23 +232,23 @@
   <!-- ============ 12. day 2 step 2 ============ -->
   <section class="slide">
     <h2>Step 2: Assume the voice can be faked</h2>
-    <p>A few seconds of audio is enough to clone a voice. Video of a real person saying things they never said is cheap to make now. A profile photo of a person who does not exist takes one click.</p>
-    <p>You cannot win this by looking harder at the video. The fakes get better every year and your eyes do not. So the defense is procedural instead of visual.</p>
+    <p>A few seconds of audio is enough to clone a voice. Video of a real person saying things they never said is cheap now. A profile photo of a person who has never existed takes one click.</p>
+    <p>You cannot win this by squinting harder. The fakes improve every year and your eyes have not had an upgrade since you were born. So the defense has to be a habit rather than a skill.</p>
     <div class="callout note"><b>Verify through a different channel.</b> A call from a panicked family member asking for money gets hung up on and called back on the number you already have. A message from a friend asking for a code gets a text to that friend. A news claim gets checked against a second source you went and found yourself.</div>
     <p>This one habit covers voice cloning, deepfake video, hacked accounts, and every scam that has not been invented yet, because it never depends on you detecting the fake.</p>
   </section>
 
   <!-- ============ 13. day 2 step 3 ============ -->
   <section class="slide">
-    <h2>Step 3: Learn what a secret is</h2>
+    <h2>Step 3: What actually counts as a secret</h2>
     <p>A <strong>secret</strong> is any value that proves who you are to a computer. A password. An <strong>API key</strong>. A Wi-Fi password. A database login. A token an app uses to talk to a service.</p>
     <p>Here is the problem, and it is the reason this sits in a Computer Science class instead of a health class.</p>
 <pre><code># BAD. Never do this.
 api_key = "sk-a83ff20c9d4e1b77c5"
 
 response = ask_the_ai(api_key, "explain recursion")</code></pre>
-    <p>That key is now inside your code. Every place the code goes, the key goes. You post the project to GitHub, the key is public. You share the folder with a partner, they have your key. You submit a screenshot, the key is in the picture. Bots scan public code for keys around the clock and start spending on them within minutes.</p>
-    <p>Putting a key in your code is like taping your house key to your front door and then handing out photos of your door.</p>
+    <p>That key now lives inside your code, and it travels everywhere the code travels. Post the project to GitHub and the key is public. Share the folder with a partner and they have your key. Submit a screenshot and the key is in the picture. Bots scan public code for keys around the clock, and people have woken up to four figure bills from a key they published before dinner.</p>
+    <p>Putting a key in your code is like taping your house key to your front door, then posting a photo of your door, then being surprised.</p>
     <div class="callout note"><b>The rule:</b> the code goes in the file you share. The secret goes in a file you never share.</div>
   </section>
 
@@ -306,7 +306,7 @@ python read_secret.py</code></pre>
 
   <!-- ============ 16b. see the leak ============ -->
   <section class="slide">
-    <h2>Watch what that one line actually does</h2>
+    <h2>Watch one line save you $400</h2>
     <p>Same project, pushed twice. The only difference is whether <code>.gitignore</code> exists.</p>
     <div data-widget="push"></div>
     <div class="callout check"><b>Checkpoint:</b> you have run it both ways and seen the key appear in one and not the other.</div>
@@ -317,7 +317,7 @@ python read_secret.py</code></pre>
     <h2>Why .gitignore is the part people forget</h2>
     <p><code>load_dotenv()</code> reads the <code>.env</code> file and hands the values to your program at the moment it runs. Your code asks for <code>API_KEY</code> by name and never contains the value.</p>
     <p><code>.gitignore</code> is the second half, and skipping it is the single most common way keys leak. It is a list of files Git refuses to include when you save or upload your work. Without that one line, the moment you push your project the <code>.env</code> goes with it, and everything you just did was for nothing.</p>
-    <p>Real keys get leaked by real companies, regularly. This is not a beginner mistake. It is the mistake.</p>
+    <p>Real companies leak real keys this exact way, constantly, with entire security teams on payroll. This is not a beginner mistake. It is the mistake.</p>
   </section>
 
   <!-- ============ 17. day 2 deliverables ============ -->
@@ -363,7 +363,7 @@ python read_secret.py</code></pre>
   <!-- ============ how to hand it in ============ -->
   <section class="slide">
     <p class="daymark">Handing it in</p>
-    <h2>Two things to submit, not one</h2>
+    <h2>Two things to hand in, not one</h2>
     <div class="tiers">
       <div class="tier base">
         <h4>1 &middot; The assignment</h4>
@@ -391,40 +391,40 @@ python read_secret.py</code></pre>
     <div class="twrap"><table>
       <thead><tr><th>Term</th><th>What it means</th></tr></thead>
       <tbody>
-        <tr><td><b>Passphrase</b></td><td>A password built from several unrelated words, long enough that guessing it is hopeless</td></tr>
+        <tr><td><b>Passphrase</b></td><td>Several unrelated words stuck together, long enough that guessing it is hopeless and short enough that you remember it</td></tr>
         <tr><td><b>Two-Factor Authentication</b></td><td>Needing two different proofs to log in, usually a password plus a code on your phone</td></tr>
         <tr><td><b>Phishing</b></td><td>Pretending to be someone trustworthy to trick you into handing over information</td></tr>
-        <tr><td><b>Social Engineering</b></td><td>Attacking the person instead of the computer</td></tr>
-        <tr><td><b>SIM Swap</b></td><td>Taking over someone's phone number so every code sent to it arrives at the attacker instead</td></tr>
+        <tr><td><b>Social Engineering</b></td><td>Attacking the person instead of the computer, because the person is easier</td></tr>
+        <tr><td><b>SIM Swap</b></td><td>Stealing someone's phone number so that every security code sent to it lands on the attacker's phone</td></tr>
         <tr><td><b>Data Breach</b></td><td>A company's stored logins getting stolen</td></tr>
         <tr><td><b>Deepfake</b></td><td>Video or audio of a real person, generated by AI, showing something that never happened</td></tr>
         <tr><td><b>Secret</b></td><td>Any value that proves identity to a computer: a password, an API key, a token</td></tr>
         <tr><td><b>API Key</b></td><td>A string that identifies your account to an outside service, usually attached to money or private data</td></tr>
         <tr><td><b>.env file</b></td><td>A file holding secrets, kept next to your code and never shared</td></tr>
-        <tr><td><b>.gitignore</b></td><td>A list of files Git refuses to upload, which is what keeps <code>.env</code> off the internet</td></tr>
-        <tr><td><b>Brute Force</b></td><td>Trying every possible combination until one works</td></tr>
+        <tr><td><b>.gitignore</b></td><td>A list of files Git flatly refuses to upload. One line in it is the difference between a private key and a public one.</td></tr>
+        <tr><td><b>Brute Force</b></td><td>Trying every possible combination until one works, which is fast when your password is short and hopeless when it is long</td></tr>
       </tbody>
     </table></div>
   </section>
 
   <!-- ============ 21. troubleshooting ============ -->
   <section class="slide">
-    <h2>Stuck?</h2>
+    <h2>When it goes wrong</h2>
     <div class="trouble">
       <details><summary>My school account will not let me turn on two-factor.</summary>
-        <div class="fix">It is probably managed by the school and locked. Use a personal account instead. Any account you control counts for this assignment.</div></details>
+        <div class="fix">It is school managed and locked down, which is IT doing its job. Use a personal account instead. Anything you actually control counts.</div></details>
       <details><summary>I do not want to screenshot my real account.</summary>
         <div class="fix">Blur everything except the confirmation that two-factor is on. That is all that is being checked.</div></details>
       <details><summary>The checker says my passphrase is weak.</summary>
-        <div class="fix">Your words are probably related to each other or to you. Swap in words that have nothing to do with each other or with your life.</div></details>
+        <div class="fix">Your words are related to each other, or to you, or to something on your desk right now. The meter can tell. Pick words that have no business being in the same sentence.</div></details>
       <details><summary>pip install python-dotenv says pip is not found.</summary>
         <div class="fix">Try <code>pip3 install python-dotenv</code>, or <code>python3 -m pip install python-dotenv</code>.</div></details>
       <details><summary>My script prints "Loaded key: None".</summary>
-        <div class="fix">Three usual causes. The file is named <code>.env.txt</code> instead of <code>.env</code>, the file is in a different folder than the script, or there are spaces around the <code>=</code>. It must read <code>API_KEY=value</code> with nothing between.</div></details>
+        <div class="fix">Three suspects, in order of guilt. The file got saved as <code>.env.txt</code> instead of <code>.env</code>, the file is in a different folder from the script, or you put spaces around the <code>=</code>. It has to read <code>API_KEY=value</code> with nothing breathing in between.</div></details>
       <details><summary>I cannot see the .env file in my folder.</summary>
-        <div class="fix">Files starting with a dot are hidden. On Mac press <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>.</kbd> in Finder. On Windows turn on hidden items in the View tab.</div></details>
+        <div class="fix">Anything starting with a dot is hidden, which is the whole idea. On Mac press <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>.</kbd> in Finder. On Windows turn on hidden items in the View tab.</div></details>
       <details><summary>I do not have anything worth stealing.</summary>
-        <div class="fix">Your accounts are worth money to someone who resells them, and your identity is worth more. Your phone number alone can be used to reset logins you have forgotten you own.</div></details>
+        <div class="fix">Your accounts sell in bulk, and your identity is worth more than your accounts. Your phone number by itself can reset logins you have completely forgotten you own. You are not the target. You are inventory, and inventory is easier.</div></details>
     </div>
   </section>
 
