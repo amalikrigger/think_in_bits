@@ -517,6 +517,13 @@ kbd {
 .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 0.3vh 0.3vw; }
 .sgn td.zero { color: var(--accent); font-weight: 700; }
 
+/* a lookup table, not a sign table: no bolded final row, and the word columns
+   read left-aligned because they are prose, not signs */
+.sgn.lookup tr:last-child th, .sgn.lookup tr:last-child td { border-top: 1px solid var(--hairline); font-weight: 500; }
+.sgn.lookup td:nth-child(2), .sgn.lookup td:nth-child(3),
+.sgn.lookup th:nth-child(2), .sgn.lookup th:nth-child(3) { text-align: left; padding-left: 0.7vw; }
+.sgn.lookup td:first-child { font-weight: 700; color: var(--text); }
+
 /* the region readout on the between/outside explorer: colored by which
    shape the answer takes, so the swap is visible before it is read */
 .explore .verdict.between { color: var(--ok); font-family: var(--mono); }
@@ -648,7 +655,7 @@ kbd {
 
 <!-- 4 · DI 1 · not linear -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 1 of 9</p>
+  <p class="eyebrow">Direct instruction · 1 of 10</p>
   <h2>A quadratic inequality is not linear algebra with an extra term.</h2>
   <p class="small">An <b>equation</b> asks where an expression <b>is</b> zero, and the answer is a couple of numbers. An <b>inequality</b> asks where it sits <b>above or below</b> zero, and the answer is a <b>stretch of the number line</b>. Same expression, different question, completely different kind of answer.</p>
   <div class="cols" style="margin-top:0.4vh">
@@ -682,7 +689,7 @@ kbd {
 
 <!-- 5 · DI 2 · critical values -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 2 of 9</p>
+  <p class="eyebrow">Direct instruction · 2 of 10</p>
   <h2>The changeover points have a name: critical values.</h2>
   <p><b>A critical value is a value of x that makes the expression equal to zero.</b> They are the roots of the matching equation, and they are the only places the sign can change.</p>
   <div class="math frag">x<sup>2</sup> − 5x + 4 = 0 &nbsp;→&nbsp; (x − 1)(x − 4) = 0 &nbsp;→&nbsp; x = 1 or x = 4</div>
@@ -704,7 +711,7 @@ kbd {
 
 <!-- 6 · DI 3 · everything on one side -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 3 of 9</p>
+  <p class="eyebrow">Direct instruction · 3 of 10</p>
   <h2>First move, every single time: everything on one side.</h2>
   <p class="small">Both routes below need the expression compared to <b>zero</b>, because a critical value is a value that makes it zero. Until one side is 0, there is nothing to find. <b>This first line is worth a mark on its own.</b></p>
   <div class="cols" style="margin-top:0.4vh">
@@ -738,7 +745,7 @@ kbd {
 
 <!-- 7 · DI 4 · DUO 1 -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 4 of 9 · <span class="lit">wkshtJ (a)</span></p>
+  <p class="eyebrow">Direct instruction · 4 of 10 · <span class="lit">wkshtJ (a)</span></p>
   <h2>Two routes. Same question, same answer, both correct.</h2>
   <div class="math">x<sup>2</sup> − 5x + 4 &lt; 0 &nbsp;<span class="small muted">already on one side, so start</span></div>
   <div class="cols" style="margin-top:0.4vh">
@@ -778,10 +785,42 @@ kbd {
   <p class="frag small">Strict on both ends. At x = 1 and x = 4 the expression is exactly 0, and 0 is not less than 0, so both crossings are out. That is what the hollow circles mean.</p>
 </section>
 
-<!-- 8 · DI 5 · between or outside + explorer -->
+<!-- 8 · DI 5 · which sign am I hunting for -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 10</p>
+  <h2>Before anything else: which sign am I hunting for?</h2>
+  <p class="small">You have the critical values. Now you have to pick which regions to keep, and that is two questions, not one. Students lose marks here by guessing "between" or "outside" from memory. You never have to.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Step 1 · the symbol tells you which sign to hunt for</p>
+        <table class="sgn lookup">
+          <tr><th>It says</th><th>You want the expression</th><th>On the sketch</th></tr>
+          <tr><td>&gt; 0</td><td class="good">positive</td><td>above the axis</td></tr>
+          <tr><td>≥ 0</td><td class="good">positive, or zero</td><td>on or above the axis</td></tr>
+          <tr><td>&lt; 0</td><td class="bad">negative</td><td>below the axis</td></tr>
+          <tr><td>≤ 0</td><td class="bad">negative, or zero</td><td>on or below the axis</td></tr>
+        </table>
+        <p class="small">Read the symbol first, every time. That is the whole of the question: <b>am I hunting for positive or negative?</b></p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:0.4vh">Step 2 · the curve says where that sign lives</p>
+        <p class="small"><b>Opens up.</b> Negative is the dip in the middle. Positive is the two arms.</p>
+        <p class="small"><b>Opens down.</b> Everything swaps: positive is the hump in the middle, negative is the two arms.</p>
+        <p class="small"><b>So "between or outside" is never a thing to memorize.</b> It falls out of the two steps. The symbol hands you a sign, the curve tells you where that sign lives, and the answer is whatever is left standing.</p>
+        <p class="small">Do them in that order and you cannot get the between-or-outside call wrong, because you never made the call. You read it.</p>
+      </div>
+    </div>
+  </div>
+  <p class="small frag">Write a <b>between</b> answer as one statement: 1 &lt; x &lt; 4. Write an <b>outside</b> answer as two, joined by "or": x ≤ 1 or x ≥ 4. It will not fit in one chain: 4 ≤ x ≤ 1 claims x is at least 4 and at most 1, which nothing is.</p>
+</section>
+
+<!-- 9 · DI 6 · the explorer -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 5 of 9</p>
-  <h2>Every answer is one of two shapes: between, or outside.</h2>
+  <p class="eyebrow">Direct instruction · 6 of 10</p>
+  <h2>Same question, same critical values. Flip the curve and watch the answer swap.</h2>
   <div class="explore" style="padding:1.4vh 1.6vw;gap:2vw">
     <svg id="ex-reg-svg" viewBox="0 0 300 190" aria-label="A parabola whose opening direction you control, with the region satisfying the inequality highlighted on the axis">
       <line x1="18" y1="96" x2="282" y2="96" stroke="var(--axis)" stroke-width="1.8"/>
@@ -795,23 +834,19 @@ kbd {
     </svg>
     <div class="panel">
       <div class="math small result" style="max-width:none">a(x + 2)(x − 3) &lt; 0</div>
-      <p class="small" style="margin:0"><b>One question throughout: where is this expression BELOW zero?</b> The inequality never changes. Only the curve does.</p>
+      <p class="small" style="margin:0"><b>Step 1 is already done and it never changes: &lt; 0 means we are hunting for NEGATIVE.</b> The only thing moving is the curve.</p>
       <label for="ex-reg-a">Drag the number in front of x<sup>2</sup>. Critical values stay at −2 and 3.</label>
       <input type="range" id="ex-reg-a" min="-2" max="2" step="0.1" value="1">
       <div class="read" id="ex-reg-read"></div>
       <div class="verdict" id="ex-reg-verdict"></div>
     </div>
   </div>
-  <div class="cols" style="margin-top:0.4vh">
-    <div><p class="small"><b>Opens up (a &gt; 0).</b> Below zero is the dip in the middle, so &lt; 0 and ≤ 0 give <b>between</b>. Above zero is the two arms, so &gt; 0 and ≥ 0 give <b>outside</b>.</p></div>
-    <div><p class="small"><b>Opens down (a &lt; 0).</b> Everything swaps. The hump in the middle is now the part above zero, so &gt; 0 and ≥ 0 give <b>between</b>, and &lt; 0 and ≤ 0 give <b>outside</b>.</p></div>
-  </div>
-  <p class="small frag">Write a <b>between</b> answer as one statement: 1 &lt; x &lt; 4. Write an <b>outside</b> answer as two, joined by "or": x ≤ 1 or x ≥ 4. It will not fit in one chain: 4 ≤ x ≤ 1 claims x is at least 4 and at most 1, which nothing is.</p>
+  <p class="small frag">Nothing about the question changed. Same critical values, same symbol, same sign being hunted. The answer swapped shape only because the curve flipped over and took the negative part with it. <b>That is step 2 doing its job in front of you.</b></p>
 </section>
 
 <!-- 9 · DI 6 · DUO 2 -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 6 of 9 · <span class="lit">wkshtJ (b)</span></p>
+  <p class="eyebrow">Direct instruction · 7 of 10 · <span class="lit">wkshtJ (b)</span></p>
   <h2>Same critical values, opposite direction, opposite answer.</h2>
   <div class="math">k<sup>2</sup> − 5k + 4 ≥ 0 &nbsp;<span class="small muted">the letter changed, the structure did not</span></div>
   <div class="cols" style="margin-top:0.4vh">
@@ -852,7 +887,7 @@ kbd {
 
 <!-- 10 · DI 7 · which one, and why -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 7 of 9</p>
+  <p class="eyebrow">Direct instruction · 8 of 10</p>
   <h2>Which route, and why.</h2>
   <p class="small">Both are correct and both earn full marks. They are not equally quick on every question, so here is the rule.</p>
   <div class="cols" style="margin-top:0.4vh">
@@ -888,7 +923,7 @@ kbd {
 
 <!-- 11 · DI 8 · route check -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 8 of 9</p>
+  <p class="eyebrow">Direct instruction · 9 of 10</p>
   <h2>Route check. Do not solve these.</h2>
   <p class="small">Read each one and say what your first line would be, and which route you would take. Ten seconds each.</p>
   <div class="cols">
@@ -906,7 +941,7 @@ kbd {
 
 <!-- 12 · DI 9 · no critical values -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 9 of 9 · back to Session 1</p>
+  <p class="eyebrow">Direct instruction · 10 of 10 · back to Session 1</p>
   <h2>What if there are no critical values at all?</h2>
   <p>Run the discriminant on the matching equation. A negative discriminant means no real roots, so there are no critical values and the curve never touches the axis.</p>
   <div class="math frag">x<sup>2</sup> + 2x + 5 &nbsp;→&nbsp; Δ = b<sup>2</sup> − 4ac = 2<sup>2</sup> − 4(1)(5) = 4 − 20 = −16</div>
