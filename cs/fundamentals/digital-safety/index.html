@@ -82,9 +82,9 @@
   <!-- ============ 3b. the meter ============ -->
   <section class="slide">
     <h2>Test one yourself</h2>
-    <div class="callout warn"><b>Never type a password you actually use, into this page or any other.</b> Type something similar instead. This one runs entirely in your browser and sends nothing anywhere, but that is a promise you cannot check on someone else's site, so build the habit here.</div>
+    <div class="callout warn"><b>Never type a password you actually use, here or anywhere else.</b> Type something similar. This page sends nothing anywhere, but that is a promise you cannot verify on someone else's site, so build the habit now.</div>
     <div data-widget="strength" id="pwmeter"></div>
-    <p>Try <code>password1</code>, then your pet's name and a year, then a whole sentence.</p>
+    <p>Try <code>password1</code>, then your pet's name and a year, then a whole sentence. There is a well known public version of this at <a href="https://www.security.org/how-secure-is-my-password/">security.org</a>, worth bookmarking for the day you set up something that matters. Same warning applies there.</p>
     <div class="callout check"><b>Checkpoint:</b> you have made it say <b>Instant</b> and you have made it say <b>Centuries</b>.</div>
   </section>
 
@@ -283,25 +283,92 @@ api_key = os.getenv("API_KEY")</code></pre>
     </div>
   </section>
 
-  <!-- ============ 15. day 2 step 4b ============ -->
+  <!-- ============ 15. stretch, part 1: set up ============ -->
   <section class="slide">
-    <h2>Stretch: build it and prove it works</h2>
-    <p>Required for high school, bonus for middle school.</p>
-    <p class="filename">.env</p>
+    <h2>Stretch: build it yourself</h2>
+    <p>Required for high school, bonus for middle school. If you have never opened a terminal before, that is fine. This is written for exactly that.</p>
+    <div class="callout note"><b>What a terminal is, in one sentence.</b> A window where you type commands instead of clicking things. That is the whole idea. You are going to type two commands in it.</div>
+    <p>We do all of this inside <b>VS Code</b>, which is already on the lab machines, because VS Code lets you make files whose names start with a dot. Finder and File Explorer both fight you on that, and it is the single most annoying part of this for beginners.</p>
+  </section>
+
+  <!-- ============ 15b. stretch, part 2: the folder ============ -->
+  <section class="slide">
+    <h2>Step A: Make a folder and open it</h2>
+    <ol>
+      <li>Open <b>VS Code</b></li>
+      <li>Go to <b>File &rarr; Open Folder</b></li>
+      <li>Navigate to your <b>Desktop</b>, make a <b>New Folder</b> called <code>secret-test</code>, and open it</li>
+    </ol>
+    <p>The left sidebar should now say <b>SECRET-TEST</b> and be empty underneath.</p>
+    <div class="callout check"><b>Checkpoint:</b> VS Code is open and the sidebar shows an empty folder called SECRET-TEST.</div>
+    <div class="callout warn"><b>If VS Code asks whether you trust the authors</b> of the folder, click yes. It is your own folder that you just made.</div>
+  </section>
+
+  <!-- ============ 15c. stretch, part 3: the three files ============ -->
+  <section class="slide">
+    <h2>Step B: Make three files</h2>
+    <p>For each one, hover the sidebar and click the <b>New File</b> icon, then type the name exactly, including the dot at the front where there is one.</p>
+    <p class="filename">.env  &nbsp;&nbsp;(the secret. Note the dot.)</p>
 <pre><code>API_KEY=not-a-real-key-12345</code></pre>
-    <p class="filename">.gitignore</p>
+    <p class="filename">.gitignore  &nbsp;&nbsp;(the part everyone forgets. Also a dot.)</p>
 <pre><code>.env</code></pre>
-    <p class="filename">read_secret.py</p>
+    <p class="filename">read_secret.py  &nbsp;&nbsp;(the code. No dot at the front.)</p>
 <pre><code>import os
 from dotenv import load_dotenv
 
 load_dotenv()
 print("Loaded key:", os.getenv("API_KEY"))</code></pre>
-    <p>Install the library and run it:</p>
-<pre><code>pip install python-dotenv
-python read_secret.py</code></pre>
-    <p>You should see <code>Loaded key: not-a-real-key-12345</code>.</p>
-    <div class="callout check"><b>Checkpoint:</b> your terminal printed the key, and the key is nowhere inside <code>read_secret.py</code>.</div>
+    <div class="callout check"><b>Checkpoint:</b> three files in the sidebar. Save each one with <kbd>Cmd</kbd>+<kbd>S</kbd> or <kbd>Ctrl</kbd>+<kbd>S</kbd>. A white dot on the tab means unsaved.</div>
+  </section>
+
+  <!-- ============ 15d. stretch, part 4: the terminal ============ -->
+  <section class="slide">
+    <h2>Step C: Open the terminal</h2>
+    <p>In VS Code, go to <b>Terminal &rarr; New Terminal</b>. A panel opens at the bottom.</p>
+    <p>It already starts inside your <code>secret-test</code> folder, which is the reason we are doing it this way. You never have to learn how to navigate folders from a command line today.</p>
+    <p>Check Python is there. Type this and press Enter:</p>
+<pre><code>python3 --version</code></pre>
+    <p>You want something like <code>Python 3.12.1</code>. Any 3 is fine.</p>
+    <div class="callout warn"><b>If it says command not found</b>, try <code>python --version</code> instead, and use <code>python</code> in place of <code>python3</code> for the rest of this. If neither works, put your hand up.</div>
+    <div class="callout check"><b>Checkpoint:</b> the terminal printed a Python version number.</div>
+  </section>
+
+  <!-- ============ 15e. stretch, part 5: install ============ -->
+  <section class="slide">
+    <h2>Step D: Install the one library you need</h2>
+    <p>Your code says <code>from dotenv import load_dotenv</code>, which is you borrowing somebody else's code. It has to be on this machine first.</p>
+<pre><code>pip3 install python-dotenv</code></pre>
+    <p>You will see several lines scroll past. The one you want at the end is:</p>
+<pre><code>Successfully installed python-dotenv-1.x.x</code></pre>
+    <div class="callout note"><b>Already satisfied</b> instead means somebody installed it on this machine before you. That counts. Carry on.</div>
+    <div class="callout warn"><b>If pip3 is not found</b>, try <code>pip install python-dotenv</code>, then <code>python3 -m pip install python-dotenv</code>. One of the three works.</div>
+    <div class="callout check"><b>Checkpoint:</b> the terminal said Successfully installed, or already satisfied.</div>
+  </section>
+
+  <!-- ============ 15f. stretch, part 6: run it ============ -->
+  <section class="slide">
+    <h2>Step E: Run it</h2>
+<pre><code>python3 read_secret.py</code></pre>
+    <p>What you are looking for:</p>
+<pre><code>Loaded key: not-a-real-key-12345</code></pre>
+    <p>Now look back at <code>read_secret.py</code>. The key is printed on your screen, and the key is <b>nowhere in that file</b>. That is the entire point, and you just built it.</p>
+    <div class="callout check"><b>Checkpoint:</b> your terminal printed the key. Screenshot the terminal, and screenshot your <code>.gitignore</code>. Those two are what you submit.</div>
+  </section>
+
+  <!-- ============ 15g. stretch, part 7: when it does not work ============ -->
+  <section class="slide">
+    <h2>If it did not work</h2>
+    <p>Every one of these is normal and every one of them has a two second fix.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>What you saw</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><code>Loaded key: None</code></td><td>The file is not being found or read. Usually the name is <code>.env.txt</code>, or there are spaces around the <code>=</code>. It must read <code>API_KEY=value</code> exactly.</td></tr>
+        <tr><td><code>ModuleNotFoundError: No module named 'dotenv'</code></td><td>Step D did not finish. Run the install again and read the last line.</td></tr>
+        <tr><td><code>can't open file</code></td><td>The terminal is not in your folder, or the filename is spelled differently. Check the sidebar for the exact name.</td></tr>
+        <tr><td>Nothing happens at all</td><td>You probably did not press Enter, or the file was never saved. Look for a white dot on the tab.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Getting an error is not failing.</b> Reading the last line of an error and acting on it is the actual skill. You will do this for the rest of your life in this subject.</div>
   </section>
 
   <!-- ============ 16b. see the leak ============ -->

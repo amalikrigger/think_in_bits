@@ -429,7 +429,13 @@
         store(key, JSON.stringify(saved));
         count();
       });
-      li.insertBefore(cb, li.firstChild);
+      // The <li> is a flex row. Without wrapping, every <b>, <code> and text node
+      // becomes its own flex item and the sentence lays out as columns.
+      var body = document.createElement('span');
+      body.className = 'w-cl-body';
+      while (li.firstChild) body.appendChild(li.firstChild);
+      li.appendChild(body);
+      li.insertBefore(cb, body);
     });
 
     var tally = document.createElement('p');

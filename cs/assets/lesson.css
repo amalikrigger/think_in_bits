@@ -266,9 +266,11 @@ pre code { font-family: var(--mono); font-size: 13px; line-height: 1.62; color: 
   border-radius: 10px; font-size: 14.5px;
 }
 .turnin li { display: flex; align-items: flex-start; gap: 11px; padding-left: 14px; min-width: 0; }
-.turnin li > *:not(.w-tick) { min-width: 0; overflow-wrap: anywhere; }
+/* Exactly two flex children: the tick, and one span holding the whole sentence.
+   The span's own contents then flow as normal inline text. */
+.turnin li > .w-cl-body { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; }
 .turnin li.done { border-color: var(--ok-line); background: var(--ok-soft); }
-.turnin li.done > *:not(.w-tick) { opacity: 0.72; }
+.turnin li.done > .w-cl-body { opacity: 0.72; }
 
 /* ---------- troubleshooting ---------- */
 .trouble { margin: 0 0 16px; }
