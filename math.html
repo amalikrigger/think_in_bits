@@ -908,6 +908,105 @@
   font-size: 0.9rem;
   text-align: center;
 }
+
+/* ---------- filter and search for the lesson grid ----------
+   The controls derive themselves from the DOM at runtime, so adding a topic to
+   this template automatically adds it to the filter. There is no second list to
+   keep in sync. Hidden until the script runs, so a JS failure shows everything
+   rather than trapping the lessons behind a dead control. */
+.tib-math-tools {
+  display: none;
+  max-width: var(--tib-max-width);
+  margin: 0 auto 2.5rem;
+  padding: 0 1.5rem;
+}
+.tib-math-tools.on { display: block; }
+
+.tib-math-toolrow { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+
+.tib-math-search {
+  flex: 1 1 18rem;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--tib-text-color);
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-btn);
+  padding: 0.75rem 1rem;
+}
+.tib-math-search::placeholder { color: var(--tib-secondary-color); }
+.tib-math-search:focus {
+  outline: none;
+  border-color: var(--tib-primary-color);
+  box-shadow: 0 0 0 3px var(--tib-primary-alpha-10);
+}
+
+.tib-math-select {
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--tib-text-color);
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-btn);
+  padding: 0.75rem 2.25rem 0.75rem 1rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.7rem;
+}
+.tib-math-select:focus { outline: none; border-color: var(--tib-primary-color); box-shadow: 0 0 0 3px var(--tib-primary-alpha-10); }
+.tib-math-select[hidden] { display: none; }
+
+.tib-math-chip {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--tib-secondary-color);
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-btn);
+  padding: 0.7rem 1.15rem;
+  min-height: 2.75rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.tib-math-chip:hover { color: var(--tib-text-color); border-color: var(--tib-primary-alpha-30); }
+.tib-math-chip:focus-visible { outline: 2px solid var(--tib-primary-color); outline-offset: 2px; }
+.tib-math-chip[aria-pressed="true"] {
+  color: var(--tib-primary-color);
+  background: var(--tib-primary-alpha-10);
+  border-color: var(--tib-primary-color);
+}
+
+.tib-math-count {
+  font-size: 0.88rem;
+  color: var(--tib-secondary-color);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.tib-math-empty {
+  display: none;
+  max-width: var(--tib-max-width);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: var(--tib-secondary-color);
+}
+.tib-math-empty.on { display: block; }
+
+.tib-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+@media (max-width: 700px) {
+  .tib-math-count { margin-left: 0; width: 100%; }
+  .tib-math-search { flex: 1 1 100%; }
+}
 </style>
 
 <!-- Base styles from shared-components.css -->
@@ -916,6 +1015,23 @@
   <div class="tib-container">
     <h2 class="tib-section-title">Pure Mathematics 1</h2>
   </div>
+
+
+  <div class="tib-math-tools" id="mathTools">
+    <div class="tib-math-toolrow">
+      <label class="tib-visually-hidden" for="mathSearch">Search lessons and tools</label>
+      <input class="tib-math-search" id="mathSearch" type="search" autocomplete="off"
+             placeholder="Search: quadratics, discriminant, explorer...">
+      <label class="tib-visually-hidden" for="mathTopic">Filter by topic</label>
+      <select class="tib-math-select" id="mathTopic" hidden></select>
+      <button class="tib-math-chip" type="button" data-kind="all" aria-pressed="true">All</button>
+      <button class="tib-math-chip" type="button" data-kind="lesson" aria-pressed="false">Lessons</button>
+      <button class="tib-math-chip" type="button" data-kind="tool" aria-pressed="false">Tools</button>
+      <span class="tib-math-count" id="mathCount" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <p class="tib-math-empty" id="mathEmpty">Nothing matches that. Try a shorter word, or press All to start over.</p>
 
   <div class="tib-topic-heading">
     <h3>1.1 Quadratics</h3>
@@ -1023,6 +1139,139 @@
     <p class="tib-math-note">More topics arrive as we cover them. Everything here stays up, so you can come back to it before a test.</p>
   </div>
 </section>
+
+<script>
+(function () {
+  'use strict';
+  var section = document.getElementById('math');
+  var tools = document.getElementById('mathTools');
+  var search = document.getElementById('mathSearch');
+  var select = document.getElementById('mathTopic');
+  var count = document.getElementById('mathCount');
+  var empty = document.getElementById('mathEmpty');
+  if (!section || !tools || !search) return;
+
+  /* Walk the section once and work out, from the DOM alone, which cards sit
+     under which topic and which paper. Nothing here is hard-coded, so a new
+     topic added to the template appears in the filter with no other change. */
+  var blocks = [];
+  var paperEl = null, paperName = '', topicEl = null, topicName = '';
+
+  [].slice.call(section.children).forEach(function (child) {
+    var title = child.querySelector && child.querySelector('.tib-section-title');
+    if (title) { paperEl = child; paperName = title.textContent.trim(); return; }
+
+    if (child.classList && child.classList.contains('tib-topic-heading')) {
+      topicEl = child;
+      var h = child.querySelector('h3');
+      topicName = h ? h.textContent.trim() : '';
+      return;
+    }
+
+    var grid = child.querySelector && child.querySelector('.tib-cards-grid');
+    if (grid) {
+      var cards = [].slice.call(grid.querySelectorAll('.tib-math-card'));
+      if (!cards.length) return;
+      cards.forEach(function (c) {
+        var kindEl = c.querySelector('.tib-math-kind');
+        c.__kind = kindEl && /tool/i.test(kindEl.textContent) ? 'tool' : 'lesson';
+        c.__hay = (c.textContent + ' ' + topicName + ' ' + paperName)
+                    .replace(/\s+/g, ' ').toLowerCase();
+      });
+      blocks.push({ paperEl: paperEl, paper: paperName, topicEl: topicEl, topic: topicName, grid: grid, cards: cards });
+    }
+  });
+
+  if (!blocks.length) return;
+
+  var allCards = blocks.reduce(function (a, b) { return a.concat(b.cards); }, []);
+  var total = allCards.length;
+  var kind = 'all';
+
+  /* topic dropdown, grouped by paper, built from what is actually on the page */
+  var topics = [];
+  blocks.forEach(function (b) {
+    if (b.topic && topics.indexOf(b.topic) < 0) topics.push(b.topic);
+  });
+  if (topics.length > 1) {
+    var byPaper = {};
+    blocks.forEach(function (b) {
+      if (!b.topic) return;
+      (byPaper[b.paper] = byPaper[b.paper] || []).indexOf(b.topic) < 0 && byPaper[b.paper].push(b.topic);
+    });
+    var html = '<option value="">All topics</option>';
+    Object.keys(byPaper).forEach(function (p) {
+      html += '<optgroup label="' + p + '">';
+      byPaper[p].forEach(function (t) { html += '<option value="' + t + '">' + t + '</option>'; });
+      html += '</optgroup>';
+    });
+    select.innerHTML = html;
+    select.hidden = false;
+  }
+
+  tools.classList.add('on');
+
+  /* word-start matching, so "fact" finds factoring but "ac" does not hit practice */
+  var reCache = {};
+  function termRe(t) {
+    if (!reCache[t]) reCache[t] = new RegExp('(^|[^a-z0-9])' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    return reCache[t];
+  }
+
+  function apply() {
+    var terms = search.value.toLowerCase().split(/\s+/).filter(Boolean);
+    var wantTopic = select.hidden ? '' : select.value;
+    var shown = 0;
+    var papersWithContent = {};
+
+    blocks.forEach(function (b) {
+      var visibleInBlock = 0;
+      var topicOk = !wantTopic || b.topic === wantTopic;
+      b.cards.forEach(function (c) {
+        var ok = topicOk && (kind === 'all' || c.__kind === kind);
+        if (ok && terms.length) {
+          for (var i = 0; i < terms.length; i++) {
+            if (!termRe(terms[i]).test(c.__hay)) { ok = false; break; }
+          }
+        }
+        c.hidden = !ok;
+        if (ok) { visibleInBlock++; shown++; }
+      });
+      b.grid.hidden = visibleInBlock === 0;
+      if (b.topicEl) b.topicEl.hidden = visibleInBlock === 0;
+      if (visibleInBlock > 0 && b.paperEl) papersWithContent[b.paper] = b.paperEl;
+    });
+
+    /* a paper heading with nothing under it hides too */
+    blocks.forEach(function (b) {
+      if (b.paperEl) b.paperEl.hidden = !papersWithContent[b.paper];
+    });
+
+    empty.classList.toggle('on', shown === 0);
+    count.textContent = shown === total ? (total + ' lessons and tools') : (shown + ' of ' + total);
+  }
+
+  [].slice.call(document.querySelectorAll('.tib-math-chip')).forEach(function (c) {
+    c.addEventListener('click', function () {
+      kind = c.getAttribute('data-kind');
+      [].slice.call(document.querySelectorAll('.tib-math-chip')).forEach(function (o) {
+        o.setAttribute('aria-pressed', o === c ? 'true' : 'false');
+      });
+      apply();
+    });
+  });
+
+  select.addEventListener('change', apply);
+
+  var t;
+  search.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 120); });
+  search.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { search.value = ''; apply(); }
+  });
+
+  apply();
+})();
+</script>
 
   <!-- Section: math-watch.html -->
 <!-- ========================================
