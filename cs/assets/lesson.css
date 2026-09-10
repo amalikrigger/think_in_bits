@@ -195,6 +195,9 @@ pre code { font-family: var(--mono); font-size: 13px; line-height: 1.62; color: 
   font-family: var(--mono); font-size: 0.9em;
   background: var(--surface-lift); border: 1px solid var(--hairline);
   border-radius: 6px; padding: 1px 6px; color: var(--accent);
+  /* long tokens like an email address or a key must break rather than
+     push the page wider than the phone screen */
+  overflow-wrap: anywhere; word-break: break-word;
 }
 .filename {
   font-family: var(--mono); font-size: 11.5px; color: var(--text-3);
@@ -262,11 +265,10 @@ pre code { font-family: var(--mono); font-size: 13px; line-height: 1.62; color: 
   background: var(--surface); border: 1px solid var(--hairline);
   border-radius: 10px; font-size: 14.5px;
 }
-.turnin li::before {
-  content: ""; position: absolute; left: 15px; top: 14px;
-  width: 13px; height: 13px; border-radius: 4px;
-  border: 1.5px solid var(--accent-line); background: var(--accent-wash);
-}
+.turnin li { display: flex; align-items: flex-start; gap: 11px; padding-left: 14px; min-width: 0; }
+.turnin li > *:not(.w-tick) { min-width: 0; overflow-wrap: anywhere; }
+.turnin li.done { border-color: var(--ok-line); background: var(--ok-soft); }
+.turnin li.done > *:not(.w-tick) { opacity: 0.72; }
 
 /* ---------- troubleshooting ---------- */
 .trouble { margin: 0 0 16px; }
@@ -378,3 +380,191 @@ body.present .trouble .fix { padding: 0 0 0 18px; }
   table, pre, .callout { border: 1px solid #999; }
   pre code, code { color: #000; }
 }
+
+/* ============================================================
+   INTERACTIVE WIDGETS
+   Activities students actually do. Every one works in both modes.
+   ============================================================ */
+
+[data-widget] {
+  margin: 0 0 18px; padding: 16px 18px;
+  background: var(--surface); border: 1px solid var(--hairline-strong);
+  border-radius: 16px; box-shadow: var(--shadow-card);
+}
+
+.w-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.w-tag {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: #05222a; background: var(--accent); border-radius: 50px; padding: 3px 10px;
+}
+.w-sub { font-size: 13px; color: var(--text-2); }
+.w-label { display: block; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+.w-foot { font-size: 12px; color: var(--text-3); margin: 10px 0 0; }
+
+.w-input {
+  width: 100%; padding: 11px 14px; font-family: var(--mono); font-size: 15px;
+  color: var(--text); background: #0d0d14;
+  border: 1px solid var(--hairline-strong); border-radius: 10px;
+}
+.w-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.w-input::placeholder { color: var(--text-3); }
+
+/* strength meter */
+.w-meter {
+  height: 8px; margin: 12px 0 9px; border-radius: 50px;
+  background: #0d0d14; border: 1px solid var(--hairline); overflow: hidden;
+}
+.w-fill { display: block; height: 100%; width: 0; border-radius: 50px; transition: width .25s ease, background .25s ease; }
+.w-fill.lv1 { background: var(--warn); }
+.w-fill.lv2 { background: #ff9f43; }
+.w-fill.lv3 { background: var(--gold); }
+.w-fill.lv4 { background: var(--ok); }
+.w-fill.lv5 { background: linear-gradient(90deg, var(--ok), var(--accent)); }
+
+.w-readout { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.w-verdict { font-size: 17px; font-weight: 700; }
+.w-verdict.lv1 { color: var(--warn); }
+.w-verdict.lv2 { color: #ff9f43; }
+.w-verdict.lv3 { color: var(--gold); }
+.w-verdict.lv4, .w-verdict.lv5 { color: var(--ok); }
+.w-detail { font-size: 13.5px; color: var(--text-2); font-family: var(--mono); }
+
+/* passphrase */
+.w-phrase {
+  font-family: var(--mono); font-size: clamp(15px, 2.4vw, 22px); font-weight: 500;
+  color: var(--accent); background: #0d0d14; border: 1px solid var(--accent-line);
+  border-radius: 10px; padding: 13px 15px; text-align: center;
+  word-break: break-all; margin-bottom: 12px;
+}
+
+/* buttons */
+.w-row { display: flex; gap: 9px; flex-wrap: wrap; }
+.w-btn {
+  border: 1px solid var(--accent); background: var(--accent); color: #05222a;
+  font-size: 13.5px; font-weight: 600; padding: 9px 17px;
+  border-radius: 50px; cursor: pointer; transition: opacity .15s ease, background .15s ease;
+}
+.w-btn:hover { opacity: .86; }
+.w-btn.ghost { background: transparent; color: var(--accent); }
+.w-btn.ghost:hover { background: var(--accent-wash); }
+.w-btn.warn { background: transparent; border-color: var(--warn); color: var(--warn); }
+.w-btn.warn:hover { background: var(--warn-soft); }
+
+/* inbox */
+.w-score { font-size: 14px; color: var(--text-2); margin-bottom: 11px; }
+.w-score b { color: var(--text); }
+.w-score b.ok { color: var(--ok); }
+.w-mail { display: flex; flex-direction: column; gap: 7px; }
+.w-msg { background: #0d0d14; border: 1px solid var(--hairline); border-radius: 11px; overflow: hidden; }
+.w-msg.correct { border-color: var(--ok-line); }
+.w-msg.wrong { border-color: var(--warn-line); }
+.w-msg-head {
+  width: 100%; display: flex; align-items: center; gap: 11px; text-align: left;
+  background: transparent; border: 0; cursor: pointer; padding: 11px 14px; color: var(--text);
+}
+.w-msg-head:hover { background: rgba(255,255,255,0.03); }
+.w-from { font-weight: 600; font-size: 13.5px; flex: 0 0 auto; max-width: 34%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-subj { font-size: 13.5px; color: var(--text-2); flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-chip, .w-verdict-chip {
+  flex: 0 0 auto; font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 50px;
+  border: 1px solid var(--hairline-strong); color: var(--text-3);
+}
+.w-verdict-chip.ok { color: var(--ok); border-color: var(--ok-line); background: var(--ok-soft); }
+.w-verdict-chip.no { color: var(--warn); border-color: var(--warn-line); background: var(--warn-soft); }
+.w-msg-body { padding: 0 14px 13px; border-top: 1px solid var(--hairline); }
+.w-msg-meta { font-family: var(--mono); font-size: 12px; color: var(--text-3); padding: 11px 0 9px; word-break: break-all; }
+.w-msg-text { font-size: 14px; color: var(--text-2); margin-bottom: 12px; line-height: 1.6; }
+.w-feedback { font-size: 13.5px; padding: 11px 13px; border-radius: 9px; }
+.w-feedback.ok { background: var(--ok-soft); border: 1px solid var(--ok-line); }
+.w-feedback.no { background: var(--warn-soft); border: 1px solid var(--warn-line); }
+.w-feedback b { color: var(--text); }
+.w-done {
+  margin-top: 13px; padding: 13px 15px; border-radius: 11px;
+  background: var(--accent-wash); border: 1px solid var(--accent-line); font-size: 14.5px;
+}
+.w-done b { color: var(--accent); }
+
+/* push simulator */
+.w-check { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-2); margin-bottom: 13px; cursor: pointer; }
+.w-check input { width: 17px; height: 17px; accent-color: var(--accent); cursor: pointer; }
+.w-term {
+  margin: 13px 0 0; padding: 13px 15px; border-radius: 10px;
+  background: #07070c; border: 1px solid var(--hairline);
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.62; color: var(--text-2);
+  white-space: pre-wrap; overflow-x: auto;
+}
+.w-term.ok { border-color: var(--ok-line); }
+.w-term.leak { border-color: var(--warn-line); color: #ffc4c4; }
+
+/* click-to-answer */
+[data-widget="choice"] .w-opts { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 0; }
+[data-opt] {
+  text-align: left; width: 100%; padding: 11px 14px; font-size: 14.5px;
+  background: #0d0d14; color: var(--text);
+  border: 1px solid var(--hairline-strong); border-radius: 10px; cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+[data-opt]:hover { border-color: var(--accent-line); }
+.answered [data-opt] { cursor: default; }
+.answered [data-opt].right { border-color: var(--ok-line); background: var(--ok-soft); }
+.answered [data-opt].not { opacity: .5; }
+.answered [data-opt].chose-wrong { border-color: var(--warn-line); background: var(--warn-soft); opacity: 1; }
+.w-why { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--accent-wash); border: 1px solid var(--accent-line); font-size: 14px; }
+
+/* checklists */
+.w-tick { width: 17px; height: 17px; margin-top: 2px; flex: 0 0 auto; accent-color: var(--accent); cursor: pointer; }
+.w-tally { font-size: 12.5px; color: var(--text-3); margin: 0 0 16px; }
+.w-tally.all { color: var(--ok); }
+
+/* external link marker */
+a .ext { font-size: 0.78em; margin-left: 3px; opacity: .75; text-decoration: none; display: inline-block; }
+
+/* ---------- widgets, scaled for the projector ---------- */
+body.present [data-widget] { padding: 1.3vh 1.4vw; margin-bottom: 1vh; }
+body.present .w-sub, body.present .w-label { font-size: clamp(12px, 1.35vw, 17px); }
+body.present .w-input { font-size: clamp(14px, 1.6vw, 21px); padding: 1vh 1.2vw; }
+body.present .w-verdict { font-size: clamp(16px, 2vw, 27px); }
+body.present .w-detail { font-size: clamp(12px, 1.4vw, 18px); }
+body.present .w-phrase { font-size: clamp(15px, 2.1vw, 28px); padding: 1.1vh 1.2vw; }
+body.present .w-btn { font-size: clamp(12.5px, 1.4vw, 18px); padding: 0.85vh 1.4vw; }
+body.present .w-from, body.present .w-subj { font-size: clamp(12px, 1.35vw, 18px); }
+body.present .w-msg-head { padding: 0.85vh 1.1vw; }
+body.present .w-msg-text, body.present .w-feedback { font-size: clamp(12px, 1.35vw, 18px); }
+body.present .w-term { font-size: clamp(11px, 1.2vw, 16px); }
+body.present [data-opt] { font-size: clamp(12.5px, 1.4vw, 19px); padding: 0.9vh 1.2vw; }
+body.present .w-foot { font-size: clamp(10.5px, 1.1vw, 14px); }
+body.present .w-tally { font-size: clamp(11px, 1.15vw, 15px); }
+
+@media (max-width: 560px) {
+  .w-msg-head { flex-wrap: wrap; gap: 4px 9px; }
+  .w-from { max-width: none; flex: 1 1 100%; }
+  .w-subj { flex: 1 1 100%; white-space: normal; }
+  .w-row { flex-direction: column; }
+  .w-btn { width: 100%; }
+}
+
+/* The inbox is a working surface with eight messages. When projected, let the
+   list scroll inside the panel instead of pushing the panel past the screen. */
+body.present .w-mail { max-height: 44vh; overflow-y: auto; padding-right: 4px; }
+body.present [data-widget="inbox"] { padding-bottom: 1vh; }
+
+/* query checker */
+.w-ops { list-style: none; padding: 0; margin: 13px 0 0; display: flex; flex-direction: column; gap: 7px; }
+.w-ops li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-3); }
+.w-ops li.on { color: var(--text-2); }
+.w-ops li.warnrow { color: var(--warn); }
+.w-ops li b { color: inherit; }
+.w-ops li.on b { color: var(--ok); }
+.w-op-dot {
+  flex: 0 0 auto; width: 9px; height: 9px; margin-top: 6px; border-radius: 50%;
+  border: 1.5px solid var(--hairline-strong); background: transparent;
+}
+.w-ops li.on .w-op-dot { background: var(--ok); border-color: var(--ok); }
+.w-ops li.warnrow .w-op-dot { background: var(--warn); border-color: var(--warn); }
+.w-goal { margin-top: 13px; padding: 11px 14px; border-radius: 10px; font-size: 14px; }
+.w-goal.ok { background: var(--ok-soft); border: 1px solid var(--ok-line); }
+.w-goal.no { background: var(--gold-soft); border: 1px solid var(--gold-line); }
+.w-goal b { color: var(--text); }
+body.present .w-ops li { font-size: clamp(12px, 1.35vw, 18px); }
+body.present .w-goal { font-size: clamp(12.5px, 1.4vw, 18px); }

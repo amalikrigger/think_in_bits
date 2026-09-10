@@ -77,9 +77,15 @@
       </tbody>
     </table></div>
     <p>Attackers do not sit there typing guesses. They run software that tries millions of combinations a second against a stolen list. Anything on that table is gone before you finish reading this sentence.</p>
-    <p>Open the <a href="https://www.security.org/how-secure-is-my-password/">password strength checker</a>, type in something close to a password you have used before, and read the crack time.</p>
-    <div class="callout warn"><b>Never type a password you actually use into any website.</b> Type something similar instead. This applies to every "check your password" tool on the internet, including that one.</div>
-    <div class="callout check"><b>Checkpoint:</b> you have seen a real crack-time estimate for a weak password on your own screen.</div>
+  </section>
+
+  <!-- ============ 3b. the meter ============ -->
+  <section class="slide">
+    <h2>Test one yourself</h2>
+    <div class="callout warn"><b>Never type a password you actually use, into this page or any other.</b> Type something similar instead. This one runs entirely in your browser and sends nothing anywhere, but that is a promise you cannot check on someone else's site, so build the habit here.</div>
+    <div data-widget="strength" id="pwmeter"></div>
+    <p>Try <code>password1</code>, then your pet's name and a year, then a whole sentence.</p>
+    <div class="callout check"><b>Checkpoint:</b> you have made it say <b>Instant</b> and you have made it say <b>Centuries</b>.</div>
   </section>
 
   <!-- ============ 4. step 2 ============ -->
@@ -95,13 +101,10 @@
         <tr><td>16+ characters</td><td>effectively impossible</td></tr>
       </tbody>
     </table></div>
-    <p>The easiest way to get long and still remember it is to string together four or five unrelated words.</p>
-<pre><code>mango-bicycle-cloud-seventeen
-purple-guitar-elephant-sunrise
-Tamarind-Ferry-Lantern-42!</code></pre>
-    <p>Unrelated is the important part. <code>saint-croix-high-school</code> is four words and still weak, because it is a phrase someone could guess about you.</p>
-    <p>Write three passphrases of four or more unrelated words each, test each one in the checker, and write down the crack time next to each.</p>
-    <div class="callout check"><b>Checkpoint:</b> three passphrases, each showing a crack time measured in centuries or longer.</div>
+    <p>The easiest way to get long and still remember it is to string together four or five unrelated words. Unrelated is the important part, because <code>saint-croix-high-school</code> is four words and still weak, being a phrase someone could guess about you.</p>
+    <div data-widget="passphrase" data-target="pwmeter"></div>
+    <p><b>Do this:</b> generate three passphrases, test each one in the meter above, and write down the crack time next to each. Those three go in your submission.</p>
+    <div class="callout check"><b>Checkpoint:</b> three passphrases written down, each showing centuries or longer.</div>
   </section>
 
   <!-- ============ 5. mini lesson ============ -->
@@ -145,31 +148,58 @@ Tamarind-Ferry-Lantern-42!</code></pre>
     </ul>
   </section>
 
-  <!-- ============ 8. step 4b ============ -->
+  <!-- ============ 8. step 4b: the actual activity ============ -->
   <section class="slide">
-    <h2>Now judge these three</h2>
-    <div class="msg"><b>From:</b> netflix-support@netflix.com
-<b>Subject:</b> Your payment failed
+    <h2>Now work the inbox</h2>
+    <p>Eight messages. Open each one and decide.</p>
+    <div data-widget="inbox">
+      <script type="application/json">
+      [
+        {"from":"Schoology","address":"no-reply@schoology-ghcds.net","subject":"Your password expires in 24 hours","phish":true,
+         "body":"Your Schoology password expires in 24 hours. Students who do not update will lose access to all coursework.\n\nUpdate now: http://schoology-ghcds.net/login",
+         "why":"The real Schoology is schoology.com. This is schoology-ghcds.net, a lookalike registered by someone else. Add the 24 hour countdown and it is a textbook phish."},
 
-"Hi Amali, we could not process your last payment. Update your billing at https://netflix.com/account/billing"</div>
-    <div class="msg"><b>From:</b> security@amaz0n-alerts.com
-<b>Subject:</b> Unusual sign-in activity
+        {"from":"Mr. Krigger","address":"akrigger@ghcds.org","subject":"Rubric updated for the capstone","phish":false,
+         "body":"Hi class, I updated the capstone rubric. It is posted in Schoology under Assignments. Bring questions to class on Thursday.",
+         "why":"Address is the real school domain, there is nothing to click, nothing is urgent, and it points you to a place you already log into yourself."},
 
-"Dear Customer, we detected suspicious activity. Click here immediately to secure your account or it will be locked within 12 hours."</div>
-    <div class="msg"><b>From:</b> your teacher's real address
-<b>Subject:</b> Assignment update
+        {"from":"VI Carnival","address":"tickets@vicarnival-winners.info","subject":"You have WON 2 VIP Carnival passes","phish":true,
+         "body":"Congratulations! Your number was selected for 2 VIP passes to this year's Carnival.\n\nClaim within 12 hours or they go to the next winner. A small $2.50 processing fee applies.\n\nCLAIM MY PASSES",
+         "why":"You did not enter anything. A .info lookalike domain, a countdown, and a small fee to collect a big prize. The fee is the whole point, it gets your card number."},
 
-"Hi class, I updated the rubric for the capstone. Check Schoology for the new version."</div>
-    <div class="callout note"><b>Answers:</b> the first is real. The second is phishing: a zero in the domain, a generic greeting, and a deadline. The third is real.</div>
-    <div class="callout check"><b>Checkpoint:</b> you can say which red flag gives the second one away.</div>
+        {"from":"Popular Bank","address":"secure@popular-alerts-vi.com","subject":"Unusual sign-in blocked","phish":true,
+         "body":"We blocked a sign-in to your account from a new device.\n\nIf this was not you, verify your identity immediately to avoid a hold on your account.\n\nVerify now",
+         "why":"Real banks do not use side domains like popular-alerts-vi.com. If you are worried, call the number on the back of your card. Never the number or link in the message."},
+
+        {"from":"Google","address":"no-reply@accounts.google.com","subject":"New sign-in on a Windows device","phish":false,
+         "body":"Your Google Account was just signed in to on a new Windows device.\n\nIf this was you, no action is needed. If not, review your recent activity in your account settings.",
+         "why":"Correct Google domain, and it does not ask you to do anything or click to log in. It tells you where to look and lets you get there yourself. That is what a real alert does."},
+
+        {"from":"USPS","address":"delivery@usps-redelivery-fee.com","subject":"Package held, $1.99 redelivery fee","phish":true,
+         "body":"Your package could not be delivered due to an incomplete address.\n\nPay the $1.99 redelivery fee within 48 hours or the package will be returned to sender.",
+         "why":"The real USPS is usps.com and it does not email you for a redelivery fee. The tiny amount is deliberate, it feels too small to bother checking, and they get your card."},
+
+        {"from":"GitHub","address":"notifications@github.com","subject":"Krigger-CS commented on your pull request","phish":false,
+         "body":"Krigger-CS commented on pull request #4 in your repository:\n\n\"Nice work on the .gitignore, this is exactly right.\"\n\nView it on GitHub",
+         "why":"Real GitHub domain, and it refers to something specific you actually did. Notifications that describe real activity in your own account are normally genuine."},
+
+        {"from":"Jayden (your friend)","address":"jayden.thomas.2011@gmail.com","subject":"is this you in this video??","phish":true,
+         "body":"yo is this you in this video lmaooo\n\nhttp://bit.ly/3xKq9vT",
+         "why":"The address really is your friend's, which is exactly why this works. Their account is compromised and it is messaging their whole contact list. A real address does not make a message safe. Text them and ask."}
+      ]
+      </script>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> all eight judged. Screenshot your score, you submit it.</div>
   </section>
 
   <!-- ============ 9. day 1 deliverables ============ -->
   <section class="slide">
-    <h2>End of Day 1</h2>
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is at the end of the lesson.</p>
     <ul class="turnin">
-      <li>Three passphrases with the crack time for each</li>
-      <li>Screenshot of two-factor authentication enabled, private parts blurred</li>
+      <li>Three passphrases, with the crack time the meter gave each one</li>
+      <li>Screenshot of two-factor authentication turned on, private details blurred</li>
+      <li>All eight inbox messages judged, and your score screenshotted</li>
     </ul>
   </section>
 
@@ -239,12 +269,16 @@ api_key = os.getenv("API_KEY")</code></pre>
 <pre><code>API_KEY=sk-a83ff20c9d4e1b77c5</code></pre>
       </div>
       <div class="tier stretch">
-        <h4>Answer these three</h4>
-        <ol>
-          <li>Which of these two files is safe to post publicly?</li>
-          <li>If you emailed a classmate only <code>app.py</code>, would they have your key?</li>
-          <li>What would happen if you posted <code>.env</code> to GitHub?</li>
-        </ol>
+        <h4>So which one is safe to post?</h4>
+        <div data-widget="choice">
+          <div class="w-opts">
+            <button type="button" data-opt="">Both of them</button>
+            <button type="button" data-opt="">Neither of them</button>
+            <button type="button" data-opt="correct"><code>app.py</code> only</button>
+            <button type="button" data-opt=""><code>.env</code> only</button>
+          </div>
+          <div class="w-why" hidden><b><code>app.py</code> only.</b> It never contains the key, just the name <code>API_KEY</code>. Keeping the code shareable while the secret stays behind is the entire point of the pattern. <code>.env</code> holds the real value and never leaves your machine.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -270,6 +304,14 @@ python read_secret.py</code></pre>
     <div class="callout check"><b>Checkpoint:</b> your terminal printed the key, and the key is nowhere inside <code>read_secret.py</code>.</div>
   </section>
 
+  <!-- ============ 16b. see the leak ============ -->
+  <section class="slide">
+    <h2>Watch what that one line actually does</h2>
+    <p>Same project, pushed twice. The only difference is whether <code>.gitignore</code> exists.</p>
+    <div data-widget="push"></div>
+    <div class="callout check"><b>Checkpoint:</b> you have run it both ways and seen the key appear in one and not the other.</div>
+  </section>
+
   <!-- ============ 16. mini lesson ============ -->
   <section class="slide">
     <h2>Why .gitignore is the part people forget</h2>
@@ -280,10 +322,12 @@ python read_secret.py</code></pre>
 
   <!-- ============ 17. day 2 deliverables ============ -->
   <section class="slide">
-    <h2>End of Day 2</h2>
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is on the next screen.</p>
     <ul class="turnin">
-      <li>Your three answers from the base tier</li>
-      <li>Stretch only: screenshot of the terminal printing the key, plus your <code>.gitignore</code></li>
+      <li>You found an identifying detail in the background of a photo</li>
+      <li>You answered which of the two files is safe to post, and why</li>
+      <li>High school: your <code>.env</code>, your <code>.gitignore</code>, and a terminal screenshot printing the key</li>
     </ul>
   </section>
 
@@ -305,14 +349,40 @@ python read_secret.py</code></pre>
   <!-- ============ 19. turn in ============ -->
   <section class="slide">
     <h2>What you turn in</h2>
+    <p>The whole list. Every item comes out of an activity you already did.</p>
     <ul class="turnin">
-      <li><b>Three passphrases</b> with the crack time for each. Make up new ones, never submit a password you use.</li>
-      <li><b>Screenshot of two-factor authentication</b> enabled on an account, private details blurred</li>
-      <li><b>Phishing analysis</b>: two example messages with the red flags labeled</li>
-      <li><b>Secrets questions</b>: your three answers, or the stretch screenshots if you did the stretch</li>
+      <li><b>Three passphrases</b> with the crack time the meter gave each one. From Step 2. Never submit a password you actually use.</li>
+      <li><b>Screenshot of two-factor turned on</b>, private details blurred. From Step 3.</li>
+      <li><b>Screenshot of your inbox score</b>, plus one sentence on each message you got wrong and what gave it away. From Step 4.</li>
+      <li><b>The secrets answer</b>: which file is safe to post and why. From Day 2 Step 4. <b>High school also submits</b> a screenshot of your terminal printing the key, plus your <code>.gitignore</code>.</li>
       <li><b>Reflection</b>, 3 to 5 sentences: what is the biggest security mistake you have been making, and what are you changing?</li>
     </ul>
-    <div class="callout note"><b>Where it goes:</b> everything is submitted in Schoology, along with the exit ticket for this lesson.</div>
+    <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
+  </section>
+
+  <!-- ============ how to hand it in ============ -->
+  <section class="slide">
+    <p class="daymark">Handing it in</p>
+    <h2>Two things to submit, not one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>1 &middot; The assignment</h4>
+        <p>Everything on the previous screen goes here, as file uploads.</p>
+        <ol>
+          <li>Open <b>Digital Safety and Secrets</b> in Schoology</li>
+          <li>Click <b>Submit Assignment</b></li>
+          <li>Click <b>Upload</b></li>
+          <li>Select all your files at once, then <b>Submit</b></li>
+        </ol>
+        <div class="callout warn"><b>Do not click "Create".</b> Create is for typing text and will not let you attach a screenshot. Upload is the one you want. This is the single most common way work gets lost.</div>
+      </div>
+      <div class="tier stretch">
+        <h4>2 &middot; The exit ticket</h4>
+        <p>A separate item in Schoology, taken in class. It is a short quiz on this lesson, and it is graded on its own.</p>
+        <p>You can submit the assignment and take the exit ticket in either order, but both have to be done.</p>
+      </div>
+    </div>
+    <div class="callout note"><b>Name your files so they make sense.</b> <code>passphrases.png</code> tells Mr. Krigger what he is opening. <code>Screenshot 2026-09-14 at 9.03.11 AM.png</code> does not.</div>
   </section>
 
   <!-- ============ 20. vocabulary ============ -->
@@ -366,5 +436,6 @@ python read_secret.py</code></pre>
 </footer>
 
 <script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
 </body>
 </html>

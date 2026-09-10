@@ -79,7 +79,19 @@
       </tbody>
     </table></div>
     <div class="callout note"><b>site: is the one that changes how you work.</b> It lets you search a source you already trust instead of searching the whole internet and hoping.</div>
-    <div class="callout check"><b>Checkpoint:</b> you have run all five and can say what each one did to your results.</div>
+  </section>
+
+  <!-- ============ 3b. practise the operators ============ -->
+  <section class="slide">
+    <h2>Practise on the real thing</h2>
+    <p>Type a query below. The page tells you which operators actually landed.</p>
+    <div data-widget="query">
+      <script type="application/json">
+      {"task":"Build a query. Watch the dots light up as each operator lands.",
+       "placeholder":"try: \"hurricane season\" site:nhc.noaa.gov -twitter"}
+      </script>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> you have lit up all four dots at once in a single query.</div>
   </section>
 
   <!-- ============ 4. step 2 ============ -->
@@ -93,7 +105,33 @@
     </ol>
     <p>Question 3 is harder than it looks. Territory specific salary data is thin, and you may not find a clean number.</p>
     <div class="callout flag"><b>If you cannot find it, write "I could not find this" and say where you looked.</b> That is a real research result. Inventing a number, or grabbing a US national average and calling it a Virgin Islands number, is how bad information gets made.</div>
-    <div class="callout check"><b>Checkpoint:</b> three queries written down, three sources named, and an honest answer on any you could not find.</div>
+  </section>
+
+  <!-- ============ 5b. challenge 1 ============ -->
+  <section class="slide">
+    <h2>Build challenge 1 here first</h2>
+    <p>Get it green below, then run it for real and record where you landed.</p>
+    <div data-widget="query">
+      <script type="application/json">
+      {"task":"A beginner Raspberry Pi guide, as a PDF.",
+       "placeholder":"raspberry pi beginner projects filetype:pdf",
+       "require":[{"op":"filetype","label":"a filetype: filter"}]}
+      </script>
+    </div>
+  </section>
+
+  <!-- ============ 5c. challenge 2 ============ -->
+  <section class="slide">
+    <h2>Now challenge 2</h2>
+    <p>Straight from the source, not from someone writing about the source.</p>
+    <div data-widget="query">
+      <script type="application/json">
+      {"task":"What the National Hurricane Center itself published about a storm that hit St. Croix.",
+       "placeholder":"st croix site:nhc.noaa.gov",
+       "require":[{"op":"site","label":"site: with a domain"},{"contains":"nhc.noaa.gov","label":"the nhc.noaa.gov domain specifically"}]}
+      </script>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> both challenges green, then run them for real.</div>
   </section>
 
   <!-- ============ 5. SIFT ============ -->
@@ -144,9 +182,11 @@
 
   <!-- ============ 8. day 1 deliverables ============ -->
   <section class="slide">
-    <h2>End of Day 1</h2>
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is at the end.</p>
     <ul class="turnin">
-      <li>Three Search Challenge queries, with the exact text you typed and the source you found</li>
+      <li>All four operator dots lit at once in one query</li>
+      <li>Three Search Challenge queries, the exact text you typed, and the source you landed on</li>
       <li>Two screenshots, one trustworthy source and one not, with your SIFT reasoning</li>
     </ul>
   </section>
@@ -247,12 +287,56 @@ explain why the step is there.</code></pre>
     <div class="callout check"><b>Checkpoint:</b> one documented case of the AI being wrong, out of date, or citing something that does not support its claim. If everything checked out, say so and show your checking.</div>
   </section>
 
+  <!-- ============ 15b. practise on six real ones ============ -->
+  <section class="slide">
+    <h2>Practise before you go hunting</h2>
+    <p>Six answers with citations. Decide whether each citation actually holds up.</p>
+    <div data-widget="inbox"
+         data-task="Open each answer. Does the citation hold up, or not?"
+         data-yes="Citation holds up"
+         data-no="Does not hold up"
+         data-bad="This citation does not hold up."
+         data-good="This citation holds up.">
+      <script type="application/json">
+      [
+        {"from":"About JavaScript","address":"cites developer.mozilla.org","subject":"\"Array.map returns a new array\"","phish":false,
+         "body":"You asked what .map() does.\n\n\"Array.map() creates a new array with the results of calling a function on every element. It does not change the original array.\"\n\nSource: developer.mozilla.org, Array.prototype.map",
+         "why":"MDN is the reference documentation for JavaScript, the page exists, and it says exactly this. Official documentation for the thing you are asking about is the strongest kind of source."},
+
+        {"from":"About coding and math","address":"no link given","subject":"\"Students who code score 18% higher in math\"","phish":true,
+         "body":"\"A 2024 study found that students who learn to code score 18% higher in mathematics.\"\n\nSource: Martinez et al., Journal of Educational Technology, Vol. 42, pp. 118-134",
+         "why":"Very specific, and no link. Authors, a volume, a page range and a precise percentage are cheap to generate and expensive to check, which is exactly why fabrications look like this. If you cannot open it, you cannot cite it."},
+
+        {"from":"About St. Croix","address":"cites census.gov","subject":"\"The population of St. Croix is about 41,000\"","phish":true,
+         "body":"\"St. Croix has a population of approximately 41,000 residents.\"\n\nSource: https://www.census.gov",
+         "why":"The link works, which is what makes this the sneaky one. But it points at the Census Bureau front page, not at any page containing that figure. A citation has to point at the page that actually makes the claim, not at the organization's homepage."},
+
+        {"from":"About Python","address":"cites docs.python.org","subject":"\"list.sort() returns None\"","phish":false,
+         "body":"You asked why your sorted list was empty.\n\n\"list.sort() sorts the list in place and returns None. Use sorted() if you want a new list back.\"\n\nSource: docs.python.org, Sorting HOW TO",
+         "why":"The official Python documentation, and it does say this. This is also the actual cause of a bug you will hit yourself at some point."},
+
+        {"from":"About hurricanes","address":"cites weather-authority-news.info","subject":"\"A Category 6 was added in 2023\"","phish":true,
+         "body":"\"In 2023 the hurricane scale was expanded to include a new Category 6 for storms above 190 mph.\"\n\nSource: weather-authority-news.info/hurricane-scale-update",
+         "why":"False, and the source is a content farm domain. The Saffir-Simpson scale still ends at Category 5. Researchers have discussed whether a sixth category would be useful, and an AI can blur a discussion about an idea into a claim that it happened."},
+
+        {"from":"About the micro:bit","address":"cites microbit.org","subject":"\"The V2 has a built-in microphone\"","phish":false,
+         "body":"You asked whether you need extra parts to detect sound.\n\n\"The micro:bit V2 has a built-in microphone and speaker. The V1 does not.\"\n\nSource: microbit.org hardware page",
+         "why":"Correct, and from the people who make the board. It also answers the question you actually asked, which is a good sign. A citation to the manufacturer for a hardware fact is about as solid as it gets."}
+      ]
+      </script>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> all six judged. The census one is the pattern to remember, because the link opened perfectly.</div>
+  </section>
+
   <!-- ============ 15. day 2 deliverables ============ -->
   <section class="slide">
-    <h2>End of Day 2</h2>
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full submission list is on the next screen.</p>
     <ul class="turnin">
-      <li>Screenshot of two prompt patterns you ran and what you learned</li>
-      <li>Your verification write up: what it said, what is true, how you checked</li>
+      <li>You know which AI tool you are old enough to use</li>
+      <li>Screenshot of two prompt patterns you ran, and what you learned</li>
+      <li>All six citations judged</li>
+      <li>Your own verification write up: what it said, what is true, how you checked</li>
     </ul>
   </section>
 
@@ -274,14 +358,40 @@ explain why the step is there.</code></pre>
   <!-- ============ 17. turn in ============ -->
   <section class="slide">
     <h2>What you turn in</h2>
+    <p>The whole list. Every item comes out of an activity you already did.</p>
     <ul class="turnin">
-      <li><b>Search Challenge</b>: three questions, the exact query you typed for each, the source you found</li>
-      <li><b>Source evaluation</b>: two screenshots, one reliable and one not, with your SIFT reasoning</li>
-      <li><b>AI study session</b>: screenshot of two prompt patterns, plus 2 to 3 sentences on what you understand now that you did not before</li>
-      <li><b>Verification</b>: the base fact check, or the stretch citation chase</li>
+      <li><b>Three Search Challenge queries</b>, the exact text you typed, and the source you landed on. Write "I could not find this" where that is honest.</li>
+      <li><b>Two source screenshots</b>, one you trust and one you do not, and which SIFT move exposed the weak one.</li>
+      <li><b>Screenshot of two prompt patterns</b> you ran, plus 2 to 3 sentences on what you understand now that you did not before.</li>
+      <li><b>Your verification work</b>: a screenshot of your citation score, one sentence on why a working link is not proof, and your own check on something local. <b>High school also submits</b> a citation chase on a question of your own.</li>
       <li><b>Reflection</b>, 3 to 5 sentences: what will you change about how you search or how you use AI?</li>
     </ul>
-    <div class="callout note"><b>Where it goes:</b> everything is submitted in Schoology, along with the exit ticket for this lesson.</div>
+    <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
+  </section>
+
+  <!-- ============ how to hand it in ============ -->
+  <section class="slide">
+    <p class="daymark">Handing it in</p>
+    <h2>Two things to submit, not one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>1 &middot; The assignment</h4>
+        <p>Everything on the previous screen goes here, as file uploads.</p>
+        <ol>
+          <li>Open <b>Research and AI</b> in Schoology</li>
+          <li>Click <b>Submit Assignment</b></li>
+          <li>Click <b>Upload</b></li>
+          <li>Select all your files at once, then <b>Submit</b></li>
+        </ol>
+        <div class="callout warn"><b>Do not click "Create".</b> Create is for typing text and will not let you attach a screenshot. Upload is the one you want. This is the single most common way work gets lost.</div>
+      </div>
+      <div class="tier stretch">
+        <h4>2 &middot; The exit ticket</h4>
+        <p>A separate item in Schoology, taken in class. It is a short quiz on this lesson, and it is graded on its own.</p>
+        <p>You can submit the assignment and take the exit ticket in either order, but both have to be done.</p>
+      </div>
+    </div>
+    <div class="callout note"><b>Name your files so they make sense.</b> <code>passphrases.png</code> tells Mr. Krigger what he is opening. <code>Screenshot 2026-09-14 at 9.03.11 AM.png</code> does not.</div>
   </section>
 
   <!-- ============ 18. vocabulary ============ -->
@@ -331,5 +441,6 @@ explain why the step is there.</code></pre>
 </footer>
 
 <script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
 </body>
 </html>
