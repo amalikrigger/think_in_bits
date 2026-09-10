@@ -110,6 +110,13 @@ h1 {
     background-clip: text;
     color: transparent;
   }
+  /* The gradient is painted inside the element's box and the glyphs are cut out
+     of it, so any ink outside that box gets no paint at all. At line-height 1.08
+     Poppins overhangs the box by about 9px at 60px, which sliced the descenders
+     off the p and g in "Completing". Pad the box out to cover the overhang and
+     pull the same amount back as negative margin so the layout is unchanged.
+     .slide > h1 is needed to beat `.slide > * { margin: 0 }`. */
+  .slide > h1 { padding: 0.18em 0; margin: -0.18em 0; }
 }
 
 h2 {
