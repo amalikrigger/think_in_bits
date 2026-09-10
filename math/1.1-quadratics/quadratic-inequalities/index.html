@@ -411,7 +411,7 @@ body.intro .slide.active .agenda .row:nth-child(6) { animation-delay: .75s; }
   border-radius: 20px; padding: 2vh 1.8vw; box-shadow: var(--shadow-card);
 }
 .explore svg { width: clamp(200px, 27vw, 340px); height: auto; display: block; flex: 0 0 auto; }
-.explore .panel { display: flex; flex-direction: column; gap: 1.2vh; flex: 1 1 220px; min-width: 200px; }
+.explore .panel { display: flex; flex-direction: column; gap: 0.8vh; flex: 1 1 220px; min-width: 200px; }
 .explore label {
   font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px);
   color: var(--text-2); letter-spacing: .04em;
@@ -663,15 +663,15 @@ kbd {
   <p><b>A critical value is a value of x that makes the expression equal to zero.</b> They are the roots of the matching equation, and they are the only places the sign can change.</p>
   <div class="math frag">x<sup>2</sup> − 5x + 4 = 0 &nbsp;→&nbsp; (x − 1)(x − 4) = 0 &nbsp;→&nbsp; x = 1 or x = 4</div>
   <div class="frag" style="display:flex;gap:2.5vw;align-items:center;flex-wrap:wrap;margin-top:0.6vh">
-    <svg class="mini" style="width:clamp(180px,26vw,360px)" viewBox="0 0 260 130" aria-label="Parabola crossing the axis at 1 and 4, with the three regions marked plus, minus, plus">
+    <svg style="width:clamp(180px,26vw,360px);height:auto;display:block" viewBox="0 0 260 130" aria-label="Parabola crossing the axis at 1 and 4, with the three regions marked plus, minus, plus">
       <line x1="10" y1="86" x2="250" y2="86" stroke="var(--axis)" stroke-width="2"/>
-      <path d="M40,18 Q130,168 220,18" fill="none" stroke="var(--accent)" stroke-width="3"/>
+      <path d="M40,36.3 L42,40.0 L44,43.7 L46,47.2 L48,50.7 L50,54.1 L52,57.4 L54,60.7 L56,63.8 L58,66.9 L60,69.9 L62,72.8 L64,75.6 L66,78.3 L68,81.0 L70,83.5 L72,86.0 L74,88.4 L76,90.7 L78,92.9 L80,95.1 L82,97.1 L84,99.1 L86,101.0 L88,102.8 L90,104.5 L92,106.2 L94,107.7 L96,109.2 L98,110.6 L100,111.9 L102,113.1 L104,114.2 L106,115.3 L108,116.2 L110,117.1 L112,117.9 L114,118.6 L116,119.3 L118,119.8 L120,120.3 L122,120.7 L124,120.9 L126,121.2 L128,121.3 L130,121.3 L132,121.3 L134,121.2 L136,120.9 L138,120.7 L140,120.3 L142,119.8 L144,119.3 L146,118.6 L148,117.9 L150,117.1 L152,116.2 L154,115.3 L156,114.2 L158,113.1 L160,111.9 L162,110.6 L164,109.2 L166,107.7 L168,106.2 L170,104.5 L172,102.8 L174,101.0 L176,99.1 L178,97.1 L180,95.1 L182,92.9 L184,90.7 L186,88.4 L188,86.0 L190,83.5 L192,81.0 L194,78.3 L196,75.6 L198,72.8 L200,69.9 L202,66.9 L204,63.8 L206,60.7 L208,57.4 L210,54.1 L212,50.7 L214,47.2 L216,43.7 L218,40.0 L220,36.3" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>
       <circle cx="72" cy="86" r="5" fill="var(--accent)"/>
       <circle cx="188" cy="86" r="5" fill="var(--accent)"/>
       <text x="68" y="106" fill="var(--text-2)" font-size="14" font-family="JetBrains Mono, monospace">1</text>
       <text x="184" y="106" fill="var(--text-2)" font-size="14" font-family="JetBrains Mono, monospace">4</text>
       <text x="34" y="54" fill="var(--ok)" font-size="22" font-family="JetBrains Mono, monospace">+</text>
-      <text x="124" y="122" fill="var(--warn)" font-size="22" font-family="JetBrains Mono, monospace">−</text>
+      <text x="122" y="110" fill="var(--warn)" font-size="22" font-family="JetBrains Mono, monospace">−</text>
       <text x="216" y="54" fill="var(--ok)" font-size="22" font-family="JetBrains Mono, monospace">+</text>
     </svg>
     <p class="small" style="flex:1 1 220px">Between 1 and 4 the curve is under the axis, so the expression is negative there. Outside them it is above the axis, so it is positive. Nothing changes sign anywhere else, because nowhere else does the curve touch zero.</p>
@@ -724,12 +724,12 @@ kbd {
         <div class="math small">(x − 1)(x − 4) &lt; 0</div>
         <p class="small">Critical values: x = 1 and x = 4. They cut the line into three regions. Take the sign of each bracket in each region.</p>
         <table class="sgn">
-          <tr><th></th><th>x &lt; 1</th><th>1 &lt; x &lt; 4</th><th>x &gt; 4</th></tr>
-          <tr><th>x − 1</th><td class="bad">−</td><td class="good">+</td><td class="good">+</td></tr>
-          <tr><th>x − 4</th><td class="bad">−</td><td class="bad">−</td><td class="good">+</td></tr>
-          <tr><th>product</th><td class="good">+</td><td class="bad">−</td><td class="good">+</td></tr>
+          <tr><th></th><th>x &lt; 1<br><span style="opacity:.55">try x = 0</span></th><th>1 &lt; x &lt; 4<br><span style="opacity:.55">try x = 2</span></th><th>x &gt; 4<br><span style="opacity:.55">try x = 5</span></th></tr>
+          <tr><th>x − 1</th><td class="bad">−1</td><td class="good">+1</td><td class="good">+4</td></tr>
+          <tr><th>x − 4</th><td class="bad">−4</td><td class="bad">−2</td><td class="good">+1</td></tr>
+          <tr><th>multiply them</th><td class="good">+4</td><td class="bad">−2</td><td class="good">+4</td></tr>
         </table>
-        <p class="small">Test one number per region: x = 0 gives +4, x = 2 gives −2, x = 5 gives +4. We want the product negative, so the middle column.</p>
+        <p class="small">Each bracket flips sign at <b>its own</b> critical value: x − 1 goes positive once x passes 1, x − 4 not until x passes 4. Between them one is positive and one is negative, so the product is <b>negative</b>. That is the column we want.</p>
       </div>
     </div>
     <div>
@@ -739,7 +739,7 @@ kbd {
         <p class="small">Same critical values, used as the two places the curve crosses the axis. The x<sup>2</sup> term is +1, so it opens up.</p>
         <svg viewBox="0 0 240 108" style="width:100%;height:auto;display:block" aria-label="Upward parabola crossing at 1 and 4, the piece below the axis highlighted">
           <line x1="8" y1="66" x2="232" y2="66" stroke="var(--axis)" stroke-width="1.8"/>
-          <path d="M38,14 Q120,146 202,14" fill="none" stroke="var(--text-2)" stroke-width="2.2"/>
+          <path d="M38,15.8 L40,19.8 L42,23.8 L44,27.6 L46,31.3 L48,35.0 L50,38.5 L52,42.0 L54,45.3 L56,48.6 L58,51.8 L60,54.8 L62,57.8 L64,60.6 L66,63.4 L68,66.0 L70,68.5 L72,71.0 L74,73.3 L76,75.6 L78,77.8 L80,79.8 L82,81.8 L84,83.6 L86,85.3 L88,87.0 L90,88.5 L92,90.0 L94,91.3 L96,92.6 L98,93.8 L100,94.8 L102,95.8 L104,96.6 L106,97.3 L108,98.0 L110,98.6 L112,99.0 L114,99.3 L116,99.6 L118,99.8 L120,99.8 L122,99.8 L124,99.6 L126,99.3 L128,99.0 L130,98.6 L132,98.0 L134,97.3 L136,96.6 L138,95.8 L140,94.8 L142,93.8 L144,92.6 L146,91.3 L148,90.0 L150,88.6 L152,87.0 L154,85.3 L156,83.6 L158,81.8 L160,79.8 L162,77.8 L164,75.6 L166,73.3 L168,71.0 L170,68.5 L172,66.0 L174,63.4 L176,60.6 L178,57.8 L180,54.8 L182,51.8 L184,48.6 L186,45.3 L188,42.0 L190,38.5 L192,35.0 L194,31.3 L196,27.6 L198,23.8 L200,19.8 L202,15.8" fill="none" stroke="var(--text-2)" stroke-width="2.2" stroke-linejoin="round"/>
           <line x1="68" y1="66" x2="172" y2="66" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
           <circle cx="68" cy="66" r="5.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
           <circle cx="172" cy="66" r="5.5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/>
@@ -758,7 +758,7 @@ kbd {
 <section class="slide">
   <p class="eyebrow">Direct instruction · 5 of 9</p>
   <h2>Every answer is one of two shapes: between, or outside.</h2>
-  <div class="explore">
+  <div class="explore" style="padding:1.4vh 1.6vw;gap:2vw">
     <svg id="ex-reg-svg" viewBox="0 0 300 190" aria-label="A parabola whose opening direction you control, with the region satisfying the inequality highlighted on the axis">
       <line x1="18" y1="96" x2="282" y2="96" stroke="var(--axis)" stroke-width="1.8"/>
       <polyline id="ex-reg-curve" fill="none" stroke="var(--text-2)" stroke-width="2.4" points=""/>
@@ -770,18 +770,19 @@ kbd {
       <text x="218" y="118" fill="var(--text-2)" font-size="13" font-family="JetBrains Mono, monospace">3</text>
     </svg>
     <div class="panel">
-      <label for="ex-reg-a">Drag to change the number in front of x<sup>2</sup>. Critical values stay at −2 and 3.</label>
+      <div class="math small result" style="max-width:none">a(x + 2)(x − 3) &lt; 0</div>
+      <p class="small" style="margin:0"><b>One question throughout: where is this expression BELOW zero?</b> The inequality never changes. Only the curve does.</p>
+      <label for="ex-reg-a">Drag the number in front of x<sup>2</sup>. Critical values stay at −2 and 3.</label>
       <input type="range" id="ex-reg-a" min="-2" max="2" step="0.1" value="1">
       <div class="read" id="ex-reg-read"></div>
       <div class="verdict" id="ex-reg-verdict"></div>
-      <p class="small">Same inequality, same critical values. The only thing that changed is which way the curve opens, and the answer swapped shape.</p>
     </div>
   </div>
   <div class="cols" style="margin-top:0.4vh">
     <div><p class="small"><b>Opens up (a &gt; 0).</b> Below zero is the dip in the middle, so &lt; 0 and ≤ 0 give <b>between</b>. Above zero is the two arms, so &gt; 0 and ≥ 0 give <b>outside</b>.</p></div>
     <div><p class="small"><b>Opens down (a &lt; 0).</b> Everything swaps. The hump in the middle is now the part above zero, so &gt; 0 and ≥ 0 give <b>between</b>, and &lt; 0 and ≤ 0 give <b>outside</b>.</p></div>
   </div>
-  <p class="small frag">Write a <b>between</b> answer as one statement: 1 &lt; x &lt; 4. Write an <b>outside</b> answer as two, joined by "or": x ≤ 1 or x ≥ 4. An outside answer will not fit in a single chain. Writing 4 ≤ x ≤ 1 claims x is at least 4 and at most 1, which nothing is.</p>
+  <p class="small frag">Write a <b>between</b> answer as one statement: 1 &lt; x &lt; 4. Write an <b>outside</b> answer as two, joined by "or": x ≤ 1 or x ≥ 4. It will not fit in one chain: 4 ≤ x ≤ 1 claims x is at least 4 and at most 1, which nothing is.</p>
 </section>
 
 <!-- 9 · DI 6 · DUO 2 -->
@@ -796,7 +797,7 @@ kbd {
         <div class="math small">(k − 1)(k − 4) ≥ 0</div>
         <table class="sgn">
           <tr><th></th><th>k &lt; 1</th><th>1 &lt; k &lt; 4</th><th>k &gt; 4</th></tr>
-          <tr><th>product</th><td class="good">+</td><td class="bad">−</td><td class="good">+</td></tr>
+          <tr><th>(k−1)(k−4)</th><td class="good">+</td><td class="bad">−</td><td class="good">+</td></tr>
         </table>
         <p class="small">Same signs as the last slide, because it is the same expression. Only the letter changed. This time we want the product <b>positive or zero</b>, so the two outer columns, and the critical values themselves are allowed in.</p>
       </div>
@@ -807,7 +808,7 @@ kbd {
         <div class="math small">(k − 1)(k − 4) ≥ 0</div>
         <svg viewBox="0 0 240 104" style="width:100%;height:auto;display:block" aria-label="Upward parabola crossing at 1 and 4, the two arms on or above the axis highlighted">
           <line x1="8" y1="64" x2="232" y2="64" stroke="var(--axis)" stroke-width="1.8"/>
-          <path d="M38,12 Q120,144 202,12" fill="none" stroke="var(--text-2)" stroke-width="2.2"/>
+          <path d="M38,13.8 L40,17.8 L42,21.8 L44,25.6 L46,29.3 L48,33.0 L50,36.5 L52,40.0 L54,43.3 L56,46.6 L58,49.8 L60,52.8 L62,55.8 L64,58.6 L66,61.4 L68,64.0 L70,66.5 L72,69.0 L74,71.3 L76,73.6 L78,75.8 L80,77.8 L82,79.8 L84,81.6 L86,83.3 L88,85.0 L90,86.5 L92,88.0 L94,89.3 L96,90.6 L98,91.8 L100,92.8 L102,93.8 L104,94.6 L106,95.3 L108,96.0 L110,96.6 L112,97.0 L114,97.3 L116,97.6 L118,97.8 L120,97.8 L122,97.8 L124,97.6 L126,97.3 L128,97.0 L130,96.6 L132,96.0 L134,95.3 L136,94.6 L138,93.8 L140,92.8 L142,91.8 L144,90.6 L146,89.3 L148,88.0 L150,86.6 L152,85.0 L154,83.3 L156,81.6 L158,79.8 L160,77.8 L162,75.8 L164,73.6 L166,71.3 L168,69.0 L170,66.5 L172,64.0 L174,61.4 L176,58.6 L178,55.8 L180,52.8 L182,49.8 L184,46.6 L186,43.3 L188,40.0 L190,36.5 L192,33.0 L194,29.3 L196,25.6 L198,21.8 L200,17.8 L202,13.8" fill="none" stroke="var(--text-2)" stroke-width="2.2" stroke-linejoin="round"/>
           <line x1="10" y1="64" x2="68" y2="64" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
           <line x1="172" y1="64" x2="230" y2="64" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
           <circle cx="68" cy="64" r="5.5" fill="var(--accent)"/>
@@ -1422,9 +1423,9 @@ kbd {
       band2.setAttribute('x1', SX(Q)); band2.setAttribute('x2', SX(HI));
     }
 
-    read.innerHTML = 'a = <b>' + minus(a.toFixed(2)) + '</b> &nbsp;·&nbsp; ' +
-      minus('a(x + 2)(x - 3) < 0') + ' &nbsp;·&nbsp; opens ' + (between ? 'up' : 'down');
-    verdict.textContent = between ? minus('-2 < x < 3') : minus('x < -2 or x > 3');
+    read.innerHTML = 'a = <b>' + minus(a.toFixed(2)) + '</b> &nbsp;·&nbsp; opens ' +
+      (between ? 'up' : 'down') + ' &nbsp;·&nbsp; below zero ' + (between ? 'between' : 'outside');
+    verdict.textContent = minus(between ? '-2 < x < 3' : 'x < -2 or x > 3');
     verdict.className = 'verdict ' + (between ? 'between' : 'outside');
   }
 
