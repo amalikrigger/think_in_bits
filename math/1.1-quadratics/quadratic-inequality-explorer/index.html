@@ -9,6 +9,7 @@
 <title>Quadratic Inequality Explorer</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
+
 /* ============================================================
    THINK IN BITS · 9709 tool system
    Same tokens as the decks and www.thinkinbits.site. Single
@@ -35,7 +36,9 @@
   --axis:         rgba(255,255,255,0.85);
 
   --ok:           #4fe08a;
+  --ok-wash:      rgba(79,224,138,0.14);
   --warn:         #ff6b6b;
+  --warn-wash:    rgba(255,107,107,0.14);
 
   --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
   --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
@@ -60,36 +63,162 @@ body {
   padding: clamp(16px, 4vw, 40px);
   -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: 1100px; margin: 0 auto; }
+.wrap { max-width: 1080px; margin: 0 auto; }
 
-header { margin-bottom: 22px; }
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 8px;
-}
 h1 {
-  font-size: clamp(24px, 3.6vw, 34px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 10px;
-  text-wrap: balance;
+  font-size: clamp(28px, 4.6vw, 46px);
+  font-weight: 700; line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0; color: var(--text); text-wrap: balance;
 }
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   h1 {
     background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
     -webkit-background-clip: text; background-clip: text; color: transparent;
-    /* the gradient only paints inside the box, so descenders that overhang it
-       (the q and y here) would otherwise be cut off */
-    padding: 0.18em 0; margin: -0.18em 0 calc(10px - 0.18em);
+    /* the gradient only paints inside the box, so descenders outside it get no
+       ink at all. Pad the box and pull the same amount back. */
+    padding: 0.18em 0; margin: -0.18em 0;
   }
 }
-.lede { color: var(--text-2); font-size: 15.5px; max-width: 64ch; margin: 0; }
+.eyebrow {
+  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); margin: 0 0 6px;
+}
+.lede { font-size: clamp(15px, 1.9vw, 19px); color: var(--text-2); max-width: 62ch; margin: 12px 0 0; }
+p { margin: 0; }
+.small { font-size: clamp(13px, 1.55vw, 16px); color: var(--text-2); }
 
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 8px; margin: 26px 0 18px; flex-wrap: wrap; }
+.tab {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 17px); font-weight: 500;
+  color: var(--text-2); background: var(--surface); cursor: pointer;
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 11px 22px; min-height: 46px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.tab:hover { border-color: var(--accent-line); color: var(--text); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tab[aria-selected="true"] {
+  background: var(--accent-wash); border-color: var(--accent); color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+/* the instrument below also uses .panel for its control column, so the tab
+   sections get their own name and a hard hide */
+.tabpanel[hidden] { display: none !important; }
+[hidden] { display: none !important; }
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: clamp(18px, 2.6vw, 28px);
+  box-shadow: var(--shadow-card);
+}
+.card + .card { margin-top: 18px; }
+
+.math {
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+  font-size: clamp(18px, 2.6vw, 30px); color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 14px; padding: 12px 18px; max-width: max-content;
+}
+.math.result {
+  background: var(--accent-wash); border-color: var(--accent-line);
+  color: var(--accent); box-shadow: var(--shadow-glow);
+}
+.math.small { font-size: clamp(14px, 1.8vw, 19px); padding: 8px 14px; }
+.math sup { font-size: 0.62em; }
+
+/* ---------- step chips: the plain-language spine of the practice mode ---------- */
+.steps { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.steps li {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: clamp(14px, 1.65vw, 17px); color: var(--text-2);
+  opacity: .38; transition: opacity .3s ease, color .3s ease;
+}
+.steps li.on { opacity: 1; color: var(--text); }
+.steps li.done { opacity: .8; }
+.steps .n {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  background: var(--surface-lift); color: var(--text-2);
+  border: 1px solid var(--hairline);
+  transition: background .3s ease, color .3s ease, border-color .3s ease;
+}
+.steps li.on .n { background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+.steps li.done .n { background: var(--ok-wash); color: var(--ok); border-color: var(--ok); }
+
+/* ---------- the number line students actually tap ---------- */
+.line-wrap { margin: 22px 0 0; }
+.numline { width: 100%; height: auto; display: block; touch-action: manipulation; }
+.numline .seg {
+  cursor: pointer;
+  transition: fill .22s ease, stroke .22s ease;
+}
+.numline .seg-hit { cursor: pointer; fill: transparent; }
+.numline .dot { cursor: pointer; transition: fill .22s ease, stroke .22s ease, r .18s ease; }
+.numline text { font-family: 'JetBrains Mono', monospace; }
+
+@keyframes nudge {
+  0%,100% { transform: translateX(0); }
+  22% { transform: translateX(-5px); }
+  55% { transform: translateX(5px); }
+  80% { transform: translateX(-2px); }
+}
+.shake { animation: nudge .42s ease; }
+
+@keyframes popin { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+.pop { animation: popin .32s ease-out both; }
+
+@keyframes drawcurve { to { stroke-dashoffset: 0; } }
+.curve { stroke-dasharray: 1200; stroke-dashoffset: 1200; }
+.curve.draw { animation: drawcurve 1s ease-out forwards; }
+
+/* ---------- buttons ---------- */
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+button.btn {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 17px); font-weight: 600;
+  cursor: pointer; color: var(--ground); background: var(--accent);
+  border: 1px solid var(--accent); border-radius: 50px;
+  padding: 12px 26px; min-height: 48px;
+  box-shadow: var(--shadow-glow);
+  transition: transform .15s ease, filter .15s ease;
+}
+button.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+button.btn:active { transform: none; }
+button.btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+button.btn.ghost {
+  background: var(--surface-lift); color: var(--text);
+  border-color: var(--hairline); box-shadow: none;
+}
+button.btn.ghost:hover { border-color: var(--accent-line); }
+button.btn[disabled] { opacity: .4; cursor: not-allowed; filter: none; transform: none; }
+
+/* ---------- verdict ---------- */
+.verdict {
+  margin-top: 20px; border-radius: 16px; padding: 16px 20px;
+  border: 1px solid var(--hairline); background: var(--surface-lift);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.verdict[hidden] { display: none; }
+.verdict.right { border-color: var(--ok); background: var(--ok-wash); }
+.verdict.wrong { border-color: var(--warn); background: var(--warn-wash); }
+.verdict .head { font-weight: 700; font-size: clamp(16px, 2vw, 21px); }
+.verdict.right .head { color: var(--ok); }
+.verdict.wrong .head { color: var(--warn); }
+.verdict .why { font-size: clamp(13.5px, 1.6vw, 16.5px); color: var(--text); }
+.verdict .why b { color: var(--accent); }
+
+.scoreline {
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap;
+  font-family: var(--mono); font-size: clamp(12px, 1.4vw, 15px); color: var(--text-2);
+  margin-top: 4px;
+}
+.scoreline b { color: var(--accent); font-size: 1.25em; }
+
+/* ---------- explore mode: the full instrument ---------- */
+.explore-grid { display: flex; gap: clamp(18px, 3vw, 34px); flex-wrap: wrap; align-items: center; }
+.explore-grid svg { width: clamp(240px, 34vw, 400px); height: auto; flex: 0 0 auto; }
+.explore-grid .panel-side { flex: 1 1 260px; min-width: 240px; display: flex; flex-direction: column; gap: 14px; }
 .instrument {
   display: grid;
   grid-template-columns: minmax(300px, 1.1fr) minmax(280px, 0.9fr);
@@ -161,37 +290,83 @@ input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-of
 .sgn td.want { background: var(--accent-wash); }
 .routes p { margin: 0; font-size: 13px; color: var(--text-2); }
 
-footer { margin-top: 20px; font-size: 13px; color: var(--text-2); max-width: 74ch; }
-footer a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-line); }
-footer a:hover { border-bottom-color: var(--accent); }
-
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-
-@media print {
-  :root {
-    --ground: #fff; --ground-far: #fff; --surface: #f4f6f8; --surface-lift: #eceff2;
-    --accent: #0072a3; --accent-deep: #005b82;
-    --accent-wash: rgba(0,114,163,0.08); --accent-line: rgba(0,114,163,0.35); --accent-fill: rgba(0,114,163,0.18);
-    --text: #10161f; --text-2: #4a5563;
-    --hairline: rgba(16,22,31,0.16); --grid: rgba(16,22,31,0.10); --axis: rgba(16,22,31,0.85);
-    --ok: #1c7a4f; --warn: #b03a2b;
-    --shadow-card: none; --shadow-glow: none;
-    color-scheme: light;
-  }
-  body { background: #fff; background-image: none; }
-  input, .btnrow { display: none; }
-  h1 { background: none !important; color: var(--text) !important; -webkit-text-fill-color: currentColor; }
+/* ---------- footer link back ---------- */
+.backlinks { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
+.chip {
+  display: inline-block; font-size: clamp(13px, 1.5vw, 16px); font-weight: 500;
+  color: var(--accent); background: var(--accent-wash);
+  border: 1px solid var(--accent-line); border-radius: 50px;
+  padding: 10px 20px; text-decoration: none;
+  transition: background .2s ease, box-shadow .2s ease;
 }
+.chip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .shake, .pop, .curve.draw { animation: none !important; }
+  .curve { stroke-dashoffset: 0; }
+  .steps li, .numline .seg, .numline .dot, button.btn { transition: none !important; }
+}
+
 </style>
 
 <div class="wrap">
-  <header>
-    <p class="eyebrow">9709 · 1.1 Quadratics · Session 2</p>
-    <h1>Quadratic Inequality Explorer</h1>
-    <p class="lede">Set the two critical values, pick which way the parabola opens, pick an inequality. The solution set reads straight off the sketch, and the sign table underneath gets there the other way. Open circles mean the endpoint is left out. Filled circles mean it is included.</p>
-  </header>
+  <p class="eyebrow">9709 Pure 1 &middot; 1.1 Quadratics &middot; Session 2</p>
+  <h1>Quadratic Inequality Explorer</h1>
+  <p class="lede">Two things live here. <b>Practice</b> gives you a question and you tap the answer straight onto the number line, then it shows you why. <b>Explore</b> is the full instrument: set both critical values, flip the curve, pick any of the four inequalities, and watch the sketch and the sign table agree.</p>
 
-  <div class="instrument">
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-practice" role="tab" aria-selected="true" aria-controls="panel-practice" type="button">Practice</button>
+    <button class="tab" id="tab-explore" role="tab" aria-selected="false" aria-controls="panel-explore" type="button">Explore</button>
+  </div>
+
+<!-- ============ PRACTICE ============ -->
+  <section class="tabpanel" id="panel-practice" role="tabpanel" aria-labelledby="tab-practice">
+    <div class="card">
+      <p class="eyebrow" style="margin-bottom:12px">Solve this</p>
+      <div class="math" id="q-math">—</div>
+
+      <ol class="steps" id="q-steps" style="margin-top:20px">
+        <li id="st1"><span class="n">1</span><span>The two <b>critical values</b> are marked on the line below. They are where the expression is exactly zero.</span></li>
+        <li id="st2"><span class="n">2</span><span><b>Tap the stretches</b> of the line where you think the inequality is true. Tap again to undo.</span></li>
+        <li id="st3"><span class="n">3</span><span><b>Tap each dot</b> to decide whether that exact value counts. Filled means yes, hollow means no.</span></li>
+      </ol>
+
+      <div class="line-wrap" id="line-wrap">
+        <svg class="numline" id="numline" viewBox="0 0 620 150" role="group" aria-label="Number line with three tappable regions and two tappable critical values"></svg>
+      </div>
+
+      <div class="row">
+        <button class="btn" id="check" type="button">Check my answer</button>
+        <button class="btn ghost" id="clear" type="button">Clear</button>
+        <button class="btn ghost" id="next" type="button">New question</button>
+      </div>
+
+      <div class="verdict" id="verdict" hidden></div>
+
+      <div class="scoreline">
+        <span>right <b id="sc-right">0</b></span>
+        <span>tried <b id="sc-total">0</b></span>
+        <span>streak <b id="sc-streak">0</b></span>
+      </div>
+    </div>
+
+    <div class="card" id="whycard" style="display:none">
+      <p class="eyebrow" style="margin-bottom:12px">Why, in a picture</p>
+      <div class="explore-grid">
+        <svg id="why-svg" viewBox="0 0 320 200" role="img" aria-label="The parabola for this question, with the answer regions highlighted on the axis"></svg>
+        <div class="panel-side">
+          <p class="small" id="why-text"></p>
+          <div class="math small result" id="why-answer"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPLORE: the full instrument ============ -->
+  <section class="tabpanel" id="panel-explore" role="tabpanel" aria-labelledby="tab-explore" hidden>
+    <p class="small" style="margin-bottom:16px">Set the two critical values, pick which way the parabola opens, pick an inequality. The solution set reads straight off the sketch, and the sign table underneath gets there the other way. Open circles mean the endpoint is left out. Filled circles mean it is included.</p>
+<div class="instrument">
     <div class="screen">
       <svg id="plot" viewBox="0 0 600 600" role="img" aria-label="Graph of the quadratic with the solution region highlighted on the x-axis"></svg>
     </div>
@@ -240,13 +415,323 @@ footer a:hover { border-bottom-color: var(--accent); }
       </div>
     </div>
   </div>
+  </section>
 
-  <footer>
-    Two routes, one answer. The sketch reads the solution off where the curve sits relative to the x-axis. The sign table gets the same answer from the signs of the two brackets alone, without picturing anything. Highlighted columns are the regions the inequality asks for. Practice set: <a href="../quadratic-inequalities/#13" target="_blank" rel="noopener">wkshtJ, worked in the Session 2 deck</a>.
-  </footer>
+  <div class="backlinks">
+    <a class="chip" href="https://www.thinkinbits.site/math/1.1-quadratics/quadratic-inequalities/">Back to the lesson</a>
+    <a class="chip" href="https://www.thinkinbits.site/math/">All maths</a>
+  </div>
 </div>
 
 <script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  /* house style: real minus signs, never ASCII hyphens, in anything computed */
+  var m = function (s) { return String(s).replace(/-/g, '\u2212'); };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- tabs ---------------- */
+  var tabs = [$('tab-practice'), $('tab-explore')];
+  var panels = [$('panel-practice'), $('panel-explore')];
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o, j) {
+        o.setAttribute('aria-selected', i === j ? 'true' : 'false');
+        panels[j].hidden = i !== j;
+      });
+    });
+  });
+
+  /* ================= PRACTICE ================= */
+
+  /* A question is a(x - r1)(x - r2) OP 0, with r1 < r2 and a = +1 or -1.
+     Sign of the expression by region, left to right:
+       a > 0 :  +  -  +
+       a < 0 :  -  +  -
+     So the answer is always either the middle stretch ("between") or the two
+     outer stretches ("outside") - never all three, never one outer only. */
+  var OPS = [
+    { k: '<',  txt: '<',  wants: 'neg', strict: true,  words: 'below zero' },
+    { k: '>',  txt: '>',  wants: 'pos', strict: true,  words: 'above zero' },
+    { k: '<=', txt: '≤', wants: 'neg', strict: false, words: 'below zero, or exactly zero' },
+    { k: '>=', txt: '≥', wants: 'pos', strict: false, words: 'above zero, or exactly zero' }
+  ];
+
+  var Q = null;                 /* current question */
+  var pickRegions = [false, false, false];
+  var pickDots = [false, false];
+  var answered = false;
+  var score = { right: 0, total: 0, streak: 0 };
+
+  function randInt(lo, hi) { return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+
+  function makeQuestion() {
+    var r1, r2;
+    do { r1 = randInt(-6, 4); r2 = randInt(-4, 6); } while (r2 - r1 < 2);
+    var a = Math.random() < 0.3 ? -1 : 1;
+    var op = OPS[randInt(0, 3)];
+    /* signs of the expression in the three regions */
+    var signs = a > 0 ? [1, -1, 1] : [-1, 1, -1];
+    var want = op.wants === 'pos' ? 1 : -1;
+    var regions = signs.map(function (s) { return s === want; });
+    return {
+      r1: r1, r2: r2, a: a, op: op,
+      regions: regions,
+      dots: !op.strict            /* endpoints count only for <= and >= */
+    };
+  }
+
+  function bracket(r) {
+    /* (x - 3) or (x + 3); r = 0 gives a bare x */
+    if (r === 0) return 'x';
+    return r > 0 ? ('(x − ' + r + ')') : ('(x + ' + Math.abs(r) + ')');
+  }
+  function questionText(q) {
+    var lead = q.a < 0 ? '−' : '';
+    return lead + bracket(q.r1) + bracket(q.r2) + ' ' + q.op.txt + ' 0';
+  }
+
+  /* ---------- the tappable number line ---------- */
+  var NL = { w: 620, y: 88, x0: 40, x1: 580 };
+
+  function nlPos(q) {
+    /* put the two critical values at fixed thirds so every question reads the
+       same way, whatever the actual numbers are */
+    return { a: NL.x0 + (NL.x1 - NL.x0) * 0.30, b: NL.x0 + (NL.x1 - NL.x0) * 0.70 };
+  }
+
+  function drawLine() {
+    var q = Q, p = nlPos(q), svg = $('numline');
+    var segs = [
+      { i: 0, from: NL.x0, to: p.a, arrowL: true },
+      { i: 1, from: p.a,   to: p.b },
+      { i: 2, from: p.b,   to: NL.x1, arrowR: true }
+    ];
+    var out = '';
+
+    /* the bare line */
+    out += '<line x1="' + NL.x0 + '" y1="' + NL.y + '" x2="' + NL.x1 + '" y2="' + NL.y +
+           '" stroke="var(--axis)" stroke-width="2"/>';
+    /* arrowheads: the outer stretches really do run forever */
+    out += '<path d="M' + (NL.x0 - 2) + ',' + NL.y + ' l10,-6 v12 z" fill="var(--axis)"/>';
+    out += '<path d="M' + (NL.x1 + 2) + ',' + NL.y + ' l-10,-6 v12 z" fill="var(--axis)"/>';
+
+    segs.forEach(function (s) {
+      var on = pickRegions[s.i];
+      var cls = 'seg';
+      var col = on ? 'var(--accent)' : 'rgba(255,255,255,0.13)';
+      out += '<line class="' + cls + '" data-seg="' + s.i + '" x1="' + (s.from + 5) + '" y1="' + NL.y +
+             '" x2="' + (s.to - 5) + '" y2="' + NL.y + '" stroke="' + col +
+             '" stroke-width="' + (on ? 11 : 7) + '" stroke-linecap="round"/>';
+      /* a fat invisible hit area so this is tappable on a phone */
+      out += '<rect class="seg-hit" data-seg="' + s.i + '" x="' + s.from + '" y="' + (NL.y - 26) +
+             '" width="' + (s.to - s.from) + '" height="52"/>';
+      /* region caption */
+      var mid = (s.from + s.to) / 2;
+      var lbl = s.i === 0 ? m('x < ' + Q.r1)
+              : s.i === 1 ? m(Q.r1 + ' < x < ' + Q.r2)
+              : m('x > ' + Q.r2);
+      out += '<text x="' + mid + '" y="' + (NL.y + 42) + '" text-anchor="middle" font-size="15" fill="' +
+             (on ? 'var(--accent)' : 'var(--text-2)') + '">' + lbl + '</text>';
+      out += '<text x="' + mid + '" y="' + (NL.y - 30) + '" text-anchor="middle" font-size="12" fill="' +
+             (on ? 'var(--accent)' : 'rgba(255,255,255,0.28)') + '">' +
+             (on ? (answered ? 'ANSWER' : 'CHOSEN') : (answered ? '' : 'tap')) + '</text>';
+    });
+
+    /* the two critical values */
+    [{ x: p.a, i: 0, v: Q.r1 }, { x: p.b, i: 1, v: Q.r2 }].forEach(function (d) {
+      var filled = pickDots[d.i];
+      out += '<circle class="dot" data-dot="' + d.i + '" cx="' + d.x + '" cy="' + NL.y + '" r="9" fill="' +
+             (filled ? 'var(--accent)' : 'var(--surface)') + '" stroke="var(--accent)" stroke-width="3"/>';
+      out += '<circle class="seg-hit" data-dot="' + d.i + '" cx="' + d.x + '" cy="' + NL.y + '" r="24"/>';
+      out += '<text x="' + d.x + '" y="' + (NL.y + 42) + '" text-anchor="middle" font-size="16" ' +
+             'fill="var(--text)" font-weight="700">' + m(String(d.v)) + '</text>';
+      out += '<text x="' + d.x + '" y="' + (NL.y - 30) + '" text-anchor="middle" font-size="12" fill="' +
+             (filled ? 'var(--accent)' : 'rgba(255,255,255,0.28)') + '">' + (filled ? 'IN' : 'OUT') + '</text>';
+    });
+
+    svg.innerHTML = out;
+  }
+
+  $('numline').addEventListener('click', function (e) {
+    if (answered) return;
+    var t = e.target;
+    var seg = t.getAttribute && t.getAttribute('data-seg');
+    var dot = t.getAttribute && t.getAttribute('data-dot');
+    if (seg !== null && seg !== undefined) {
+      pickRegions[+seg] = !pickRegions[+seg];
+      stepState();
+      drawLine();
+    } else if (dot !== null && dot !== undefined) {
+      pickDots[+dot] = !pickDots[+dot];
+      stepState();
+      drawLine();
+    }
+  });
+
+  function stepState() {
+    var anyRegion = pickRegions.some(Boolean);
+    $('st1').className = 'done';
+    $('st2').className = anyRegion ? 'done' : 'on';
+    $('st3').className = anyRegion ? 'on' : '';
+  }
+
+  function answerText(q) {
+    var eq = q.dots;
+    var between = q.regions[1];
+    if (between) {
+      return eq ? (m(String(q.r1)) + ' ≤ x ≤ ' + m(String(q.r2)))
+                : (m(String(q.r1)) + ' < x < ' + m(String(q.r2)));
+    }
+    return eq ? ('x ≤ ' + m(String(q.r1)) + '  or  x ≥ ' + m(String(q.r2)))
+              : ('x < ' + m(String(q.r1)) + '  or  x > ' + m(String(q.r2)));
+  }
+
+  function newQuestion() {
+    Q = makeQuestion();
+    pickRegions = [false, false, false];
+    pickDots = [false, false];
+    answered = false;
+    $('q-math').innerHTML = questionText(Q);
+    $('verdict').hidden = true;
+    $('verdict').className = 'verdict';
+    $('whycard').style.display = 'none';
+    $('check').disabled = false;
+    $('st1').className = 'on'; $('st2').className = ''; $('st3').className = '';
+    drawLine();
+  }
+
+  function check() {
+    if (answered) return;
+    var regionsOk = Q.regions.every(function (v, i) { return v === pickRegions[i]; });
+    var dotsOk = pickDots[0] === Q.dots && pickDots[1] === Q.dots;
+    var ok = regionsOk && dotsOk;
+
+    answered = true;
+    $('check').disabled = true;
+    score.total++;
+    if (ok) { score.right++; score.streak++; } else { score.streak = 0; }
+    $('sc-right').textContent = score.right;
+    $('sc-total').textContent = score.total;
+    $('sc-streak').textContent = score.streak;
+
+    var v = $('verdict');
+    v.className = 'verdict ' + (ok ? 'right' : 'wrong') + ' pop';
+    v.hidden = false;
+
+    var opensUp = Q.a > 0;
+    var why = '';
+    if (ok) {
+      why = 'The x<sup>2</sup> term is ' + (opensUp ? 'positive, so the curve opens <b>upward</b>'
+                                                   : 'negative, so the curve opens <b>downward</b>') +
+            '. You wanted it <b>' + Q.op.words + '</b>, which is the ' +
+            (Q.regions[1] ? 'dip in the middle' : 'two arms on the outside') + '.';
+    } else {
+      var bits = [];
+      if (!regionsOk) {
+        bits.push('The right stretches were the <b>' + (Q.regions[1] ? 'middle one' : 'two outer ones') +
+                  '</b>. The curve opens <b>' + (opensUp ? 'upward' : 'downward') +
+                  '</b> and you wanted it ' + Q.op.words + '.');
+      }
+      if (!dotsOk) {
+        bits.push(Q.dots
+          ? 'The symbol was <b>' + Q.op.txt + '</b>, which lets <b>equals zero</b> count, so both critical values are <b>in</b> (filled dots).'
+          : 'The symbol was <b>' + Q.op.txt + '</b>, which is strict. At the critical values the expression is exactly 0, and 0 is not ' +
+            (Q.op.wants === 'neg' ? 'less' : 'greater') + ' than 0, so both are <b>out</b> (hollow dots).');
+      }
+      why = bits.join(' ');
+      if (!reduce) {
+        var lw = $('line-wrap');
+        lw.classList.remove('shake');
+        void lw.offsetWidth;
+        lw.classList.add('shake');
+      }
+    }
+
+    v.innerHTML = '<div class="head">' + (ok ? 'Right' : 'Not quite') + '</div>' +
+                  '<div class="why">' + why + '</div>' +
+                  '<div class="math small result" style="margin-top:2px">' + answerText(Q) + '</div>';
+
+    /* show the picture that explains it */
+    pickRegions = Q.regions.slice();
+    pickDots = [Q.dots, Q.dots];
+    drawLine();
+    showWhy();
+  }
+
+  /* ---------- the "why, in a picture" parabola ---------- */
+  function showWhy() {
+    var q = Q, svg = $('why-svg');
+    var W = 320, H = 200, axis = 108, x0 = 26, x1 = 294;
+    /* put the roots at the same thirds the number line uses */
+    var ra = x0 + (x1 - x0) * 0.30, rb = x0 + (x1 - x0) * 0.70;
+    /* scale so the curve fills the box without leaving it */
+    var half = (rb - ra) / 2, vertexDrop = 52;
+    var k = vertexDrop / (half * half) * (q.a > 0 ? -1 : 1);
+
+    var pts = [];
+    for (var x = x0; x <= x1 + 0.01; x += 3) {
+      var y = axis + k * (x - ra) * (x - rb);
+      if (y < 8 || y > H - 12) continue;
+      pts.push(x.toFixed(0) + ',' + y.toFixed(1));
+    }
+
+    var out = '';
+    out += '<line x1="' + x0 + '" y1="' + axis + '" x2="' + x1 + '" y2="' + axis +
+           '" stroke="var(--axis)" stroke-width="1.8"/>';
+    /* highlight the answer regions on the axis */
+    if (q.regions[1]) {
+      out += '<line x1="' + ra + '" y1="' + axis + '" x2="' + rb + '" y2="' + axis +
+             '" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>';
+    } else {
+      out += '<line x1="' + x0 + '" y1="' + axis + '" x2="' + ra + '" y2="' + axis +
+             '" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>';
+      out += '<line x1="' + rb + '" y1="' + axis + '" x2="' + x1 + '" y2="' + axis +
+             '" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/>';
+    }
+    out += '<path class="curve" d="M' + pts.join(' L') + '" fill="none" stroke="var(--text-2)" ' +
+           'stroke-width="2.4" stroke-linejoin="round"/>';
+    [[ra, q.r1], [rb, q.r2]].forEach(function (d) {
+      out += '<circle cx="' + d[0] + '" cy="' + axis + '" r="6" fill="' +
+             (q.dots ? 'var(--accent)' : 'var(--surface)') + '" stroke="var(--accent)" stroke-width="2.5"/>';
+      out += '<text x="' + d[0] + '" y="' + (axis + 26) + '" text-anchor="middle" font-size="13" ' +
+             'font-family="JetBrains Mono, monospace" fill="var(--text-2)">' + m(String(d[1])) + '</text>';
+    });
+    svg.innerHTML = out;
+
+    $('why-text').innerHTML =
+      'The two critical values, <b style="color:var(--text)">' + m(String(q.r1)) + '</b> and <b style="color:var(--text)">' +
+      m(String(q.r2)) + '</b>, are where the curve crosses. The x<sup>2</sup> term is ' +
+      (q.a > 0 ? 'positive so it opens <b style="color:var(--text)">upward</b>'
+               : 'negative so it opens <b style="color:var(--text)">downward</b>') +
+      ', and you want it <b style="color:var(--text)">' + q.op.words +
+      '</b>. Read the highlighted stretch straight off the axis.';
+    $('why-answer').innerHTML = answerText(q);
+    $('whycard').style.display = '';
+
+    var path = svg.querySelector('.curve');
+    if (path && !reduce) { path.classList.remove('draw'); void path.getBoundingClientRect(); path.classList.add('draw'); }
+    else if (path) { path.style.strokeDashoffset = '0'; }
+  }
+
+  $('check').addEventListener('click', check);
+  $('next').addEventListener('click', newQuestion);
+  $('clear').addEventListener('click', function () {
+    if (answered) return;
+    pickRegions = [false, false, false];
+    pickDots = [false, false];
+    $('st1').className = 'on'; $('st2').className = ''; $('st3').className = '';
+    drawLine();
+  });
+
+  /* ---------------- go ---------------- */
+  newQuestion();
+})();
+</script>
+
+<script>
+/* ================= EXPLORE: the full instrument, unchanged ================= */
 (function () {
   'use strict';
   var W = 600, H = 600, RX = 10, RY = 10;

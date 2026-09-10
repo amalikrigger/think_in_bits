@@ -522,6 +522,30 @@ kbd {
 .explore .verdict.between { color: var(--ok); font-family: var(--mono); }
 .explore .verdict.outside { color: var(--accent); font-family: var(--mono); }
 
+/* ---------- narrow and short screens: clear the HUD, and breathe ----------
+   The slide's bottom padding is in vh, and the HUD is a fixed bar in px, so on a
+   short or narrow viewport the last line of a slide slid underneath it. Below the
+   projector widths the padding gets a px floor, and everything that is measured in
+   vh (card padding, column gaps) gets a px value instead, because a vh gap on a
+   700px-tall phone is not a gap at all. Projector sizes are untouched, so the
+   900px gate is unaffected. */
+@media (max-width: 1000px) {
+  .slide { padding: 6vh 6vw max(13vh, 124px); gap: 14px; }
+  .slide.duo { padding-top: 5vh; padding-bottom: max(9.5vh, 124px); gap: 14px; }
+  .cols, .slide.duo .cols { gap: 18px; }
+  .cols > div { gap: 12px; }
+  .card { padding: 18px 18px; gap: 12px; }
+  .slide.duo .card { padding: 18px 18px; gap: 10px; }
+  .slide.duo .card .small, .slide.duo .card li.small { font-size: 15px; line-height: 1.5; }
+  .slide.duo .card .math { font-size: 16px; padding: 10px 14px; }
+  .slide.duo .card .math.result { font-size: 19px; padding: 10px 14px; }
+  .small { font-size: 15.5px; line-height: 1.55; }
+  li + li, .slide.duo .card li + li { margin-top: 8px; }
+  .sgn, .slide.duo .card .sgn { font-size: 13px; }
+  .sgn th, .sgn td, .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 6px 5px; }
+  .explore { padding: 18px 18px; gap: 18px; }
+}
+
 /* ---------- reduced motion: everything settles instantly ---------- */
 @media (prefers-reduced-motion: reduce) {
   .slide, .frag, .progress, .overlay, .hint, .thumb, .toolchip, .check > .math:first-child { transition: none !important; }
