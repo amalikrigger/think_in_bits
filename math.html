@@ -1212,6 +1212,81 @@
   .tib-watch-item { padding: 1.25rem; gap: 1rem; }
   .tib-watch-play { width: 2.25rem; height: 2.25rem; }
 }
+
+/* ---------- filter and search bar ----------
+   Progressive enhancement. Without JS the bar is hidden and every item shows,
+   which is the correct fallback for a resource list. */
+.tib-watch-tools { display: none; margin: 0 0 2rem; }
+.tib-watch-tools.on { display: block; }
+
+.tib-watch-search {
+  width: 100%;
+  max-width: 30rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--tib-text-color);
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-btn);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.9rem;
+}
+.tib-watch-search::placeholder { color: var(--tib-secondary-color); }
+.tib-watch-search:focus {
+  outline: none;
+  border-color: var(--tib-primary-color);
+  box-shadow: 0 0 0 3px var(--tib-primary-alpha-10);
+}
+
+.tib-watch-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+
+.tib-watch-chip {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--tib-secondary-color);
+  background: var(--tib-surface-color);
+  border: 1px solid var(--tib-border-subtle);
+  border-radius: var(--tib-border-radius-btn);
+  padding: 0.5rem 1rem;
+  min-height: 2.5rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.tib-watch-chip:hover { color: var(--tib-text-color); border-color: var(--tib-primary-alpha-30); }
+.tib-watch-chip:focus-visible { outline: 2px solid var(--tib-primary-color); outline-offset: 2px; }
+.tib-watch-chip[aria-pressed="true"] {
+  color: var(--tib-primary-color);
+  background: var(--tib-primary-alpha-10);
+  border-color: var(--tib-primary-color);
+}
+
+.tib-watch-count {
+  font-size: 0.85rem;
+  color: var(--tib-secondary-color);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.tib-watch-empty {
+  display: none;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--tib-secondary-color);
+  font-size: 0.95rem;
+  border: 1px dashed var(--tib-primary-alpha-30);
+  border-radius: var(--tib-border-radius-card);
+}
+.tib-watch-empty.on { display: block; }
+
+@media (max-width: 600px) {
+  .tib-watch-count { margin-left: 0; width: 100%; }
+}
+
+.tib-visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 </style>
 
 <section id="watch" class="tib-section">
@@ -1224,15 +1299,32 @@
 
     <p class="tib-watch-intro">These are grouped by what you are stuck on. Each one says which method it uses, so pick a method you like and stay with it. Watching four videos that all do it a different way will leave you more confused than when you started. If something in the lesson did not land, hearing someone else say it usually helps.</p>
 
+    <div class="tib-watch-tools" id="watchTools">
+      <label class="tib-visually-hidden" for="watchSearch">Search these resources</label>
+      <input class="tib-watch-search" id="watchSearch" type="search" autocomplete="off"
+             placeholder="Search: factoring, box method, inequalities, Khan...">
+      <div class="tib-watch-chips" role="group" aria-label="Filter by kind">
+        <button class="tib-watch-chip" type="button" data-filter="all" aria-pressed="true">Everything</button>
+        <button class="tib-watch-chip" type="button" data-filter="short" aria-pressed="false">Under 2 min</button>
+        <button class="tib-watch-chip" type="button" data-filter="longvideo" aria-pressed="false">Full lessons</button>
+        <button class="tib-watch-chip" type="button" data-filter="reading" aria-pressed="false">Reading</button>
+        <button class="tib-watch-chip" type="button" data-filter="practice" aria-pressed="false">Practice</button>
+        <span class="tib-watch-count" id="watchCount" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <p class="tib-watch-empty" id="watchEmpty">Nothing matches that. Try a shorter word, or press Everything to start over.</p>
+
     <!-- ============ COMPLETING THE SQUARE (existing, kept) ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>Completing the square</h4>
       <p>From Session 1. These are the videos that helped when I was relearning this myself. Still here because the discriminant work builds straight on top of them.</p>
     </div>
 
     <div class="tib-watch-list">
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=QhapLEU9FVE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ solving quadratic equations by completing the square teacher mj · math tutorial divide by a first a slow, full walkthrough of the method, step by step, with nothing skipped. this is the divide-by-a route, the one we use in class. watch it if you can follow the steps in the lesson but lose the thread when you try it alone." href="https://www.youtube.com/watch?v=QhapLEU9FVE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Solving Quadratic Equations by Completing the Square</h4>
@@ -1242,7 +1334,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/0VUC6NLgYg8" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ why completing the square actually works onlock · short, 1 min 46 short why it works where the name comes from: you are literally completing a square. watch this one if the method feels like a rule you memorized and never really understood." href="https://www.youtube.com/shorts/0VUC6NLgYg8" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Why completing the square actually works</h4>
@@ -1252,7 +1344,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=2MKigAgPZMQ" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ solving quadratic equations by completing the square the organic chemistry tutor worked examples worked example after worked example, including the harder cases where the number in front of the x squared is not 1. watch this one when you want more practice than the worksheet gives you." href="https://www.youtube.com/watch?v=2MKigAgPZMQ" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Solving Quadratic Equations By Completing The Square</h4>
@@ -1263,16 +1355,18 @@
       </a>
 
     </div>
+    </div>
 
     <!-- ============ FACTORING: a = 1 ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>Factoring, when there is just x&sup2; at the front</h4>
       <p>Expressions like x&sup2; + 7x + 12, with nothing in front of the x&sup2;. Find two numbers that multiply to the last number and add to the middle one. Start here if factoring itself is the problem, before you touch anything harder.</p>
     </div>
 
     <div class="tib-watch-list">
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/gRPEJcn_0M8" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ basic factoring mr h tutoring · short, 53 seconds short factor pairs three worked ones in under a minute, including the sign rules for when the last number is negative. the fastest way to see the whole idea." href="https://www.youtube.com/shorts/gRPEJcn_0M8" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Basic Factoring</h4>
@@ -1282,7 +1376,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/VU2rEcBBEbU" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ solving quadratic equations by factoring math teacher gon · short, 60 seconds short factor pairs takes it one step further than factoring: factors x² − 10x + 16 and then uses it to solve. watch this one if you can factor but do not see what factoring is for." href="https://www.youtube.com/shorts/VU2rEcBBEbU" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Solving Quadratic Equations by Factoring</h4>
@@ -1292,7 +1386,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/mI-liCDG3Wk" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factoring made easy: box method explained caretmath · short, 46 seconds short box method the same job, done in a two-by-two grid so you can see it on paper. worth watching even if factor pairs already work for you, because the box is what scales up to the harder ones below." href="https://www.youtube.com/shorts/mI-liCDG3Wk" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Made Easy: Box Method Explained</h4>
@@ -1302,7 +1396,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/csdHDkq3DR4" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factoring method, factoring trick maths meet · short, 14 seconds short sum and product fourteen seconds, one example, no talking. good as a last-second reminder before a test. on-screen text is partly in hindi." href="https://www.youtube.com/shorts/csdHDkq3DR4" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Method, Factoring Trick</h4>
@@ -1312,7 +1406,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/PczzB6H2yAM" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ mastering factoring: splitting the middle term padhai academy · short, 43 seconds · narrated in hindi short splitting the middle splitting the middle term, which is the method the harder ones are built on. the narration is in hindi, but the written work carries it on its own." href="https://www.youtube.com/shorts/PczzB6H2yAM" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Mastering Factoring: Splitting the Middle Term</h4>
@@ -1322,7 +1416,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-intro/a/factoring-quadratics-leading-coefficient-1" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="reading" data-topic="1.1" data-search="✎ factoring quadratics: leading coefficient = 1 khan academy · article with practice reading sum and product this one you read instead of watch. it does the thing the videos skip: it shows why the two numbers have to multiply to the last term and add to the middle one. practice questions at the bottom mark themselves." href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-intro/a/factoring-quadratics-leading-coefficient-1" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Factoring quadratics: leading coefficient = 1</h4>
@@ -1333,9 +1427,11 @@
       </a>
 
     </div>
+    </div>
 
     <!-- ============ FACTORING: a > 1 ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>Factoring, when there is a number in front of the x&sup2;</h4>
       <p>Expressions like 2x&sup2; + 7x + 3 or 10t&sup2; &minus; t &minus; 3. This is the one that trips people up, and it shows up constantly in exam questions. Pick <b>one</b> of the two methods below and get good at it. They both work every time.</p>
     </div>
@@ -1343,7 +1439,7 @@
     <div class="tib-watch-list">
 
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hs-cgcpbc0I" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factoring trinomials when a is not equal to 1 iteachalgebra · short, 1 min 42 · start with this one short ac method grouping the clearest one here, and the only one that names the problem out loud. multiply the outside two numbers, split the middle, factor in pairs, check by expanding. if you watch one video on this page, watch this one." href="https://www.youtube.com/shorts/hs-cgcpbc0I" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring trinomials when a is NOT equal to 1</h4>
@@ -1353,7 +1449,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/zuys2RS_3YE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ quick tutorial: factoring trinomials using the ac method peachpi math · short, 59 seconds short ac method grouping the same method on 2x² + 11x + 5, tighter and faster. watch it straight after the one above to see the method twice on different numbers, which is what makes it stick." href="https://www.youtube.com/shorts/zuys2RS_3YE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Quick Tutorial: Factoring Trinomials Using the AC Method</h4>
@@ -1364,7 +1460,7 @@
       </a>
 
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hsSR_Xfh_30" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ using the box method to factor trinomials, ax² + bx + c mathispower4u · short, 1 min 27 short box method ac method the box and the ac method combined on 5x² + 17x + 6, narrated the whole way. this is the one to watch if the silent box video went too fast, because it says out loud where each number in the grid comes from." href="https://www.youtube.com/shorts/hsSR_Xfh_30" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Using the Box Method to Factor Trinomials, ax&sup2; + bx + c</h4>
@@ -1374,7 +1470,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/OARbnuV19IE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factor a quadratic with the box method scaffolded math and science · short, 35 seconds · no narration short box method 3x² + 7x + 2 done silently in a box, start to finish. good if you would rather see the shape of it than listen to someone talk. you do not need sound for this one." href="https://www.youtube.com/shorts/OARbnuV19IE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factor a quadratic with the box method</h4>
@@ -1385,7 +1481,7 @@
       </a>
 
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/MVjJAGXqwo8" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factorization hack: middle term splitting explained maths tricks with ritu · short, 11 seconds · no narration short cross method eleven seconds. 3x² + 8x + 4 through a cross grid with no explanation at all. too fast to learn from, but a good reminder once you already know the method." href="https://www.youtube.com/shorts/MVjJAGXqwo8" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factorization Hack: Middle Term Splitting Explained</h4>
@@ -1395,7 +1491,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-grouping/a/factoring-quadratics-leading-coefficient-not-1" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="reading" data-topic="1.1" data-search="✎ factoring quadratics: leading coefficient ≠ 1 khan academy · article with practice reading ac method grouping two full worked examples, 2x² + 7x + 3 and 6x² − 5x − 4, and then the part no short has room for: why grouping works at all. read this when you can do it but do not trust it." href="https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:quadratics-multiplying-factoring/x2f8bb11595b61c86:factor-quadratics-grouping/a/factoring-quadratics-leading-coefficient-not-1" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Factoring quadratics: leading coefficient &ne; 1</h4>
@@ -1405,7 +1501,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=ISPxJ6JXT8o" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ factoring trinomials with a non-1 leading coefficient by grouping khan academy · 5 min 38 ac method grouping the unhurried version of the shorts above. every line explained as it is written. watch this when a 60-second video went past too fast to follow." href="https://www.youtube.com/watch?v=ISPxJ6JXT8o" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring trinomials with a non-1 leading coefficient by grouping</h4>
@@ -1415,7 +1511,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://corbettmaths.com/2019/12/31/factorising-harder-quadratics-videos/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ factoring harder quadratics corbettmaths · two videos inspection splitting the middle two different routes to the same answer, side by side: guessing the brackets and checking, or splitting the middle term properly. useful for deciding which one suits you." href="https://corbettmaths.com/2019/12/31/factorising-harder-quadratics-videos/" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Harder Quadratics</h4>
@@ -1426,16 +1522,18 @@
       </a>
 
     </div>
+    </div>
 
     <!-- ============ FACTORING: shortcuts ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>Shortcuts, and what they cost you</h4>
       <p>These get the right answer fast, and they are worth knowing. But read the warning under each one before you use it in a written answer, because Cambridge marks your <b>method</b>, not just your final line.</p>
     </div>
 
     <div class="tib-watch-list">
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/fZy_UJgnOpo" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factor a quadratic in less than a minute chillmath · short, 43 seconds short slide and divide the catch: the second line he writes is not equal to the expression you started with. he multiplies it by 2, factors the easier version, then divides back at the end. it works, and he does not skip that last step, but if you write that middle line in an exam you cannot justify it and you will lose method marks. use it to check an answer you already have. do not use it to write one." href="https://www.youtube.com/shorts/fZy_UJgnOpo" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factor a quadratic in less than a minute</h4>
@@ -1445,7 +1543,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/y1fyMqJJx1E" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ factoring trinomials in an easy way engineering math shorts · short, 58 seconds short slide and divide the same shortcut on a nastier example, 10x² − 11x + 3. same catch as above: the middle line is a different expression from the one in the question. same advice too. check with it, do not write it down." href="https://www.youtube.com/shorts/y1fyMqJJx1E" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Trinomials in an Easy Way</h4>
@@ -1455,7 +1553,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/hh3BD1VisNE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ split the middle term easily suresh aggarwal · short, 1 min 37 short stops at the roots handles a genuinely ugly one, 72x² + 11x − 35, and the method itself is fine. but it stops at the roots and never writes out the brackets. that answers a 'solve' question. it does not answer a 'factor' question." href="https://www.youtube.com/shorts/hh3BD1VisNE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Split the Middle Term Easily</h4>
@@ -1466,16 +1564,18 @@
       </a>
 
     </div>
+    </div>
 
     <!-- ============ FACTORING: the long ones ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>If a minute was not enough</h4>
       <p>Full lessons and practice sets. Go here when the shorts made sense while you watched them and then fell apart the moment you tried one yourself. That happens to everybody.</p>
     </div>
 
     <div class="tib-watch-list">
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=YtN9_tCaRQc" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ factoring quadratics... how? nancypi · 9 min 14 both cases covers the easy case and the harder case in one sitting, slowly. she says the reasoning out loud, which most videos skip. the best one here if you are starting from not really getting it." href="https://www.youtube.com/watch?v=YtN9_tCaRQc" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Quadratics... How?</h4>
@@ -1485,7 +1585,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=9MUDAr1PnlE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ factoring trinomials and polynomials, basic introduction the organic chemistry tutor · 34 min 45 ac method grouping special cases half an hour, example after example, including common factors and the difference of two squares. you are not meant to watch all of it. skip to the part you need." href="https://www.youtube.com/watch?v=9MUDAr1PnlE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Trinomials and Polynomials, Basic Introduction</h4>
@@ -1495,7 +1595,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=v2sPNXdabI0" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ factoring harder quadratics maths genie · 12 min 58 exam style worked the way an examiner wants to see it written. watch this one when you can get the answer but are not sure how much working to show." href="https://www.youtube.com/watch?v=v2sPNXdabI0" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Factoring Harder Quadratics</h4>
@@ -1505,7 +1605,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://corbettmaths.com/2018/04/04/factorising-quadratics/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice" data-topic="1.1" data-search="✎ factoring quadratics: practice questions corbettmaths · questions pdf and answers pdf practice answers included print it and mark it yourself. the answers are a separate pdf on the same page, so you will not see them by accident while you work." href="https://corbettmaths.com/2018/04/04/factorising-quadratics/" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Factoring Quadratics: practice questions</h4>
@@ -1515,7 +1615,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://mathsgenie.co.uk/gcse/maths/edexcel/grade-7-7-5-factorising-harder-quadratics/booklet" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice" data-topic="1.1" data-search="✎ factoring harder quadratics: exam booklet maths genie · online booklet with answers practice answers included real exam questions on the harder case only, so every question is the one you actually need practice at. answers are built in." href="https://mathsgenie.co.uk/gcse/maths/edexcel/grade-7-7-5-factorising-harder-quadratics/booklet" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Factoring Harder Quadratics: exam booklet</h4>
@@ -1526,16 +1626,18 @@
       </a>
 
     </div>
+    </div>
 
     <!-- ============ QUADRATIC INEQUALITIES ============ -->
-    <div class="tib-watch-group">
+    <div class="tib-watch-band" data-topic="1.1">
+<div class="tib-watch-group">
       <h4>Quadratic inequalities</h4>
       <p>Things like x&sup2; &minus; 5x + 4 &lt; 0, where the answer is a whole stretch of the number line. Everything below assumes you can already factor, so if that is shaky, go back up this page first.</p>
     </div>
 
     <div class="tib-watch-list">
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/VgOx7vn4_nA" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ quadratic inequalities learning g2o · short, 49 seconds · watch this one first short sketch the parabola between x² + 3x − 4 ≤ 0, sketched, with the part of the curve below the axis colored in. the clearest picture of what a 'between' answer actually means. it is also the only one of the three that models the ≤ case." href="https://www.youtube.com/shorts/VgOx7vn4_nA" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Quadratic inequalities</h4>
@@ -1545,7 +1647,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/zeLuPtB055s" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ quadratic inequalities: the outside case matt, mygcsemaths · short, 59 seconds · do not skip this one short sketch the parabola outside the other shape of answer: x > −1 or x < −3, written as two pieces joined by 'or'. this is the only video here that shows the outside case, and it is the case people get wrong." href="https://www.youtube.com/shorts/zeLuPtB055s" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequalities: the outside case</h4>
@@ -1555,7 +1657,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/shorts/ePG2ac9NXhQ" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="short video" data-topic="1.1" data-search="▶ solving quadratic inequality mr h tutoring · short, 60 seconds short number line test points the other route, with no picture of a curve at all. he puts the critical values on a number line and tests an actual number in each region. watch this if sketching the parabola does not click for you." href="https://www.youtube.com/shorts/ePG2ac9NXhQ" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Solving Quadratic Inequality</h4>
@@ -1565,7 +1667,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.thinkinbits.site/math/1.1-quadratics/quadratic-inequality-explorer/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice" data-topic="1.1" data-search="✎ quadratic inequality explorer think in bits · you try it, it checks you practice checks your answer our own. it gives you an inequality, you tap the stretches of the number line you think are the answer, and it tells you which half you got wrong and why. the place to go once the videos make sense and you need reps." href="https://www.thinkinbits.site/math/1.1-quadratics/quadratic-inequality-explorer/" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequality Explorer</h4>
@@ -1575,7 +1677,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=_gWjLKsFOPE" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ quadratic inequalities the organic chemistry tutor · 12 min 12 sign analysis interval notation the full version of the number-line route, with several examples and the notation written out properly. closest to how we do it in class." href="https://www.youtube.com/watch?v=_gWjLKsFOPE" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequalities</h4>
@@ -1585,7 +1687,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.youtube.com/watch?v=aTB2pdLvIqw" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="video" data-topic="1.1" data-search="▶ quadratic inequalities, top grade series the gcse maths tutor · 23 min 44 exam style longer, and it uses real exam questions. good once you have the method and want to see harder wording." href="https://www.youtube.com/watch?v=aTB2pdLvIqw" target="_blank" rel="noopener">
         <span class="tib-watch-play">&#9654;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequalities, top grade series</h4>
@@ -1595,7 +1697,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://thirdspacelearning.com/gcse-maths/algebra/quadratic-inequalities/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice reading" data-topic="1.1" data-search="✎ quadratic inequalities: steps, examples and worksheet third space learning · reading and practice reading practice nine worked examples, then eight questions to try, then three exam questions. if you want one page that takes you from nothing to exam-ready, this is it." href="https://thirdspacelearning.com/gcse-maths/algebra/quadratic-inequalities/" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequalities: steps, examples and worksheet</h4>
@@ -1605,7 +1707,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://www.examsolutions.net/tutorials/exam-questions-quadratic-inequalities/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice" data-topic="1.1" data-search="✎ exam questions: quadratic inequalities examsolutions · 9 past questions, video solutions exam questions worked solutions real past-paper questions from 2008 to 2023, each with a video of someone working it. free, and you do not need an account. this is as close as you get to sitting the real exam." href="https://www.examsolutions.net/tutorials/exam-questions-quadratic-inequalities/" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Exam questions: quadratic inequalities</h4>
@@ -1615,7 +1717,7 @@
         </span>
       </a>
 
-      <a class="tib-watch-item" href="https://corbettmaths.com/2019/09/09/quadratic-inequalities-practice-questions/" target="_blank" rel="noopener">
+      <a class="tib-watch-item" data-kind="practice" data-topic="1.1" data-search="✎ quadratic inequalities: practice questions corbettmaths · 19 questions with answers practice answers included the homework set. nineteen questions, answers on the same page, mark yourself and bring in anything that did not come out." href="https://corbettmaths.com/2019/09/09/quadratic-inequalities-practice-questions/" target="_blank" rel="noopener">
         <span class="tib-watch-play read">&#9998;</span>
         <span class="tib-watch-body">
           <h4>Quadratic Inequalities: practice questions</h4>
@@ -1626,11 +1728,96 @@
       </a>
 
     </div>
+    </div>
 
     <p class="tib-watch-note"><b>A note on the endpoints.</b> None of the three inequality shorts explains why x = 1 is sometimes included in the answer and sometimes not. Here is the rule. If the question uses &lt; or &gt;, the critical values are <b>out</b>, because at those values the expression equals exactly zero and zero is not less than zero. If it uses &le; or &ge;, they are <b>in</b>. Slide 8 of the lesson covers this properly.</p>
 
   </div>
 </section>
+
+<script>
+(function () {
+  'use strict';
+  var tools = document.getElementById('watchTools');
+  var search = document.getElementById('watchSearch');
+  var count = document.getElementById('watchCount');
+  var empty = document.getElementById('watchEmpty');
+  if (!tools || !search) return;
+
+  var items = [].slice.call(document.querySelectorAll('.tib-watch-item'));
+  var bands = [].slice.call(document.querySelectorAll('.tib-watch-band'));
+  var chips = [].slice.call(document.querySelectorAll('.tib-watch-chip'));
+  var total = items.length;
+  var filter = 'all';
+
+  /* the bar only appears once the script is running, so a JS failure leaves
+     every resource visible rather than hiding them behind a dead control */
+  tools.classList.add('on');
+
+  function kindOf(el) { return (el.getAttribute('data-kind') || '').split(' '); }
+
+  function matchesFilter(el) {
+    var k = kindOf(el);
+    if (filter === 'all') return true;
+    if (filter === 'short') return k.indexOf('short') > -1;
+    if (filter === 'longvideo') return k.indexOf('video') > -1 && k.indexOf('short') < 0;
+    if (filter === 'reading') return k.indexOf('reading') > -1;
+    if (filter === 'practice') return k.indexOf('practice') > -1;
+    return true;
+  }
+
+  /* Match at the START of a word, not anywhere in the string. Plain substring
+     matching made "ac" hit "practice" and "factoring", which is worse than
+     useless in a search box. Typing "fact" still finds "factoring". */
+  var reCache = {};
+  function termRe(t) {
+    if (!reCache[t]) {
+      reCache[t] = new RegExp('(^|[^a-z0-9])' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    }
+    return reCache[t];
+  }
+  function matchesSearch(el, terms) {
+    if (!terms.length) return true;
+    var hay = el.getAttribute('data-search') || '';
+    for (var i = 0; i < terms.length; i++) { if (!termRe(terms[i]).test(hay)) return false; }
+    return true;
+  }
+
+  function apply() {
+    var terms = search.value.toLowerCase().split(/\s+/).filter(Boolean);
+    var shown = 0;
+    items.forEach(function (el) {
+      var ok = matchesFilter(el) && matchesSearch(el, terms);
+      el.hidden = !ok;
+      if (ok) shown++;
+    });
+    /* a band whose items are all hidden hides its heading too */
+    bands.forEach(function (b) {
+      var any = [].slice.call(b.querySelectorAll('.tib-watch-item')).some(function (i) { return !i.hidden; });
+      b.hidden = !any;
+    });
+    empty.classList.toggle('on', shown === 0);
+    count.textContent = shown === total ? (total + ' resources')
+                      : (shown + ' of ' + total);
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      filter = c.getAttribute('data-filter');
+      chips.forEach(function (o) { o.setAttribute('aria-pressed', o === c ? 'true' : 'false'); });
+      apply();
+    });
+  });
+
+  var t;
+  search.addEventListener('input', function () { clearTimeout(t); t = setTimeout(apply, 120); });
+  search.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { search.value = ''; apply(); }
+  });
+
+  apply();
+})();
+</script>
 
   <!-- Section: footer.html -->
 <!-- ========================================
