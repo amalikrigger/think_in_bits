@@ -682,28 +682,34 @@ kbd {
 <section class="slide duo">
   <p class="eyebrow">Direct instruction · 3 of 9</p>
   <h2>First move, every single time: everything on one side.</h2>
-  <p class="small">Both routes below need the expression compared to <b>zero</b>. Critical values are the values that make it zero, so until one side is 0 there is nothing to find.</p>
+  <p class="small">Both routes below need the expression compared to <b>zero</b>, because a critical value is a value that makes it zero. Until one side is 0, there is nothing to find. <b>This first line is worth a mark on its own.</b></p>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Move the terms across</p>
         <div class="math small">5x ≥ x<sup>2</sup> + 6</div>
+        <div class="small" style="font-family:var(--mono);opacity:.5;margin:0.3vh 0 0.3vh 0.9em">subtract 5x from both sides</div>
         <div class="math small">0 ≥ x<sup>2</sup> − 5x + 6</div>
+        <div class="small" style="font-family:var(--mono);opacity:.5;margin:0.3vh 0 0.3vh 0.9em">read it from the other end</div>
         <div class="math small result">x<sup>2</sup> − 5x + 6 ≤ 0</div>
-        <p class="small">Reading it from the other end turns the symbol around. "0 is greater than or equal to it" is the same claim as "it is less than or equal to 0".</p>
+        <p class="small">Turning the symbol around is not a rule you apply. It is the same sentence read backwards. <b>3 &lt; 5</b> and <b>5 &gt; 3</b> are one fact, not two, so "0 is greater than or equal to it" and "it is less than or equal to 0" say the same thing.</p>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Why not just divide?</p>
         <div class="math small">x<sup>2</sup> &gt; 4x</div>
-        <div class="math small">divide by x &nbsp;→&nbsp; x &gt; 4 &nbsp;<span class="bad">wrong</span></div>
+        <div class="small" style="font-family:var(--mono);opacity:.5;margin:0.3vh 0 0.3vh 0.9em">divide both sides by x</div>
+        <div class="math small">x &gt; 4 &nbsp;<span class="bad">wrong</span></div>
+        <div class="small" style="font-family:var(--mono);opacity:.5;margin:0.3vh 0 0.3vh 0.9em">instead, everything on one side</div>
         <div class="math small">x<sup>2</sup> − 4x &gt; 0 &nbsp;→&nbsp; x(x − 4) &gt; 0</div>
         <div class="math small result">x &lt; 0 or x &gt; 4</div>
-        <p class="small">You do not know whether x is positive or negative, so you do not know whether to flip. Check x = −1: 1 &gt; −4 is true, and dividing throws it away.</p>
+        <p class="small">Check x = −1 in the original: 1 &gt; −4 is true. Dividing threw that answer away.</p>
+        <p class="small" style="margin-top:0.7vh">Two things went wrong. You do not know the sign of x, so you do not know whether to flip. And dividing by x <b>deleted a critical value</b>: x(x − 4) is zero at <b>0 and 4</b>, while x &gt; 4 has only one boundary left.</p>
       </div>
     </div>
   </div>
+  <p class="frag small">Dividing by a <b>number</b> is fine, as long as you flip when it is negative. Dividing by anything with an <b>x</b> in it is not, ever. And when you move terms across, move them to the side that leaves x<sup>2</sup> <b>positive</b>, so the curve opens upward and the sketch is the easy one.</p>
 </section>
 
 <!-- 7 · DI 4 · DUO 1 -->
