@@ -200,6 +200,16 @@
   .tib-math-count { margin-left: 0; width: 100%; }
   .tib-math-search { flex: 1 1 100%; }
 }
+
+/* The hidden attribute is only display:none in the user-agent stylesheet, which
+   any author rule setting display beats. Every element the filter hides sets its
+   own display (.tib-math-card is flex, .tib-cards-grid is grid), so without this
+   the filter marks them hidden and they stay on screen. */
+.tib-math-card[hidden],
+.tib-cards-grid[hidden],
+.tib-topic-heading[hidden],
+.tib-container[hidden],
+.tib-math-tools[hidden] { display: none !important; }
 </style>
 
 <!-- Base styles from shared-components.css -->

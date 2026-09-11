@@ -1007,6 +1007,16 @@
   .tib-math-count { margin-left: 0; width: 100%; }
   .tib-math-search { flex: 1 1 100%; }
 }
+
+/* The hidden attribute is only display:none in the user-agent stylesheet, which
+   any author rule setting display beats. Every element the filter hides sets its
+   own display (.tib-math-card is flex, .tib-cards-grid is grid), so without this
+   the filter marks them hidden and they stay on screen. */
+.tib-math-card[hidden],
+.tib-cards-grid[hidden],
+.tib-topic-heading[hidden],
+.tib-container[hidden],
+.tib-math-tools[hidden] { display: none !important; }
 </style>
 
 <!-- Base styles from shared-components.css -->
@@ -1536,6 +1546,13 @@
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* Same trap as the lesson grid: .tib-watch-item and .tib-watch-list are both
+   display:flex, which overrides the user-agent [hidden] rule. State it. */
+.tib-watch-item[hidden],
+.tib-watch-list[hidden],
+.tib-watch-band[hidden],
+.tib-watch-group[hidden] { display: none !important; }
 </style>
 
 <section id="watch" class="tib-section">
