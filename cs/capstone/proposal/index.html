@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capstone Proposal - Think In Bits</title>
+  <meta name="description" content="Scope your capstone before you build it: pick a track, sort Must from Should from Could, and plan backward from your deadline. CS elective, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Capstone &middot; Step 1</p>
+    <h1>Capstone Proposal</h1>
+    <p class="promise">Say what you're building before you build it</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> About one class period to draft</li>
+      <li><b>Difficulty</b> Varies, it's your project</li>
+    </ul>
+    <p class="lede">Every capstone starts on this page. Before you touch a robot, a laser cutter, or a single line of code for your own project, you write down what you're actually building and how you'll know it's done. That's not busywork standing between you and the fun part. Students who skip it are the ones who discover in week three that they built the wrong thing, or three times as much of the right thing as they had time for. Fifteen minutes here buys you weeks later.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to scope a project so it actually fits the time you have</li>
+      <li>How to sort features into <strong>Must, Should, Could, and Won't</strong>, so you stop over-promising before you start</li>
+      <li>How to plan <strong>backward</strong> from your deadline instead of guessing forward from today</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>An idea. Not a finished one, a direction. This page sharpens it.</li>
+      <li>The four tracks below.</li>
+      <li>The proposal template linked in your Schoology assignment.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. tracks ============ -->
+  <section class="slide">
+    <h2>Pick your track</h2>
+    <p>Every track builds on skills you already have from class. You're not starting from zero.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Track</th><th>Builds on</th></tr></thead>
+      <tbody>
+        <tr><td><b>Robotics &amp; Competition</b></td><td>RoboMaster programming, micro:bit</td></tr>
+        <tr><td><b>Product &amp; Fabrication</b></td><td>3D printing and design, laser cutting</td></tr>
+        <tr><td><b>Software</b></td><td>AI chatbots, vibe coding, Flutter, Raspberry Pi web development</td></tr>
+        <tr><td><b>Media &amp; Documentation</b></td><td>Recording and explaining what the other three tracks are doing</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Media is a real track, not a fallback.</b> The content has to be accurate, and you have to be able to defend it, same standard the class already sets for AI use.</div>
+  </section>
+
+  <!-- ============ 3. skills ============ -->
+  <section class="slide">
+    <h2>Two or more skills</h2>
+    <p>Combine two or more skills from class. One is fine if you're pushing it somewhere genuinely hard, not just using it, but doing something with it that took real problem-solving.</p>
+    <p>A robot choreographed to music and a robot that just drives forward both "use RoboMaster." Only one of those is hard.</p>
+  </section>
+
+  <!-- ============ 4. scope it intro ============ -->
+  <section class="slide">
+    <h2>Scope it: the part that saves you</h2>
+    <p>Almost every project that runs out of time ran out of time because nobody wrote down what could be cut. Sort your idea into four buckets before you start building.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Bucket</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Must have</b></td><td>The smallest version that still counts as finished. If you only get this far, you pass.</td></tr>
+        <tr><td><b>Should have</b></td><td>What makes it good, not just working.</td></tr>
+        <tr><td><b>Could have</b></td><td>Nice if there's time. First thing added, last thing missed.</td></tr>
+        <tr><td><b>Won't have this time</b></td><td>Something you're deliberately skipping. Naming it now means nobody expects it later, including you.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 5. scope it practice ============ -->
+  <section class="slide">
+    <h2>Try sorting one</h2>
+    <p>A student proposes a two-week tic-tac-toe app. Which of these belongs in Must have?</p>
+    <div data-widget="choice">
+      <div class="w-opts">
+        <button type="button" data-opt="correct">A working game a friend can actually play</button>
+        <button type="button" data-opt="">Custom sound effects</button>
+        <button type="button" data-opt="">Multiplayer over the internet</button>
+        <button type="button" data-opt="">An AI opponent with three difficulty levels</button>
+      </div>
+      <div class="w-why" hidden><b>A working game a friend can play.</b> That's the smallest version that still counts as a finished tic-tac-toe app. Sound, online multiplayer, and a tuned AI are all real features, but for a two-week project they belong in Should, Could, or Won't-this-time, not Must.</div>
+    </div>
+    <p>Your own Must list should feel almost too small. That's correct, not a failure. Should and Could are where the ambition lives.</p>
+  </section>
+
+  <!-- ============ 6. timeline ============ -->
+  <section class="slide">
+    <h2>Plan backward</h2>
+    <p>Most people plan forward from today and run out of runway. Planning backward from your deadline works better, because it forces the question that matters: what has to already be true one week before you're done?</p>
+    <div class="twrap"><table>
+      <thead><tr><th>When</th><th>What has to be true</th></tr></thead>
+      <tbody>
+        <tr><td>Final week</td><td>Working, tested, ready to show</td></tr>
+        <tr><td>One week before</td><td>Everything's built. Only polish left</td></tr>
+        <tr><td>Two weeks before</td><td>Your Must list is done and running</td></tr>
+        <tr><td>Week 1</td><td>Whatever you need has arrived, and something is already running, even if it's ugly</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout check"><b>Checkpoint:</b> your timeline names something true at each point, not just a list of tasks.</div>
+  </section>
+
+  <!-- ============ 7. materials ============ -->
+  <section class="slide">
+    <h2>Materials, if you need any</h2>
+    <p>Most projects run entirely on what's already in the lab. If yours needs something specific, a sensor, a print that takes hours, a certain size of acrylic, name it in your proposal now. That's the difference between it being ready when Build starts and you losing a week waiting on it.</p>
+  </section>
+
+  <!-- ============ 8. run out of time ============ -->
+  <section class="slide">
+    <h2>If you run out of time</h2>
+    <p>Say, right now, what the first thing you'd cut is, and what version still works without it. You already answered most of this in your Won't-have list. This just makes sure it's the right thing to cut when it actually happens.</p>
+  </section>
+
+  <!-- ============ 9. inspiration ============ -->
+  <section class="slide">
+    <h2>Need a starting point?</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Track</th><th>Ideas</th></tr></thead>
+      <tbody>
+        <tr><td><b>Robotics &amp; Competition</b></td><td>Design a challenge nobody in class has run yet: parallel park, cup carry, an autonomous duel</td></tr>
+        <tr><td><b>Product &amp; Fabrication</b></td><td><a href="https://www.tinkercad.com/projects" target="_blank" rel="noopener noreferrer">Tinkercad Projects</a>, <a href="https://www.instructables.com/" target="_blank" rel="noopener noreferrer">Instructables</a></td></tr>
+        <tr><td><b>Software</b></td><td><a href="https://www.thinkinbits.site/projects.html" target="_blank" rel="noopener noreferrer">What past students built</a>, <a href="https://www.raspberrypi.com/tutorials/" target="_blank" rel="noopener noreferrer">Raspberry Pi Tutorials</a>, <a href="https://pimylifeup.com/category/projects/" target="_blank" rel="noopener noreferrer">Pi My Life Up</a></td></tr>
+        <tr><td><b>Media &amp; Documentation</b></td><td>Follow another track's build from start to finish, or write a how-to good enough that a stranger could follow it</td></tr>
+      </tbody>
+    </table></div>
+    <p>A local problem is usually a better starting point than a generic one: something in the lab, at school, or on St. Croix that actually bothers you.</p>
+  </section>
+
+  <!-- ============ 10. turn in ============ -->
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <ul class="turnin">
+      <li>The filled proposal template, uploaded as a PDF or DOCX. Not a shared link, the file itself.</li>
+      <li>Every section answered specifically, not with generic filler</li>
+      <li>A Must-have list that's realistic for the time you actually have</li>
+    </ul>
+    <div class="callout note"><b>The full rubric lives in Schoology</b>, in the Capstone folder, so you can check it any time.</div>
+  </section>
+
+  <!-- ============ 11. vocabulary ============ -->
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Scope</b></td><td>What's actually inside a project, as opposed to everything you could imagine adding to it</td></tr>
+        <tr><td><b>MVP</b></td><td>Minimum viable product: the smallest version that still does the job</td></tr>
+        <tr><td><b>Must / Should / Could / Won't</b></td><td>A way to sort features by how essential they are, so a project has a real floor and an honest ceiling</td></tr>
+        <tr><td><b>Iteration</b></td><td>Building a rough version first, then improving it, instead of trying to get it perfect on the first attempt</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 12. troubleshooting ============ -->
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>I don't know what to build.</summary>
+        <div class="fix">Pick a track first, then think about a problem you've actually noticed, in the lab, at school, or on St. Croix. A real annoyance beats a generic idea every time.</div></details>
+      <details><summary>My Must-have list is basically the whole project.</summary>
+        <div class="fix">Cut harder. Ask what the absolute smallest version is that still does the one thing you said it would do. Everything else moves to Should or Could.</div></details>
+      <details><summary>I want to do more than one track.</summary>
+        <div class="fix">Pick the track your core idea lives in. You can still use skills from other tracks, that's normal, the track is about where the bulk of the work happens.</div></details>
+      <details><summary>I'm not sure my idea uses two skills.</summary>
+        <div class="fix">Talk to Mr. Krigger before you submit. It's much easier to adjust scope now than after you've started building.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
+</body>
+</html>
