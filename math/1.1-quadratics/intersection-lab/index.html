@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Intersection Lab | Think In Bits</title>
+<meta name="description" content="Slide a straight line across a curve and watch the algebra keep up. Where a line meets a curve, the discriminant tells you how many answers you get.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --cyan: #00e5ff; --cyan-dark: #0099cc;
+    --bg: #0a0a0a; --bg-end: #1a1a2e;
+    --surface: #1a1a1a; --surface-alt: #0f0f0f; --surface-light: #2a2a2a;
+    --ink: #ffffff; --mist: #b0b0b0; --faint: #666666;
+    --line: rgba(255,255,255,0.08); --line-strong: rgba(255,255,255,0.16);
+    --cyan-10: rgba(0,229,255,0.1); --cyan-30: rgba(0,229,255,0.3);
+    --ok: #4ADE80; --no: #FF7A6B; --warm: #FFC46B; --focus: #6FD8FF;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); min-height: 100vh;
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg-end) 100%);
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif; line-height: 1.5;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 2.2rem 1.5rem 4rem; }
+  .back { display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 0.85rem;
+          color: var(--mist); text-decoration: none; margin-bottom: 1.4rem; }
+  .back:hover { color: var(--cyan); }
+  .eyebrow { font-family: "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: 0.13em;
+             font-size: 0.8rem; color: var(--cyan); margin: 0 0 0.5rem; }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.08;
+    background-image: linear-gradient(100deg, var(--ink) 0%, var(--cyan) 62%, var(--cyan-dark) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0 0.6rem;
+  }
+  .lede { color: var(--mist); font-size: 1.05rem; max-width: 66ch; margin: 0 0 2rem; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem; align-items: start; }
+  .panel { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 20px;
+           padding: 1.2rem 1.3rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .panel + .panel { margin-top: 1.2rem; }
+  .panel h2 { font-size: 1rem; font-weight: 600; margin: 0 0 0.9rem; color: var(--ink); }
+
+  canvas { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 14px;
+           background: var(--surface-alt); touch-action: none; cursor: crosshair; }
+
+  .chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .chip { font-family: "JetBrains Mono", monospace; font-size: 0.85rem; cursor: pointer;
+          background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink);
+          border-radius: 50px; padding: 0.5rem 1rem; }
+  .chip.active { background: var(--cyan-10); border-color: var(--cyan); color: var(--cyan);
+                 box-shadow: 0 8px 20px rgba(0,229,255,0.2); }
+  .chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+  .ctl { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .ctl label { font-family: "JetBrains Mono", monospace; font-size: 0.85rem; color: var(--mist); }
+  .ctl input[type="range"] { flex: 1 1 160px; min-width: 140px; accent-color: var(--cyan); }
+  .ctl .val { font-family: "JetBrains Mono", monospace; font-size: 1.15rem; color: var(--cyan); min-width: 4.2em; }
+
+  .work { font-family: "JetBrains Mono", monospace; font-size: 0.92rem; line-height: 1.95;
+          background: var(--surface-alt); border: 1px solid var(--line); border-left: 4px solid var(--cyan);
+          border-radius: 14px; padding: 0.9rem 1rem; margin-bottom: 0.8rem; overflow-x: auto; }
+  .work .lw { color: var(--faint); }
+  .work b { color: var(--ink); }
+
+  .verdict { font-family: "JetBrains Mono", monospace; font-size: 0.95rem; border-radius: 14px;
+             padding: 0.85rem 1rem; border: 1px solid var(--line-strong); background: var(--surface-alt); }
+  .verdict.two { border-color: var(--ok); color: var(--ok); }
+  .verdict.one { border-color: var(--warm); color: var(--warm); }
+  .verdict.none { border-color: var(--no); color: var(--no); }
+
+  .challenge { margin-top: 0.9rem; border-top: 1px dashed var(--line-strong); padding-top: 0.9rem; }
+  .challenge p { font-size: 0.92rem; color: var(--mist); margin: 0 0 0.7rem; }
+  .cresult { font-family: "JetBrains Mono", monospace; font-size: 0.9rem; margin-top: 0.7rem;
+             padding: 0.7rem 0.9rem; border-radius: 12px; border: 1px dashed var(--line-strong); color: var(--mist); }
+  .cresult.win { border-style: solid; border-color: var(--ok); color: var(--ok); }
+  .cresult.close { border-color: var(--warm); color: var(--warm); }
+
+  .note { margin-top: 1.6rem; border: 1px dashed var(--cyan-30); border-radius: 20px;
+          padding: 1.1rem 1.3rem; color: var(--mist); font-size: 0.93rem; }
+  .note b { color: var(--ink); }
+  .note p { margin: 0 0 0.6rem; }
+  .note p:last-child { margin: 0; }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .wrap { padding: 1.6rem 1.1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../../../math.html">&larr; Back to Math</a>
+  <p class="eyebrow">9709 Pure 1 &middot; 1.1 Quadratics</p>
+  <h1>The Intersection Lab</h1>
+  <p class="lede">Solving a line and a curve together is one question in disguise: where do they touch? Slide the line and watch the algebra keep up. The discriminant of the quadratic you land on tells you how many answers you are going to get, before you work any of them out.</p>
+
+  <div class="layout">
+    <div>
+      <div class="panel">
+        <div class="chips" role="group" aria-label="choose the curve">
+          <button class="chip active" data-curve="circle" type="button">circle: x&sup2; + y&sup2; = 17</button>
+          <button class="chip" data-curve="parabola" type="button">parabola: y = x&sup2; &minus; 3</button>
+        </div>
+        <canvas id="cv" width="760" height="760" aria-label="A curve with a movable straight line crossing it"></canvas>
+        <p style="font-size:0.82rem;color:var(--faint);margin:0.7rem 0 0;font-family:'JetBrains Mono',monospace">
+          drag on the graph to move the line</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel">
+        <h2>The line</h2>
+        <div class="ctl">
+          <label for="cRange" id="cLabel">x + y =</label>
+          <span class="val" id="cVal">5</span>
+          <input type="range" id="cRange" min="-8" max="8" step="0.25" value="5" aria-label="move the line">
+        </div>
+        <div class="chips">
+          <button class="chip" id="bTwo" type="button">Cut it twice</button>
+          <button class="chip" id="bTangent" type="button">Just touch it</button>
+          <button class="chip" id="bMiss" type="button">Miss it</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>The working, one line at a time</h2>
+        <div class="work" id="work"></div>
+        <div class="verdict" id="verdict"></div>
+
+        <div class="challenge">
+          <p><b style="color:var(--ink)">Try it yourself.</b> Move the slider until you think the line is exactly a tangent, then check. Tangency is the &Delta;&nbsp;=&nbsp;0 case, and it is worth being able to feel where it happens.</p>
+          <button class="chip" id="bCheck" type="button">Check my tangent</button>
+          <div class="cresult" id="cresult">Nothing checked yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Why two answers, and not one.</b> A straight line usually crosses a curve in two places, so a pair of simultaneous equations usually has two answer pairs. Stopping after one x-value is half an answer, and every x owes you the matching y that sits directly above or below it on the line.</p>
+    <p><b>Where the discriminant comes in.</b> Substituting the line into the curve always leaves an ordinary quadratic. &Delta; &gt; 0 gives two crossings, &Delta; = 0 gives a tangent, and &Delta; &lt; 0 means the line misses, which is the algebra's way of saying there is no real answer to find.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  var range = document.getElementById('cRange'), cValEl = document.getElementById('cVal');
+  var cLabel = document.getElementById('cLabel');
+  var workEl = document.getElementById('work'), verdictEl = document.getElementById('verdict');
+  var cresult = document.getElementById('cresult');
+  var VIEW = 6.6, S = cv.width / (2 * VIEW), CX = cv.width / 2, CY = cv.height / 2;
+  var curve = 'circle', curC = 5;
+
+  function px(x) { return CX + x * S; }
+  function py(y) { return CY - y * S; }
+  function neg(n) { return n < 0 ? '−' + Math.abs(n) : String(n); }
+  function r2(n) { var v = Math.round(n * 100) / 100; return v === 0 ? 0 : v; }
+
+  /* Circle   x^2 + y^2 = 17 with x + y = c  ->  2x^2 - 2cx + (c^2 - 17) = 0,  D = 136 - 4c^2
+     Parabola y = x^2 - 3   with y = 2x + c  ->  x^2 - 2x - (3 + c) = 0,       D = 16 + 4c    */
+  var MODEL = {
+    circle: {
+      label: 'x + y =', tangentC: Math.sqrt(34), twoC: 5, missC: 7,
+      quad: function (c) { return { a: 2, b: -2 * c, k: c * c - 17 }; },
+      disc: function (c) { return 136 - 4 * c * c; },
+      yOf: function (x, c) { return c - x; },
+      curvePts: function () {
+        var p = [], R = Math.sqrt(17);
+        for (var t = 0; t <= Math.PI * 2 + 0.01; t += 0.02) p.push([R * Math.cos(t), R * Math.sin(t)]);
+        return p;
+      },
+      steps: function (c) {
+        var q = this.quad(c), cs = neg(r2(c));
+        return [['rearrange:', 'y = ' + cs + ' − x'],
+                ['substitute:', 'x² + (' + cs + ' − x)² = 17']];
+      },
+      curveLabel: 'x² + y² = 17'
+    },
+    parabola: {
+      label: 'y = 2x +', tangentC: -4, twoC: 0, missC: -7,
+      quad: function (c) { return { a: 1, b: -2, k: -(3 + c) }; },
+      disc: function (c) { return 16 + 4 * c; },
+      yOf: function (x, c) { return 2 * x + c; },
+      curvePts: function () {
+        var p = [];
+        for (var x = -VIEW; x <= VIEW; x += 0.02) p.push([x, x * x - 3]);
+        return p;
+      },
+      steps: function (c) {
+        /* write "2x - 4" and "(3 - 4)", never "2x + -4" */
+        var v = r2(c);
+        var lineTail = v === 0 ? '' : (v > 0 ? ' + ' + v : ' − ' + Math.abs(v));
+        var brack = v === 0 ? '3' : (v > 0 ? '3 + ' + v : '3 − ' + Math.abs(v));
+        return [['set equal:', 'x² − 3 = 2x' + lineTail],
+                ['one side:', 'x² − 2x − (' + brack + ') = 0']];
+      },
+      curveLabel: 'y = x² − 3'
+    }
+  };
+
+  function roots(c) {
+    var m = MODEL[curve], q = m.quad(c), D = m.disc(c);
+    if (D < -1e-9) return { D: D, xs: [] };
+    if (Math.abs(D) <= 1e-9) return { D: 0, xs: [-q.b / (2 * q.a)] };
+    var s = Math.sqrt(D);
+    return { D: D, xs: [(-q.b - s) / (2 * q.a), (-q.b + s) / (2 * q.a)] };
+  }
+
+  function draw(c, res) {
+    var m = MODEL[curve];
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+    for (var g = -6; g <= 6; g++) {
+      ctx.beginPath(); ctx.moveTo(px(g), py(-VIEW)); ctx.lineTo(px(g), py(VIEW)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(-VIEW), py(g)); ctx.lineTo(px(VIEW), py(g)); ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px(-VIEW), py(0)); ctx.lineTo(px(VIEW), py(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px(0), py(-VIEW)); ctx.lineTo(px(0), py(VIEW)); ctx.stroke();
+
+    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    m.curvePts().forEach(function (p, i) { i ? ctx.lineTo(px(p[0]), py(p[1])) : ctx.moveTo(px(p[0]), py(p[1])); });
+    ctx.stroke();
+
+    ctx.strokeStyle = res.xs.length === 0 ? '#FF7A6B' : (res.xs.length === 1 ? '#FFC46B' : '#4ADE80');
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px(-VIEW), py(m.yOf(-VIEW, c)));
+    ctx.lineTo(px(VIEW), py(m.yOf(VIEW, c)));
+    ctx.stroke();
+
+    ctx.fillStyle = '#ffffff'; ctx.font = '600 22px "JetBrains Mono", monospace';
+    res.xs.forEach(function (x) {
+      var y = m.yOf(x, c);
+      ctx.beginPath(); ctx.arc(px(x), py(y), 8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillText('(' + neg(r2(x)) + ', ' + neg(r2(y)) + ')', px(x) + 14, py(y) - 12);
+    });
+    ctx.fillStyle = 'rgba(0,229,255,0.75)'; ctx.font = '500 21px "JetBrains Mono", monospace';
+    ctx.fillText(m.curveLabel, 16, 32);
+  }
+
+  function term(v, letter) {
+    if (v === 0) return '';
+    var s = v > 0 ? ' + ' : ' − ';
+    var mag = Math.abs(v);
+    return s + (letter && mag === 1 ? '' : mag) + (letter || '');
+  }
+
+  function render() {
+    var m = MODEL[curve], c = curC, res = roots(c), q = m.quad(c);
+    cLabel.textContent = m.label;
+    cValEl.textContent = neg(r2(c));
+    draw(c, res);
+
+    var lead = (q.a === 1 ? 'x²' : q.a + 'x²');
+    var lines = m.steps(c).map(function (s) {
+      return '<span class="lw">' + s[0] + '</span> ' + s[1];
+    });
+    lines.push('<span class="lw">tidy:</span> ' + lead + term(r2(q.b), 'x') + term(r2(q.k)) + ' = 0');
+    lines.push('<span class="lw">&Delta; =</span> ' + neg(r2(res.D)));
+    workEl.innerHTML = lines.join('<br>');
+
+    if (res.xs.length === 2) {
+      verdictEl.className = 'verdict two';
+      verdictEl.textContent = '✓ Δ > 0: two crossings, so two answer pairs. ('
+        + neg(r2(res.xs[0])) + ', ' + neg(r2(m.yOf(res.xs[0], c))) + ') and ('
+        + neg(r2(res.xs[1])) + ', ' + neg(r2(m.yOf(res.xs[1], c))) + ')';
+    } else if (res.xs.length === 1) {
+      verdictEl.className = 'verdict one';
+      verdictEl.textContent = '◐ Δ = 0: the line is a tangent. One answer, twice over: ('
+        + neg(r2(res.xs[0])) + ', ' + neg(r2(m.yOf(res.xs[0], c))) + ')';
+    } else {
+      verdictEl.className = 'verdict none';
+      verdictEl.textContent = '✗ Δ < 0: the line misses the curve, so there is no real answer.';
+    }
+  }
+
+  function setC(c, moveThumb) {
+    curC = c;
+    if (moveThumb) range.value = String(Math.max(-8, Math.min(8, Math.round(c * 4) / 4)));
+    render();
+  }
+
+  range.addEventListener('input', function () { curC = parseFloat(range.value); render(); });
+  document.getElementById('bTwo').addEventListener('click', function () { setC(MODEL[curve].twoC, true); });
+  document.getElementById('bTangent').addEventListener('click', function () { setC(MODEL[curve].tangentC, true); });
+  document.getElementById('bMiss').addEventListener('click', function () { setC(MODEL[curve].missC, true); });
+
+  document.getElementById('bCheck').addEventListener('click', function () {
+    var D = roots(curC).D, t = MODEL[curve].tangentC;
+    if (Math.abs(D) < 1e-9) {
+      cresult.className = 'cresult win';
+      cresult.textContent = '✓ Exactly right. Δ = 0, so this line is a tangent.';
+    } else if (Math.abs(curC - t) <= 0.3 || Math.abs(curC + t) <= 0.3) {
+      cresult.className = 'cresult close';
+      cresult.textContent = 'Close. Δ = ' + neg(r2(D)) + ', so it is still '
+        + (D > 0 ? 'cutting through' : 'missing') + '. Tangency needs Δ exactly 0.';
+    } else {
+      cresult.className = 'cresult';
+      cresult.textContent = 'Δ = ' + neg(r2(D)) + ', so the line is '
+        + (D > 0 ? 'cutting the curve twice' : 'missing the curve') + '. Keep moving it.';
+    }
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.chip[data-curve]'), function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.chip[data-curve]').forEach(function (o) { o.classList.remove('active'); });
+      b.classList.add('active');
+      curve = b.getAttribute('data-curve');
+      cresult.className = 'cresult';
+      cresult.textContent = 'Nothing checked yet.';
+      setC(MODEL[curve].twoC, true);
+    });
+  });
+
+  var dragging = false;
+  cv.addEventListener('pointerdown', function (e) { dragging = true; cv.setPointerCapture(e.pointerId); moveTo(e); });
+  cv.addEventListener('pointermove', function (e) { if (dragging) moveTo(e); });
+  cv.addEventListener('pointerup', function () { dragging = false; });
+  cv.addEventListener('pointercancel', function () { dragging = false; });
+  function moveTo(e) {
+    var r = cv.getBoundingClientRect();
+    var wx = ((e.clientX - r.left) / r.width * cv.width - CX) / S;
+    var wy = (CY - (e.clientY - r.top) / r.height * cv.height) / S;
+    var c = curve === 'circle' ? wx + wy : wy - 2 * wx;
+    setC(Math.max(-8, Math.min(8, Math.round(c * 4) / 4)), true);
+  }
+
+  render();
+  window.__labState = function () {
+    return { curve: curve, c: curC, D: roots(curC).D, verdict: verdictEl.textContent, work: workEl.textContent };
+  };
+  window.__labSetC = function (c) { setC(c, true); };
+  window.__labSetCurve = function (k) { document.querySelector('.chip[data-curve="' + k + '"]').click(); };
+})();
+</script>
+</body>
+</html>
