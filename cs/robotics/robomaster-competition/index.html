@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoboMaster Competition: Design the Game - Think In Bits</title>
+  <meta name="description" content="Your crew designs one event in a real RoboMaster competition, programs it, playtests it, and runs it live. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Robotics &middot; Team project</p>
+    <h1>RoboMaster Competition: Design the Game</h1>
+    <p class="promise">Your crew designs one event. The whole school ends up playing it.</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> The back half of the trimester</li>
+      <li><b>Difficulty</b> Intermediate to advanced, team project</li>
+    </ul>
+    <p class="lede">The RoboMasters have been sitting in this room for a while and nobody has done anything with them yet. That changes now. You and your crew design, build, and run one event in a real competition using our S1 robots: a course, a battle, a race, whatever you invent. You write the rules, you program the robot, you playtest it, and you referee it live. First your own class plays it. Then the other section plays it. Then the whole school does, at a public event you help run.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to design a game that is actually fair: clear scoring, a real way to win, rules that hold up when a stranger plays</li>
+      <li>How to program a <strong>RoboMaster S1 autonomous</strong> routine that runs start to finish with nobody touching a controller</li>
+      <li>How <strong>playtesting</strong> finds the holes in your own rules before an audience does</li>
+      <li>How to run a live event: referee a match, keep score, keep everyone safe</li>
+      <li>Whatever your crew's lead role teaches at real depth: driving, programming, field building, or documentation</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>You must have already completed <strong>RoboMaster: Navigate the Room</strong>, or already know how to drive and code a RoboMaster</li>
+      <li>A RoboMaster S1, charged and activated by Mr. Krigger</li>
+      <li>The RoboMaster app in <strong>Lab</strong> mode. Block coding is the default. Python is there if you want to push further.</li>
+      <li>Field materials for whatever your game needs. Ask, this lab is a makerspace and materials are cheap.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. safety ============ -->
+  <section class="slide">
+    <h2>Safety rules, read before you start</h2>
+    <p>These are non-negotiable. Breaking them on purpose means you lose access to the robots and earn a 0 for the day.</p>
+    <div class="callout warn">
+      <b>Eye protection whenever a blaster is armed.</b> No exceptions, no matter how short the test.
+    </div>
+    <ul>
+      <li><b>Never fire at a person's face.</b> Neither the infrared beam nor gel beads go near anyone's eyes on purpose.</li>
+      <li><b>Gel beads only inside a space built for them</b>, supervised, with a way to clean up. If your game does not specifically need beads, run it on infrared. Hits still register.</li>
+      <li><b>Batteries charge at the charging station.</b> Never swapped mid match without powering the robot down first.</li>
+      <li><b>No robot runs with nobody watching it.</b> Autonomous does not mean unsupervised.</li>
+      <li><b>Report damage, a burn smell, or an injury right away.</b> You will not be in trouble for reporting something. These are the only RoboMaster units this class has.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 3. build one enter others ============ -->
+  <section class="slide">
+    <h2>Build one game, enter others</h2>
+    <p><b>You build one game.</b> Your crew designs, builds, and owns exactly one event. It might use a program. It might not. A game like Capture the Flag or Robot Soccer does not need one, and forcing code into a game that does not want it just makes the game worse.</p>
+    <p><b>You enter other games too</b>, including a set of autonomous events that run all term no matter what anyone designs:</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Event</th><th>What it is</th></tr></thead>
+      <tbody>
+        <tr><td>Precision Return</td><td>Loop the room, stop on the mark, autonomous</td></tr>
+        <tr><td>Line Sprint</td><td>Fastest clean run along a taped line, autonomous</td></tr>
+        <tr><td>Figure 8 Grand Prix, auto division</td><td>The Navigate the Room figure 8, timed, autonomous</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Every crew must enter at least one of these three</b>, hands off, with a working program. That is where the coding requirement actually lives, even on a crew whose own game has no code in it.</div>
+  </section>
+
+  <!-- ============ 4. crew intro ============ -->
+  <section class="slide">
+    <h2>Your crew and your lead role</h2>
+    <p>High School runs four crews of four. Middle School runs three crews of three. Everyone on a crew participates in everything. On top of that, each student leads one area and is graded on it directly.</p>
+    <div class="callout note">Middle School crews of three double up two roles. The crew decides which two combine, and says so in the Game Design Document.</div>
+  </section>
+
+  <!-- ============ 5. role table ============ -->
+  <section class="slide">
+    <h2>The four roles</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Role</th><th>What you own</th><th>You owe</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pilot</b></td><td>Driving</td><td>Every crew member completes a driver run you led &middot; you drive in a live match &middot; you give the safety briefing</td></tr>
+        <tr><td><b>Programmer</b></td><td>The code</td><td>Your Open Events entry runs hands off &middot; tuned twice, with what changed &middot; every crew member has code of their own that runs</td></tr>
+        <tr><td><b>Engineer</b></td><td>Hardware and field</td><td>Your game's field sets up in under ten minutes &middot; a written pre match check gets used every time &middot; batteries and beads ready on call</td></tr>
+        <tr><td><b>Media and Rules</b></td><td>The document</td><td>Rules and penalties hold up in play &middot; a referee script a substitute could run cold &middot; the recap gets published</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 6. gdd required ============ -->
+  <section class="slide">
+    <h2>The Game Design Document</h2>
+    <p>One form, every crew, turned in twice: a draft before Stage 1, a final version after Stage 2. Test for whether a field is finished: could a referee who has never met you run your game from this page alone?</p>
+    <ul class="turnin">
+      <li><b>Game name and the one line pitch.</b> What the announcer says, what a spectator sees.</li>
+      <li><b>Setup.</b> What you build, roughly how big, what it is made of.</li>
+      <li><b>How to play.</b> Robots per side, match length, what starts and stops the clock.</li>
+      <li><b>How you score and how you win.</b> Every way to earn a point. How a tie is broken.</li>
+      <li><b>Rules and penalties.</b> What is illegal, what it costs, safety rules specific to your game.</li>
+      <li><b>Referee script.</b> What the ref says and does, in order, start to finish.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 7. gdd bonus ============ -->
+  <section class="slide">
+    <h2>Bonus, not required of anyone</h2>
+    <ul>
+      <li>A field diagram drawn to real measurements</li>
+      <li>Program notes, if your game uses one: what it does, when it runs</li>
+    </ul>
+  </section>
+
+  <!-- ============ 8. stages ============ -->
+  <section class="slide">
+    <h2>How the competition runs</h2>
+    <p>Three stages. Each one is bigger than the last, and each one finds problems your rules could not find on their own.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Stage</th><th>When</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td>1. Inside the class</td><td>Oct 13 to Oct 23</td><td>Each section plays every crew's game within its own section. Expect to change something.</td></tr>
+        <tr><td>2. Class against class</td><td>Oct 26 to Nov 13</td><td>Middle School and High School play each other's games.</td></tr>
+        <tr><td>3. The whole school</td><td>Boo Bash 30 Oct, championship week of Nov 16</td><td>Boo Bash is a public demo booth, students design it. The championship is the real event, staff and other classes enter.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout check"><b>Winning a match is worth zero points.</b> Your grade comes from the game you built, the document you wrote, the code you shipped, and the match you ran.</div>
+  </section>
+
+  <!-- ============ 9. base and stretch ============ -->
+  <section class="slide">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>Join a crew, claim a lead role. Research three real robot competitions. Propose and claim your game. Complete the six required Game Design Document fields. Two playtests outside your crew, with a rule changed. Enter an Open Events autonomous program. Drive in a live match. Write code that runs. Referee two matches you are not in. Run your own game live, finished on time.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>Name an idea you tried and rejected, and why. Complete one bonus document field. A third playtest at the next stage up. Your program reads a sensor, line, marker, hit, or sound, and uses a loop or variable. Run your game with an outside team in it. Cover a second crew role and say what you did.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10. turn in ============ -->
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <ul class="turnin">
+      <li><b>Game Design Document</b>, final version, all six required fields</li>
+      <li><b>Two playtest logs</b>: date, who played, what broke, what you changed</li>
+      <li><b>Your Open Events program</b>, plus a short clip of it running hands off</li>
+      <li><b>Proof you drove</b>: a photo or clip from a live match</li>
+      <li><b>Reflection</b> (3 to 5 sentences, every student submits their own): what was your role, what did you do, what would you change</li>
+    </ul>
+    <div class="callout note">Final work is submitted in Schoology. The Game Design Document and playtest logs go in once per crew, the reflection and driving proof go in individually.</div>
+  </section>
+
+  <!-- ============ 11. vocabulary ============ -->
+  <section class="slide">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Autonomous</b></td><td>The robot runs on a program with nobody touching the controls</td></tr>
+        <tr><td><b>Driver control</b></td><td>A person is actively steering the robot with a controller</td></tr>
+        <tr><td><b>Playtest</b></td><td>Having someone who did not write your rules actually play your game, so you find the problems before an audience does</td></tr>
+        <tr><td><b>Vision marker</b></td><td>A printed symbol the robot's camera reads and reacts to</td></tr>
+        <tr><td><b>Armor panel</b></td><td>The six sensors on the S1 that detect a hit</td></tr>
+        <tr><td><b>HP</b></td><td>Hit points, how much damage a robot can take in a battle game before it is out</td></tr>
+        <tr><td><b>Iteration</b></td><td>Writing a rough version of your rules, testing them, then improving them, rather than trying to get them perfect on the first try</td></tr>
+        <tr><td><b>Lead role</b></td><td>The one area of the project you personally own and are graded on, separate from what your whole crew does together</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 12. troubleshooting ============ -->
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>Our game doesn't use any code.</summary>
+        <div class="fix">That is fine. Your crew still enters an Open Events autonomous event, which is where the Programmer role and the individual code requirement live.</div></details>
+      <details><summary>We can't find three real competitions to research.</summary>
+        <div class="fix">Start with the RoboMaster University League and DJI's own 2019 S1 Challenge. Find a third yourself, it does not have to involve a RoboMaster.</div></details>
+      <details><summary>Another crew wants to build the same game as us.</summary>
+        <div class="fix">First crew to turn in a claimed proposal keeps the idea. Change yours, or combine two ideas into something new.</div></details>
+      <details><summary>Our rules fell apart the first time someone else played.</summary>
+        <div class="fix">That is Stage 1 working, not failing. Write down what broke and change it. That change is part of your grade.</div></details>
+      <details><summary>The robot won't connect to the app.</summary>
+        <div class="fix">Check with Mr. Krigger before troubleshooting further, robots are activated on a teacher account and reconnecting sometimes needs that account.</div></details>
+      <details><summary>We're not sure our scoring is actually fair.</summary>
+        <div class="fix">Run it past another crew before your final document is due. If two people can read your rule and land on different winners for the same match, it needs a rewrite.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+</body>
+</html>
