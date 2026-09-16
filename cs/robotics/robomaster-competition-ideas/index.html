@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoboMaster Competition: Idea Catalog - Think In Bits</title>
+  <meta name="description" content="Forty sample RoboMaster S1 competition events across six families: precision driving, vision and sensing, combat, hybrid code-and-drive, crowd events, and no-robot roles. Suggestions, not a menu.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../robomaster-competition/">&larr; RoboMaster Competition</a>
+
+<main class="deck" id="deck">
+
+  <header class="lesson-head">
+    <p class="eyebrow">Robotics &middot; Reference</p>
+    <h1>RoboMaster Competition Idea Catalog</h1>
+    <p class="promise">Forty sample events across six families. A starting point, not a menu.</p>
+    <p class="lede">This is a suggestion list, not a plan. You research, test, and design the actual game your crew builds. Nothing here is assigned. Take one of these, change it, combine two, or ignore the whole list and invent something better. No two crews can build the same game, so once a crew claims one, it belongs to them.</p>
+  </header>
+
+  <section class="slide">
+    <h2>Everything here already works</h2>
+    <p>Every idea on this page uses something the RoboMaster S1 already does, with no extra hardware. Checked on our own robots (2026-09-14): battle mode, the IR laser, the gel bead blaster including firing from an autonomous program, and every configuration the app ships with.</p>
+    <div class="callout note"><b>Mode</b> tells you how it's played. <b>A</b> is autonomous, code only, hands off. <b>D</b> is driver, a person on the controller. <b>H</b> is hybrid, both in the same run. <b>Build</b> is what has to exist in the gym before anyone can play it.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 1: Precision and course driving</h2>
+    <p>The skill is knowing exactly what your robot does when you tell it to move. Autonomous divisions of these are hard because the S1 has no obstacle sensors, so a program is flying blind on dead reckoning. That contrast between the auto run and the driver run is worth building a game around.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Game</th><th>Mode</th><th>What happens</th><th>Build</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><b>Figure 8 Grand Prix</b></td><td>A + D</td><td>The figure 8 grows into a real timed course with obstacles. Two laps, fastest time wins, penalty seconds added for every obstacle touched. Run an auto division and a driver division on the same course so the times sit side by side.</td><td>Cones, boxes, tape</td></tr>
+        <tr><td>2</td><td><b>Precision Return</b></td><td>A</td><td>Loop the space, come back, stop on the mark. Scored in centimeters from the tape, not on time.</td><td>One tape mark</td></tr>
+        <tr><td>3</td><td><b>The Maze</b></td><td>A + D</td><td>Cardboard maze, fastest clean run. Touching a wall is a penalty. Trivial for a driver, brutal for a program, which is exactly the point.</td><td>Cardboard, tape</td></tr>
+        <tr><td>4</td><td><b>Parallel Park</b></td><td>D</td><td>Drive past a taped box, then get fully inside it from a moving start. Strafing with the mecanum wheels beats three point turns. Scored on clearance and time.</td><td>Tape</td></tr>
+        <tr><td>5</td><td><b>Cargo Run</b></td><td>D</td><td>Carry an object across the gym and set it in a zone without tipping it. Sideways movement wins this one.</td><td>A cup or block</td></tr>
+        <tr><td>6</td><td><b>Speed Trap</b></td><td>A + D</td><td>Sprint, then make a mandatory full stop on a line partway down. Cross the line and you're out. Teaches braking distance the hard way.</td><td>Two tape lines</td></tr>
+        <tr><td>7</td><td><b>Limbo</b></td><td>D</td><td>A course of low bars and narrow gaps sized close to the robot. You have to actually know your robot's dimensions.</td><td>PVC or broom handles on cones</td></tr>
+        <tr><td>8</td><td><b>Blind Run</b></td><td>D</td><td>The pilot can't see the field and drives only on the FPV camera feed, or on verbal directions from a teammate who can see. A communication event as much as a driving event.</td><td>A screen and a divider</td></tr>
+        <tr><td>9</td><td><b>Pit Stop Relay</b></td><td>D</td><td>Drive a leg, return to the pit, swap driver or swap the battery, next leg. The Engineer role decides this one, not the Pilot.</td><td>Tape, a pit box</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 2: Vision and sensing</h2>
+    <p>The S1 reads red, blue, and green tape, 44 vision markers (numbers, letters, symbols), people, gestures, poses, claps, and other S1 units. This family is where the coding actually gets interesting, and none of it can be faked with a joystick.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Game</th><th>Mode</th><th>What happens</th><th>Build</th></tr></thead>
+      <tbody>
+        <tr><td>10</td><td><b>Line Sprint</b></td><td>A</td><td>Fastest clean run along a taped line. Leaving the line ends the run. A pure tuning problem.</td><td>Colored tape</td></tr>
+        <tr><td>11</td><td><b>Marker Fork</b></td><td>A</td><td>A line course with forks. A vision marker at each fork says which way to go, and the markers change between heats so the route can't be hard coded.</td><td>Tape, markers</td></tr>
+        <tr><td>12</td><td><b>Combination Lock</b></td><td>A</td><td>Read three number markers placed around the gym, do the arithmetic inside the program, drive to the grid square the answer names.</td><td>Markers, a taped grid</td></tr>
+        <tr><td>13</td><td><b>Scavenger Hunt</b></td><td>A</td><td>Markers hidden around the space. Find them and report the sequence in the right order. Search strategy matters more than speed.</td><td>Markers</td></tr>
+        <tr><td>14</td><td><b>Color Courier</b></td><td>A</td><td>Three colored lines lead to three zones. A marker at the start tells the robot which color to follow that run.</td><td>Red, blue, green tape</td></tr>
+        <tr><td>15</td><td><b>Sentry Duty</b></td><td>A</td><td>The robot never moves. It watches a doorway, detects a person, and reacts: alarm, LEDs, gimbal swing. Entirely code, zero driving, and a real project for a crew that would rather not race.</td><td>Nothing</td></tr>
+        <tr><td>16</td><td><b>Follow the Leader</b></td><td>A</td><td>One robot drives a route. A second robot follows it, tracking a marker taped to its back. Two programs that have to agree with each other.</td><td>One marker</td></tr>
+        <tr><td>17</td><td><b>Traffic Light</b></td><td>A</td><td>A person holds up markers mid course: stop, go, turn. The robot obeys whatever is shown. The crowd controls the run.</td><td>Printed markers</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 3: Combat</h2>
+    <p>Everything here is native to the app. Six robots is the hard ceiling in one battle, all on the same firmware and the same router. Eye protection whenever a blaster is armed, without exception.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Game</th><th>Mode</th><th>What happens</th><th>Build</th></tr></thead>
+      <tbody>
+        <tr><td>18</td><td><b>The Duel</b></td><td>D</td><td>One on one, best of three rounds, ninety seconds each. First five seconds of a round are safe time: move, don't fire. Higher remaining HP takes the round.</td><td>Arena tape</td></tr>
+        <tr><td>19</td><td><b>Team Battle, 3v3 or 4v4</b></td><td>D</td><td>Full team fight. Whichever team still has robots standing, or holds the higher combined HP at time, takes it.</td><td>Arena, cover</td></tr>
+        <tr><td>20</td><td><b>Capture the Flag</b></td><td>D</td><td>A flag zone at each end. Get the other team's flag home. Taking a hit sends you to your corner for a count before you can re-enter.</td><td>Two zones, two flags</td></tr>
+        <tr><td>21</td><td><b>King of the Hill</b></td><td>D</td><td>A taped square in the center. One point per second you hold it alone, ten points per knockout. First to a hundred, or the lead at five minutes. Punishes hiding in a corner.</td><td>Tape, cover</td></tr>
+        <tr><td>22</td><td><b>Shooting Gallery</b></td><td>D</td><td>Solo and timed. Drive the course, hit the targets in the posted order, miss one and go back for it. A strong pick for a stranger at a public booth: ninety seconds and they understand it.</td><td>Targets</td></tr>
+        <tr><td>23</td><td><b>Escort the VIP</b></td><td>D</td><td>One robot is the VIP and can't fire. Its team gets it across the gym while the other team tries to stop it. Asymmetric, so both sides play a different game.</td><td>Lane, cover</td></tr>
+        <tr><td>24</td><td><b>Last Bot Standing</b></td><td>D</td><td>Battle royale. Every robot for itself, and the arena shrinks: a tape boundary moves in every sixty seconds. Leaving the boundary costs HP.</td><td>Movable tape</td></tr>
+        <tr><td>25</td><td><b>Turret Defense</b></td><td>A + D</td><td>One robot is a stationary autonomous sentry defending a zone. Drivers attack it. This is the event that proves an auto program can track and fire, and it pits one crew's code against another crew's hands.</td><td>Zone tape</td></tr>
+        <tr><td>26</td><td><b>Base Assault</b></td><td>D</td><td>Each team defends a base with targets mounted on it. Knock out the enemy base's targets to win. Someone has to attack and someone has to stay home.</td><td>Two bases, targets</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 4: Hybrid, code and driving in the same run</h2>
+    <p>The point of this family is that a crew good at only one half finishes mid pack.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Game</th><th>Mode</th><th>What happens</th><th>Build</th></tr></thead>
+      <tbody>
+        <tr><td>27</td><td><b>The Gauntlet</b></td><td>H</td><td>Five minute cap, two phases back to back with no reset. The program takes the robot down the course and reads the markers, hands off. The moment the last marker is read, the pilot takes over and clears the target gallery on whatever time is left. One combined score. This is DJI's own 2019 competition format.</td><td>Course, markers, targets</td></tr>
+        <tr><td>28</td><td><b>Two Minute Warning</b></td><td>H</td><td>The team drives and scores freely, then for the last thirty seconds hands come off the controls and whatever program is loaded runs. You have to write a program for a situation you can't fully predict.</td><td>Any arena</td></tr>
+        <tr><td>29</td><td><b>Qualify Then Race</b></td><td>H</td><td>Your autonomous time on the course sets your starting position in the driver race. Code buys you a head start.</td><td>Course</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 5: Crowd events</h2>
+    <p>Built for Boo Bash and for the school stage. The test is whether someone who has never seen a RoboMaster understands what's happening within ten seconds.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Game</th><th>Mode</th><th>What happens</th><th>Build</th></tr></thead>
+      <tbody>
+        <tr><td>30</td><td><b>Clap Start</b></td><td>A</td><td>The audience triple claps and the whole field launches at once. The S1 detects claps natively. Costs nothing and it always gets a reaction.</td><td>Nothing</td></tr>
+        <tr><td>31</td><td><b>Gesture Relay</b></td><td>A</td><td>A person gestures, the robot responds, then hands off to the next person in line. The crowd is the controller.</td><td>Nothing</td></tr>
+        <tr><td>32</td><td><b>Dance Off</b></td><td>A</td><td>A programmed routine to a track the crew picks, judged on choreography, timing, and use of the LEDs and gimbal. No driving at any point.</td><td>Speaker</td></tr>
+        <tr><td>33</td><td><b>Robot Soccer</b></td><td>D</td><td>A ball and two goals, two on two. Mecanum wheels make this look good. Nobody needs the rules explained.</td><td>Ball, two goals</td></tr>
+        <tr><td>34</td><td><b>Sumo, block variant</b></td><td>D</td><td>Push a block out of a ring before the other robot does. Robot-on-robot ramming is off the table, see below.</td><td>Ring tape, blocks</td></tr>
+        <tr><td>35</td><td><b>Freestyle</b></td><td>H</td><td>Open division. Ninety seconds, bring anything, the crowd judges. This is where the idea nobody on this list thought of shows up.</td><td>Nothing</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Family 6: Events with no robot in them</h2>
+    <p>Real jobs at a real competition, and a legitimate way to compete if driving isn't your thing. These aren't consolation prizes. Without them the competition doesn't run.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>#</th><th>Role event</th><th>What it is</th></tr></thead>
+      <tbody>
+        <tr><td>36</td><td><b>Field Design</b></td><td>Design and build a course element or arena piece that other crews compete on. Judged on how well it actually plays, which you only find out by watching.</td></tr>
+        <tr><td>37</td><td><b>Head Referee</b></td><td>Own the rulebook for a game, run the matches, handle a disputed call live and defend it.</td></tr>
+        <tr><td>38</td><td><b>Broadcast</b></td><td>Film and commentate a match, cut the recap that goes on the site.</td></tr>
+        <tr><td>39</td><td><b>Scorekeeping System</b></td><td>Build the scoreboard: a page, a spreadsheet, a timer a referee can actually use under pressure. Real software with a real user.</td></tr>
+        <tr><td>40</td><td><b>Pit Crew</b></td><td>Batteries, armor, gel beads, wheels. Run the pre match check that lets a robot on the field. At a whole school event this decides how many matches actually happen.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Not on this list, on purpose</h2>
+    <div class="callout warn">
+      <b>Robot-on-robot sumo by ramming.</b> Damages hardware we can't replace. Push-a-block sumo above is the version that's allowed.
+    </div>
+    <p><b>Anything needing a rooted robot or the laptop Python SDK.</b> The official SDK supports the EP and the Tello, not the S1. Python inside the app's own Lab mode is fair game.</p>
+    <p><b>Anything needing more than six robots on the field at once.</b> Six is the hard ceiling, same firmware, same router.</p>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../robomaster-competition/">Back to RoboMaster Competition</a> &middot; <a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+</body>
+</html>
