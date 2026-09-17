@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raspberry Pi Web Server - Think In Bits</title>
+  <meta name="description" content="Turn a Raspberry Pi into a live web server showing its own CPU, memory, disk and temperature. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Raspberry Pi &middot; Lesson 1</p>
+    <h1>Raspberry Pi Web Server</h1>
+    <p class="promise">Turn a computer the size of a deck of cards into a live website</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 3 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">Right now the Raspberry Pi in front of you is just a small computer. By the end of today it will be a <strong>server</strong>: it will have a web address, and anyone on the school network can type that address into their phone and see a page you built. By the end of the week that page will be showing the Pi's own CPU, memory, disk and temperature, updating live, and it will look good.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>What a <strong>web server</strong> actually is, and how to run one in six lines of code</li>
+      <li>How a page asks a server for data using an <strong>API</strong>, and gets <strong>JSON</strong> back</li>
+      <li>How to reach one computer from another using <strong>SSH</strong></li>
+      <li>How HTML, CSS and JavaScript split the work of a web page between them</li>
+      <li>How to change something on the server and watch it appear in the browser</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>A Raspberry Pi at a monitor station, already set up and on the school network</li>
+      <li>A phone, laptop or Chromebook on the same network, for Day 2</li>
+      <li>A second computer in the lab with a terminal, for the SSH step on Day 2</li>
+      <li>No accounts. No downloads. Nothing to sign up for.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 2. safety ============ -->
+  <section class="slide">
+    <h2>Before you touch the Pi</h2>
+    <ol>
+      <li><b>Power comes out last.</b> Shut the Pi down from the menu before unplugging it. Yanking the power while it is writing to the SD card is the one reliable way to destroy your work.</li>
+      <li><b>The SD card stays in.</b> It is the Pi's whole hard drive. Do not pop it out to see what happens.</li>
+      <li><b>Nothing goes in the ports except what belongs there.</b> The exposed pins along the edge are live.</li>
+      <li><b>Never type a password into a file.</b> Not your Pi password, not the Wi-Fi password, not anything. You will be asked for a password in the terminal on Day 2. That is the only place it goes.</li>
+    </ol>
+    <div class="callout warn"><b>If something goes wrong</b>, stop and tell Mr. Krigger. A Pi that will not boot is a ten-second fix if you say so and a lost week if you do not.</div>
+  </section>
+
+  <!-- ============ 3. day 1 step 1 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 1</p>
+    <h2>Step 1: Find out who you are and where you are</h2>
+    <p>Open the <b>Terminal</b> on the Pi. It is the black rectangle icon on the top bar.</p>
+    <div class="callout note"><b>What is a Terminal?</b> A way to talk to the computer by typing instead of clicking. Same computer, same files, different door. Think of it as texting your Pi instead of tapping icons.</div>
+    <p>Type this and press Enter:</p>
+<pre><code>whoami</code></pre>
+    <p>That prints your username on this Pi. Write it down. You will need it on Day 2. Now type:</p>
+<pre><code>hostname -I</code></pre>
+    <p>That prints your Pi's <strong>IP address</strong>, something like <code>10.0.4.71</code>. <b>Write it on a sticky note and put it on your monitor.</b> Everything on Day 2 depends on it.</p>
+    <div class="callout check"><b>Checkpoint:</b> you have two things written down, your username and your Pi's IP address.</div>
+  </section>
+
+  <section class="slide">
+    <h2>What an IP address is</h2>
+    <p>Your network is a neighborhood and every device on it gets a house number. That is the IP address. When someone types it into a browser they are saying "take me to that house."</p>
+    <p>Your phone has one. The laptop next to you has one. Your Pi has one, and for the next three days it is the only thing standing between your project and everybody else being able to see it.</p>
+  </section>
+
+  <!-- ============ 4. day 1 step 2 ============ -->
+  <section class="slide">
+    <h2>Step 2: Set up your Python workspace</h2>
+    <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>pihealth</code>. First, check whether it is already on your Pi:</p>
+<pre><code>ls ~/pihealth</code></pre>
+    <div class="twrap"><table>
+      <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>A short list: <code>bin</code>, <code>include</code>, <code>lib</code>, <code>pyvenv.cfg</code></td><td>Already built</td><td>Skip to <b>Open it</b></td></tr>
+        <tr><td><code>No such file or directory</code></td><td>Not built yet</td><td>Do <b>Build it</b> first</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Build it.</b> Two commands, one at a time. Wait for the first to finish.</p>
+<pre><code>python3 -m venv ~/pihealth</code></pre>
+<pre><code>~/pihealth/bin/pip install flask psutil</code></pre>
+    <p>The second one downloads for a minute and prints a lot of text. Wait for your prompt to come back.</p>
+    <p><b>Open it.</b> Everyone runs this, whether you just built the workspace or it was already there:</p>
+<pre><code>source ~/pihealth/bin/activate</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(pihealth)</code>.</div>
+  </section>
+
+  <!-- ============ 5. what a venv is ============ -->
+  <section class="slide">
+    <h2>What did you just build?</h2>
+    <p>A <strong>virtual environment</strong>: a box that holds one project's extra Python tools and nothing else. Two tools went in the box. <strong>Flask</strong> lets Python run a website. <strong>psutil</strong> lets Python read the computer's own CPU, memory and temperature.</p>
+    <p>Think of it like a toolbox for one job. The rest of the Pi is not affected, and if you ever wreck it you delete the folder and build a new one in thirty seconds.</p>
+    <div class="callout warn"><b>The thing that catches everyone.</b> Opening the box only lasts for that one Terminal window. Close it, open a new one, and you are back outside the box. The giveaway is <code>(pihealth)</code> missing from your prompt, and the symptom is <code>ModuleNotFoundError: No module named 'flask'</code>. The fix is always the same: run the <code>source</code> line again.</div>
+  </section>
+
+  <!-- ============ 6. day 1 step 3 ============ -->
+  <section class="slide">
+    <h2>Step 3: Make your project folder</h2>
+<pre><code>mkdir -p ~/pi-dashboard/static &amp;&amp; cd ~/pi-dashboard</code></pre>
+    <p>You just made this:</p>
+<pre><code>pi-dashboard/
+├── server.py       ← the Python that runs the server (next step)
+└── static/         ← the files your server hands out
+    └── index.html  ← your actual web page (Step 6)</code></pre>
+    <p>The <code>~</code> means your home folder. Whatever your username is, <code>~</code> points at the right place, so you never have to type the full path.</p>
+  </section>
+
+  <!-- ============ 7. day 1 step 4 ============ -->
+  <section class="slide">
+    <h2>Step 4: Write the smallest web server that works</h2>
+<pre><code>nano server.py</code></pre>
+    <div class="callout note"><b>What is <code>nano</code>?</b> A text editor that lives inside the Terminal. Like Notepad with no window.</div>
+    <p>Type or paste exactly this:</p>
+<pre><code>from flask import Flask
+
+app = Flask(__name__)
+
+@app.route(&quot;/&quot;)
+def home():
+    return &quot;&lt;h1&gt;My Pi is a web server.&lt;/h1&gt;&quot;
+
+app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
+    <p>Save with <kbd>Ctrl</kbd>+<kbd>O</kbd>, then Enter. Exit with <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+    <div class="callout warn"><b>Pasting into the Terminal is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></b>, not <kbd>Ctrl</kbd>+<kbd>V</kbd>. This trips up everyone once.</div>
+  </section>
+
+  <!-- ============ 8. day 1 step 5 ============ -->
+  <section class="slide">
+    <h2>Step 5: Run it</h2>
+<pre><code>python3 server.py</code></pre>
+    <p>The Terminal will print a few lines and then sit there looking frozen. It has not crashed, it is listening.</p>
+    <p>Open <b>Chromium</b> on the Pi and go to:</p>
+<pre><code>http://localhost:5000</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> the browser says <b>My Pi is a web server.</b> That is a real server, running on a real computer, serving a real page. It took six lines.</div>
+    <p><b>To stop it:</b> click the Terminal window and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Remember this. You will need it constantly.</p>
+    <div class="callout note"><b>You will also see a yellow warning</b> about a "development server" and not using it in production. Ignore it. It means this server is built for learning, not for handling a million people at once, which is what you are doing.</div>
+  </section>
+
+  <!-- ============ 9. mini: what a server does ============ -->
+  <section class="slide">
+    <h2>What a server actually does</h2>
+    <p>A server does one thing, over and over, forever:</p>
+    <ol>
+      <li>It waits.</li>
+      <li>Something asks it for a thing. This is a <strong>request</strong>.</li>
+      <li>It sends that thing back. This is a <strong>response</strong>.</li>
+      <li>Go to 1.</li>
+    </ol>
+    <p>Nothing else. When you typed <code>http://localhost:5000</code> into Chromium, the browser sent a request to your Pi. Your six lines of Python caught it, and the <code>return</code> line was the response.</p>
+    <p>Netflix does the same thing. So does Instagram, so does your school's grade portal. They have more lines of code and more computers, but the loop is identical: wait, request, response, repeat.</p>
+    <p>The <code>@app.route("/")</code> line is the part that decides <b>which</b> request. <code>/</code> means the front page. Next you will add a second route, and the server will start answering two different questions.</p>
+  </section>
+
+  <!-- ============ 10. day 1 step 6 ============ -->
+  <section class="slide">
+    <h2>Step 6: Build the real thing</h2>
+    <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>, then reopen the file:</p>
+<pre><code>nano server.py</code></pre>
+    <p>Delete everything in it (hold <kbd>Ctrl</kbd>+<kbd>K</kbd> to cut lines until the file is empty), then type or paste this:</p>
+<pre><code>from flask import Flask, jsonify, send_from_directory
+import psutil
+import subprocess
+import os
+
+STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), &quot;static&quot;)
+
+app = Flask(__name__)
+
+
+@app.route(&quot;/&quot;)
+def home():
+    return send_from_directory(STATIC, &quot;index.html&quot;)
+
+
+@app.route(&quot;/&lt;path:filename&gt;&quot;)
+def other_files(filename):
+    return send_from_directory(STATIC, filename)
+
+
+def temperature_c():
+    try:
+        for group in psutil.sensors_temperatures().values():
+            for reading in group:
+                if getattr(reading, &quot;current&quot;, None) is not None:
+                    return round(float(reading.current), 1)
+    except Exception:
+        pass
+    try:
+        output = subprocess.check_output([&quot;vcgencmd&quot;, &quot;measure_temp&quot;], text=True)
+        return round(float(output.split(&quot;=&quot;)[1].split(&quot;&#x27;&quot;)[0]), 1)
+    except Exception:
+        return None
+
+
+@app.route(&quot;/api/stats&quot;)
+def stats():
+    return jsonify({
+        &quot;cpu&quot;: psutil.cpu_percent(interval=0.2),
+        &quot;memory&quot;: psutil.virtual_memory().percent,
+        &quot;disk&quot;: psutil.disk_usage(&quot;/&quot;).percent,
+        &quot;temperature&quot;: temperature_c()
+    })
+
+
+app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
+    <p>Save: <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter. Exit: <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+    <div class="callout note"><b>What just happened?</b> Your server now answers three different requests. <code>/</code> hands over the file <code>static/index.html</code>. <code>/api/stats</code> hands over four numbers, freshly measured, as text. Anything else gets looked up in your <code>static</code> folder, which is how images and CSS files will work later.</div>
+  </section>
+
+  <!-- ============ 11. day 1 step 7 ============ -->
+  <section class="slide">
+    <h2>Step 7: Write the page</h2>
+<pre><code>nano static/index.html</code></pre>
+    <p>Type or paste:</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;Pi Health&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;h1&gt;Raspberry Pi Health&lt;/h1&gt;
+  &lt;p&gt;CPU: &lt;span id=&quot;cpu&quot;&gt;--&lt;/span&gt;%&lt;/p&gt;
+  &lt;p&gt;Memory: &lt;span id=&quot;memory&quot;&gt;--&lt;/span&gt;%&lt;/p&gt;
+  &lt;p&gt;Disk: &lt;span id=&quot;disk&quot;&gt;--&lt;/span&gt;%&lt;/p&gt;
+  &lt;p&gt;Temperature: &lt;span id=&quot;temperature&quot;&gt;--&lt;/span&gt; C&lt;/p&gt;
+
+  &lt;script&gt;
+    async function refresh() {
+      const response = await fetch(&quot;/api/stats&quot;);
+      const data = await response.json();
+      for (const name of [&quot;cpu&quot;, &quot;memory&quot;, &quot;disk&quot;, &quot;temperature&quot;]) {
+        document.getElementById(name).textContent =
+          data[name] === null ? &quot;--&quot; : Math.round(data[name]);
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 2000);
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    <p>Save and exit, then run it:</p>
+<pre><code>python3 server.py</code></pre>
+    <p>Reload <code>http://localhost:5000</code> in Chromium.</p>
+    <div class="callout check"><b>Checkpoint:</b> four numbers, and they change on their own every two seconds. Open a few browser tabs and watch CPU climb. That is your Pi reporting on itself.</div>
+    <div class="callout note"><b>Temperature showing <code>--</code>?</b> Some Pi models do not report it. Everything else still works. Not your fault, not a bug.</div>
+  </section>
+
+  <!-- ============ 12. mini: the other way ============ -->
+  <section class="slide">
+    <h2>The other way to do this</h2>
+    <p class="daymark">Optional</p>
+    <p>Your page lives in its own file and your Python hands that file over. There is a second way worth seeing once. <b>HTML is just text</b>, and Python is very good at holding text, so you can put the entire page inside the Python file as one long string.</p>
+<pre><code>from flask import Flask, render_template_string
+
+app = Flask(__name__)
+
+PAGE = &quot;&quot;&quot;
+&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Pi Health&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;My page lives inside the Python file.&lt;/h1&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+&quot;&quot;&quot;
+
+
+@app.route(&quot;/&quot;)
+def home():
+    return render_template_string(PAGE)
+
+
+app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
+    <p><code>render_template_string</code> means "here is a page, as text, send it." Compare that to <code>send_from_directory</code>, which means "here is a filename, go find it and send it."</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>HTML in the string</th><th>HTML on its own</th></tr></thead>
+      <tbody>
+        <tr><td>Files to track</td><td>1</td><td>2</td></tr>
+        <tr><td>Editing 200 lines of HTML</td><td>Painful</td><td>Normal</td></tr>
+        <tr><td>Adding a stylesheet or a photo</td><td>Awkward</td><td>Already works</td></tr>
+        <tr><td>Your editor coloring the HTML</td><td>No</td><td>Yes</td></tr>
+      </tbody>
+    </table></div>
+    <p>We used two files because the next project is a whole website with images and a stylesheet, and that is the shape it needs. A one-file server is a real and reasonable thing to build when the page is four lines long.</p>
+  </section>
+
+  <!-- ============ 13. day 2 step 1 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Step 1: Load your dashboard on your phone</h2>
+    <p>Your server has to be running. If you stopped it:</p>
+<pre><code>source ~/pihealth/bin/activate
+cd ~/pi-dashboard
+python3 server.py</code></pre>
+    <p>Now take out your phone, make sure it is on the school network, and type your Pi's IP address and port into the browser:</p>
+<pre><code>http://YOUR-PI-IP:5000</code></pre>
+    <p>So if your sticky note says <code>10.0.4.71</code>, you type <code>http://10.0.4.71:5000</code>.</p>
+    <div class="callout check"><b>Checkpoint:</b> your Pi's dashboard, on your phone, updating live. Nothing is on the internet. Your phone asked your Pi directly, across the room.</div>
+    <div class="callout warn"><b>Loading someone else's numbers?</b> You typed their IP. It happens. Check your sticky note.</div>
+  </section>
+
+  <!-- ============ 14. mini: 0.0.0.0 ============ -->
+  <section class="slide">
+    <h2>Why <code>0.0.0.0</code> was the important part</h2>
+    <p>Look at the last line of <code>server.py</code>:</p>
+<pre><code>app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
+    <p><code>0.0.0.0</code> means <b>answer requests from anywhere on the network, not just from me</b>. If it said <code>127.0.0.1</code> instead, the page would work in Chromium on the Pi and your phone would get nothing.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Address</th><th>What it means</th><th>Works from</th></tr></thead>
+      <tbody>
+        <tr><td><code>http://localhost:5000</code></td><td>this computer, port 5000</td><td>only the Pi itself</td></tr>
+        <tr><td><code>http://10.0.4.71:5000</code></td><td>the device at that house number, port 5000</td><td>any device on the network</td></tr>
+      </tbody>
+    </table></div>
+    <p><strong>Port</strong> 5000 is the door number. One computer can run many servers at once as long as each uses a different door.</p>
+  </section>
+
+  <!-- ============ 15. day 2 step 2 ============ -->
+  <section class="slide">
+    <h2>Step 2: Look at the raw data</h2>
+    <p>On your phone or in Chromium, go to:</p>
+<pre><code>http://YOUR-PI-IP:5000/api/stats</code></pre>
+    <p>You will see something like this, and nothing else:</p>
+<pre><code>{&quot;cpu&quot;:12.5,&quot;disk&quot;:31.2,&quot;memory&quot;:24.8,&quot;temperature&quot;:47.1}</code></pre>
+    <p>Refresh it. The numbers change.</p>
+    <div class="callout check"><b>Checkpoint:</b> you are looking at raw JSON. Screenshot this, you need it for your submission.</div>
+  </section>
+
+  <!-- ============ 16. mini: API and JSON ============ -->
+  <section class="slide">
+    <h2>API and JSON</h2>
+    <p>An <strong>API</strong> is a door on a server that hands back data instead of a web page.</p>
+    <p>Think about ordering food. You do not walk into the kitchen. You tell a waiter what you want, the waiter goes to the kitchen, and the waiter brings back a plate. You never see how the kitchen works and you do not need to.</p>
+    <p><code>/api/stats</code> is the waiter. Your web page is you. The Python function <code>stats()</code> is the kitchen.</p>
+    <p><strong>JSON</strong> is what is on the plate. It is just text, arranged so a program can read it:</p>
+<pre><code>{&quot;cpu&quot;: 12.5, &quot;memory&quot;: 24.8}</code></pre>
+    <p>A name, a colon, a value, commas between them, curly braces around the whole thing. The whole format, start to finish. Almost every app on your phone is passing JSON back and forth all day.</p>
+    <p>Now look at your page again. These three lines are the whole conversation:</p>
+<pre><code>const response = await fetch(&quot;/api/stats&quot;);   // ask the waiter
+const data = await response.json();           // take the plate
+setInterval(refresh, 2000);                   // do it again in 2 seconds</code></pre>
+  </section>
+
+  <!-- ============ 17. day 2 step 3 ============ -->
+  <section class="slide">
+    <h2>Step 3: Connect to your Pi from a different computer</h2>
+    <p><strong>SSH</strong> lets you type commands on your Pi while sitting at a different machine. No monitor, no keyboard on the Pi at all.</p>
+    <p>Go to one of the lab computers. Open its terminal. Type this, using <b>your</b> username and <b>your</b> Pi's IP:</p>
+<pre><code>ssh YOUR-USERNAME@YOUR-PI-IP</code></pre>
+    <p>For example:</p>
+<pre><code>ssh krigger@10.0.4.71</code></pre>
+    <p>The first time, it will ask something like <code>Are you sure you want to continue connecting?</code> Type <b>yes</b> and press Enter. Then it asks for your Pi password.</p>
+    <div class="callout warn"><b>Nothing will appear on screen while you type the password.</b> That is deliberate, so nobody can read it over your shoulder. Type it and press Enter.</div>
+    <div class="callout check"><b>Checkpoint:</b> your prompt changed. It now shows your Pi's name, not the lab computer's. Every command you type from here runs on the Pi.</div>
+  </section>
+
+  <!-- ============ 18. day 2 steps 4 and 5 ============ -->
+  <section class="slide">
+    <h2>Steps 4 and 5: Prove it, then start the server remotely</h2>
+    <p>Still in the SSH window, run:</p>
+<pre><code>hostname</code></pre>
+<pre><code>uptime</code></pre>
+    <p>The first prints your Pi's name. The second prints how long it has been switched on. Neither of those is the computer you are sitting at. To leave:</p>
+<pre><code>exit</code></pre>
+    <p>Now SSH back in and start your server without touching the Pi:</p>
+<pre><code>source ~/pihealth/bin/activate
+cd ~/pi-dashboard
+python3 server.py</code></pre>
+    <p>Then open a browser on the lab computer and go to your Pi's address. You just started a server on a computer across the room and loaded its page. Plenty of people do exactly this for a living.</p>
+    <div class="callout note"><b>Heads up:</b> when you close the SSH window, the server stops with it. That is normal. There are ways around it, and that is a good thing to ask about if you are curious.</div>
+  </section>
+
+  <!-- ============ 19. mini: SSH ============ -->
+  <section class="slide">
+    <h2>What SSH is</h2>
+    <p><strong>SSH</strong> stands for <strong>Secure Shell</strong>. Two halves:</p>
+    <ul>
+      <li><b>Shell</b> is the thing that reads your typed commands. The Terminal is a shell.</li>
+      <li><b>Secure</b> means everything you type is scrambled on the way over, so anyone watching the network sees noise.</li>
+    </ul>
+    <p>That second half is the whole reason it exists. Before SSH, people used a tool called Telnet that sent passwords across the network in plain readable text. If you were on the same network, you could just read them.</p>
+    <p>This is how IT staff fix servers they will never physically see, how your school's tech department reaches every machine in the building from one desk, and how anyone who runs a game server does anything at all.</p>
+  </section>
+
+  <!-- ============ 20. day 3 step 1 and 2 ============ -->
+  <section class="slide">
+    <p class="daymark">Day 3</p>
+    <h2>Step 1: Start the page over</h2>
+    <p>Nothing about the Python changes today. The server already works. You are only replacing the page it hands out. Real web work usually goes this way, with the thing underneath staying put while the thing people see gets redesigned.</p>
+    <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>. Then:</p>
+<pre><code>rm ~/pi-dashboard/static/index.html</code></pre>
+<pre><code>nano ~/pi-dashboard/static/index.html</code></pre>
+    <p>You now have an empty file. Nothing to select, nothing to accidentally delete half of.</p>
+  </section>
+
+  <!-- ============ 21. day 3 the new page ============ -->
+  <section class="slide">
+    <h2>Step 2: Paste the new page</h2>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;title&gt;Pi Health&lt;/title&gt;
+&lt;style&gt;
+  /* =====================================================================
+     THEME BLOCK. Everything you need to restyle this whole page lives
+     between these two lines. Change a value, save, restart, refresh.
+     ===================================================================== */
+  :root {
+    --bg-top:    #0f2027;
+    --bg-bottom: #2c5364;
+    --text:      #ffffff;
+    --muted:     rgba(255, 255, 255, 0.70);
+    --card:      rgba(255, 255, 255, 0.12);
+    --card-edge: rgba(255, 255, 255, 0.18);
+    --track:     rgba(255, 255, 255, 0.15);
+    --ok:        #4ade80;
+    --warn:      #facc15;
+    --hot:       #f87171;
+    --round:     16px;
+    --font:      system-ui, -apple-system, &quot;Segoe UI&quot;, Roboto, sans-serif;
+  }
+  /* ================================================================== */
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 32px 20px;
+    color: var(--text);
+    font-family: var(--font);
+    background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
+  }
+
+  h1 { margin: 0 0 4px; font-size: 28px; }
+  .sub { margin: 0 0 28px; color: var(--muted); font-size: 14px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    max-width: 960px;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: var(--round);
+    border: 1px solid var(--card-edge);
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-4px); }
+
+  .card h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; color: var(--muted); }
+
+  .value { font-size: 42px; font-weight: 700; line-height: 1; }
+  .unit  { font-size: 16px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+
+  .bar {
+    margin-top: 14px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--track);
+    overflow: hidden;
+  }
+  .fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--ok);
+    transition: width 0.4s ease, background 0.4s ease;
+  }
+
+  .warn .fill  { background: var(--warn); }
+  .warn .value { color: var(--warn); }
+  .hot  .fill  { background: var(--hot); }
+  .hot  .value { color: var(--hot); }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;h1&gt;🖥️ Raspberry Pi Health&lt;/h1&gt;
+&lt;p class=&quot;sub&quot;&gt;Live from my Pi. Updates every 2 seconds.&lt;/p&gt;
+
+&lt;div class=&quot;grid&quot;&gt;
+
+  &lt;div class=&quot;card&quot; id=&quot;card-cpu&quot;&gt;
+    &lt;h2&gt;⚡ CPU Usage&lt;/h2&gt;
+    &lt;div&gt;&lt;span class=&quot;value&quot; id=&quot;cpu&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;unit&quot;&gt;%&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;bar&quot;&gt;&lt;div class=&quot;fill&quot; id=&quot;bar-cpu&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;card&quot; id=&quot;card-memory&quot;&gt;
+    &lt;h2&gt;🧠 Memory Used&lt;/h2&gt;
+    &lt;div&gt;&lt;span class=&quot;value&quot; id=&quot;memory&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;unit&quot;&gt;%&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;bar&quot;&gt;&lt;div class=&quot;fill&quot; id=&quot;bar-memory&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;card&quot; id=&quot;card-disk&quot;&gt;
+    &lt;h2&gt;💽 Disk Used&lt;/h2&gt;
+    &lt;div&gt;&lt;span class=&quot;value&quot; id=&quot;disk&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;unit&quot;&gt;%&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;bar&quot;&gt;&lt;div class=&quot;fill&quot; id=&quot;bar-disk&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;card&quot; id=&quot;card-temperature&quot;&gt;
+    &lt;h2&gt;🔥 Temperature&lt;/h2&gt;
+    &lt;div&gt;&lt;span class=&quot;value&quot; id=&quot;temperature&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;unit&quot;&gt;&amp;deg;C&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;bar&quot;&gt;&lt;div class=&quot;fill&quot; id=&quot;bar-temperature&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;script&gt;
+  const CARDS = [
+    { key: &quot;cpu&quot;,         max: 100, warn: 50, hot: 80 },
+    { key: &quot;memory&quot;,      max: 100, warn: 60, hot: 85 },
+    { key: &quot;disk&quot;,        max: 100, warn: 70, hot: 90 },
+    { key: &quot;temperature&quot;, max: 90,  warn: 60, hot: 75 }
+  ];
+
+  async function refresh() {
+    const response = await fetch(&quot;/api/stats&quot;);
+    const data = await response.json();
+
+    for (const card of CARDS) {
+      const reading = data[card.key];
+      const box = document.getElementById(&quot;card-&quot; + card.key);
+      const value = document.getElementById(card.key);
+      const fill = document.getElementById(&quot;bar-&quot; + card.key);
+
+      if (reading === null || reading === undefined) {
+        value.textContent = &quot;--&quot;;
+        fill.style.width = &quot;0%&quot;;
+        continue;
+      }
+
+      value.textContent = Math.round(reading);
+      fill.style.width = Math.min(100, (reading / card.max) * 100) + &quot;%&quot;;
+
+      box.classList.remove(&quot;warn&quot;, &quot;hot&quot;);
+      if (reading &gt;= card.hot) {
+        box.classList.add(&quot;hot&quot;);
+      } else if (reading &gt;= card.warn) {
+        box.classList.add(&quot;warn&quot;);
+      }
+    }
+  }
+
+  refresh();
+  setInterval(refresh, 2000);
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    <p>Save, exit, then run it:</p>
+<pre><code>source ~/pihealth/bin/activate
+cd ~/pi-dashboard
+python3 server.py</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> a dark blue gradient, four frosted cards, big numbers, and a bar under each one that fills up and turns yellow then red as the number climbs. Hover a card and it lifts.</div>
+    <div class="callout warn"><b>Same page as before?</b> Hard refresh with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>. Browsers keep old copies.</div>
+  </section>
+
+  <!-- ============ 22. mini: three new things ============ -->
+  <section class="slide">
+    <h2>The three new things you just used</h2>
+    <p><b>Gradient.</b> Instead of one flat color, a smooth blend between two:</p>
+<pre><code>background: linear-gradient(135deg, #0f2027, #2c5364);</code></pre>
+    <p><code>135deg</code> is the angle. The two <code>#</code> codes are <strong>hex colors</strong>, six characters that mix red, green and blue.</p>
+    <p><b>Grid.</b> Four cards that rearrange themselves depending on screen width:</p>
+<pre><code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));</code></pre>
+    <p>This says "make as many columns as fit, each at least 220px wide." Drag your browser window narrower and watch four columns become two and then one. Nobody wrote a rule for phones. That one line did it. This is called <strong>responsive design</strong>.</p>
+    <p><b>Classes as switches.</b> The color change is not JavaScript drawing anything. The CSS already knows what <code>.hot</code> looks like. JavaScript just adds and removes the label:</p>
+<pre><code>box.classList.add(&quot;hot&quot;);</code></pre>
+    <p>That split matters. CSS handles how things look, JavaScript handles when, and keeping the two apart is what lets a big site stay workable once there are thousands of lines of it.</p>
+  </section>
+
+  <!-- ============ 23. make it yours, the loop ============ -->
+  <section class="slide">
+    <h2>Step 3: Make it yours</h2>
+    <p>Here is the loop you will repeat for the rest of the period:</p>
+    <ol>
+      <li><kbd>Ctrl</kbd>+<kbd>C</kbd> in the Terminal to stop the server</li>
+      <li><code>nano ~/pi-dashboard/static/index.html</code></li>
+      <li>Change something, <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, <kbd>Ctrl</kbd>+<kbd>X</kbd></li>
+      <li><code>python3 ~/pi-dashboard/server.py</code></li>
+      <li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> in the browser</li>
+    </ol>
+    <p>You cannot break anything here that retyping will not fix. Change one thing at a time so you know what did what.</p>
+  </section>
+
+  <!-- ============ 24. level 1 theme block ============ -->
+  <section class="slide">
+    <h2>Level 1: The theme block</h2>
+    <p>Look at the top of your CSS. Everything between the two long comment lines is the theme. Change a value there and it changes everywhere on the page at once, because every rule below reads from it instead of having its own copy of the color.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Variable</th><th>What it controls</th></tr></thead>
+      <tbody>
+        <tr><td><code>--bg-top</code> and <code>--bg-bottom</code></td><td>The two colors the background fades between</td></tr>
+        <tr><td><code>--text</code></td><td>Every piece of normal text</td></tr>
+        <tr><td><code>--muted</code></td><td>Labels and units. Dimmer than <code>--text</code> on purpose</td></tr>
+        <tr><td><code>--card</code></td><td>The card's own fill. <code>rgba</code> because it is see-through</td></tr>
+        <tr><td><code>--card-edge</code></td><td>The thin line around each card</td></tr>
+        <tr><td><code>--track</code></td><td>The empty part of each bar</td></tr>
+        <tr><td><code>--ok</code>, <code>--warn</code>, <code>--hot</code></td><td>Green, yellow and red</td></tr>
+        <tr><td><code>--round</code></td><td>How rounded the corners are. <code>0px</code> is sharp, <code>28px</code> is a pill</td></tr>
+        <tr><td><code>--font</code></td><td>The typeface for the whole page</td></tr>
+      </tbody>
+    </table></div>
+    <p>Try this first, so you can see how far one variable reaches:</p>
+<pre><code>--round: 0px;</code></pre>
+    <p>Save, restart, refresh. Every card went square. You changed one number.</p>
+  </section>
+
+  <!-- ============ 25. theme packs 1 ============ -->
+  <section class="slide">
+    <h2>Level 2: Theme packs</h2>
+    <p>Each of these replaces your whole <code>:root</code> block. Copy one in, restart, look at it. Then take the one you like best and start changing its numbers.</p>
+    <p><b>Terminal.</b> Sharp corners, monospace, the look of a machine that does not care about your feelings.</p>
+<pre><code>  :root {
+    --bg-top:    #000000;
+    --bg-bottom: #0a1a0a;
+    --text:      #d1fae5;
+    --muted:     rgba(209, 250, 229, 0.55);
+    --card:      rgba(34, 197, 94, 0.07);
+    --card-edge: rgba(34, 197, 94, 0.30);
+    --track:     rgba(34, 197, 94, 0.15);
+    --ok:        #22c55e;
+    --warn:      #eab308;
+    --hot:       #ef4444;
+    --round:     4px;
+    --font:      &quot;Courier New&quot;, monospace;
+  }</code></pre>
+    <p><b>Midnight.</b> Purple, soft, easy on the eyes in a dark room.</p>
+<pre><code>  :root {
+    --bg-top:    #16162e;
+    --bg-bottom: #4a1f6b;
+    --text:      #f3e8ff;
+    --muted:     rgba(243, 232, 255, 0.65);
+    --card:      rgba(255, 255, 255, 0.10);
+    --card-edge: rgba(216, 180, 254, 0.28);
+    --track:     rgba(255, 255, 255, 0.14);
+    --ok:        #86efac;
+    --warn:      #fde047;
+    --hot:       #fb7185;
+    --round:     20px;
+    --font:      system-ui, sans-serif;
+  }</code></pre>
+  </section>
+
+  <!-- ============ 26. theme packs 2 ============ -->
+  <section class="slide">
+    <h2>Theme packs, continued</h2>
+    <p><b>Volcano.</b> For a Pi that runs hot and wants you to know it.</p>
+<pre><code>  :root {
+    --bg-top:    #1c0a08;
+    --bg-bottom: #57180f;
+    --text:      #fff7ed;
+    --muted:     rgba(255, 247, 237, 0.62);
+    --card:      rgba(255, 255, 255, 0.09);
+    --card-edge: rgba(255, 170, 120, 0.25);
+    --track:     rgba(255, 255, 255, 0.13);
+    --ok:        #7ee787;
+    --warn:      #fbbf24;
+    --hot:       #ff5c4d;
+    --round:     14px;
+    --font:      system-ui, sans-serif;
+  }</code></pre>
+    <p><b>Sea Glass.</b> Teal and calm. This one looks the most like something a company would ship.</p>
+<pre><code>  :root {
+    --bg-top:    #042f2e;
+    --bg-bottom: #115e59;
+    --text:      #ecfeff;
+    --muted:     rgba(236, 254, 255, 0.66);
+    --card:      rgba(255, 255, 255, 0.11);
+    --card-edge: rgba(153, 246, 228, 0.26);
+    --track:     rgba(255, 255, 255, 0.14);
+    --ok:        #5eead4;
+    --warn:      #fcd34d;
+    --hot:       #fb7185;
+    --round:     18px;
+    --font:      system-ui, sans-serif;
+  }</code></pre>
+  </section>
+
+  <!-- ============ 27. theme packs 3 ============ -->
+  <section class="slide">
+    <h2>Theme packs, last two</h2>
+    <p><b>Slate.</b> Grey, quiet, professional. The boring one, and boring is sometimes correct.</p>
+<pre><code>  :root {
+    --bg-top:    #1e293b;
+    --bg-bottom: #334155;
+    --text:      #f1f5f9;
+    --muted:     rgba(241, 245, 249, 0.60);
+    --card:      rgba(255, 255, 255, 0.07);
+    --card-edge: rgba(255, 255, 255, 0.14);
+    --track:     rgba(255, 255, 255, 0.12);
+    --ok:        #4ade80;
+    --warn:      #facc15;
+    --hot:       #f87171;
+    --round:     10px;
+    --font:      system-ui, sans-serif;
+  }</code></pre>
+    <p><b>Paper.</b> A light theme. Look closely at this one: the text went dark, the cards went white, and the transparent values all flipped. Nothing outside the theme block changed.</p>
+<pre><code>  :root {
+    --bg-top:    #f8fafc;
+    --bg-bottom: #dbe3ec;
+    --text:      #0f172a;
+    --muted:     rgba(15, 23, 42, 0.60);
+    --card:      rgba(255, 255, 255, 0.75);
+    --card-edge: rgba(15, 23, 42, 0.12);
+    --track:     rgba(15, 23, 42, 0.10);
+    --ok:        #16a34a;
+    --warn:      #ca8a04;
+    --hot:       #dc2626;
+    --round:     14px;
+    --font:      system-ui, sans-serif;
+  }</code></pre>
+  </section>
+
+  <!-- ============ 28. why dark ============ -->
+  <section class="slide">
+    <h2>Why nearly every one of these is dark</h2>
+    <p>Your page has to show green, yellow and red and have all three read clearly. Those three colors have nowhere to go on a bright orange or hot pink background, they just turn to mud. Real dashboards, the ones air traffic controllers and network engineers stare at all day, are almost always dark for this reason.</p>
+    <p>If you build a bright theme anyway, check that a red card still shouts at you from across the room. If it does not, the theme is pretty and useless.</p>
+    <p>Build your own palette at <a href="https://coolors.co/">coolors.co</a>. Pick two close colors for the background and keep your green, yellow and red bright.</p>
+  </section>
+
+  <!-- ============ 29. level 3: typeface + moving bg ============ -->
+  <section class="slide">
+    <h2>Level 3: A real typeface, and a background that moves</h2>
+    <p>Free fonts from <a href="https://fonts.google.com/">Google Fonts</a>. Pick one, then add <b>one line</b> in your <code>&lt;head&gt;</code>, above <code>&lt;style&gt;</code>:</p>
+<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;display=swap&quot;&gt;</code></pre>
+    <p>And point the theme at it:</p>
+<pre><code>--font: &quot;Space Grotesk&quot;, system-ui, sans-serif;</code></pre>
+    <p>Swap the font name for any from the site, with <code>+</code> instead of spaces. Keep <code>system-ui, sans-serif</code> on the end. It is the backup, covering the two seconds before the font arrives, or forever if the Wi-Fi is down.</p>
+    <p>Now a background that moves. Add this at the bottom of your CSS, above <code>&lt;/style&gt;</code>:</p>
+<pre><code>@keyframes drift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body {
+  background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom), var(--bg-top));
+  background-size: 400% 400%;
+  animation: drift 18s ease infinite;
+}</code></pre>
+    <p>The gradient is stretched to four times the screen and then slid slowly back and forth. Change <code>18s</code> to <code>4s</code> to see it clearly, then put it back to something calm. A background that races is a background nobody can read in front of.</p>
+  </section>
+
+  <!-- ============ 30. level 3: glow + pulse ============ -->
+  <section class="slide">
+    <h2>Level 3: Glowing numbers and a pulsing alarm</h2>
+    <p>Make the numbers glow:</p>
+<pre><code>.value {
+  text-shadow: 0 0 18px currentColor;
+}</code></pre>
+    <p><code>currentColor</code> means "whatever color this text already is." So the green numbers glow green, and the moment a card goes red the glow goes red too. One line, and it follows your thresholds for free.</p>
+    <p>Make a hot card pulse:</p>
+<pre><code>@keyframes alarm {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.55); }
+  50%      { box-shadow: 0 0 0 14px rgba(248, 113, 113, 0); }
+}
+
+.card.hot {
+  animation: alarm 1.4s ease-out infinite;
+}</code></pre>
+    <p>A ring pushes outward from the card and fades. It only runs on cards your JavaScript has marked <code>hot</code>, so most of the time you will never see it. Good alarms are quiet. Open six browser tabs to drive the CPU up and watch it fire.</p>
+  </section>
+
+  <!-- ============ 31. level 3: clock + stamp ============ -->
+  <section class="slide">
+    <h2>Level 3: A clock, and when the data last arrived</h2>
+    <p>In your HTML, right under the <code>&lt;h1&gt;</code>:</p>
+<pre><code>&lt;p class=&quot;sub&quot;&gt;Live from my Pi &amp;middot; &lt;span id=&quot;clock&quot;&gt;--:--:--&lt;/span&gt;&lt;/p&gt;</code></pre>
+    <p>And at the bottom of your <code>&lt;script&gt;</code>:</p>
+<pre><code>function tick() {
+  document.getElementById(&quot;clock&quot;).textContent =
+    new Date().toLocaleTimeString();
+}
+tick();
+setInterval(tick, 1000);</code></pre>
+    <p>Notice this clock is the <b>browser's</b> time, not the Pi's. It never asks the server anything. If you want the Pi's own time, that is a new key in <code>/api/stats</code>, which is the Stretch.</p>
+    <p>Now show when the data last arrived. Add a line under the grid:</p>
+<pre><code>&lt;p class=&quot;sub&quot; id=&quot;stamp&quot;&gt;Waiting for the first reading.&lt;/p&gt;</code></pre>
+    <p>Then add one line inside <code>refresh()</code>, after the <code>for</code> loop closes:</p>
+<pre><code>document.getElementById(&quot;stamp&quot;).textContent =
+  &quot;Last updated &quot; + new Date().toLocaleTimeString();</code></pre>
+    <p>Now you can tell the difference between "everything is fine" and "the server died three minutes ago and these numbers are stale." Every monitoring tool worth using has this, and it is one line.</p>
+  </section>
+
+  <!-- ============ 32. level 3: layout + photo ============ -->
+  <section class="slide">
+    <h2>Level 3: One big card, and a photo behind everything</h2>
+    <p>Give the page a main character instead of four things shouting equally:</p>
+<pre><code>.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  max-width: 960px;
+}
+
+#card-cpu {
+  grid-column: span 2;
+}
+
+#card-cpu .value {
+  font-size: 72px;
+}</code></pre>
+    <p>CPU now takes two columns and a much bigger number. Put the big card on whichever stat you actually care about.</p>
+    <p>Now a photo. Put an image in your <code>static</code> folder, then:</p>
+<pre><code>body {
+  background-image:
+    linear-gradient(135deg, rgba(15, 32, 39, 0.85), rgba(44, 83, 100, 0.85)),
+    url(&quot;/pi-background.jpg&quot;);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}</code></pre>
+    <p>Two backgrounds stacked: your gradient on top, at 85% opacity, and the photo under it. Without that gradient layer the photo eats your text. Free photos at <a href="https://unsplash.com/">unsplash.com</a>.</p>
+    <div class="callout warn"><b>Filename rule.</b> <code>/pi-background.jpg</code> has to match the real file exactly, lowercase and all. Your server hands out anything in <code>static</code>, so the path starts with a single <code>/</code>.</div>
+  </section>
+
+  <!-- ============ 33. level 3: thresholds ============ -->
+  <section class="slide">
+    <h2>Level 3: Your own warning levels</h2>
+    <p>In the <code>CARDS</code> list at the top of your JavaScript:</p>
+<pre><code>{ key: &quot;cpu&quot;, max: 100, warn: 50, hot: 80 },</code></pre>
+    <p>Set <code>warn</code> to <code>5</code> and restart. The card sits in yellow permanently, forever, no matter what the Pi is doing.</p>
+    <p>An alarm that is always on is worse than no alarm, because people stop looking at it. Real engineers argue about these two numbers for hours. Pick yours on purpose and be ready to say why in your reflection.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Level 3: Everything else</h2>
+    <ul>
+      <li>Swap the emoji in the <code>&lt;h2&gt;</code> lines</li>
+      <li>Put your name, or your Pi's name, in the <code>.sub</code> line</li>
+      <li>Change <code>gap: 18px</code> to <code>gap: 4px</code> and then <code>gap: 40px</code></li>
+      <li>Change <code>translateY(-4px)</code> in <code>.card:hover</code> to <code>scale(1.04)</code></li>
+      <li>Delete a card you do not care about. Delete its line from <code>CARDS</code> too, or the JavaScript will look for something that is not there</li>
+    </ul>
+    <div class="callout note"><b>Before you screenshot it.</b> Step back from the monitor. Can you tell in one second which number is the worst one? If every card looks equally loud, that is a design problem, not a color problem. Make one thing bigger, or make the calm cards quieter.</div>
+  </section>
+
+  <!-- ============ 34. base and stretch ============ -->
+  <section class="slide">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>A working server on your Pi, serving your own dashboard, loading on a device that is not the Pi, with at least <b>two visible changes that are yours</b>. You can explain what <code>/api/stats</code> sends back and who asks for it.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for high school</h4>
+        <p><b>Add a fifth stat, wired all the way through.</b> Not a new color. A new number that does not exist yet, travelling from the Pi's hardware to the screen. Three edits, one in each layer.</p>
+      </div>
+    </div>
+    <p><b>1. Python.</b> In <code>server.py</code>, add a line inside the <code>jsonify({...})</code> block. Uptime in minutes looks like this, and needs <code>import time</code> at the top:</p>
+<pre><code>&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</code></pre>
+    <p>Restart and check <code>/api/stats</code>. <b>If your new name is not in that JSON, stop and fix it before touching the HTML.</b></p>
+    <p><b>2. HTML.</b> Copy one of the four card blocks, paste it at the end of the grid, change all three ids.</p>
+    <p><b>3. JavaScript.</b> Add one line to the <code>CARDS</code> list with a sensible <code>max</code>, <code>warn</code> and <code>hot</code>.</p>
+    <div class="callout note"><b>Uptime is the worked example.</b> Open the <a href="https://psutil.readthedocs.io/">psutil documentation</a> and pick something else: how many processes are running, how many bytes have crossed the network, how many CPU cores are working.</div>
+  </section>
+
+  <!-- ============ 35. hand in ============ -->
+  <section class="slide">
+    <h2>What you hand in</h2>
+    <ul class="turnin">
+      <li>Your two files, <code>server.py</code> and <code>static/index.html</code></li>
+      <li>A screenshot of your dashboard on a device that is not the Pi, address bar showing your Pi's IP</li>
+      <li>A screenshot of <code>/api/stats</code> showing the raw JSON</li>
+      <li>A reflection, 4 to 6 sentences, answering all three questions below</li>
+    </ul>
+    <p>The reflection has to answer: what does <code>/api/stats</code> send back and what asks for it, how often does the page ask and which line decides that, and what did you change and what was the hardest part.</p>
+    <p><b>High school, and middle school going for bonus:</b> name the stat you added and say which two files you had to edit to make it appear.</p>
+    <p>Everything is submitted in Schoology, along with a separate exit ticket.</p>
+  </section>
+
+  <!-- ============ 36. capture ============ -->
+  <section class="slide">
+    <h2>How to capture and hand it in</h2>
+    <p><b>Screenshots.</b> On the Pi, press <kbd>Print Screen</kbd>. It either drops a file into your home folder or opens a small capture window. If nothing happens, open <b>Menu &rarr; Accessories &rarr; Screenshot</b>. On iPhone it is Side button and Volume Up. On Android it is Power and Volume Down. On a Mac it is <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>, and on Windows <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</p>
+    <div class="callout warn"><b>Make sure the address bar is in the shot.</b> Two of your screenshots have to prove <i>where</i> the page was loaded from. Cropped too tight to see the IP, it proves nothing. Capture the whole browser window.</div>
+    <p><b>Finding your files.</b> They are where you made them:</p>
+<pre><code>~/pi-dashboard/server.py
+~/pi-dashboard/static/index.html</code></pre>
+    <p>If you cannot find them, this prints exactly where they are:</p>
+<pre><code>ls ~/pi-dashboard ~/pi-dashboard/static</code></pre>
+    <p><b>Getting them uploaded.</b> The short path is to submit from the Pi itself: open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; pi-dashboard. For a phone screenshot, email it to yourself or log in to Schoology on the phone and upload from the camera roll. If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</p>
+  </section>
+
+  <!-- ============ 37. vocabulary ============ -->
+  <section class="slide">
+    <h2>Words worth knowing</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Server</b></td><td>A computer whose job is to wait for requests and send back responses</td></tr>
+        <tr><td><b>Request</b></td><td>A device asking a server for something</td></tr>
+        <tr><td><b>Response</b></td><td>What the server sends back</td></tr>
+        <tr><td><b>Flask</b></td><td>The Python tool that turns a Python file into a web server</td></tr>
+        <tr><td><b>Route</b></td><td>A line like <code>@app.route("/api/stats")</code> saying which request a function answers</td></tr>
+        <tr><td><b>API</b></td><td>A door on a server that hands back data instead of a web page</td></tr>
+        <tr><td><b>JSON</b></td><td>A text format for data that programs can read, like <code>{"cpu": 45}</code></td></tr>
+        <tr><td><b>IP Address</b></td><td>A device's house number on a network, like <code>10.0.4.71</code></td></tr>
+        <tr><td><b>Port</b></td><td>The door number on that house. Ours is <code>5000</code></td></tr>
+        <tr><td><b>localhost</b></td><td>A name that always means "this computer, right here"</td></tr>
+        <tr><td><b>SSH</b></td><td>Secure Shell. Typing commands on one computer that run on another</td></tr>
+        <tr><td><b>HTML</b></td><td>The structure of a page. What is on it</td></tr>
+        <tr><td><b>CSS</b></td><td>The style of a page. What it looks like</td></tr>
+        <tr><td><b>JavaScript</b></td><td>The behavior of a page. What it does and when</td></tr>
+        <tr><td><b>DOM</b></td><td>The browser's live copy of your HTML, which JavaScript can change</td></tr>
+        <tr><td><b>Virtual Environment</b></td><td>A clean workspace holding one project's Python tools</td></tr>
+        <tr><td><b>psutil</b></td><td>The Python library that reads the computer's own CPU, memory and temperature</td></tr>
+        <tr><td><b>Full-Stack</b></td><td>Working on both the server and the page. You did both</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ============ 38. troubleshooting ============ -->
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>ModuleNotFoundError: No module named 'flask'</summary>
+        <div class="fix">Look at your prompt. Does it start with <code>(pihealth)</code>? If not, run <code>source ~/pihealth/bin/activate</code>. You need this in every new Terminal window.</div></details>
+      <details><summary>Address already in use</summary>
+        <div class="fix">Your server is already running in another Terminal window. Find it and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you cannot find it, run <code>pkill -f server.py</code> and start again.</div></details>
+      <details><summary>The page says Not Found.</summary>
+        <div class="fix">Run <code>ls ~/pi-dashboard/static</code>. If <code>index.html</code> is not in that list, you saved it in the wrong folder.</div></details>
+      <details><summary>My phone cannot load it.</summary>
+        <div class="fix">Three things, in order. Is the phone on the school network? Is the server still running on the Pi? Did you type <code>:5000</code> after the IP address?</div></details>
+      <details><summary>It loads someone else's dashboard.</summary>
+        <div class="fix">You typed their IP. Run <code>hostname -I</code> on your Pi again and fix your sticky note.</div></details>
+      <details><summary>Temperature shows two dashes.</summary>
+        <div class="fix">Some Pi models do not report it. Everything else works. Leave it.</div></details>
+      <details><summary>I changed the page and nothing happened.</summary>
+        <div class="fix">Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>, start it again, then hard refresh with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>.</div></details>
+      <details><summary>Nothing appears when I type my password.</summary>
+        <div class="fix">That is deliberate. The terminal hides password characters so nobody can read them over your shoulder. Type it and press Enter.</div></details>
+      <details><summary>I pasted into nano and it came out mangled.</summary>
+        <div class="fix">Paste in the Terminal is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>. If the file is a mess, delete it and start the file over. It is faster than repairing it.</div></details>
+      <details><summary>I broke it so badly I want to start over.</summary>
+        <div class="fix"><code>rm ~/pi-dashboard/server.py</code> and redo Step 6. This is a normal thing that normal programmers do.</div></details>
+    </div>
+  </section>
+
+  <!-- ============ 39. appendix intro ============ -->
+  <section class="slide">
+    <p class="daymark">Appendix</p>
+    <h2>Setting up a Pi from a blank card</h2>
+    <p><b>Skip this unless Mr. Krigger tells you to do it.</b> The Pis in the lab are already set up, and Day 1 assumes yours boots to a desktop. This appendix is here for the times it does not: a brand new Pi, a card that got wiped, or a class doing the whole build from scratch.</p>
+    <p>There are two walkthroughs below because the lab runs two versions of Raspberry Pi OS. Find out which one you need before you start. If the Pi still boots, open a Terminal and run:</p>
+<pre><code>cat /etc/os-release</code></pre>
+    <p>Look at the <code>VERSION_CODENAME</code> line. It says either <code>bookworm</code> or <code>trixie</code>. If the card is blank and there is nothing to boot, use the Bookworm walkthrough unless you were told otherwise.</p>
+  </section>
+
+  <!-- ============ 40. appendix A ============ -->
+  <section class="slide">
+    <h2>Version A: Bookworm</h2>
+    <p>This is the version most of the lab is running.</p>
+    <p><b>A1. Get the Imager.</b> On any Mac or Windows computer, download and install <a href="https://www.raspberrypi.com/software/">Raspberry Pi Imager</a>. Put the microSD card into that computer.</p>
+    <p><b>A2. Choose the three things.</b> Imager asks three questions. <b>Choose Device</b>, pick the Pi model you are holding, printed on the board. <b>Choose OS</b>, Bookworm is no longer the default so it is a few clicks in: Raspberry Pi OS (other), then the 64-bit Bookworm entry. <b>Choose Storage</b>, pick your SD card.</p>
+    <div class="callout warn"><b>Look hard at the storage list.</b> Imager erases whatever you choose, completely, with no undo. If you see an external drive in that list, make very sure you are not about to pick it.</div>
+  </section>
+
+  <!-- ============ 41. appendix A, customisation ============ -->
+  <section class="slide">
+    <h2>A3: Fill in OS customisation</h2>
+    <p>Imager asks whether you want to customise before writing. <b>Say yes.</b> This is the whole reason setup is easy now.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Field</th><th>What to put</th></tr></thead>
+      <tbody>
+        <tr><td>Hostname</td><td>Something you will recognize, like <code>krigger-pi</code></td></tr>
+        <tr><td>Username</td><td>Your choice. Write it down. There is no default anymore</td></tr>
+        <tr><td>Password</td><td>Your choice. Write it down</td></tr>
+        <tr><td>Wireless LAN</td><td>The network name and password Mr. Krigger gives you</td></tr>
+        <tr><td>Wireless LAN country</td><td><code>US</code></td></tr>
+        <tr><td>Locale and time zone</td><td>Whatever the school is on</td></tr>
+      </tbody>
+    </table></div>
+    <p>Then open the <b>Services</b> tab and turn on <b>Enable SSH</b>, with password authentication.</p>
+    <div class="callout note"><b>This screen replaces three old setup steps at once.</b> It creates your account, joins the Wi-Fi, and turns on remote access, all before the card has ever been in a Pi. Older instructions on the internet tell you to edit a file called <code>wpa_supplicant.conf</code> to join Wi-Fi. That has not worked since 2023.</div>
+    <div class="callout warn"><b>Your password does not go in any file, ever.</b> You typed it here and you wrote it on paper. That is where it lives.</div>
+  </section>
+
+  <!-- ============ 42. appendix A, boot and update ============ -->
+  <section class="slide">
+    <h2>A4 to A7: Write, boot, update, confirm</h2>
+    <p><b>A4.</b> Click <b>Write</b> and wait. This takes several minutes, then verifies what it wrote, which takes several more. Leave it alone.</p>
+    <p><b>A5.</b> Put the card in the Pi, connect the monitor, keyboard and mouse, then plug in the power last. The first boot takes longer than normal and the Pi may restart itself once. Let it.</p>
+    <div class="callout check"><b>Checkpoint:</b> a desktop, and the Wi-Fi icon in the top right shows it is connected.</div>
+  </section>
+
+  <section class="slide">
+    <h2>A6 and A7: Update it, then confirm</h2>
+    <p><b>A6.</b> Open the Terminal and run:</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
+<pre><code>sudo reboot</code></pre>
+    <p>The first command can take fifteen minutes on a fresh card, longer if a whole class is doing it at once. <code>sudo</code> means run as administrator, <code>apt update</code> checks what new versions exist, <code>full-upgrade -y</code> installs them without asking you to confirm each one, and <code>reboot</code> restarts so the updates take effect.</p>
+    <p><b>A7.</b> Confirm it is ready for Day 1:</p>
+<pre><code>whoami</code></pre>
+<pre><code>hostname -I</code></pre>
+    <p>The first prints the username you chose in Imager. The second prints an IP address. If either comes back empty or wrong, fix it now rather than in the middle of Day 1.</p>
+  </section>
+
+  <!-- ============ 43. appendix B ============ -->
+  <section class="slide">
+    <h2>Version B: Trixie</h2>
+    <p>Trixie is the newer Raspberry Pi OS, built on Debian 13. Some of the lab machines run it.</p>
+    <p><b>B1. Everything in A1 through A4 is the same.</b> Same Imager, same three questions, same customisation screen, same Write button. <b>One difference:</b> at Choose OS, Trixie is the default now, so it is the plain Raspberry Pi OS (64-bit) entry at the top. You do not need to go into "other".</p>
+    <p><b>B2.</b> First boot is the same as A5. The desktop looks different from Bookworm, redrawn, so the icons and wallpaper will not match what the student next to you is looking at. Nothing about this project changes because of it.</p>
+    <p><b>B3.</b> Update, identical to A6:</p>
+<pre><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
+<pre><code>sudo reboot</code></pre>
+    <p><b>B4.</b> Confirm, identical to A7. Run <code>whoami</code> and <code>hostname -I</code> and write both down.</p>
+  </section>
+
+  <!-- ============ 44. where things are ============ -->
+  <section class="slide">
+    <h2>Where things are on each desktop</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>What</th><th>Bookworm</th><th>Trixie</th></tr></thead>
+      <tbody>
+        <tr><td>Terminal</td><td colspan="2">The black rectangle icon on the top bar</td></tr>
+        <tr><td>Thonny (Python editor)</td><td colspan="2">Menu &rarr; Programming &rarr; Thonny</td></tr>
+        <tr><td>SSH on or off</td><td colspan="2">Menu &rarr; Preferences &rarr; Raspberry Pi Configuration &rarr; Interfaces</td></tr>
+        <tr><td>Screenshot</td><td><kbd>Print Screen</kbd></td><td><kbd>Print Screen</kbd>, or Menu &rarr; Accessories &rarr; Screenshot</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>If a menu is not where this table says it is</b>, the desktop got rearranged in an update. Say so and Mr. Krigger will fix this table. Everything you do at the Terminal works identically on both versions, and that is a large part of why this project lives at the Terminal.</div>
+  </section>
+
+  <!-- ============ 45. what is different ============ -->
+  <section class="slide">
+    <h2>What is actually different between the two</h2>
+    <p>Short answer, for the curious: almost nothing you will touch.</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>Bookworm</th><th>Trixie</th></tr></thead>
+      <tbody>
+        <tr><td>Debian version underneath</td><td>12</td><td>13</td></tr>
+        <tr><td>Which one Imager offers first</td><td>Under "other"</td><td>The default</td></tr>
+        <tr><td>How the desktop looks</td><td>Older look</td><td>Redrawn</td></tr>
+        <tr><td>Terminal, Python, Flask, SSH</td><td colspan="2">Identical</td></tr>
+        <tr><td>Wi-Fi setup</td><td colspan="2">NetworkManager</td></tr>
+        <tr><td>Default <code>pi</code> / <code>raspberry</code> login</td><td colspan="2">None, on either</td></tr>
+      </tbody>
+    </table></div>
+    <p>Every command in Days 1 through 3 runs the same on both, and that was deliberate. Commands stay stable for decades while menus get redesigned every couple of years, so the commands are the part worth learning.</p>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
+</body>
+</html>

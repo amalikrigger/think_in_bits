@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capstone: Build It for the Web - Think In Bits</title>
+  <meta name="description" content="The capstone route for a project that runs in a browser. Scope it, slice it, build it, host it on your Pi. CS elective, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <header class="lesson-head">
+    <p class="eyebrow">Capstone &middot; Software route</p>
+    <h1>Capstone: Build It for the Web</h1>
+    <p class="promise">Your idea, nobody's instructions, running at an address you can hand to anyone</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> Several weeks of build time</li>
+      <li><b>Difficulty</b> It is up to you</li>
+    </ul>
+    <p class="lede">Everybody in this class does a capstone. This page is for the ones who want theirs to run in a browser. You have already built a site once with every step written out for you, so this is the one where nobody writes the steps: you pick the thing, you work out how to build it, and you ship it. If you have ever wanted to make a game, a tool, or an app that other people can actually open, here is where you do it.</p>
+  </header>
+
+  <section class="slide">
+    <h2>Is this your capstone?</h2>
+    <p>Your capstone can go several directions. Robotics and competition. Product and fabrication, on the laser cutter or the printers. Media and documentation. Or this one, software, where the thing you build runs in a browser.</p>
+    <p><b>Pick this one if</b> you liked building your website more than you expected to, or you already have something in your head that you wish existed and it is a game, a tool, a page or an app.</p>
+    <p><b>Do not pick this one</b> because it sounds easier. It is not. Ask anybody who has tried to make Chess work.</p>
+    <p>You are not locked in until your proposal is approved, so if you are torn, talk to Mr. Krigger before you commit.</p>
+    <div class="callout note">Start with the <a href="../proposal/">Capstone Proposal</a> and the <a href="../project/">Capstone</a> lesson. This page is the extra guidance for the software route.</div>
+  </section>
+
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to take an idea from a sentence to a working thing, which is harder than any single piece of code in it</li>
+      <li>How to cut <strong>scope</strong>, the skill that decides whether a project ships or dies</li>
+      <li>How to teach yourself something specific from a tutorial without ending up with code you cannot read</li>
+      <li>How to keep a project alive over several weeks instead of one afternoon</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li><b>A finished website lesson.</b> This one assumes you have already built and hosted a site once</li>
+      <li>VS Code on one of the lab computers</li>
+      <li>A jump drive, and your Raspberry Pi still running</li>
+      <li>An approved capstone proposal saying this is what you are doing</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>What counts</h2>
+    <p>Anything that runs in a browser and does something.</p>
+    <p><b>Games.</b> Students in this class have built Chess, Tetris, Snake, Flappy Bird and Candy Crush. Go look at <a href="../../../projects.html">the projects page</a>. Those were built by people sitting where you are sitting.</p>
+    <p><b>Tools.</b> A thing that does a job somebody actually has. A printer queue for the lab. A study timer. A grade calculator. A tide and conditions page. A hurricane prep checklist your family would use.</p>
+    <p><b>Sites with something behind them.</b> A page that talks to your Pi. A scoreboard that survives a refresh. A page that pulls live data from somewhere.</p>
+    <div class="callout note"><b>The bar for a capstone</b>, as opposed to a regular assignment: it does something real for somebody who is not you, and it is a genuine step past what you could already do in September. A page with your name and three photos on it is a fine assignment and not a capstone.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Two routes, both legitimate</h2>
+    <p><b>From scratch.</b> You know roughly how to build it and you want to work it out yourself. Slower at the start, and you will understand every line.</p>
+    <p><b>Following a tutorial.</b> You want to build Chess, so you find a Chess tutorial and follow it. This is a real way to learn and professionals do it constantly.</p>
+    <p><b>If you take the tutorial route, two conditions.</b></p>
+    <ol>
+      <li><b>Finish somewhere the tutorial did not.</b> Add a feature, change how it works, restyle it completely, make it do something the video never mentioned. A capstone that ends exactly where a YouTube video ends is a transcription, not a project.</li>
+      <li><b>You can explain what you typed.</b> Same walkthrough as last time. Mr. Krigger will point at parts of your code and ask what they do.</li>
+    </ol>
+    <p>Tell Mr. Krigger which tutorial you are following on day one, so he can tell you if it is teaching you something from 2013.</p>
+  </section>
+
+  <section class="slide">
+    <h2>The AI rule</h2>
+    <div class="callout note"><b>Where to look:</b> <a href="https://www.w3schools.com/">W3Schools</a> for a quick example, <a href="https://developer.mozilla.org/">MDN</a> for the real explanation, <a href="https://www.freecodecamp.org/learn/responsive-web-design/">freeCodeCamp</a> for a full course. For a specific build, search the thing plus "javascript tutorial" and pick one with a date on it.</div>
+    <p>Same as every assignment in this class, and it matters more here because the project is bigger.</p>
+    <p><b>No AI until your first working version exists and Mr. Krigger has seen it.</b> After that you can use it to push further, with two conditions: you say what you used it for, and you can explain every line of it on demand.</p>
+    <p>On a capstone there is a third thing worth saying plainly. The capstone rubric gives a quarter of the marks for explaining your work and a further chunk for creativity and ambition. Neither of those can be generated. A project that was mostly typed by a machine scores badly on nearly half the rubric before anybody looks at whether it runs.</p>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Week 1</p>
+    <h2>Step 1: Name the vertical slice</h2>
+    <p>A <strong>vertical slice</strong> is one thin piece of the finished thing, working end to end.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Project</th><th>The slice</th><th>Not the slice</th></tr></thead>
+      <tbody>
+        <tr><td>Chess</td><td>A board that draws, and one pawn you can move one square</td><td>All the pieces with legal move rules</td></tr>
+        <tr><td>A study timer</td><td>A countdown that starts, runs and stops</td><td>Presets, history, sound, settings</td></tr>
+        <tr><td>A printer queue</td><td>A list you can add one job to</td><td>Login, editing, deleting, dates</td></tr>
+        <tr><td>A trivia game</td><td>One question, one answer, one right or wrong</td><td>Categories, scores, a leaderboard</td></tr>
+      </tbody>
+    </table></div>
+    <p>The slice is not the easy part. It is the <b>whole path</b>, made narrow: something on screen, something you can do to it, something that happens back.</p>
+    <div class="callout check"><b>Checkpoint:</b> a one-sentence slice, written down and approved.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Name your fallback now</h2>
+    <p>Write down the version of your project you would be satisfied with if everything took twice as long as you think it will.</p>
+    <p>You are writing this now, while you are calm, because the day you need it you will not want to. Nearly every project runs long. Deciding in advance what you would cut is the difference between a finished smaller thing and an unfinished bigger one.</p>
+    <div class="callout check"><b>Checkpoint:</b> a fallback version written down and agreed with Mr. Krigger.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Build the slice</h2>
+    <p>Folder named after the project. VS Code. Same shape you used last time:</p>
+<pre><code>chess/
+├── index.html
+├── styles.css
+├── script.js
+└── assets/</code></pre>
+    <p>Then build the slice and nothing else. Not the menu. Not the colors. Not the sound effects. The slice.</p>
+    <div class="callout check"><b>Checkpoint, end of week 1:</b> your slice runs. Somebody else can do the one thing it does.</div>
+    <div class="callout warn"><b>If the slice is not running at the end of week 1, that is information, not failure.</b> It means the project is bigger than the time. Go to your fallback that day, while there is still time for the fallback to be good.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Weeks 2 and 3</p>
+    <h2>Build it</h2>
+    <p>No steps here. It is your project and nobody knows what it needs except you. What follows is how to work, not what to work on.</p>
+    <p><b>Add one thing at a time, and keep it running.</b> Working, change one thing, working, change one thing. If you change five things and it breaks you have five suspects. Keep a copy of the last version that worked, on your jump drive, every single period.</p>
+    <p><b>Read the console every time something is wrong.</b> <kbd>F12</kbd>, Console tab. It tells you what went wrong and roughly where. Guessing is slower than reading.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Build it, continued</h2>
+    <p><b>Get somebody to use it every week.</b> Not at the end. Every week. Hand them the laptop and say nothing, and write down where they get stuck. You cannot see your own project the way a stranger does.</p>
+    <p><b>Check phone width every period.</b> A layout that collapses at 390px is cheap to fix today and expensive to fix the week of the showcase.</p>
+    <p><b>Keep a short log.</b> Two lines a period: what you did, what broke. When you write the explanation, this log is where that writing comes from.</p>
+    <div class="callout check"><b>Checkpoint, mid block:</b> somebody else has used it and you have fixed what they found.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Week 4</p>
+    <h2>Ship it</h2>
+    <p><b>Step 1. Host it on your Pi.</b> Exactly what you did last time. Jump drive to the Pi, <code>site_server.py</code> pointed at your folder, port 8000, then <code>hostname -I</code> for the address. If you have forgotten a step, it is all in <a href="../../raspberry-pi/first-website/">Your First Real Website</a>, Day 4. Looking up something you have done before is not cheating, it is Tuesday.</p>
+    <div class="callout check"><b>Checkpoint:</b> somebody loads it on their phone from across the room.</div>
+    <p><b>Step 2. Check it the way a stranger would.</b></p>
+    <ul>
+      <li>Every image loads. A missing one is almost always a capital letter in a filename</li>
+      <li>Every link goes somewhere</li>
+      <li>It works on a phone</li>
+      <li>A person who has never seen it knows what to do within a few seconds</li>
+      <li>The console is clean</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Write the explanation</h2>
+    <p>The capstone asks for a written document, and it is a large share of the marks. Cover:</p>
+    <ul>
+      <li><b>What it does.</b> Plain words. No jargon you would have to explain</li>
+      <li><b>How it works.</b> The main pieces and how they fit together</li>
+      <li><b>Which skills you used</b>, and where. Name the file and roughly where in it</li>
+      <li><b>What went wrong</b> and how you worked it out. This section is the most interesting one and students always write the least here. A problem you solved is worth more than a feature that went smoothly</li>
+      <li><b>What you would add</b> with another month</li>
+    </ul>
+    <p><b>Step 4. The walkthrough.</b> Three minutes with your code open. Mr. Krigger points, you explain. Same as last time, higher bar, because this one is yours. For anything AI touched, expect to change it live while he watches.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; every capstone on this route</h4>
+        <p>Your project runs, does what you pitched or what your fallback pitched, is hosted on your Pi and loads on a device that is not the Pi. You wrote the explanation. You can walk through your own code.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for high school</h4>
+        <p><b>Something the browser cannot do on its own.</b> Your project has to reach past a single HTML page.</p>
+      </div>
+    </div>
+    <p>Pick one:</p>
+    <ul>
+      <li><b>Your own API route.</b> Add a route to <code>site_server.py</code> and have your page fetch it: a score that survives a refresh, a visit counter, live data from the Pi</li>
+      <li><b>State that persists.</b> The page remembers something after a reload, using <code>localStorage</code> or your server</li>
+      <li><b>Real data from somewhere else.</b> A public API you fetch from and display, chosen with Mr. Krigger since not all of them are appropriate or free</li>
+      <li><b>Your Pi's own hardware.</b> Your page reads or controls something physical through the Pi</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>What you hand in</h2>
+    <p>Everything the capstone already asks for, plus these:</p>
+    <ul class="turnin">
+      <li>Your project folder, all files</li>
+      <li><code>site_server.py</code></li>
+      <li>The address it was served at</li>
+      <li>A screenshot of it running on a device that is not the Pi, address bar visible</li>
+      <li>Your written explanation, the five sections above</li>
+      <li>If you followed a tutorial: which one, a link, and a paragraph on what you built that it did not</li>
+    </ul>
+    <p>Everything is submitted in Schoology, under your capstone.</p>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>I have no idea what to build.</summary>
+        <div class="fix">Go through <a href="../../../projects.html">the projects page</a> and find the one you wish you had made. Build a different version of that. Nobody starts from nothing.</div></details>
+      <details><summary>My project is too big and I know it.</summary>
+        <div class="fix">Good, that is the useful realization and most people have it too late. Go to your fallback. Today, not next week.</div></details>
+      <details><summary>The tutorial I am following does something I do not understand.</summary>
+        <div class="fix">Stop and look up that one thing before you type more. A tutorial you are copying without understanding is building you a project you cannot defend.</div></details>
+      <details><summary>It worked yesterday and now it does not.</summary>
+        <div class="fix">What changed? If you cannot say, that is the actual problem. Copy back the working version from your jump drive and redo the change one piece at a time.</div></details>
+      <details><summary>I am stuck and I do not know what to search.</summary>
+        <div class="fix">Describe what you want in the plainest words you have, put the language first, and search that. "javascript make a square move when i press arrow keys" finds the answer.</div></details>
+      <details><summary>It works on my laptop but not on the Pi.</summary>
+        <div class="fix">A capital letter in a filename, nearly every time. See the case-sensitivity section in <a href="../../raspberry-pi/first-website/">Your First Real Website</a>, Day 4.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js"></script>
+<script src="../../assets/lesson-widgets.js"></script>
+</body>
+</html>
