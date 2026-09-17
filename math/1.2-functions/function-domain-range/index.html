@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="../../../images/favicon.png">
+<title>What a Function Can Reach</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --cyan: #00e5ff; --cyan-dark: #0099cc;
+    --bg: #0a0a0a; --bg-end: #1a1a2e;
+    --surface: #1a1a1a; --surface-alt: #0f0f0f; --surface-light: #2a2a2a;
+    --ink: #ffffff; --mist: #b0b0b0;
+    --line: rgba(255,255,255,0.08); --line-strong: rgba(255,255,255,0.16);
+    --cyan-10: rgba(0,229,255,0.1); --cyan-30: rgba(0,229,255,0.3); --cyan-03: rgba(0,229,255,0.03);
+    --ok: #4ADE80; --no: #FF7A6B; --focus: #6FD8FF; --warm: #FFC46B;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; color: var(--ink);
+    background: linear-gradient(160deg, var(--bg) 0%, var(--bg-end) 100%);
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.45; overflow: hidden;
+  }
+  .slide { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; padding: 6vh 8vw 11vh; }
+  .slide.active { display: flex; }
+  .slide:not(.active) { pointer-events: none; }
+  .eyebrow { font-family: "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: 0.13em; font-size: clamp(11px, 1.3vw, 15px); color: var(--cyan); margin: 0 0 1.1vh; }
+  .lit { text-transform: none; letter-spacing: 0.04em; }
+  .slide > h1 {
+    font-size: clamp(30px, 5.6vw, 60px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance;
+    background-image: linear-gradient(100deg, var(--ink) 0%, var(--cyan) 62%, var(--cyan-dark) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0 2vh;
+  }
+  h2 { font-size: clamp(22px, 3.2vw, 38px); font-weight: 700; letter-spacing: -0.015em; margin: 0 0 2vh; text-wrap: balance; }
+  p, li { font-size: clamp(15px, 1.9vw, 22px); margin: 0 0 1.3vh; max-width: 68ch; }
+  ul, ol { margin: 0; padding-left: 1.2em; }
+  li { margin-bottom: 1.1vh; }
+  .math { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: clamp(15px, 2vw, 25px); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 14px; padding: 1.1vh 1.1vw; margin: 0 0 1.1vh; max-width: max-content; }
+  .math.tight { margin-bottom: 0.7vh; }
+  .math sup, li sup, p sup { font-size: 0.62em; }
+  .muted { color: var(--mist); }
+  .small { font-size: clamp(13px, 1.5vw, 17px); }
+  .good { color: var(--ok); } .bad { color: var(--no); }
+  .step { font-family: "JetBrains Mono", monospace; color: var(--mist); font-size: 0.72em; }
+  .frag { visibility: hidden; }
+  .frag.on { visibility: visible; }
+  .slide:not(.active) .frag.on { visibility: hidden; }
+  .cols { display: flex; gap: 2.5vw; flex-wrap: wrap; align-items: flex-start; }
+  .cols > div { flex: 1 1 260px; }
+  .card { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 20px; padding: 1.6vh 1.4vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .agenda { display: flex; flex-direction: column; gap: 1vh; margin-top: 1vh; }
+  .agenda .row { display: flex; justify-content: space-between; gap: 2vw; border-bottom: 1px solid var(--line); padding-bottom: 0.8vh; font-size: clamp(14px, 1.8vw, 21px); }
+  .agenda .t { font-family: "JetBrains Mono", monospace; color: var(--cyan); white-space: nowrap; }
+  .slide.dense { padding: 4vh 6vw 10vh; }
+  .slide.dense h2 { font-size: clamp(20px, 2.8vw, 32px); margin-bottom: 1.3vh; }
+  .slide.dense .math { font-size: clamp(13px, 1.7vw, 20px); padding: 0.7vh 0.85vw; margin-bottom: 0.7vh; }
+  .slide.dense .math.tight { margin-bottom: 0.4vh; }
+  .slide.dense .math.small { font-size: clamp(12px, 1.4vw, 15px); }
+  .slide.dense p, .slide.dense li { font-size: clamp(13.5px, 1.65vw, 19px); margin-bottom: 0.8vh; }
+  .slide.dense .small { font-size: clamp(11.5px, 1.35vw, 15px); }
+  .slide.dense .card { padding: 1.1vh 1.1vw; }
+  .slide.dense .step { font-size: 0.68em; }
+  .check { cursor: pointer; border-radius: 12px; }
+  .check:focus-visible { outline: 2px solid var(--focus); }
+  .check .hint { font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); font-family: "JetBrains Mono", monospace; margin: 0 0 1.2vh; }
+  .check .sol { display: none; }
+  .check.open .sol { display: block; }
+  .sol .math { border-left-color: var(--ok); }
+  .toolchip { display: inline-block; font-size: clamp(13px, 1.6vw, 19px); font-weight: 600; background: var(--cyan-10); border: 1px solid var(--cyan); color: var(--cyan); border-radius: 999px; padding: 0.6vh 1.2vw; text-decoration: none; margin: 0.5vh 0.4vw 0 0; box-shadow: 0 8px 20px rgba(0,229,255,0.15); }
+  .plain { background: var(--cyan-03); border: 1px solid var(--cyan-30); border-radius: 20px; padding: 1.3vh 1.4vw; margin: 0 0 1.4vh; max-width: 72ch; }
+  .plain p:last-child { margin-bottom: 0; }
+
+  /* shared widget shell */
+  .widget { margin-top: 1.2vh; background: var(--surface-alt); border: 1px solid var(--line-strong); border-radius: 20px; padding: 1.3vh 1.2vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .widget-label { font-family: "JetBrains Mono", monospace; font-size: clamp(11px, 1.3vw, 13px); color: var(--mist); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8vh; }
+  .widget-types { display: flex; gap: 0.6vw; flex-wrap: wrap; margin-bottom: 1vh; }
+  .u-btn { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.5vw, 16px); cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 0.7vh 1.3vw; }
+  .u-btn.active { background: var(--cyan-10); border-color: var(--cyan); color: var(--cyan); box-shadow: 0 8px 20px rgba(0,229,255,0.2); }
+  .u-btn:focus-visible { outline: 2px solid var(--focus); }
+  .widget-row { display: flex; align-items: center; gap: 1vw; flex-wrap: wrap; margin-bottom: 1vh; }
+  .widget-row label { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.5vw, 16px); color: var(--mist); }
+  .widget-row input[type="range"] { width: min(260px, 36vw); accent-color: var(--cyan); }
+  .widget-row .uval { font-family: "JetBrains Mono", monospace; font-size: clamp(15px, 1.8vw, 20px); color: var(--cyan); min-width: 3.5em; }
+  .verdict { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.6vw, 18px); border-radius: 12px; padding: 0.9vh 1vw; border: 1px solid var(--line-strong); background: var(--surface); margin-bottom: 0.7vh; }
+  .verdict.ok { border-color: var(--ok); color: var(--ok); }
+  .verdict.no { border-color: var(--no); color: var(--no); }
+  .backout { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.5vw, 16px); color: var(--mist); border-radius: 12px; padding: 0.9vh 1vw; border: 1px dashed var(--line-strong); background: var(--surface); }
+  .backout b { color: var(--ink); }
+
+  /* the Range Finder, slide 7 */
+  .lab { display: flex; gap: 1.4vw; align-items: flex-start; flex-wrap: wrap; }
+  .lab-canvas-wrap { flex: 0 0 auto; background: var(--surface-alt); border: 1px solid var(--line-strong); border-radius: 20px; padding: 0.9vh 0.7vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .fig { display: block; width: min(500px, 42vw); height: auto; }
+  @media (max-width: 700px) { .fig { width: min(340px, 78vw); } }
+  #rfCanvas { display: block; width: min(470px, 40vw); height: auto; aspect-ratio: 1 / 1; touch-action: none; border-radius: 12px; }
+  .lab-side { flex: 1 1 300px; min-width: 260px; max-width: 620px; }
+  .lab-controls { display: flex; align-items: center; gap: 0.8vw; flex-wrap: wrap; margin-bottom: 0.9vh; }
+  .lab-controls input[type="range"] { flex: 1 1 140px; min-width: 120px; accent-color: var(--cyan); }
+  .lab-controls .cval { font-family: "JetBrains Mono", monospace; font-size: clamp(14px, 1.7vw, 19px); color: var(--cyan); min-width: 4.6em; }
+  .lab-btn { font-family: "JetBrains Mono", monospace; font-size: clamp(11.5px, 1.3vw, 14px); cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 0.55vh 1vw; }
+  .lab-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .lab-btn:focus-visible { outline: 2px solid var(--focus); }
+  .lab-work { font-family: "JetBrains Mono", monospace; font-size: clamp(11.5px, 1.4vw, 15.5px); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 14px; padding: 0.8vh 0.9vw; margin-bottom: 0.7vh; line-height: 1.75; }
+  .lab-work .lw { color: var(--mist); }
+  .lab-verdict { font-family: "JetBrains Mono", monospace; font-size: clamp(12.5px, 1.5vw, 17px); border-radius: 12px; padding: 0.85vh 1vw; border: 1px solid var(--line-strong); background: var(--surface); }
+  .lab-verdict.two { border-color: var(--ok); color: var(--ok); }
+  .lab-verdict.one { border-color: var(--warm); color: var(--warm); }
+  .lab-verdict.none { border-color: var(--no); color: var(--no); }
+
+  .hud { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; padding: 1.1vh 2vw; border-top: 1px solid var(--line); background: rgba(10,10,10,0.85); backdrop-filter: blur(6px); z-index: 5; }
+  .hud .name { font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); font-family: "JetBrains Mono", monospace; }
+  .hud .nav { display: flex; align-items: center; gap: 8px; }
+  .hud button { font: inherit; cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 5px 14px; font-size: clamp(12px, 1.4vw, 15px); }
+  .hud button:hover { border-color: var(--cyan); color: var(--cyan); }
+  .hud button:focus-visible { outline: 2px solid var(--focus); }
+  .hud .count { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.4vw, 15px); color: var(--mist); min-width: 52px; text-align: center; }
+  .hud .timer { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.5vw, 16px); color: var(--mist); font-variant-numeric: tabular-nums; }
+  .hud .timer.warn { color: var(--no); font-weight: 600; }
+  .hud .timer.paused { opacity: 0.5; }
+
+  /* blank board */
+  .board { position: fixed; inset: 0; background: #05050a; z-index: 30; }
+  .board canvas { width: 100%; height: 100%; touch-action: none; cursor: crosshair; display: block; }
+  .board-hint { position: fixed; left: 50%; bottom: 2.2vh; transform: translateX(-50%); font-family: "JetBrains Mono", monospace; font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); background: rgba(255,255,255,0.06); border: 1px solid var(--line-strong); border-radius: 999px; padding: 0.8vh 1.6vw; }
+
+  /* overview grid */
+  .overview { position: fixed; inset: 0; background: rgba(5,5,10,0.97); z-index: 25; padding: 6vh 5vw; overflow: auto; }
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.4vw; max-width: 1200px; margin: 0 auto; }
+  .ov-card { cursor: pointer; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 16px; padding: 1.6vh 1.2vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .ov-card:hover { border-color: var(--cyan); }
+  .ov-num { font-family: "JetBrains Mono", monospace; color: var(--cyan); font-size: 13px; margin-bottom: 0.6vh; }
+  .ov-title { font-weight: 600; font-size: 15px; }
+
+  /* Phones get the same deck, stacked. A slide that runs past the screen scrolls
+     instead of being cut off, and the lab canvas takes the width it needs once
+     the two-column layout has collapsed. Projector widths are untouched. */
+  @media (max-width: 700px) {
+    .slide { justify-content: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 3.5vh 6vw 13vh; }
+    #rfCanvas { width: min(340px, 78vw); }
+    .lab-side { flex: 1 1 100%; }
+    .widget-row input[type="range"] { width: min(260px, 62vw); }
+  }
+
+  @media print {
+    body { overflow: visible; background: #fff; color: #111; }
+    .slide { display: flex !important; position: static; page-break-after: always; height: 95vh; pointer-events: auto; }
+    .frag, .slide:not(.active) .frag.on { visibility: visible; }
+    .check .sol { display: block; }
+    .hud, .board, .overview { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 1 of 5</p>
+  <h1>What a Function Can Reach</h1>
+  <p class="muted">The domain is handed to you. The range is the part you work out, and it is the part the exam asks for.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now: completing the square, one question</span><span class="t">5 min</span></div>
+    <div class="row"><span>What function, domain and range actually mean</span><span class="t">8 min</span></div>
+    <div class="row"><span>Writing a domain and a range the way the exam marks them</span><span class="t">4 min</span></div>
+    <div class="row"><span>The most common mistake, and the picture that fixes it</span><span class="t">9 min</span></div>
+    <div class="row"><span>The Range Finder</span><span class="t">6 min</span></div>
+    <div class="row"><span>Two worked exam questions</span><span class="t">10 min</span></div>
+    <div class="row"><span>Practice, then the exit ticket</span><span class="t">13 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min</p>
+  <h2>Write this in completed square form, then answer the question under it.</h2>
+  <div class="math">f(x) = x<sup>2</sup> − 4x + 7</div>
+  <p class="small muted">What is the smallest value f(x) can take, and which x gives it?</p>
+  <div class="math frag tight"><span class="step">1 · halve the number in front of x: half of −4 is −2</span>&nbsp; so the bracket is (x − 2)<sup>2</sup></div>
+  <div class="math frag tight"><span class="step">2 · expand that bracket to see what it actually gives</span>&nbsp; (x − 2)<sup>2</sup> = x<sup>2</sup> − 4x + 4</div>
+  <div class="math frag tight"><span class="step">3 · compare with what we want: we need +7, we have +4</span>&nbsp; 7 − 4 = 3, so add 3</div>
+  <div class="math frag tight"><span class="step">4 · put it together</span>&nbsp; f(x) = (x − 2)<sup>2</sup> + 3</div>
+  <div class="math frag tight"><span class="step">5 · a square can never be negative, so the smallest (x − 2)<sup>2</sup> gets is 0</span>&nbsp; and it hits 0 when x − 2 = 0</div>
+  <div class="math frag good">smallest value is 3, at x = 2</div>
+</section>
+
+<!-- 3 · vocabulary -->
+<section class="slide">
+  <p class="eyebrow">The three words</p>
+  <h2>Function, domain, range.</h2>
+  <div class="plain">
+    <p>A <b>function</b> is a rule that takes a number in and gives exactly one number back. One input, one output, every time.</p>
+  </div>
+  <p class="frag"><b>Domain</b> is the set of numbers you are allowed to put in.</p>
+  <p class="frag"><b>Range</b> is the set of numbers that actually come out.</p>
+  <div class="plain frag">
+    <p class="small">Think of a coffee machine. The buttons that actually work are the domain. The drinks that can actually land in the cup are the range. If the machine has a decaf button but no decaf inside it, decaf is not in the range, whatever the button says.</p>
+  </div>
+  <p class="frag"><b>The domain is almost always given to you.</b> It is the phrase sitting after the formula, like <span class="lit">for x ≥ 1</span> or <span class="lit">for x ∈ ℝ</span>. You are being told which buttons work.</p>
+  <p class="frag bad" style="font-weight:600">The range is what you have to work out, and it depends on the domain. Change the domain and the range changes with it.</p>
+</section>
+
+<!-- 4 · notation -->
+<section class="slide dense">
+  <p class="eyebrow">Notation</p>
+  <h2>The same function gets written two ways. Both mean this.</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="step">the one you already know</p>
+      <div class="math tight">f(x) = 2x + 3&nbsp;&nbsp;for x ≥ 0</div>
+      <p class="small">Read it as: f of x equals 2x + 3.</p>
+    </div>
+    <div class="card">
+      <p class="step">the one the exam paper also prints</p>
+      <div class="math tight">f : x ↦ 2x + 3&nbsp;&nbsp;for x ≥ 0</div>
+      <p class="small">Read it as: f maps x to 2x + 3. The arrow with the bar on it does the same job as the equals sign above.</p>
+    </div>
+  </div>
+  <p class="frag" style="margin-top:1.2vh">Same rule, same domain, same answers. If a question hands you the arrow version, rewrite it as f(x) = 2x + 3 on your own paper and carry on.</p>
+  <div class="math frag tight small"><span class="step">both give</span>&nbsp; f(0) = 3,&nbsp; f(1) = 5,&nbsp; f(4) = 11</div>
+  <p class="frag small muted">Cambridge prints ≥ and ≤ in a slightly rounder shape, ⩾ and ⩽. They mean the same thing. Write whichever you write naturally.</p>
+</section>
+
+<!-- 5 · the letter matters -->
+<section class="slide">
+  <p class="eyebrow">Writing it so it scores</p>
+  <h2>A domain is written in x. A range is written in f(x).</h2>
+  <div class="cols">
+    <div class="card">
+      <p class="step">domain: what goes in</p>
+      <div class="math tight good">x &gt; 1</div>
+      <p class="small">The inputs are called x, so the domain is described in x.</p>
+    </div>
+    <div class="card">
+      <p class="step">range: what comes out</p>
+      <div class="math tight good">f(x) ≥ 3</div>
+      <p class="small">The outputs are called f(x), so the range is described in f(x).</p>
+    </div>
+  </div>
+  <p class="frag" style="margin-top:1.2vh"><b>This is worth marks on its own.</b> On a real paper, a question asked for a domain and the answer was x &gt; 1. The mark scheme accepted x &gt; 1. It gave zero for the same thing written as f<sup>−1</sup>(x) &gt; 1.</p>
+  <div class="math frag tight bad"><span class="step">so it is possible to lose the mark like this</span>&nbsp; right numbers, right inequality sign, wrong letter, no mark</div>
+  <p class="frag muted small">Before you write a domain or a range down, read your own line back and ask which of the two you are describing.</p>
+</section>
+
+<!-- 6 · the trap -->
+<section class="slide dense">
+  <p class="eyebrow">The most common mistake on this topic</p>
+  <h2>Putting the two ends in is a guess.</h2>
+  <p class="small">Here is the Do Now function again, this time with a domain attached.</p>
+  <div class="math tight">f(x) = x<sup>2</sup> − 4x + 7&nbsp;&nbsp;for 0 ≤ x ≤ 5</div>
+  <p class="small frag" style="margin-bottom:0.5vh">The tempting move is to put both ends of the domain in and call that the range.</p>
+  <div class="math frag tight small"><span class="step">left end</span>&nbsp; f(0) = 0<sup>2</sup> − 4(0) + 7 = 7</div>
+  <div class="math frag tight small"><span class="step">right end</span>&nbsp; f(5) = 5<sup>2</sup> − 4(5) + 7 = 25 − 20 + 7 = 12</div>
+  <div class="math frag tight bad"><span class="step">which would give</span>&nbsp; 7 ≤ f(x) ≤ 12</div>
+  <p class="frag" style="font-weight:600">That answer is wrong, and the reason is the thing you found in the Do Now.</p>
+  <div class="math frag tight"><span class="step">from the Do Now</span>&nbsp; f(x) = (x − 2)<sup>2</sup> + 3, so the lowest point of this curve is at x = 2</div>
+  <div class="math frag tight"><span class="step">and x = 2 is allowed, because the domain is 0 ≤ x ≤ 5</span>&nbsp; f(2) = 3</div>
+  <p class="frag bad" style="font-weight:600">3 is smaller than both 7 and 12. The curve goes below both ends on the way across, so the two ends never saw the bottom of the range.</p>
+</section>
+
+<!-- 7 · the picture that answers it -->
+<section class="slide dense">
+  <p class="eyebrow">The picture</p>
+  <h2>So where do the top and the bottom actually come from?</h2>
+  <div class="lab">
+    <div class="lab-canvas-wrap">
+      <svg class="fig" viewBox="0 0 560 420" role="img" aria-label="The curve f of x equals x squared minus 4x plus 7, drawn over the domain 0 to 5. Its lowest point is (2, 3). The left end gives f(0) = 7 and the right end gives f(5) = 12, and the right end is farther from the turning point so it climbs higher.">
+<line x1="110.9" y1="46" x2="110.9" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="184.1" y1="46" x2="184.1" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="257.3" y1="46" x2="257.3" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="330.4" y1="46" x2="330.4" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="403.6" y1="46" x2="403.6" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="476.8" y1="46" x2="476.8" y2="330" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="330.0" x2="528" y2="330.0" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="290.6" x2="528" y2="290.6" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="251.1" x2="528" y2="251.1" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="211.7" x2="528" y2="211.7" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="172.2" x2="528" y2="172.2" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="132.8" x2="528" y2="132.8" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="93.3" x2="528" y2="93.3" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="53.9" x2="528" y2="53.9" stroke="rgba(255,255,255,0.06)"/>
+<line x1="78" y1="330" x2="528" y2="330" stroke="rgba(255,255,255,0.32)" stroke-width="2"/>
+<line x1="110.9" y1="46" x2="110.9" y2="330" stroke="rgba(255,255,255,0.32)" stroke-width="2"/>
+<polyline points="78.0,152.5 78.2,152.8 78.5,153.1 78.7,153.4 78.9,153.7 79.2,154.0 79.4,154.3 79.6,154.6 79.9,154.9 80.1,155.2 80.4,155.5 80.6,155.8 80.8,156.1 81.1,156.5 81.3,156.8 81.5,157.1 81.8,157.4 82.0,157.7 82.2,158.0 82.5,158.3 82.7,158.6 82.9,158.9 83.2,159.2 83.4,159.5 83.6,159.8 83.9,160.1 84.1,160.4 84.4,160.7 84.6,161.0 84.8,161.3 85.1,161.6 85.3,161.9 85.5,162.2 85.8,162.5 86.0,162.8 86.2,163.1 86.5,163.4 86.7,163.7 86.9,164.0 87.2,164.3 87.4,164.5 87.6,164.8 87.9,165.1 88.1,165.4 88.3,165.7 88.6,166.0 88.8,166.3 89.1,166.6 89.3,166.9 89.5,167.2 89.8,167.5 90.0,167.8 90.2,168.1 90.5,168.3 90.7,168.6 90.9,168.9 91.2,169.2 91.4,169.5 91.6,169.8 91.9,170.1 92.1,170.4 92.3,170.6 92.6,170.9 92.8,171.2 93.1,171.5 93.3,171.8 93.5,172.1 93.8,172.3 94.0,172.6 94.2,172.9 94.5,173.2 94.7,173.5 94.9,173.8 95.2,174.0 95.4,174.3 95.6,174.6 95.9,174.9 96.1,175.2 96.3,175.4 96.6,175.7 96.8,176.0 97.1,176.3 97.3,176.6 97.5,176.8 97.8,177.1 98.0,177.4 98.2,177.7 98.5,177.9 98.7,178.2 98.9,178.5 99.2,178.8 99.4,179.0 99.6,179.3 99.9,179.6 100.1,179.8 100.3,180.1 100.6,180.4 100.8,180.7 101.0,180.9 101.3,181.2 101.5,181.5 101.8,181.7 102.0,182.0 102.2,182.3 102.5,182.6 102.7,182.8 102.9,183.1 103.2,183.4 103.4,183.6 103.6,183.9 103.9,184.2 104.1,184.4 104.3,184.7 104.6,184.9 104.8,185.2 105.0,185.5 105.3,185.7 105.5,186.0 105.8,186.3 106.0,186.5 106.2,186.8 106.5,187.1 106.7,187.3 106.9,187.6 107.2,187.8 107.4,188.1 107.6,188.4 107.9,188.6 108.1,188.9 108.3,189.1 108.6,189.4 108.8,189.6 109.0,189.9 109.3,190.2 109.5,190.4 109.8,190.7 110.0,190.9 110.2,191.2 110.5,191.4 110.7,191.7 110.9,191.9" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-dasharray="4 4"/>
+<polyline points="476.8,93.3 477.1,92.7 477.5,92.1 477.9,91.6 478.2,91.0 478.6,90.4 479.0,89.8 479.3,89.2 479.7,88.6 480.1,88.0 480.4,87.4 480.8,86.8 481.2,86.2 481.5,85.6 481.9,85.0 482.3,84.3 482.6,83.7 483.0,83.1 483.4,82.5 483.7,81.9 484.1,81.3 484.5,80.7 484.8,80.1 485.2,79.5 485.6,78.8 485.9,78.2 486.3,77.6 486.7,77.0 487.0,76.4 487.4,75.8 487.8,75.1 488.1,74.5 488.5,73.9 488.9,73.3 489.2,72.6 489.6,72.0 490.0,71.4 490.3,70.8 490.7,70.1 491.0,69.5 491.4,68.9 491.8,68.2 492.1,67.6 492.5,67.0 492.9,66.3 493.2,65.7 493.6,65.1 494.0,64.4 494.3,63.8 494.7,63.2 495.1,62.5 495.4,61.9 495.8,61.2 496.2,60.6 496.5,59.9 496.9,59.3 497.3,58.7 497.6,58.0 498.0,57.4 498.4,56.7 498.7,56.1 499.1,55.4 499.5,54.8 499.8,54.1 500.2,53.4 500.6,52.8 500.9,52.1 501.3,51.5 501.7,50.8 502.0,50.2 502.4,49.5 502.8,48.8 503.1,48.2 503.5,47.5 503.9,46.9 504.2,46.2 504.6,45.5 505.0,44.9 505.3,44.2 505.7,43.5 506.0,42.8 506.4,42.2 506.8,41.5 507.1,40.8 507.5,40.2 507.9,39.5 508.2,38.8 508.6,38.1 509.0,37.4 509.3,36.8 509.7,36.1 510.1,35.4 510.4,34.7 510.8,34.0 511.2,33.4 511.5,32.7 511.9,32.0 512.3,31.3 512.6,30.6 513.0,29.9 513.4,29.2 513.7,28.5 514.1,27.9 514.5,27.2 514.8,26.5 515.2,25.8 515.6,25.1 515.9,24.4 516.3,23.7 516.7,23.0 517.0,22.3 517.4,21.6 517.8,20.9 518.1,20.2 518.5,19.5 518.9,18.8 519.2,18.1 519.6,17.4 520.0,16.7 520.3,15.9 520.7,15.2 521.0,14.5 521.4,13.8 521.8,13.1 522.1,12.4 522.5,11.7 522.9,11.0 523.2,10.2 523.6,9.5 524.0,8.8 524.3,8.1 524.7,7.4 525.1,6.6 525.4,5.9 525.8,5.2 526.2,4.5 526.5,3.7 526.9,3.0 527.3,2.3 527.6,1.6 528.0,0.8" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-dasharray="4 4"/>
+<line x1="78" y1="93.3" x2="476.8" y2="93.3" stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.75"/>
+<text x="65" y="98.3" fill="#4ADE80" font-size="15" font-family="JetBrains Mono, monospace" text-anchor="end">12</text>
+<line x1="78" y1="191.9" x2="110.9" y2="191.9" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.75"/>
+<text x="65" y="196.9" fill="rgba(255,255,255,0.5)" font-size="15" font-family="JetBrains Mono, monospace" text-anchor="end">7</text>
+<line x1="78" y1="270.8" x2="257.3" y2="270.8" stroke="#FF7A6B" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.75"/>
+<text x="65" y="275.8" fill="#FF7A6B" font-size="15" font-family="JetBrains Mono, monospace" text-anchor="end">3</text>
+<rect x="26" y="93.3" width="11" height="177.5" fill="rgba(0,229,255,0.18)" stroke="#00e5ff" stroke-width="1.5"/>
+<text x="15" y="182.1" fill="#00e5ff" font-size="14" font-family="JetBrains Mono, monospace" text-anchor="middle" transform="rotate(-90 15 182.1)">range</text>
+<polyline points="110.9,191.9 113.5,194.7 116.2,197.5 118.8,200.2 121.4,202.8 124.0,205.4 126.6,207.9 129.2,210.4 131.8,212.9 134.4,215.3 137.1,217.6 139.7,219.9 142.3,222.1 144.9,224.3 147.5,226.5 150.1,228.5 152.7,230.6 155.4,232.6 158.0,234.5 160.6,236.4 163.2,238.2 165.8,240.0 168.4,241.8 171.0,243.4 173.6,245.1 176.3,246.7 178.9,248.2 181.5,249.7 184.1,251.1 186.7,252.5 189.3,253.8 191.9,255.1 194.6,256.3 197.2,257.5 199.8,258.7 202.4,259.7 205.0,260.8 207.6,261.8 210.2,262.7 212.8,263.6 215.5,264.4 218.1,265.2 220.7,265.9 223.3,266.6 225.9,267.2 228.5,267.8 231.1,268.3 233.7,268.8 236.4,269.2 239.0,269.6 241.6,269.9 244.2,270.2 246.8,270.4 249.4,270.6 252.0,270.7 254.7,270.8 257.3,270.8 259.9,270.8 262.5,270.7 265.1,270.6 267.7,270.4 270.3,270.2 272.9,269.9 275.6,269.6 278.2,269.2 280.8,268.8 283.4,268.3 286.0,267.8 288.6,267.2 291.2,266.6 293.9,265.9 296.5,265.2 299.1,264.4 301.7,263.6 304.3,262.7 306.9,261.8 309.5,260.8 312.1,259.7 314.8,258.7 317.4,257.5 320.0,256.3 322.6,255.1 325.2,253.8 327.8,252.5 330.4,251.1 333.1,249.7 335.7,248.2 338.3,246.7 340.9,245.1 343.5,243.4 346.1,241.8 348.7,240.0 351.3,238.2 354.0,236.4 356.6,234.5 359.2,232.6 361.8,230.6 364.4,228.5 367.0,226.5 369.6,224.3 372.3,222.1 374.9,219.9 377.5,217.6 380.1,215.3 382.7,212.9 385.3,210.4 387.9,207.9 390.5,205.4 393.2,202.8 395.8,200.2 398.4,197.5 401.0,194.7 403.6,191.9 406.2,189.1 408.8,186.2 411.4,183.3 414.1,180.3 416.7,177.2 419.3,174.1 421.9,171.0 424.5,167.8 427.1,164.5 429.7,161.3 432.4,157.9 435.0,154.5 437.6,151.1 440.2,147.6 442.8,144.0 445.4,140.4 448.0,136.8 450.6,133.1 453.3,129.3 455.9,125.5 458.5,121.7 461.1,117.8 463.7,113.8 466.3,109.8 468.9,105.8 471.6,101.7 474.2,97.5 476.8,93.3" fill="none" stroke="#00e5ff" stroke-width="4" stroke-linecap="round"/>
+<text x="110.9" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">0</text>
+<text x="184.1" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">1</text>
+<text x="257.3" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">2</text>
+<text x="330.4" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">3</text>
+<text x="403.6" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">4</text>
+<text x="476.8" y="351" fill="rgba(255,255,255,0.5)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">5</text>
+<rect x="110.9" y="362" width="365.9" height="12" fill="rgba(0,229,255,0.18)" stroke="#00e5ff" stroke-width="1.5"/>
+<text x="293.9" y="394" fill="#00e5ff" font-size="14" font-family="JetBrains Mono, monospace" text-anchor="middle">domain 0 ≤ x ≤ 5</text>
+<line x1="110.9" y1="36" x2="257.3" y2="36" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+<line x1="110.9" y1="32" x2="110.9" y2="40" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+<line x1="257.3" y1="32" x2="257.3" y2="40" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+<text x="184.1" y="28" fill="rgba(255,255,255,0.65)" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">2 across</text>
+<line x1="257.3" y1="36" x2="476.8" y2="36" stroke="#4ADE80" stroke-width="1.5"/>
+<line x1="476.8" y1="32" x2="476.8" y2="40" stroke="#4ADE80" stroke-width="1.5"/>
+<text x="367.0" y="28" fill="#4ADE80" font-size="13" font-family="JetBrains Mono, monospace" text-anchor="middle">3 across, so it climbs higher</text>
+<circle cx="110.9" cy="191.9" r="7" fill="rgba(255,255,255,0.92)"/>
+<text x="122.9" y="179.9" fill="rgba(255,255,255,0.92)" font-size="15" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="start">f(0) = 7</text>
+<circle cx="257.3" cy="270.8" r="7" fill="#FF7A6B"/>
+<text x="257.3" y="298.8" fill="#FF7A6B" font-size="15" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="middle">lowest point  f(2) = 3</text>
+<circle cx="476.8" cy="93.3" r="7" fill="#4ADE80"/>
+<text x="468.8" y="77.3" fill="#4ADE80" font-size="15" font-weight="600" font-family="JetBrains Mono, monospace" text-anchor="end">f(5) = 12</text>
+</svg>
+    </div>
+    <div class="lab-side">
+      <p class="small"><b>The bottom is the vertex.</b> The curve never gets lower than its turning point, and that turning point is inside the domain, so 3 is the smallest output.</p>
+      <div class="math tight small good">bottom of the range = 3</div>
+      <p class="small frag" style="margin-top:0.9vh"><b>The top is whichever end climbs higher.</b> From the vertex the curve rises in both directions, so the end that is farther from x = 2 ends up higher.</p>
+      <div class="math frag tight small"><span class="step">how far is the left end from x = 2?</span>&nbsp; 2 − 0 = 2</div>
+      <div class="math frag tight small"><span class="step">how far is the right end from x = 2?</span>&nbsp; 5 − 2 = 3</div>
+      <div class="math frag tight small"><span class="step">3 is farther than 2, so the right end climbs higher</span>&nbsp; and the numbers agree: 12 is bigger than 7</div>
+      <div class="math frag tight small good">top of the range = 12</div>
+      <div class="math frag good">3 ≤ f(x) ≤ 12</div>
+    </div>
+  </div>
+  <p class="frag small" style="margin-top:0.8vh">Notice that f(0) = 7 is not in the answer anywhere. It is a real output, it sits inside the range, and it is neither the top nor the bottom. An end of the domain does not have to be an end of the range.</p>
+</section>
+
+<!-- 8 · the range finder -->
+<section class="slide dense">
+  <p class="eyebrow">The Range Finder</p>
+  <h2>Drag the domain. Watch the range move.</h2>
+  <p class="small muted" style="margin-bottom:1vh">The bar along the bottom is the domain you are allowed to use. The bar up the right side is the range that comes out of it. Move the two ends and watch when putting the ends in gives the right answer, and when it does not.</p>
+  <div class="lab">
+    <div class="lab-canvas-wrap">
+      <canvas id="rfCanvas" width="660" height="660" aria-label="A curve with a movable domain marked on the x-axis and the resulting range marked on the y-axis"></canvas>
+    </div>
+    <div class="lab-side">
+      <div class="widget-types" id="rfTypes">
+        <button class="u-btn active" data-fn="line" type="button">2x + 1</button>
+        <button class="u-btn" data-fn="paraUp" type="button">x² − 8x + 20</button>
+        <button class="u-btn" data-fn="paraDown" type="button">6x − x²</button>
+        <button class="u-btn" data-fn="recip" type="button">1 ÷ x</button>
+      </div>
+      <div class="lab-controls">
+        <label for="rfA" class="step">left end</label>
+        <span class="cval" id="rfAVal">0</span>
+        <input type="range" id="rfA" min="0" max="100" step="1" value="20" aria-label="left end of the domain">
+      </div>
+      <div class="lab-controls">
+        <label for="rfB" class="step">right end</label>
+        <span class="cval" id="rfBVal">5</span>
+        <input type="range" id="rfB" min="0" max="100" step="1" value="80" aria-label="right end of the domain">
+      </div>
+      <div class="lab-work" id="rfWork"></div>
+      <div class="lab-verdict" id="rfVerdict"></div>
+    </div>
+  </div>
+  <p class="frag small" style="margin-top:0.9vh"><b>The pattern.</b> On a straight line the two ends always work, because the line only ever goes one way. On either parabola the ends work right up until the turning point is inside your domain. Try 6x − x<sup>2</sup>: its turning point is a <b>maximum</b>, so there the ends miss the top of the range instead of the bottom.</p>
+</section>
+
+<!-- 9 · the method -->
+<section class="slide">
+  <p class="eyebrow">The method</p>
+  <h2>How to find a range, every time.</h2>
+  <ol>
+    <li class="frag"><b>Sketch it over the given domain.</b> A shape, with the two ends marked and any turning point marked. It does not need to be neat.</li>
+    <li class="frag"><b>Find the turning point, then check whether it is inside the domain.</b> For a quadratic, complete the square and read off the vertex. Outside the domain means the two ends are your answer. Inside means the turning point is one end of the range.</li>
+    <li class="frag"><b>Read off the lowest and highest values the curve actually reaches</b>, then write them in f(x) with the correct inequality signs.</li>
+  </ol>
+  <div class="plain frag">
+    <p class="small"><b>Choosing the sign.</b> If the function actually reaches the value, include it, so use ≤ or ≥. If it only gets closer and closer without ever arriving, exclude it, so use &lt; or &gt;. When the domain has two ends, the answer usually needs two ends too.</p>
+  </div>
+</section>
+
+<!-- 10 · worked example 1 -->
+<section class="slide dense">
+  <p class="eyebrow">Worked example 1 · from a real exam paper</p>
+  <h2>f(x) = x² + 6x − 8 for x ∈ ℝ. Find the range. [3]</h2>
+  <p class="small muted">x ∈ ℝ means every real number is allowed, so nothing is cut off and the whole parabola counts.</p>
+  <div class="math frag tight"><span class="step">1 · halve the number in front of x: half of 6 is 3</span>&nbsp; so the bracket is (x + 3)<sup>2</sup></div>
+  <div class="math frag tight"><span class="step">2 · expand it to see what that gives</span>&nbsp; (x + 3)<sup>2</sup> = x<sup>2</sup> + 6x + 9</div>
+  <div class="math frag tight"><span class="step">3 · we want −8 on the end and we have +9</span>&nbsp; −8 − 9 = −17, so subtract 17</div>
+  <div class="math frag tight"><span class="step">4 · put it together</span>&nbsp; f(x) = (x + 3)<sup>2</sup> − 17</div>
+  <div class="math frag tight"><span class="step">5 · the square is smallest at 0, which happens when x = −3</span>&nbsp; f(−3) = 0 − 17 = −17</div>
+  <div class="math frag tight"><span class="step">6 · no end to check this time, because the domain has no ends</span>&nbsp; the curve rises forever on both sides of x = −3</div>
+  <div class="math frag good">f(x) ≥ −17</div>
+  <p class="frag small">Three marks: one for the completed square form, one for the value −17, one for writing it as a range in f(x) with the right sign. Writing x ≥ −17 gives away that last mark after doing all the work.</p>
+</section>
+
+<!-- 11 · worked example 2 -->
+<section class="slide dense">
+  <p class="eyebrow">Worked example 2 · no turning point this time</p>
+  <h2>f(x) = 1 ÷ x for x ≥ 1. Find the range.</h2>
+  <p class="small muted">There is no vertex here, so the question becomes which end is included and which is not.</p>
+  <div class="math frag tight"><span class="step">1 · the smallest input the domain allows is x = 1</span>&nbsp; f(1) = 1 ÷ 1 = 1</div>
+  <div class="math frag tight"><span class="step">2 · make x bigger and see what happens to the output</span>&nbsp; f(2) = 0.5,&nbsp; f(10) = 0.1,&nbsp; f(1000) = 0.001</div>
+  <div class="math frag tight"><span class="step">3 · so the outputs only ever fall, which makes f(1) = 1 the biggest one</span>&nbsp; nothing in the domain beats it</div>
+  <div class="math frag tight"><span class="step">4 · they fall toward 0, but 1 ÷ x is never actually 0</span>&nbsp; no matter how big x gets, there is always something left</div>
+  <div class="math frag good">0 &lt; f(x) ≤ 1</div>
+  <div class="cols frag" style="margin-top:0.8vh">
+    <div class="card">
+      <p class="step">why ≤ 1</p>
+      <p class="small">x = 1 is allowed by the domain and it produces exactly 1. The value is reached, so it is included.</p>
+    </div>
+    <div class="card">
+      <p class="step">why &gt; 0</p>
+      <p class="small">No allowed x gives an output of 0. The curve gets as close as you like and stops short, so 0 is left out.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · practice -->
+<section class="slide dense">
+  <p class="eyebrow">Practice · tap a question to check it</p>
+  <h2>State the range of each. Write every answer in f(x).</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q1&nbsp; f(x) = 5 − 2x for −1 ≤ x ≤ 3</div>
+        <p class="hint">tap to check · watch which end is which</p>
+        <div class="sol"><div class="math tight small"><span class="step">a line, so no turning point, and this one falls as x grows</span>&nbsp; f(−1) = 5 + 2 = 7,&nbsp; f(3) = 5 − 6 = −1</div><div class="math tight small"><span class="step">the smaller x gives the bigger output here</span>&nbsp; so the left end is the top of the range</div><div class="math tight small good">−1 ≤ f(x) ≤ 7</div></div>
+      </div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q2&nbsp; g(x) = 12 + 4x − x<sup>2</sup> for x ∈ ℝ</div>
+        <p class="hint">tap to check · which way up is this one?</p>
+        <div class="sol"><div class="math tight small"><span class="step">the x<sup>2</sup> term is negative, so this parabola opens downward and its turning point is a maximum</span>&nbsp; g(x) = −(x − 2)<sup>2</sup> + 16</div><div class="math tight small"><span class="step">biggest at x = 2, and it falls away forever on both sides</span>&nbsp; g(2) = 16</div><div class="math tight small good">g(x) ≤ 16</div></div>
+      </div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q3&nbsp; h(x) = x<sup>2</sup> − 6x + 5 for 0 ≤ x ≤ 2</div>
+        <p class="hint">tap to check</p>
+        <div class="sol"><div class="math tight small"><span class="step">complete the square</span>&nbsp; h(x) = (x − 3)<sup>2</sup> − 4, turning point at x = 3</div><div class="math tight small"><span class="step">x = 3 is outside 0 ≤ x ≤ 2, so the curve only falls across this domain</span>&nbsp; h(0) = 5, h(2) = 4 − 12 + 5 = −3</div><div class="math tight small good">−3 ≤ h(x) ≤ 5</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q4&nbsp; p(x) = x<sup>2</sup> − 6x + 5 for 0 ≤ x ≤ 5</div>
+        <p class="hint">tap to check · same rule as Q3, wider domain</p>
+        <div class="sol"><div class="math tight small"><span class="step">same completed square</span>&nbsp; p(x) = (x − 3)<sup>2</sup> − 4, turning point at x = 3</div><div class="math tight small"><span class="step">x = 3 is inside 0 ≤ x ≤ 5 this time, so the turning point is the bottom</span>&nbsp; p(3) = −4</div><div class="math tight small"><span class="step">for the top, the end farther from x = 3 wins: 3 − 0 = 3 beats 5 − 3 = 2</span>&nbsp; p(0) = 5, and p(5) = 0 is smaller</div><div class="math tight small good">−4 ≤ p(x) ≤ 5</div></div>
+      </div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q5&nbsp; q(x) = 1 ÷ (x − 2) for x &gt; 2</div>
+        <p class="hint">tap to check</p>
+        <div class="sol"><div class="math tight small"><span class="step">x is bigger than 2, so x − 2 is a positive number</span>&nbsp; 1 divided by a positive is positive</div><div class="math tight small"><span class="step">x − 2 can be tiny (huge output) or enormous (output near 0)</span>&nbsp; but it never reaches 0</div><div class="math tight small good">q(x) &gt; 0</div></div>
+      </div>
+      <div class="check" tabindex="0" role="button">
+        <div class="math tight small">Q6&nbsp; r(x) = √x + 3 for x ≥ 0</div>
+        <p class="hint">tap to check</p>
+        <div class="sol"><div class="math tight small"><span class="step">√x starts at 0 when x = 0, and grows without ever stopping</span>&nbsp; r(0) = 0 + 3 = 3</div><div class="math tight small"><span class="step">so every output is 3 or above, with no ceiling</span>&nbsp; r(100) = 13, r(10000) = 103</div><div class="math tight small good">r(x) ≥ 3</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="frag small" style="margin-top:0.8vh"><b>Q3 and Q4 are the same rule.</b> Only the domain changed, and the answer changed with it. That is the whole lesson in two questions.</p>
+</section>
+
+<!-- 13 · recap and exit -->
+<section class="slide">
+  <p class="eyebrow">Recap and exit ticket</p>
+  <h2>Three things to carry out of here.</h2>
+  <p class="frag"><b>Every range question is a sketch question wearing a formula.</b> The algebra finds the turning point. The sketch tells you whether that turning point is inside the domain you were given, and that is what decides the answer.</p>
+  <p class="frag"><b>An end of the domain is not automatically an end of the range.</b> Check the turning point first, then ask which end climbs farther from it.</p>
+  <p class="frag"><b>Completing the square did not finish when quadratics finished.</b> It is now how you find the turning point so you can find the range.</p>
+  <div class="plain frag">
+    <p>Two checks before you write any range down. Is the letter f(x) rather than x? Does your answer have both ends when the domain has both ends?</p>
+  </div>
+  <p class="frag"><b>Next session: composite functions.</b> Two machines in a row, and a rule about which one is allowed to feed the other. The range you learned to find today is what decides it.</p>
+  <div class="math frag tight bad" style="margin-top:0.6vh">Exit ticket is in Schoology. An attempt left open scores nothing, so press submit before you leave the room.</div>
+</section>
+
+<div class="hud">
+  <span class="name">1.2 · Session 1 · What a Function Can Reach</span>
+  <div class="nav">
+    <span class="timer" id="timer" title="T pauses, Shift+T resets">00:00</span>
+    <button id="boardBtn" aria-label="Blank board" title="W">Board</button>
+    <button id="overviewBtn" aria-label="Overview" title="O">Overview</button>
+    <button id="prevBtn" aria-label="Previous">←</button>
+    <span class="count" id="count"></span>
+    <button id="nextBtn" aria-label="Next">→</button>
+  </div>
+</div>
+
+<div class="board" id="board" hidden>
+  <canvas id="boardCanvas"></canvas>
+  <div class="board-hint">Draw with mouse, trackpad, finger, or stylus · W or Esc to close · C to clear</div>
+</div>
+
+<div class="overview" id="overview" hidden>
+  <div class="overview-grid" id="overviewGrid"></div>
+</div>
+
+
+<script>
+(function () {
+  'use strict';
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var idx = 0;
+  var h = parseInt((location.hash || '').replace('#', ''), 10);
+  if (h >= 1 && h <= slides.length) idx = h - 1;
+  function frags(s) { return Array.prototype.slice.call(s.querySelectorAll('.frag')); }
+  function show(i, revealAll) {
+    idx = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, j) { s.classList.toggle('active', j === idx); });
+    frags(slides[idx]).forEach(function (f) { f.classList.toggle('on', !!revealAll); });
+    document.getElementById('count').textContent = (idx + 1) + ' / ' + slides.length;
+    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
+  }
+  function next() {
+    var pending = frags(slides[idx]).filter(function (f) { return !f.classList.contains('on'); });
+    if (pending.length) { pending[0].classList.add('on'); return; }
+    if (idx < slides.length - 1) show(idx + 1, false);
+  }
+  function prev() {
+    var on = frags(slides[idx]).filter(function (f) { return f.classList.contains('on'); });
+    if (on.length) { on[on.length - 1].classList.remove('on'); return; }
+    if (idx > 0) show(idx - 1, true);
+  }
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+
+  Array.prototype.forEach.call(document.querySelectorAll('.check'), function (c) {
+    function toggle() { c.classList.toggle('open'); }
+    c.addEventListener('click', toggle);
+    c.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
+    });
+  });
+
+  var el = document.getElementById('timer');
+  var elapsed = 0, running = true, last = Date.now();
+  function paint() {
+    var m = Math.floor(elapsed / 60), s = elapsed % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    el.classList.toggle('warn', elapsed >= 55 * 60);
+    el.classList.toggle('paused', !running);
+  }
+  setInterval(function () {
+    var now = Date.now();
+    if (running) { elapsed += Math.round((now - last) / 1000); }
+    last = now;
+    paint();
+  }, 1000);
+  paint();
+
+  function neg(n) { return (n < 0 ? '−' + Math.abs(n) : String(n)); }
+
+  /* ---------- the Range Finder, slide 7 ----------
+     One curve, one movable domain window, and the range that falls out of it.
+     The whole point is the verdict line: putting the two ends in is a shortcut
+     that works on a straight line and on a monotonic curve, and breaks the
+     moment a turning point lands inside the domain. That is the error the
+     June 2023 and June 2024 examiner reports both describe.            */
+  (function () {
+    var canvas = document.getElementById('rfCanvas');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var aRange = document.getElementById('rfA');
+    var bRange = document.getElementById('rfB');
+    var aValEl = document.getElementById('rfAVal');
+    var bValEl = document.getElementById('rfBVal');
+    var workEl = document.getElementById('rfWork');
+    var verdictEl = document.getElementById('rfVerdict');
+    var typeBtns = Array.prototype.slice.call(document.querySelectorAll('#rfTypes .u-btn'));
+
+    var MODES = {
+      line: {
+        f: function (x) { return 2 * x + 1; },
+        xv: [-3, 5], yv: [-6, 12],
+        dom: [-3, 5], a: -1, b: 3,
+        turning: null,
+        why: 'A straight line only ever climbs. The two ends are the lowest and highest values it reaches.'
+      },
+      paraUp: {
+        f: function (x) { return x * x - 8 * x + 20; },
+        xv: [0, 8], yv: [0, 24],
+        dom: [0, 8], a: 2, b: 7,
+        turning: { x: 4, y: 4, dir: 'min' },
+        why: ''
+      },
+      paraDown: {
+        f: function (x) { return 6 * x - x * x; },
+        xv: [-1, 7], yv: [-10, 12],
+        dom: [-1, 7], a: 0, b: 5,
+        turning: { x: 3, y: 9, dir: 'max' },
+        why: ''
+      },
+      recip: {
+        f: function (x) { return 1 / x; },
+        xv: [0, 6], yv: [0, 4.5],
+        dom: [0.25, 6], a: 1, b: 4,
+        turning: null,
+        why: '1 ÷ x falls the whole way across. The two ends are the highest and lowest values it reaches.'
+      }
+    };
+
+    var mode = 'line';
+    var A = MODES.line.a, B = MODES.line.b;
+
+    function fmt(n) {
+      var r = Math.round(n * 100) / 100;
+      var s = String(Math.abs(r));
+      return (r < 0 ? '−' : '') + s;
+    }
+    function snap(v) { return Math.round(v * 4) / 4; }
+    function sliderToVal(sv, m) { return snap(m.dom[0] + (sv / 100) * (m.dom[1] - m.dom[0])); }
+    function valToSlider(v, m) { return Math.round(((v - m.dom[0]) / (m.dom[1] - m.dom[0])) * 100); }
+
+    /* The range band lives off the right edge and the domain band off the bottom,
+       so neither one sits on top of the axis numbers. */
+    var W = 660, H = 660, PADL = 58, PADR = 66, PADT = 26, PADB = 92;
+    function px(x, m) { return PADL + ((x - m.xv[0]) / (m.xv[1] - m.xv[0])) * (W - PADL - PADR); }
+    function py(y, m) { return H - PADB - ((y - m.yv[0]) / (m.yv[1] - m.yv[0])) * (H - PADT - PADB); }
+    function ystep(m) { var r = m.yv[1] - m.yv[0]; return r > 12 ? 4 : (r > 6 ? 2 : 1); }
+
+    function scan(m, a, b) {
+      var N = 600, lo = Infinity, hi = -Infinity, i, x, y;
+      for (i = 0; i <= N; i++) {
+        x = a + (b - a) * (i / N);
+        y = m.f(x);
+        if (!isFinite(y)) continue;
+        if (y < lo) lo = y;
+        if (y > hi) hi = y;
+      }
+      return { lo: lo, hi: hi };
+    }
+
+    function draw(m, a, b, t) {
+      ctx.clearRect(0, 0, W, H);
+
+      var st = ystep(m), gx, gy;
+
+      /* grid */
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+      for (gx = Math.ceil(m.xv[0]); gx <= m.xv[1]; gx++) {
+        ctx.beginPath(); ctx.moveTo(px(gx, m), PADT); ctx.lineTo(px(gx, m), H - PADB); ctx.stroke();
+      }
+      for (gy = Math.ceil(m.yv[0] / st) * st; gy <= m.yv[1]; gy += st) {
+        ctx.beginPath(); ctx.moveTo(PADL, py(gy, m)); ctx.lineTo(W - PADR, py(gy, m)); ctx.stroke();
+      }
+
+      /* axes */
+      ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+      ctx.lineWidth = 2;
+      var y0 = Math.max(m.yv[0], Math.min(m.yv[1], 0));
+      var x0 = Math.max(m.xv[0], Math.min(m.xv[1], 0));
+      ctx.beginPath(); ctx.moveTo(PADL, py(y0, m)); ctx.lineTo(W - PADR, py(y0, m)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(x0, m), PADT); ctx.lineTo(px(x0, m), H - PADB); ctx.stroke();
+
+      /* axis numbers, so the graph can be read without the panel beside it */
+      ctx.font = '500 15px "JetBrains Mono", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      for (gy = Math.ceil(m.yv[0] / st) * st; gy <= m.yv[1]; gy += st) {
+        ctx.fillText(fmt(gy), PADL - 9, py(gy, m));
+      }
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      for (gx = Math.ceil(m.xv[0]); gx <= m.xv[1]; gx++) {
+        ctx.fillText(fmt(gx), px(gx, m), H - PADB + 8);
+      }
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+
+      /* the range band, off the right edge, clear of the y-axis numbers */
+      var rb = py(t.hi, m), rt = py(t.lo, m), bandX = W - PADR + 12;
+      ctx.fillStyle = 'rgba(0,229,255,0.16)';
+      ctx.fillRect(bandX, rb, 14, Math.max(rt - rb, 2));
+      ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
+      ctx.strokeRect(bandX, rb, 14, Math.max(rt - rb, 2));
+
+      /* the domain band, below the x-axis numbers */
+      var da = px(a, m), db = px(b, m), bandY = H - PADB + 34;
+      ctx.fillStyle = 'rgba(0,229,255,0.16)';
+      ctx.fillRect(da, bandY, db - da, 14);
+      ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
+      ctx.strokeRect(da, bandY, db - da, 14);
+
+      /* the curve, full view, muted */
+      function trace(from, to, style, width) {
+        ctx.strokeStyle = style; ctx.lineWidth = width;
+        ctx.beginPath();
+        var started = false, i, x, y, N = 900;
+        for (i = 0; i <= N; i++) {
+          x = from + (to - from) * (i / N);
+          y = m.f(x);
+          if (!isFinite(y) || y > m.yv[1] + 40 || y < m.yv[0] - 40) { started = false; continue; }
+          if (!started) { ctx.moveTo(px(x, m), py(y, m)); started = true; }
+          else ctx.lineTo(px(x, m), py(y, m));
+        }
+        ctx.stroke();
+      }
+      trace(m.dom[0], m.dom[1], 'rgba(255,255,255,0.22)', 2);
+      trace(a, b, '#00e5ff', 4);
+
+      /* dashed connectors from each end across to the axis */
+      ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      [a, b].forEach(function (xx) {
+        var yy = m.f(xx);
+        if (!isFinite(yy)) return;
+        ctx.beginPath(); ctx.moveTo(px(xx, m), py(yy, m)); ctx.lineTo(bandX, py(yy, m)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(px(xx, m), py(yy, m)); ctx.lineTo(px(xx, m), bandY); ctx.stroke();
+      });
+      /* the turning point, when it is inside the domain, is also an end of the range */
+      if (m.turning && m.turning.x >= a && m.turning.x <= b) {
+        ctx.strokeStyle = 'rgba(255,122,107,0.55)';
+        ctx.beginPath();
+        ctx.moveTo(px(m.turning.x, m), py(m.turning.y, m));
+        ctx.lineTo(bandX, py(m.turning.y, m));
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      /* the two end points */
+      [a, b].forEach(function (xx) {
+        var yy = m.f(xx);
+        if (!isFinite(yy)) return;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.arc(px(xx, m), py(yy, m), 6, 0, Math.PI * 2); ctx.fill();
+      });
+
+      /* the turning point, marked only when the domain actually contains it */
+      if (m.turning && m.turning.x >= a && m.turning.x <= b) {
+        ctx.fillStyle = '#FF7A6B';
+        ctx.beginPath(); ctx.arc(px(m.turning.x, m), py(m.turning.y, m), 7, 0, Math.PI * 2); ctx.fill();
+        ctx.font = '600 15px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#FF7A6B';
+        ctx.textAlign = 'center';
+        /* label below a minimum and above a maximum, so it never lands on the curve */
+        ctx.fillText('turning point', px(m.turning.x, m),
+          py(m.turning.y, m) + (m.turning.dir === 'min' ? 26 : -16));
+        ctx.textAlign = 'left';
+      }
+
+      /* band labels */
+      ctx.font = '600 15px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#00e5ff';
+      ctx.textAlign = 'center';
+      ctx.fillText('domain', (da + db) / 2, bandY + 32);
+      ctx.save();
+      ctx.translate(bandX + 38, (rb + rt) / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('range', 0, 0);
+      ctx.restore();
+      ctx.textAlign = 'left';
+    }
+
+    function render() {
+      var m = MODES[mode];
+      if (B - A < 0.5) B = Math.min(m.dom[1], A + 0.5);
+      var t = scan(m, A, B);
+      var fa = m.f(A), fb = m.f(B);
+      var endLo = Math.min(fa, fb), endHi = Math.max(fa, fb);
+      var works = Math.abs(endLo - t.lo) < 0.01 && Math.abs(endHi - t.hi) < 0.01;
+
+      aValEl.textContent = fmt(A);
+      bValEl.textContent = fmt(B);
+
+      workEl.innerHTML =
+        '<span class="lw">domain</span> ' + fmt(A) + ' ≤ x ≤ ' + fmt(B) + '<br>' +
+        '<span class="lw">the two ends</span> f(' + fmt(A) + ') = ' + fmt(fa) + ', f(' + fmt(B) + ') = ' + fmt(fb) + '<br>' +
+        '<span class="lw">ends alone would say</span> ' + fmt(endLo) + ' ≤ f(x) ≤ ' + fmt(endHi) + '<br>' +
+        '<span class="lw">the real range</span> ' + fmt(t.lo) + ' ≤ f(x) ≤ ' + fmt(t.hi);
+
+      var why = m.why;
+      if (m.turning) {
+        var tp = m.turning, isMin = tp.dir === 'min';
+        why = (tp.x >= A && tp.x <= B)
+          ? 'The turning point at x = ' + fmt(tp.x) + ' sits inside your domain. The curve ' +
+            (isMin ? 'dips down to ' : 'rises to ') + fmt(tp.y) + ' there, ' +
+            (isMin ? 'lower' : 'higher') + ' than either end, so the ends alone miss the ' +
+            (isMin ? 'bottom' : 'top') + ' of the range.'
+          : 'The turning point at x = ' + fmt(tp.x) + ' is outside your domain, so the curve only goes one way across it. The two ends are safe here.';
+      }
+      verdictEl.className = 'lab-verdict ' + (works ? 'two' : 'none');
+      verdictEl.innerHTML = (works ? 'The two ends give the right answer. ' : 'The two ends get it wrong. ') + why;
+
+      draw(m, A, B, t);
+    }
+
+    function setMode(next) {
+      mode = next;
+      var m = MODES[mode];
+      A = m.a; B = m.b;
+      aRange.value = valToSlider(A, m);
+      bRange.value = valToSlider(B, m);
+      typeBtns.forEach(function (btn) {
+        var on = btn.getAttribute('data-fn') === mode;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      render();
+    }
+
+    aRange.addEventListener('input', function () {
+      var m = MODES[mode];
+      A = sliderToVal(+aRange.value, m);
+      if (A > B - 0.5) { A = B - 0.5; aRange.value = valToSlider(A, m); }
+      render();
+    });
+    bRange.addEventListener('input', function () {
+      var m = MODES[mode];
+      B = sliderToVal(+bRange.value, m);
+      if (B < A + 0.5) { B = A + 0.5; bRange.value = valToSlider(B, m); }
+      render();
+    });
+    typeBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () { setMode(btn.getAttribute('data-fn')); });
+    });
+
+    setMode('line');
+  })();
+
+  /* blank board */
+  (function () {
+    var board = document.getElementById('board');
+    var canvas = document.getElementById('boardCanvas');
+    var ctx = canvas.getContext('2d');
+    var drawing = false, lastX = 0, lastY = 0;
+    function resize() {
+      var r = canvas.getBoundingClientRect();
+      canvas.width = r.width * devicePixelRatio;
+      canvas.height = r.height * devicePixelRatio;
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      ctx.strokeStyle = '#00e5ff';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+    function openBoard() { board.hidden = false; requestAnimationFrame(resize); }
+    function closeBoard() { board.hidden = true; }
+    function toggleBoard() { if (board.hidden) openBoard(); else closeBoard(); }
+    function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    canvas.addEventListener('pointerdown', function (e) {
+      drawing = true; lastX = e.offsetX; lastY = e.offsetY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!drawing) return;
+      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke();
+      lastX = e.offsetX; lastY = e.offsetY;
+    });
+    canvas.addEventListener('pointerup', function () { drawing = false; });
+    document.getElementById('boardBtn').addEventListener('click', toggleBoard);
+    window.__toggleBoard = toggleBoard;
+    window.__closeBoard = closeBoard;
+    window.__boardIsOpen = function () { return !board.hidden; };
+    window.__clearBoard = clearBoard;
+  })();
+
+  /* overview grid */
+  (function () {
+    var overview = document.getElementById('overview');
+    var grid = document.getElementById('overviewGrid');
+    slides.forEach(function (s, i) {
+      var heading = s.querySelector('h1, h2');
+      var card = document.createElement('div');
+      card.className = 'ov-card';
+      card.innerHTML = '<div class="ov-num">Slide ' + (i + 1) + '</div><div class="ov-title">' +
+        (heading ? heading.textContent : '') + '</div>';
+      card.addEventListener('click', function () { show(i, false); closeOverview(); });
+      grid.appendChild(card);
+    });
+    function openOverview() { overview.hidden = false; }
+    function closeOverview() { overview.hidden = true; }
+    function toggleOverview() { if (overview.hidden) openOverview(); else closeOverview(); }
+    document.getElementById('overviewBtn').addEventListener('click', toggleOverview);
+    window.__toggleOverview = toggleOverview;
+    window.__closeOverview = closeOverview;
+    window.__overviewIsOpen = function () { return !overview.hidden; };
+  })();
+
+  document.addEventListener('keydown', function (e) {
+    if (window.__overviewIsOpen && window.__overviewIsOpen()) {
+      if (e.key === 'Escape' || e.key === 'o' || e.key === 'O') { window.__closeOverview(); }
+      return;
+    }
+    if (window.__boardIsOpen && window.__boardIsOpen()) {
+      if (e.key === 'Escape' || e.key === 'w' || e.key === 'W') { window.__closeBoard(); }
+      else if (e.key === 'c' || e.key === 'C') { window.__clearBoard(); }
+      return;
+    }
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') return;
+    }
+    if (e.key === 'w' || e.key === 'W') { window.__toggleBoard(); return; }
+    if (e.key === 'o' || e.key === 'O') { window.__toggleOverview(); return; }
+    if (e.key === 'T') { elapsed = 0; running = true; last = Date.now(); paint(); return; }
+    if (e.key === 't') { running = !running; last = Date.now(); paint(); return; }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') show(0, false);
+    else if (e.key === 'End') show(slides.length - 1, true);
+  });
+  window.addEventListener('hashchange', function () {
+    var n = parseInt((location.hash || '').replace('#', ''), 10);
+    if (n >= 1 && n <= slides.length && n - 1 !== idx) show(n - 1, false);
+  });
+  show(idx, false);
+})();
+</script>
+</body>
+</html>
