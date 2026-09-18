@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Capstone: Build It for the Web - Think In Bits</title>
-  <meta name="description" content="The capstone route for a project that runs in a browser. Scope it, slice it, build it, host it on your Pi. CS elective, grades 7 to 12.">
+  <meta name="description" content="Build a browser project from your own idea: HTML, CSS, JavaScript, hosting on your Pi, and reading the console when it breaks. Capstone software route, CS elective, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="../../assets/lesson.css">
@@ -27,19 +27,19 @@
   <header class="lesson-head">
     <p class="eyebrow">Capstone &middot; Software route</p>
     <h1>Capstone: Build It for the Web</h1>
-    <p class="promise">Your idea, nobody's instructions, running at an address you can hand to anyone</p>
+    <p class="promise">Learn to build and host a real site, then use it to ship the thing that's actually yours</p>
     <ul class="meta">
       <li><b>Grades</b> 7 to 12</li>
-      <li><b>Time</b> Several weeks of build time</li>
-      <li><b>Difficulty</b> It is up to you</li>
+      <li><b>Time</b> 4 taught periods, then open build weeks</li>
+      <li><b>Difficulty</b> Starts guided, ends up to you</li>
     </ul>
-    <p class="lede">Everybody in this class does a capstone. This page is for the ones who want theirs to run in a browser. You have already built a site once with every step written out for you, so this is the one where nobody writes the steps: you pick the thing, you work out how to build it, and you ship it. If you have ever wanted to make a game, a tool, or an app that other people can actually open, here is where you do it.</p>
+    <p class="lede">Everybody in this class does a capstone. This page is for the ones who want theirs to run in a browser: a game, an app, a tool, a site. You do not need to have built a full website before. The first four class periods teach you how, using your own idea from day one. After that, nobody writes the steps: you build it out, cut scope when you need to, and ship it at a real address.</p>
   </header>
 
   <section class="slide">
     <h2>Is this your capstone?</h2>
     <p>Your capstone can go several directions. Robotics and competition. Product and fabrication, on the laser cutter or the printers. Media and documentation. Or this one, software, where the thing you build runs in a browser.</p>
-    <p><b>Pick this one if</b> you liked building your website more than you expected to, or you already have something in your head that you wish existed and it is a game, a tool, a page or an app.</p>
+    <p><b>Pick this one if</b> you liked restyling your dashboard more than you expected to, or you already have something in your head that you wish existed and it is a game, a tool, a page or an app.</p>
     <p><b>Do not pick this one</b> because it sounds easier. It is not. Ask anybody who has tried to make Chess work.</p>
     <p>You are not locked in until your proposal is approved, so if you are torn, talk to Mr. Krigger before you commit.</p>
     <div class="callout note">Start with the <a href="../proposal/">Capstone Proposal</a> and the <a href="../project/">Capstone</a> lesson. This page is the extra guidance for the software route.</div>
@@ -48,27 +48,50 @@
   <section class="slide">
     <h2>What you'll learn</h2>
     <ul>
+      <li>How <strong>HTML</strong>, <strong>CSS</strong> and <strong>JavaScript</strong> split the work across three files</li>
+      <li>How to build a website from nothing, with no template to fill in</li>
+      <li>How to move a project between computers without breaking it, and serve it from your Pi</li>
       <li>How to take an idea from a sentence to a working thing, which is harder than any single piece of code in it</li>
       <li>How to cut <strong>scope</strong>, the skill that decides whether a project ships or dies</li>
       <li>How to teach yourself something specific from a tutorial without ending up with code you cannot read</li>
       <li>How to keep a project alive over several weeks instead of one afternoon</li>
     </ul>
-    <h3>What you need</h3>
+  </section>
+
+  <section class="slide">
+    <h2>What you need</h2>
     <ul>
-      <li><b>A finished website lesson.</b> This one assumes you have already built and hosted a site once</li>
-      <li>VS Code on one of the lab computers</li>
-      <li>A jump drive, and your Raspberry Pi still running</li>
+      <li>A Mac or Windows computer to build on. A lab machine or your own laptop</li>
+      <li>A jump drive</li>
+      <li>Your Raspberry Pi, still working from the dashboard assignment</li>
+      <li>A phone or second device to test on</li>
       <li>An approved capstone proposal saying this is what you are doing</li>
+      <li>No accounts. No downloads. Nothing to sign up for</li>
     </ul>
+  </section>
+
+  <section class="slide">
+    <h2>The AI rule</h2>
+    <p>Same as every assignment in this class, and it matters more here because the project is bigger.</p>
+    <p><b>Build your first working version without AI.</b> No ChatGPT, no Claude, no Gemini, no Copilot writing your code. Watching somebody else solve a problem does not teach you to solve it. The fifteen minutes you spend staring at a broken layout before you work out why is where the learning actually happens.</p>
+    <div class="callout note"><b>Where to look:</b> <a href="https://www.w3schools.com/">W3Schools</a> for a quick example, <a href="https://developer.mozilla.org/">MDN</a> for the real explanation, <a href="https://www.freecodecamp.org/learn/responsive-web-design/">freeCodeCamp</a> for a full course, YouTube tutorials, Stack Overflow, your classmates, and Mr. Krigger.</div>
+    <p><b>Once your first working version exists and Mr. Krigger has seen it</b>, you can use AI to push further: better CSS, animations, a feature you could not figure out. Two conditions. You have to say what you used it for, and <b>you have to be able to explain every line of it on demand.</b> If you cannot walk through a section of your own code, that section does not count toward your grade.</p>
+    <p>One more thing worth saying plainly: a large share of the capstone rubric is explaining your work, and another chunk is creativity and ambition. Neither of those can be generated. A project that was mostly typed by a machine scores badly before anybody even looks at whether it runs.</p>
   </section>
 
   <section class="slide">
     <h2>What counts</h2>
     <p>Anything that runs in a browser and does something.</p>
+    <p><b>Something for an audience.</b> A page that runs at a booth or an event: spin-the-wheel, a trivia round, a live high score board, a costume vote, a photo wall.</p>
+    <p><b>Something the lab or the school actually needs.</b> A printer queue for the lab. A tool checkout board. A RoboMaster battery tracker so nobody grabs a dead one again. A bell schedule that is readable from across the room.</p>
+    <p><b>Something about here.</b> A hurricane prep checklist your family would really use. A carnival countdown. A page for a local business you like that does not have one. Tide and beach conditions. A food map of St. Croix.</p>
+  </section>
+
+  <section class="slide">
+    <h2>What counts, continued</h2>
     <p><b>Games.</b> Students in this class have built Chess, Tetris, Snake, Flappy Bird and Candy Crush. Go look at <a href="../../../projects.html">the projects page</a>. Those were built by people sitting where you are sitting.</p>
-    <p><b>Tools.</b> A thing that does a job somebody actually has. A printer queue for the lab. A study timer. A grade calculator. A tide and conditions page. A hurricane prep checklist your family would use.</p>
     <p><b>Sites with something behind them.</b> A page that talks to your Pi. A scoreboard that survives a refresh. A page that pulls live data from somewhere.</p>
-    <div class="callout note"><b>The bar for a capstone</b>, as opposed to a regular assignment: it does something real for somebody who is not you, and it is a genuine step past what you could already do in September. A page with your name and three photos on it is a fine assignment and not a capstone.</div>
+    <div class="callout note"><b>The bar for a capstone:</b> it does something real for somebody who is not you, and it is a genuine step past what you could already do in September. A page with your name and three photos on it is a fine assignment and not a capstone.</div>
   </section>
 
   <section class="slide">
@@ -78,23 +101,27 @@
     <p><b>If you take the tutorial route, two conditions.</b></p>
     <ol>
       <li><b>Finish somewhere the tutorial did not.</b> Add a feature, change how it works, restyle it completely, make it do something the video never mentioned. A capstone that ends exactly where a YouTube video ends is a transcription, not a project.</li>
-      <li><b>You can explain what you typed.</b> Same walkthrough as last time. Mr. Krigger will point at parts of your code and ask what they do.</li>
+      <li><b>You can explain what you typed.</b> Mr. Krigger will point at parts of your code and ask what they do, in the Week 4 walkthrough.</li>
     </ol>
-    <p>Tell Mr. Krigger which tutorial you are following on day one, so he can tell you if it is teaching you something from 2013.</p>
-  </section>
-
-  <section class="slide">
-    <h2>The AI rule</h2>
-    <div class="callout note"><b>Where to look:</b> <a href="https://www.w3schools.com/">W3Schools</a> for a quick example, <a href="https://developer.mozilla.org/">MDN</a> for the real explanation, <a href="https://www.freecodecamp.org/learn/responsive-web-design/">freeCodeCamp</a> for a full course. For a specific build, search the thing plus "javascript tutorial" and pick one with a date on it.</div>
-    <p>Same as every assignment in this class, and it matters more here because the project is bigger.</p>
-    <p><b>No AI until your first working version exists and Mr. Krigger has seen it.</b> After that you can use it to push further, with two conditions: you say what you used it for, and you can explain every line of it on demand.</p>
-    <p>On a capstone there is a third thing worth saying plainly. The capstone rubric gives a quarter of the marks for explaining your work and a further chunk for creativity and ambition. Neither of those can be generated. A project that was mostly typed by a machine scores badly on nearly half the rubric before anybody looks at whether it runs.</p>
+    <p>Tell Mr. Krigger which tutorial you are following before you start, so he can tell you if it is teaching you something from 2013.</p>
   </section>
 
   <section class="slide">
     <p class="daymark">Week 1</p>
-    <h2>Step 1: Name the vertical slice</h2>
-    <p>A <strong>vertical slice</strong> is one thin piece of the finished thing, working end to end.</p>
+    <h2>Step 1: Sketch it</h2>
+    <p>Close the laptop. On paper, write:</p>
+    <ol>
+      <li>One sentence: what is this and who is it for?</li>
+      <li>What are the three or four main chunks of the page, top to bottom?</li>
+      <li>What is the one thing on it that moves, changes, or responds when you click?</li>
+    </ol>
+    <p>Show Mr. Krigger your sketch before you type anything. This takes five minutes and saves you two periods.</p>
+    <div class="callout check"><b>Checkpoint:</b> a sentence, and a stack of sections, on paper.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Name your vertical slice and your fallback</h2>
+    <p>Name your <b>vertical slice</b>: one thin piece of the finished thing, working end to end. Not the easy part, the <i>whole path</i>, made narrow: something on screen, something you can do to it, something that happens back.</p>
     <div class="twrap"><table>
       <thead><tr><th>Project</th><th>The slice</th><th>Not the slice</th></tr></thead>
       <tbody>
@@ -104,52 +131,308 @@
         <tr><td>A trivia game</td><td>One question, one answer, one right or wrong</td><td>Categories, scores, a leaderboard</td></tr>
       </tbody>
     </table></div>
-    <p>The slice is not the easy part. It is the <b>whole path</b>, made narrow: something on screen, something you can do to it, something that happens back.</p>
-    <div class="callout check"><b>Checkpoint:</b> a one-sentence slice, written down and approved.</div>
+    <p>Then write down your <b>fallback</b>: the version of your project you would be satisfied with if everything took twice as long as you think it will. You are writing this now, while you are calm, because the day you need it you will not want to.</p>
+    <div class="callout check"><b>Checkpoint:</b> your slice and your fallback, both approved by Mr. Krigger.</div>
   </section>
 
   <section class="slide">
-    <h2>Step 2: Name your fallback now</h2>
-    <p>Write down the version of your project you would be satisfied with if everything took twice as long as you think it will.</p>
-    <p>You are writing this now, while you are calm, because the day you need it you will not want to. Nearly every project runs long. Deciding in advance what you would cut is the difference between a finished smaller thing and an unfinished bigger one.</p>
-    <div class="callout check"><b>Checkpoint:</b> a fallback version written down and agreed with Mr. Krigger.</div>
-  </section>
-
-  <section class="slide">
-    <h2>Step 3: Build the slice</h2>
-    <p>Folder named after the project. VS Code. Same shape you used last time:</p>
+    <h2>Step 3: Name it after what it is</h2>
+    <p>Make your folder on the Desktop, and <b>name it after your project</b>. Not <code>mysite</code>, not <code>project</code>, not <code>website</code>.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>If you are building</th><th>Call the folder</th></tr></thead>
+      <tbody>
+        <tr><td>Chess</td><td><code>chess</code></td></tr>
+        <tr><td>A tide and conditions page</td><td><code>tide-check</code></td></tr>
+        <tr><td>A printer queue</td><td><code>print-queue</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>Lowercase, hyphens instead of spaces. Inside it, make three empty files and one folder:</p>
 <pre><code>chess/
-├── index.html
-├── styles.css
-├── script.js
-└── assets/</code></pre>
-    <p>Then build the slice and nothing else. Not the menu. Not the colors. Not the sound effects. The slice.</p>
-    <div class="callout check"><b>Checkpoint, end of week 1:</b> your slice runs. Somebody else can do the one thing it does.</div>
-    <div class="callout warn"><b>If the slice is not running at the end of week 1, that is information, not failure.</b> It means the project is bigger than the time. Go to your fallback that day, while there is still time for the fallback to be good.</div>
+├── index.html      ← the structure. What is on the page
+├── styles.css      ← the look. Colors, fonts, spacing
+├── script.js       ← the behavior. What happens when you click
+└── assets/         ← images and anything else you use</code></pre>
+    <p><b>Two rules about filenames, and they matter more than they look.</b> All lowercase, no spaces: <code>beach-photo.jpg</code>, never <code>Beach Photo.jpg</code>. Your Pi runs Linux, and Linux thinks <code>Photo.jpg</code> and <code>photo.jpg</code> are two different files. And everything you use lives inside your project folder: a file pulled straight from your Desktop will be found on this computer and nowhere else.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: Open it in VS Code</h2>
+    <p><b>File &rarr; Open Folder</b>, pick your project folder, and the whole thing appears in the sidebar.</p>
+    <p>Turn on two things:</p>
+    <ul>
+      <li><b>Word wrap:</b> <kbd>Alt</kbd>+<kbd>Z</kbd> on Windows, <kbd>Option</kbd>+<kbd>Z</kbd> on Mac. Long lines stop running off the screen.</li>
+      <li><b>Auto save:</b> File &rarr; Auto Save. Now you never refresh the browser and wonder why nothing changed.</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> your three files are in the VS Code sidebar and clicking one opens it.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 5: Write the skeleton</h2>
+    <p>Put this in <code>index.html</code>:</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;Change This Title&lt;/title&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;header&gt;
+    &lt;h1&gt;Change this to what your project is&lt;/h1&gt;
+    &lt;p&gt;One sentence saying what it does.&lt;/p&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;section&gt;
+      &lt;h2&gt;Section one&lt;/h2&gt;
+      &lt;p&gt;Replace all of this.&lt;/p&gt;
+    &lt;/section&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt;
+    &lt;p&gt;Built by YOUR NAME, served from a Raspberry Pi.&lt;/p&gt;
+  &lt;/footer&gt;
+
+  &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    <p><b>Keep the <code>&lt;head&gt;</code> exactly as it is.</b> Those five lines set the character encoding, make the page scale correctly on phones, and connect your CSS file.</p>
+    <p>Put this in <code>styles.css</code> to prove the connection works:</p>
+<pre><code>body {
+  background: #111;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+}</code></pre>
+    <p>Double-click <code>index.html</code>. It opens in your browser straight off the disk, no server needed yet.</p>
+    <div class="callout check"><b>Checkpoint:</b> dark background, light text, your heading. White background means your CSS is not connected: check the filename and that it is in the same folder as <code>index.html</code>.</div>
+    <div class="callout note"><b>Where students get stuck:</b> a student who opens the wrong editor. VS Code only, it colors the code and underlines an unclosed tag. An image dragged in straight from the Desktop, with the <code>src</code> pointing at the Desktop: works on this computer, breaks on the Pi.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 6: Fill in your sections</h2>
+    <p>Build out the chunks from your sketch. The tags that do most of the work:</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Tag</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code></td><td>Headings, h1 is biggest. One h1 per page</td></tr>
+        <tr><td><code>&lt;p&gt;</code></td><td>A paragraph</td></tr>
+        <tr><td><code>&lt;img&gt;</code></td><td>An image. The <code>alt</code> text is what a screen reader says</td></tr>
+        <tr><td><code>&lt;a&gt;</code></td><td>A link</td></tr>
+        <tr><td><code>&lt;ul&gt;</code> with <code>&lt;li&gt;</code></td><td>A bullet list</td></tr>
+        <tr><td><code>&lt;div&gt;</code></td><td>A box you can style. The <code>class</code> is the name you use in CSS</td></tr>
+        <tr><td><code>&lt;button&gt;</code></td><td>Something to click</td></tr>
+        <tr><td><code>&lt;section&gt;</code></td><td>A chunk of the page</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Do not know how to do something?</b> Search it the way a developer does: put the language first. "css center a div", "html add a background image", "javascript change text on click". W3Schools first, MDN when you want the real answer.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 2</p>
+    <h2>Step 1: Pick your colors and font on purpose</h2>
+    <p>Generate a palette at <a href="https://coolors.co/">coolors.co</a> and pick a font at <a href="https://fonts.google.com/">fonts.google.com</a>. Then put your colors at the top of <code>styles.css</code> with names, so you can change your whole site in one place:</p>
+<pre><code>:root {
+  --bg: #0f1020;
+  --text: #f2f2f2;
+  --accent: #ff5d73;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+h1 { color: var(--accent); }</code></pre>
+    <p><code>--bg</code> is a variable. <code>var(--bg)</code> means "whatever that is set to." Change it once at the top and every place that uses it changes with it.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Space things out</h2>
+    <p>Beginner sites almost always look cramped for the same three reasons. Fix all three:</p>
+<pre><code>body { line-height: 1.6; }          /* space between lines of text */
+
+section { margin-bottom: 48px; }    /* space between chunks */
+
+main {
+  max-width: 800px;                 /* stop text running the full screen width */
+  margin: 0 auto;                   /* and center it */
+}</code></pre>
+    <p>That last one does more for how a page reads than any color choice. Text running 1400 pixels wide is exhausting and nobody can say why. <code>max-width</code> stops it, and <code>margin: 0 auto</code> centers it.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Make it work on a phone</h2>
+    <p>Squeeze your browser window as narrow as it goes. Whatever breaks, fix now. The usual culprit:</p>
+<pre><code>img { max-width: 100%; height: auto; }   /* images that stay inside the screen */</code></pre>
+    <p>If you have a row of boxes, this one line handles every screen size:</p>
+<pre><code>.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}</code></pre>
+    <p>"As many columns as fit, each at least 220px wide." Three columns on a laptop, one on a phone, and you did not write a rule for either.</p>
+    <div class="callout check"><b>Checkpoint:</b> drag your window from full width down to as narrow as it goes. Nothing runs off the side. No sideways scrollbar at any width.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 3</p>
+    <h2>Step 1: Wire up a button</h2>
+    <p>In <code>index.html</code>:</p>
+<pre><code>&lt;button id=&quot;go&quot;&gt;Click me&lt;/button&gt;
+&lt;p id=&quot;output&quot;&gt;Nothing yet.&lt;/p&gt;</code></pre>
+    <p>In <code>script.js</code>:</p>
+<pre><code>const button = document.getElementById(&quot;go&quot;);
+const output = document.getElementById(&quot;output&quot;);
+
+button.addEventListener(&quot;click&quot;, function () {
+  output.textContent = &quot;You clicked it.&quot;;
+});</code></pre>
+    <p>Three lines, three ideas. <code>getElementById</code> finds a thing on the page by its <code>id</code>. <code>addEventListener("click", ...)</code> says "when this gets clicked, run this." <code>.textContent = ...</code> changes what it says. Almost everything interactive on the web is some version of those three.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Type into the console</h2>
+    <p>The console is not just for when something breaks. It is how you find out <i>what</i> broke and <i>where</i>. Open it now: <kbd>F12</kbd> (or right-click the page &rarr; Inspect &rarr; Console tab).</p>
+    <p>Type this directly into the console and press Enter:</p>
+<pre><code>document.getElementById(&quot;go&quot;)</code></pre>
+    <p>It prints the button element back to you. The console is a live line into your page. You can ask it questions any time, not only when something crashes.</p>
+    <p>Now break something on purpose. In <code>script.js</code>, misspell the id: change <code>"go"</code> to <code>"gox"</code>, and click the button. The console shows something like:</p>
+<pre><code>Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
+    at script.js:4</code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Read the error</h2>
+    <p>Read it in this order:</p>
+    <ol>
+      <li><b><code>script.js:4</code></b> &mdash; which file, which line. Click it and the browser jumps you straight there.</li>
+      <li><b><code>TypeError</code></b> &mdash; the <i>kind</i> of mistake. This one means "I tried to use something that is not the type I expected."</li>
+      <li><b>Cannot read properties of null</b> &mdash; <code>getElementById</code> came back empty-handed. No element had that id, so it handed back <code>null</code>, and <code>null</code> has no <code>.addEventListener</code> to call.</li>
+    </ol>
+    <p>Wrong id &rarr; <code>null</code> &rarr; crash on the next line. That chain is the single most common bug in this unit. Once you can read it, you fix it in ten seconds instead of guessing for ten minutes.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: What the other errors mean</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>You'll see</th><th>It usually means</th></tr></thead>
+      <tbody>
+        <tr><td><code>ReferenceError: x is not defined</code></td><td>You used a variable before creating it, or typo'd its name</td></tr>
+        <tr><td><code>Uncaught SyntaxError: ...</code></td><td>A typo in the code itself: a missing <code>}</code> or <code>)</code>, usually just above the line it names</td></tr>
+        <tr><td>Cannot read properties of <code>undefined</code></td><td>Same idea as <code>null</code>, one step removed: you are reaching into something that does not exist yet</td></tr>
+        <tr><td>Yellow text, not red</td><td>A warning. The page still runs, but something is off</td></tr>
+        <tr><td>Plain black text, no file:line</td><td>Your own <code>console.log(...)</code> output, not an error</td></tr>
+      </tbody>
+    </table></div>
+    <p>Fix your id back to <code>"go"</code> before you move on.</p>
+    <div class="callout check"><b>Checkpoint:</b> click the button, the text changes. If nothing happens, open the console, find the red line, and read it top to bottom using the steps above before you ask anyone for help.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 5: Build your actual slice</h2>
+    <p>Now build the interactive piece of your actual slice, the one you named on Day 1. Some shapes and what to search for:</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Idea</th><th>The trick to search for</th></tr></thead>
+      <tbody>
+        <tr><td>A piece that moves on click or keypress</td><td><code>javascript move element on click</code></td></tr>
+        <tr><td>Random pick (quote, fact, dare, name)</td><td><code>javascript random array item</code></td></tr>
+        <tr><td>Countdown to a date</td><td><code>javascript countdown timer</code></td></tr>
+        <tr><td>Score or tally that goes up</td><td><code>javascript increment variable on click</code></td></tr>
+        <tr><td>Filter a list of cards</td><td><code>javascript filter list buttons</code></td></tr>
+        <tr><td>Quiz with a score at the end</td><td><code>javascript quiz score</code></td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Break your own slice</b> before it goes further: click everything twice fast, click things out of order, make the window tiny, open it on your phone, hand it to the person next to you and say nothing. Fix what they find.</p>
+    <div class="callout check"><b>Checkpoint:</b> your vertical slice does the one thing it is supposed to do, and someone else has used it and you fixed what broke.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Day 4</p>
+    <h2>Step 1: Copy it over</h2>
+    <p>Jump drive into your Pi, drag the whole folder into your home folder, or from the Terminal:</p>
+<pre><code>cp -r /media/$USER/YOUR-DRIVE-NAME/chess ~/chess</code></pre>
+    <p>Check it arrived:</p>
+<pre><code>ls ~/chess</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> <code>ls</code> lists <code>index.html</code>, <code>styles.css</code>, <code>script.js</code> and <code>assets</code>. If the folder is missing or empty, the drag did not finish. Do it again and wait for it.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Write the server</h2>
+<pre><code>nano ~/site_server.py</code></pre>
+<pre><code>from flask import Flask, send_from_directory
+import os
+
+SITE = os.path.expanduser(&quot;~/chess&quot;)
+
+app = Flask(__name__)
+
+
+@app.route(&quot;/&quot;)
+def home():
+    return send_from_directory(SITE, &quot;index.html&quot;)
+
+
+@app.route(&quot;/&lt;path:filename&gt;&quot;)
+def other_files(filename):
+    return send_from_directory(SITE, filename)
+
+
+app.run(host=&quot;0.0.0.0&quot;, port=8000)</code></pre>
+    <p><b>Change <code>~/chess</code> on the <code>SITE</code> line to your own folder name.</b> Everything else is the same for everybody. Save: <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter. Exit: <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+    <div class="callout note"><b>Notice the port is 8000, not 5000.</b> Your dashboard owns 5000. Two servers cannot share a door, and now you can run both at once.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Steps 3 and 4: Run it, then hand somebody the address</h2>
+<pre><code>source ~/pihealth/bin/activate
+python3 ~/site_server.py</code></pre>
+    <p>Check <code>http://localhost:8000</code> on the Pi first, then get your Pi's address:</p>
+<pre><code>hostname -I</code></pre>
+    <p>Give someone <code>http://YOUR-PI-IP:8000</code> and watch them load it on their phone.</p>
+    <div class="callout check"><b>Checkpoint, end of Week 1:</b> your slice, running, loaded by somebody else on a device that is not the Pi.</div>
+    <div class="callout warn"><b>If it is not running today, that is information, not failure.</b> Go to your fallback today, while there is still time for the fallback to be good.</div>
+    <p><b>Check on that phone, not on the Pi:</b></p>
+    <ul>
+      <li>Every image shows up</li>
+      <li>Every link goes somewhere</li>
+      <li>Your slice still works</li>
+      <li>Nothing runs off the side of the screen</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>Why images break on the Pi and nowhere else</h2>
+    <p>Your Mac or Windows computer is <b>case-insensitive</b>. It treats <code>Sunset.JPG</code> and <code>sunset.jpg</code> as the same file, so a typo in your <code>src</code> never shows up.</p>
+    <p>Linux is <b>case-sensitive</b>. To your Pi, those are two unrelated files, and one of them does not exist. Your site worked for three days and broke the minute it arrived, and you did nothing wrong. Every web developer gets bitten by this exactly once. Now you have had your once.</p>
+    <p><b>The fix and the habit:</b> all lowercase, hyphens instead of spaces.</p>
   </section>
 
   <section class="slide">
     <p class="daymark">Weeks 2 and 3</p>
-    <h2>Build it</h2>
+    <h2>Build it out</h2>
     <p>No steps here. It is your project and nobody knows what it needs except you. What follows is how to work, not what to work on.</p>
     <p><b>Add one thing at a time, and keep it running.</b> Working, change one thing, working, change one thing. If you change five things and it breaks you have five suspects. Keep a copy of the last version that worked, on your jump drive, every single period.</p>
     <p><b>Read the console every time something is wrong.</b> <kbd>F12</kbd>, Console tab. It tells you what went wrong and roughly where. Guessing is slower than reading.</p>
   </section>
 
   <section class="slide">
-    <h2>Build it, continued</h2>
-    <p><b>Get somebody to use it every week.</b> Not at the end. Every week. Hand them the laptop and say nothing, and write down where they get stuck. You cannot see your own project the way a stranger does.</p>
-    <p><b>Check phone width every period.</b> A layout that collapses at 390px is cheap to fix today and expensive to fix the week of the showcase.</p>
-    <p><b>Keep a short log.</b> Two lines a period: what you did, what broke. When you write the explanation, this log is where that writing comes from.</p>
-    <div class="callout check"><b>Checkpoint, mid block:</b> somebody else has used it and you have fixed what they found.</div>
+    <h2>Build it out, continued</h2>
+    <p><b>Get somebody to use it every week.</b> Not at the end. Hand them the laptop and say nothing, and write down where they get stuck. You cannot see your own project the way a stranger does, and by week three you will not even remember trying.</p>
+    <p><b>Check phone width every period.</b> Drag the window narrow before you leave. A layout that collapses at 390px is cheap to fix today and expensive to fix the week of the showcase.</p>
+    <p><b>Keep a short log.</b> Two lines a period: what you did, what broke. When you write the explanation for the capstone, this log is where that writing comes from.</p>
+    <div class="callout check"><b>Checkpoint, mid Block 3:</b> somebody else has used it and you have fixed what they found.</div>
+    <p><b>If you took the tutorial route:</b> by now you should be past where the tutorial left off. If you are still typing what the video says with nothing of your own added, stop and add something before you go further.</p>
   </section>
 
   <section class="slide">
     <p class="daymark">Week 4</p>
-    <h2>Ship it</h2>
-    <p><b>Step 1. Host it on your Pi.</b> Exactly what you did last time. Jump drive to the Pi, <code>site_server.py</code> pointed at your folder, port 8000, then <code>hostname -I</code> for the address. If you have forgotten a step, it is all in <a href="../../raspberry-pi/first-website/">Your First Real Website</a>, Day 4. Looking up something you have done before is not cheating, it is Tuesday.</p>
-    <div class="callout check"><b>Checkpoint:</b> somebody loads it on their phone from across the room.</div>
-    <p><b>Step 2. Check it the way a stranger would.</b></p>
+    <h2>Step 1: Check it the way a stranger would</h2>
     <ul>
       <li>Every image loads. A missing one is almost always a capital letter in a filename</li>
       <li>Every link goes somewhere</li>
@@ -160,16 +443,29 @@
   </section>
 
   <section class="slide">
-    <h2>Step 3: Write the explanation</h2>
-    <p>The capstone asks for a written document, and it is a large share of the marks. Cover:</p>
+    <h2>Step 2: Write the explanation</h2>
+    <p>The capstone asks for a written document. Cover:</p>
     <ul>
-      <li><b>What it does.</b> Plain words. No jargon you would have to explain</li>
+      <li><b>What it does.</b> Plain words, no jargon you would have to explain</li>
       <li><b>How it works.</b> The main pieces and how they fit together</li>
       <li><b>Which skills you used</b>, and where. Name the file and roughly where in it</li>
       <li><b>What went wrong</b> and how you worked it out. This section is the most interesting one and students always write the least here. A problem you solved is worth more than a feature that went smoothly</li>
       <li><b>What you would add</b> with another month</li>
+      <li><b>If you followed a tutorial:</b> which one, a link, and a paragraph on what you built that it did not</li>
     </ul>
-    <p><b>Step 4. The walkthrough.</b> Three minutes with your code open. Mr. Krigger points, you explain. Same as last time, higher bar, because this one is yours. For anything AI touched, expect to change it live while he watches.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: The walkthrough</h2>
+    <p>Three minutes with your code open. Mr. Krigger points, you explain. Be ready to open any file and explain any line.</p>
+    <ul>
+      <li>Point at a block of CSS: "what happens if I delete this?"</li>
+      <li>Point at a function: "what calls this?"</li>
+      <li>"Why is this file in this folder?"</li>
+      <li>"What breaks if the Pi restarts?"</li>
+      <li>For anything AI touched: "change this, now, while I watch."</li>
+    </ul>
+    <p><b>You cannot revise for this.</b> It is a conversation about a thing you built, so if you built it you will be fine.</p>
   </section>
 
   <section class="slide">
@@ -177,39 +473,135 @@
     <div class="tiers">
       <div class="tier base">
         <h4>Base &middot; every capstone on this route</h4>
-        <p>Your project runs, does what you pitched or what your fallback pitched, is hosted on your Pi and loads on a device that is not the Pi. You wrote the explanation. You can walk through your own code.</p>
+        <p>Your slice grew into your project. It runs, does what you pitched or what your fallback pitched, is hosted on your Pi, and loads on a device that is not the Pi. Your own colors and structure, not a template with the words changed. No horizontal scrolling at phone width. You wrote the explanation and can walk through your own code.</p>
       </div>
       <div class="tier stretch">
-        <h4>Stretch &middot; required for high school</h4>
-        <p><b>Something the browser cannot do on its own.</b> Your project has to reach past a single HTML page.</p>
+        <h4>Stretch &middot; required for high school, bonus for middle school</h4>
+        <p>Something the browser cannot do on its own. Pick one: your own API route, state that persists after a reload, real data pulled from somewhere else, or your Pi's own hardware.</p>
       </div>
     </div>
-    <p>Pick one:</p>
-    <ul>
-      <li><b>Your own API route.</b> Add a route to <code>site_server.py</code> and have your page fetch it: a score that survives a refresh, a visit counter, live data from the Pi</li>
-      <li><b>State that persists.</b> The page remembers something after a reload, using <code>localStorage</code> or your server</li>
-      <li><b>Real data from somewhere else.</b> A public API you fetch from and display, chosen with Mr. Krigger since not all of them are appropriate or free</li>
-      <li><b>Your Pi's own hardware.</b> Your page reads or controls something physical through the Pi</li>
-    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>The Stretch, step by step</h2>
+    <p>The most common pick is <b>your own API route.</b> Add this above the last line of <code>site_server.py</code>:</p>
+<pre><code>import random
+
+ITEMS = [&quot;Put your own list here.&quot;, &quot;At least three items.&quot;, &quot;They can be anything.&quot;]
+
+
+@app.route(&quot;/api/random&quot;)
+def random_item():
+    return {&quot;item&quot;: random.choice(ITEMS)}</code></pre>
+    <p>Then in <code>script.js</code>:</p>
+<pre><code>async function loadItem() {
+  const response = await fetch(&quot;/api/random&quot;);
+  const data = await response.json();
+  document.getElementById(&quot;output&quot;).textContent = data.item;
+}</code></pre>
+    <div class="callout warn">Restart the server and check <code>http://YOUR-PI-IP:8000/api/random</code> in a browser <b>first</b>. If the JSON is not there, fix that before you touch the page.</div>
+    <p><b>A random list is the worked example</b>, so make it something your site actually needs: a score that survives a refresh, a visit counter, live data from the Pi. Choosing <b>state that persists</b> (<code>localStorage</code> or your server), <b>real data from a public API</b> (pick it with Mr. Krigger, not all of them are appropriate or free), or <b>your Pi's own hardware</b> works just as well. Pick whichever one your project actually needs.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Taking your screenshots</h2>
+    <p><b>On the Pi.</b> Press <kbd>Print Screen</kbd>. If nothing happens, open <b>Menu &rarr; Accessories</b> and look for <b>Screenshot</b>.</p>
+    <p><b>On your phone.</b> iPhone is <b>Side button + Volume Up</b>. Android is <b>Power + Volume Down</b>.</p>
+    <p><b>On a lab computer.</b> Mac is <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>, then drag a box. Windows is <kbd>Windows</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>, then drag a box and paste it into any app to save.</p>
+    <div class="callout warn"><b>Make sure the address bar is in the shot.</b> Your screenshot has to prove <i>where</i> the page was loaded from, not just that a page loaded.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Getting it uploaded</h2>
+    <p><b>Your files and your Pi screenshot: submit from the Pi.</b> Open Chromium on the Pi, log in to Schoology, open the assignment, Submit Assignment &rarr; Upload, and browse to your project folder.</p>
+    <p><b>Your phone screenshot:</b> email it to yourself, AirDrop it, or log in to Schoology in your phone's browser and upload straight from the camera roll.</p>
+    <p><b>If the Pi will not cooperate:</b> copy the folder to your jump drive, take it to a lab computer, submit from there.</p>
+    <p><b>Name your files so they are readable:</b> <code>yourname-chess-index.html</code>, <code>yourname-chess-on-phone.png</code>.</p>
   </section>
 
   <section class="slide">
     <h2>What you hand in</h2>
-    <p>Everything the capstone already asks for, plus these:</p>
     <ul class="turnin">
-      <li>Your project folder, all files</li>
-      <li><code>site_server.py</code></li>
-      <li>The address it was served at</li>
+      <li><b>Your working code</b> &mdash; the whole project folder, every file it needs to run</li>
+      <li><code>site_server.py</code> &mdash; the script that hosted it</li>
+      <li>The address it was served at, like <code>http://10.0.4.71:8000</code></li>
       <li>A screenshot of it running on a device that is not the Pi, address bar visible</li>
-      <li>Your written explanation, the five sections above</li>
-      <li>If you followed a tutorial: which one, a link, and a paragraph on what you built that it did not</li>
     </ul>
-    <p>Everything is submitted in Schoology, under your capstone.</p>
+  </section>
+
+  <section class="slide">
+    <h2>What you hand in, continued</h2>
+    <ul class="turnin">
+      <li>A screenshot of your project folder on the Pi</li>
+      <li>Your written explanation, the sections above</li>
+      <li>If you followed a tutorial: which one, a link, and what you built that it did not</li>
+      <li>The filled-in submission template, posted in Schoology under this capstone</li>
+    </ul>
+    <div class="callout warn">Submissions with a written explanation but no working code, or code but no explanation, are incomplete. Both parts are required.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Words worth knowing</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Vertical slice</b></td><td>One thin piece of the finished thing, working end to end</td></tr>
+        <tr><td><b>Fallback</b></td><td>The smaller version of your project you agree to build if the real one runs long</td></tr>
+        <tr><td><b>Static file</b></td><td>A file the server hands over unchanged: an HTML page, a stylesheet, an image</td></tr>
+        <tr><td><b>Port</b></td><td>The door number on a computer. Your dashboard uses 5000, this project uses 8000</td></tr>
+        <tr><td><b>Route</b></td><td>A line saying which request a function answers</td></tr>
+        <tr><td><b>Relative path</b></td><td>A path starting from where the file is, like <code>assets/photo.jpg</code>. Works anywhere the folder goes</td></tr>
+        <tr><td><b>Case sensitive</b></td><td>Linux treats <code>Photo.jpg</code> and <code>photo.jpg</code> as different files. Mac and Windows do not</td></tr>
+        <tr><td><b>CSS variable</b></td><td>A named color or size defined once in <code>:root</code> and reused with <code>var(--name)</code></td></tr>
+        <tr><td><b>Event listener</b></td><td>Code that waits for something to happen, like a click, and then runs</td></tr>
+        <tr><td><b>Console</b></td><td>The browser panel that shows your JavaScript errors. <kbd>F12</kbd></td></tr>
+        <tr><td><b>Responsive</b></td><td>A page that works at any screen width without a separate phone version</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Where to look things up</h2>
+    <div class="twrap"><table>
+      <tbody>
+        <tr><td><a href="https://www.w3schools.com/">W3Schools</a></td><td>Start here. Try It Yourself box on almost every page</td></tr>
+        <tr><td><a href="https://developer.mozilla.org/">MDN Web Docs</a></td><td>The real explanation, when W3Schools is not enough</td></tr>
+        <tr><td><a href="https://www.freecodecamp.org/learn/responsive-web-design/">freeCodeCamp</a></td><td>Free, self paced, from zero</td></tr>
+        <tr><td><a href="https://coolors.co/">Coolors</a></td><td>Color palettes</td></tr>
+        <tr><td><a href="https://fonts.google.com/">Google Fonts</a></td><td>Free fonts</td></tr>
+        <tr><td><a href="https://unsplash.com/">Unsplash</a></td><td>Free photos you are allowed to use</td></tr>
+        <tr><td><a href="../../../projects.html">Student projects</a></td><td>What your classmates built</td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="slide">
     <h2>When it goes wrong</h2>
     <div class="trouble">
+      <details><summary>My CSS is not doing anything.</summary>
+        <div class="fix">Is <code>styles.css</code> in the same folder as <code>index.html</code>? Is the <code>&lt;link&gt;</code> line in the <code>&lt;head&gt;</code> spelled exactly right? Did the file save as <code>styles.css</code> and not <code>styles.css.txt</code>?</div></details>
+      <details><summary>My browser shows the code as text instead of the page.</summary>
+        <div class="fix">The file is not really an <code>.html</code> file. Look at the tab name in VS Code. If it says <code>index.html.txt</code>, rename it in the sidebar.</div></details>
+      <details><summary>My images worked on the laptop and not on the Pi.</summary>
+        <div class="fix">A capital letter. Check the filename in your <code>src</code> matches the actual file exactly, letter for letter. Rename everything to lowercase.</div></details>
+      <details><summary>Address already in use.</summary>
+        <div class="fix">Something is already on that port. Your dashboard is probably on 5000, this project is on 8000. If 8000 is also taken, <code>pkill -f site_server.py</code> and start again.</div></details>
+      <details><summary>My JavaScript does nothing.</summary>
+        <div class="fix">Press <kbd>F12</kbd> and read the Console, top to bottom, the way Day 3 walks through. "null is not an object" means <code>getElementById</code> could not find that id, so the name in your HTML and the name in your JS do not match. Also check <code>&lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;</code> is the last thing before <code>&lt;/body&gt;</code>.</div></details>
+      <details><summary>The page loads but it is the old version.</summary>
+        <div class="fix">Hard refresh: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>.</div></details>
+      <details><summary>Nothing loads from my phone.</summary>
+        <div class="fix">Is the phone on GHCDS? Is the server still running on the Pi? Did you type <code>:8000</code> after the IP?</div></details>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong, continued</h2>
+    <div class="trouble">
+      <details><summary>I cannot find my jump drive on the Pi.</summary>
+        <div class="fix"><code>ls /media/$USER/</code> lists what is plugged in. If it is empty, unplug and replug, then wait a few seconds.</div></details>
+      <details><summary>I deleted something and now it is all broken.</summary>
+        <div class="fix">Your jump drive has yesterday's copy. This is exactly why you save to it at the end of every period.</div></details>
       <details><summary>I have no idea what to build.</summary>
         <div class="fix">Go through <a href="../../../projects.html">the projects page</a> and find the one you wish you had made. Build a different version of that. Nobody starts from nothing.</div></details>
       <details><summary>My project is too big and I know it.</summary>
@@ -218,10 +610,6 @@
         <div class="fix">Stop and look up that one thing before you type more. A tutorial you are copying without understanding is building you a project you cannot defend.</div></details>
       <details><summary>It worked yesterday and now it does not.</summary>
         <div class="fix">What changed? If you cannot say, that is the actual problem. Copy back the working version from your jump drive and redo the change one piece at a time.</div></details>
-      <details><summary>I am stuck and I do not know what to search.</summary>
-        <div class="fix">Describe what you want in the plainest words you have, put the language first, and search that. "javascript make a square move when i press arrow keys" finds the answer.</div></details>
-      <details><summary>It works on my laptop but not on the Pi.</summary>
-        <div class="fix">A capital letter in a filename, nearly every time. See the case-sensitivity section in <a href="../../raspberry-pi/first-website/">Your First Real Website</a>, Day 4.</div></details>
     </div>
   </section>
 
