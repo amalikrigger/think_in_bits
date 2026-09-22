@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="icon" type="image/png" href="../../../images/favicon.png">
 <title>Functions That Feed Each Other</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+</head>
+<body>
 <style>
   :root{
     --tib-primary-color:#00e5ff;
@@ -195,7 +196,6 @@
     .frag{transition:none;}
   }
 </style>
-<body>
 <div id="progress"></div>
 <div id="timer" class="mono">55:00</div>
 <div id="deck"></div>
@@ -326,14 +326,18 @@ slide(`
   <div class="content">
     <div class="card">
       <p><b>gf can only be formed when the whole range of f fits inside the domain of g.</b></p>
-      <p class="muted">g has to be able to accept every single output f could ever produce. If f can output a number g isn't defined for, the chain breaks at that point. The composite doesn't exist for that input.</p>
+      <p class="muted">g has to be able to accept every single output f could ever produce. If f can output a number g isn't defined for, the chain breaks at that point.</p>
     </div>
     <div class="card step frag" data-frag="1">
-      <h3>Why this is worth a whole slide</h3>
-      <p class="mono" style="font-size:15px; color:var(--tib-primary-color); line-height:1.5;">Cambridge June 2025 Examiner Report, Paper 1, Question 9(f): "This question proved to be challenging for most candidates and there were few correct answers. Successful candidates stated that hg&sup1;&#8315; is impossible since the range of g&sup1;&#8315; is x &ge; &minus;2 and is not within the domain of h, which is x &ge; 0."</p>
-      <p class="muted">Different letters, same condition tested here. The successful answers all did the same thing: named <i>which</i> set (the range) wasn't inside <i>which</i> other set (the domain), not just that something felt off.</p>
+      <h3>See it break, with real numbers</h3>
+      <div class="example-fn" style="margin-bottom:8px;">
+        <div class="fn-pill">f(x) = x&sup2; for x &ge; 0</div>
+        <div class="fn-pill">g(x) = 1 &frasl; (x &minus; 5) for x &gt; 5</div>
+      </div>
+      <p class="mono" style="font-size:16px;">Try x = 1: &nbsp;f(1) = 1&sup2; = 1. &nbsp;Now try g(1): is 1 &gt; 5? <b>No.</b> g(1) doesn't exist.</p>
+      <p class="muted">One input sent f's output somewhere g can't follow. That's enough on its own: gf cannot be formed for this f and g. The next slide lets you drag f's domain and watch this verdict flip in real time.</p>
     </div>
-    <div class="frag math result" data-frag="2">The next slide makes this visible: same g, and you'll watch the verdict flip from "can't be formed" to "can be formed" as f's domain changes.</div>
+    <div class="frag" data-frag="2" style="font-size:14px; color:var(--tib-secondary-color);">This exact condition shows up on real Cambridge papers, just with different letters. June 2025 Examiner Report, Paper 1, Q9(f): most candidates missed it. The ones who got it credit named exactly which range wasn't inside which domain, the same move you just made above.</div>
   </div>
 `, {title:"Existence condition"});
 
@@ -369,7 +373,7 @@ slide(`
   <div class="content">
     <div class="card">
       <p class="mono">f : x &#8614; 3x + 2, x &isin; &Ropf; &nbsp;&nbsp; g : x &#8614; 4x &minus; 12, x &isin; &Ropf;</p>
-      <p class="muted">The full question asks you to solve f&sup1;&#8315;(x) = gf(x). That needs f&sup1;&#8315;, which Session 3 covers. For today, find gf(x): the piece you already have the tools for.</p>
+      <p class="muted">The full question asks you to solve f&#8315;&sup1;(x) = gf(x). Today: find gf(x), the piece you already have the tools for.</p>
     </div>
     <div class="card step">
       <div class="step-row"><span class="step-num">1</span><p>Apply f first: f is closest to x in gf(x).</p></div>
@@ -380,9 +384,30 @@ slide(`
       <div class="frag" data-frag="3"><p class="mono">= 4(3x + 2) &minus; 12 = 12x + 8 &minus; 12</p></div>
       <div class="frag math result" data-frag="4">gf(x) = <b>12x &minus; 4</b></div>
     </div>
-    <div class="frag" data-frag="5" style="font-size:15px; color:var(--tib-secondary-color);">We'll come back to this exact question in Session 3, once f&sup1;&#8315;(x) is on the table, and finish solving f&sup1;&#8315;(x) = gf(x) for x.</div>
+    <div class="frag" data-frag="5" style="font-size:15px; color:var(--tib-secondary-color);">That's gf(x) done. Next: a quick preview of how f&#8315;&sup1; itself is found, so that equation isn't a black box.</div>
   </div>
 `, {title:"Worked: exam Q"});
+
+// ---------- Slide 8b: Preview - finding the inverse ----------
+slide(`
+  <div class="eyebrow">5 OF 5 &middot; PREVIEW</div>
+  <h2>Quick preview: how f&#8315;&sup1; is found</h2>
+  <div class="content">
+    <div class="card">
+      <p class="mono">f(x) = 3x + 2</p>
+      <p class="muted">Full inverse-function theory, including when an inverse exists at all, is Session 3. Here's just the mechanic, so today's equation isn't a mystery.</p>
+    </div>
+    <div class="card step">
+      <div class="step-row"><span class="step-num">1</span><p>Write y = f(x), then swap x and y.</p></div>
+      <div class="frag" data-frag="1"><p class="mono">y = 3x + 2 &nbsp;&rarr;&nbsp; swap: &nbsp;x = 3y + 2</p></div>
+    </div>
+    <div class="card step frag" data-frag="2">
+      <div class="step-row"><span class="step-num">2</span><p>Solve that new equation for y.</p></div>
+      <div class="frag math result" data-frag="3">y = (x &minus; 2)/3, &nbsp;so <b>f&#8315;&sup1;(x) = (x &minus; 2)/3</b></div>
+    </div>
+    <div class="frag" data-frag="4" style="font-size:15px; color:var(--tib-secondary-color);">Session 3 covers why swapping x and y works, when an inverse exists at all (only for one-one functions), and finishes solving f&#8315;&sup1;(x) = gf(x), that is (x &minus; 2)/3 = 12x &minus; 4, for x.</div>
+  </div>
+`, {title:"Preview: inverse"});
 
 // ---------- Slide 9: Worked example - unknown parameters (part 1) ----------
 slide(`
@@ -468,7 +493,7 @@ slide(`
     </div>
     <div class="card frag" data-frag="1">
       <h3>Next up: Session 3</h3>
-      <p>One-one functions and inverses, including finishing today's Specimen Paper question once f&sup1;&#8315; is on the table.</p>
+      <p>One-one functions and inverses in full, including finishing today's Specimen Paper question now that you've seen how f&#8315;&sup1; is found.</p>
     </div>
   </div>
 `, {title:"Recap"});
@@ -478,7 +503,7 @@ slide(`
   <div class="eyebrow">SESSION 2 &middot; DONE</div>
   <h1 style="font-size:38px;">gf(x), (f&#8728;g)(x), and when they don't exist</h1>
   <div class="content" style="justify-content:center;">
-    <p class="muted" style="font-size:18px;">Exit ticket for this session is being finalized. Check Schoology once it's posted.</p>
+    <p class="muted" style="font-size:18px;">Exit ticket: Schoology, Paper 1 &rarr; 1.2 Functions.</p>
   </div>
 `, {title:"Closing"});
 
