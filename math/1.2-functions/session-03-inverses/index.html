@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
 </head>
 <body>
-<title>Functions That Feed Each Other</title>
+<title>Running a Function Backwards</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 /* ============================================================
@@ -660,230 +660,387 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 
 <!-- 1 · title -->
 <section class="slide active">
-  <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 2 of 5</p>
-  <h1>Functions That Feed Each Other</h1>
-  <p class="muted">One function's output becomes another function's input. Get the order wrong and you get a different answer, every time.</p>
+  <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 3 of 5</p>
+  <h1>Running a Function Backwards</h1>
+  <p class="muted">A function takes an input and gives an output. Its inverse takes that output and hands back the input you started with. Some functions can be run backwards and some can't.</p>
   <div class="agenda">
-    <div class="row"><span>Do Now: same two functions, two different orders</span><span class="t">5 min</span></div>
-    <div class="row"><span>What a composite function is, and the two ways to write one</span><span class="t">10 min</span></div>
-    <div class="row"><span>Turning a composite into a formula</span><span class="t">6 min</span></div>
-    <div class="row"><span>When a composite can't be formed, and the slider that shows it</span><span class="t">9 min</span></div>
-    <div class="row"><span>Two real exam questions</span><span class="t">12 min</span></div>
-    <div class="row"><span>Practice, then the exit ticket</span><span class="t">13 min</span></div>
+    <div class="row"><span>Do Now: finish Tuesday's exam question</span><span class="t">5 min</span></div>
+    <div class="row"><span>What an inverse does, and when one exists</span><span class="t">10 min</span></div>
+    <div class="row"><span>Finding f<sup>−1</sup>(x), two ways, on two real exam questions</span><span class="t">14 min</span></div>
+    <div class="row"><span>The square-root sign trap</span><span class="t">5 min</span></div>
+    <div class="row"><span>The graph: the mirror line y = x, and the Mirror Lab</span><span class="t">8 min</span></div>
+    <div class="row"><span>Practice, then the exit ticket</span><span class="t">15 min</span></div>
   </div>
 </section>
 
 <!-- 2 · do now -->
 <section class="slide">
-  <p class="eyebrow">Do Now · 5 min</p>
-  <h2>Same two functions, two different orders.</h2>
-  <div class="math">f(x) = 2x − 3 &nbsp;·&nbsp; g(x) = 1 − 2x &nbsp;·&nbsp; both x ∈ ℝ</div>
-  <p>Start from x = 2 each time. Tap to check.</p>
-  <div class="check" tabindex="0">
-    <div class="math small">A.&nbsp; Work out f first, then feed that result into g.</div>
-    <div class="ans"><div class="math small result">f(2) = 2(2) − 3 = 1 &nbsp;→&nbsp; g(1) = 1 − 2(1) = −1</div></div>
+  <p class="eyebrow">Do Now · 5 min · Specimen Paper 1, Q2 · the last step</p>
+  <h2>Finish Tuesday's question. Tap to check.</h2>
+  <div class="card">
+    <p style="margin:0">f : x ↦ 3x + 2 and g : x ↦ 4x − 12, both for x ∈ ℝ. Solve the equation f<sup>−1</sup>(x) = gf(x). <span class="marks">[4]</span></p>
+    <p class="small" style="margin:0">On Tuesday we found both pieces: f<sup>−1</sup>(x) = <span class="fr"><i>x − 2</i><i>3</i></span> and gf(x) = 12x − 4.</p>
   </div>
   <div class="check" tabindex="0">
-    <div class="math small">B.&nbsp; Work out g first, then feed that result into f.</div>
-    <div class="ans"><div class="math small result">g(2) = 1 − 2(2) = −3 &nbsp;→&nbsp; f(−3) = 2(−3) − 3 = −9</div></div>
+    <div class="math">Set them equal and solve for x.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">write the equation, this line earns the method mark:</span>&nbsp; <span class="fr"><i>x − 2</i><i>3</i></span> = 12x − 4</div>
+      <div class="math small"><span class="lbl">× 3 to clear the fraction:</span>&nbsp; x − 2 = 36x − 12</div>
+      <div class="math small"><span class="lbl">collect the x terms on the right:</span>&nbsp; −2 + 12 = 36x − x &nbsp;→&nbsp; 10 = 35x</div>
+      <div class="math small result">x = <span class="fr"><i>10</i><i>35</i></span> = <span class="fr"><i>2</i><i>7</i></span></div>
+    </div>
   </div>
-  <p class="frag">Two different answers from the same starting number. <b>The order you apply the functions in changes the result.</b></p>
+  <p class="small muted">Mark scheme: B1 for f<sup>−1</sup>(x), B1 for gf(x), M1 for setting them equal, A1 for <span class="fr"><i>2</i><i>7</i></span>. Today is about where that f<sup>−1</sup> came from, and when it exists at all.</p>
 </section>
 
 <!-- 3 · the idea -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 1 of 5</p>
-  <h2>Feed one function's output into another.</h2>
-  <p>A composite function takes the <b>output</b> of one function and uses it as the <b>input</b> of another. Nothing new is being calculated. You're chaining two rules you already know.</p>
-  <div class="card frag">
-    <p class="eyebrow">Think of an assembly line</p>
-    <p class="small">Station 1 takes a part and does something to it. Station 2 takes whatever comes off station 1 and does something else to it. <b>Swap the order of the stations and a different product comes off the line</b>, even though both stations do exactly the same job either way.</p>
+  <p class="eyebrow">Direct instruction · 1 of 9</p>
+  <h2>An inverse undoes the function.</h2>
+  <div class="math">f(x) = 2x + 1</div>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Forwards: f</p>
+        <div class="math small">4 → double it → 8 → add 1 → 9</div>
+        <div class="math small result">f(4) = 9</div>
+      </div>
+    </div>
+    <div class="frag">
+      <div class="card">
+        <p class="eyebrow">Backwards: f<sup>−1</sup></p>
+        <div class="math small">9 → subtract 1 → 8 → halve it → 4</div>
+        <div class="math small result">f<sup>−1</sup>(9) = 4</div>
+      </div>
+    </div>
   </div>
-  <div class="math frag result">f then g gave −1. g then f gave −9. Same functions, same start, different order.</div>
+  <p class="frag">The inverse does the <b>opposite operations in the opposite order</b>. As a formula, f<sup>−1</sup>(x) = <span class="fr"><i>x − 1</i><i>2</i></span>.</p>
+  <p class="frag small bad"><b>The −1 is not a power.</b> f<sup>−1</sup>(9) means "run f backwards on 9", which is 4. It does not mean 1 ÷ f(9), which would be <span class="fr"><i>1</i><i>19</i></span>. The notation looks like x<sup>−1</sup> = <span class="fr"><i>1</i><i>x</i></span>, and that look-alike trips people up.</p>
 </section>
 
-<!-- 4 · two notations -->
+<!-- 4 · one-one vs many-one -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 2 of 5 · notation</p>
-  <h2>Two ways to write it. You'll see both.</h2>
+  <p class="eyebrow">Direct instruction · 2 of 9</p>
+  <h2>Only a one-one function can be run backwards.</h2>
+  <p class="small">A function is <b>one-one</b> when every output comes from exactly one input. It is <b>many-one</b> when two or more inputs share an output.</p>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
-        <p class="eyebrow">Cambridge exam notation</p>
-        <div class="math result">gf(x)</div>
-        <p class="small">No circle, the letters just sit next to each other. <b>f is written right next to x</b>, so f is applied first. Then g is applied to that result.</p>
-        <div class="math small">gf(x) = g( f(x) )</div>
+        <p class="eyebrow">One-one · f(x) = 2x + 1</p>
+        <svg viewBox="0 0 240 130" style="width:100%;max-width:300px;height:auto;display:block" aria-label="A straight line crossed once by a dashed horizontal line">
+          <line x1="10" y1="110" x2="230" y2="110" stroke="var(--axis)" stroke-width="1.5"/>
+          <line x1="120" y1="8" x2="120" y2="122" stroke="var(--axis)" stroke-width="1.5"/>
+          <line x1="50" y1="125" x2="190" y2="10" stroke="var(--accent)" stroke-width="3"/>
+          <line x1="10" y1="40" x2="230" y2="40" stroke="var(--text-2)" stroke-width="1.6" stroke-dasharray="6 5"/>
+          <circle cx="153.5" cy="40" r="5.5" fill="var(--ok)"/>
+        </svg>
+        <p class="small">Ask "which input gave 9?" and there is one answer: 4. Any horizontal line crosses the graph <b>once</b>.</p>
       </div>
     </div>
     <div>
       <div class="card">
-        <p class="eyebrow">Khan Academy notation</p>
-        <div class="math result">(f∘g)(x)</div>
-        <p class="small">Read "f composed with g". <b>g is written right next to x</b>, inside the brackets, so g is applied first. Then f is applied to that result.</p>
-        <div class="math small">(f∘g)(x) = f( g(x) )</div>
+        <p class="eyebrow">Many-one · f(x) = x<sup>2</sup> for x ∈ ℝ</p>
+        <svg viewBox="0 0 240 130" style="width:100%;max-width:300px;height:auto;display:block" aria-label="A parabola crossed twice by a dashed horizontal line">
+          <line x1="10" y1="110" x2="230" y2="110" stroke="var(--axis)" stroke-width="1.5"/>
+          <line x1="120" y1="8" x2="120" y2="122" stroke="var(--axis)" stroke-width="1.5"/>
+          <path d="M60 10 Q120 210 180 10" fill="none" stroke="var(--accent)" stroke-width="3"/>
+          <line x1="10" y1="40" x2="230" y2="40" stroke="var(--text-2)" stroke-width="1.6" stroke-dasharray="6 5"/>
+          <circle cx="69.8" cy="40" r="5.5" fill="var(--warn)"/><circle cx="170.2" cy="40" r="5.5" fill="var(--warn)"/>
+        </svg>
+        <p class="small">f(3) = 9 and f(−3) = 9. Ask "which input gave 9?" and there are two answers. A function can only give one output, so there is no inverse.</p>
       </div>
     </div>
   </div>
-  <p class="frag small"><b>The rule that works for both:</b> find whichever function is written closest to x and do that one first, then apply the other to the result. Don't just read left to right. In both notations, the function you meet first on the page is applied second.</p>
-  <p class="frag small muted">On a Cambridge paper, always answer in gf(x) form. That's what the mark scheme expects.</p>
+  <p class="frag small"><b>Two tests, two different questions.</b> The <b>vertical</b> line test asks "is this a function at all?" Both graphs pass it: each x gives one y. The <b>horizontal</b> line test asks "is it one-one, so does it have an inverse?" The line passes it. x<sup>2</sup> on all of ℝ fails it, so x<sup>2</sup> is a function but it is not one-one.</p>
 </section>
 
-<!-- 5 · worked, symbolic -->
+<!-- 5 · restricting the domain -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 3 of 5 · worked example</p>
-  <h2>Turn it into a formula that works for any x.</h2>
-  <div class="math">f(x) = 2x − 3 &nbsp;·&nbsp; g(x) = 1 − 2x</div>
-  <div class="math frag small"><span class="lbl">gf(x): apply f first, but keep it as x, no number yet:</span>&nbsp; gf(x) = g( f(x) ) = g(2x − 3) = 1 − 2(2x − 3)</div>
-  <div class="math frag result">gf(x) = 1 − 4x + 6 = 7 − 4x</div>
-  <div class="math frag small"><span class="lbl">check against Row A of the Do Now, x = 2:</span>&nbsp; 7 − 4(2) = 7 − 8 = −1 ✓</div>
-  <div class="math frag small"><span class="lbl">fg(x): apply g first:</span>&nbsp; fg(x) = f( g(x) ) = f(1 − 2x) = 2(1 − 2x) − 3 = 2 − 4x − 3</div>
-  <div class="math frag result">fg(x) = −4x − 1</div>
-  <div class="math frag small"><span class="lbl">check against Row B, x = 2:</span>&nbsp; −8 − 1 = −9 ✓</div>
-</section>
-
-<!-- 6 · existence condition -->
-<section class="slide">
-  <p class="eyebrow">Direct instruction · 4 of 5 · the condition</p>
-  <h2>gf can't always be formed.</h2>
-  <div class="card">
-    <p style="margin:0"><b>gf can only be formed when the whole range of f fits inside the domain of g.</b></p>
-    <p class="small" style="margin:0">g has to be able to accept every single output f could ever produce. If f can output a number g isn't defined for, the chain breaks at that point.</p>
+  <p class="eyebrow">Direct instruction · 3 of 9</p>
+  <h2>Cut the domain down until it passes the test.</h2>
+  <p>x<sup>2</sup> fails on all of ℝ. Keep only one side of the vertex and every output comes from one input again.</p>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <div class="math small">f(x) = x<sup>2</sup> for x ≥ 0</div>
+        <p class="small">Right half only. 9 now comes from 3 alone. The inverse hands back the <b>original inputs</b>, and those were all ≥ 0, so it must give the positive root.</p>
+        <div class="math small result">f<sup>−1</sup>(x) = √x</div>
+      </div>
+    </div>
+    <div class="frag">
+      <div class="card">
+        <div class="math small">f(x) = x<sup>2</sup> for x ≤ 0</div>
+        <p class="small">Left half only. 9 now comes from −3 alone. The original inputs were all ≤ 0, so the inverse must hand back a negative number: the negative root. f<sup>−1</sup>(9) = −3.</p>
+        <div class="math small result">f<sup>−1</sup>(x) = −√x</div>
+      </div>
+    </div>
   </div>
+  <p class="frag">This is why Cambridge functions come with "for x &gt; …" attached. <b>The restriction is what makes an inverse possible</b>, and it decides which answer is right. You'll see that on the sign-trap slide.</p>
+</section>
+
+<!-- 6 · exam: does g^-1 exist -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · real past paper · 9709/12 June 2024, Q4(b)</p>
+  <h2>g(x) = 1/(x<sup>2</sup> + 2) for x ∈ ℝ. State the range of g and explain whether g<sup>−1</sup> exists. <span class="marks">[2]</span></h2>
+  <div class="math frag small"><span class="lbl">1 · the smallest x<sup>2</sup> can be is 0, at x = 0:</span>&nbsp; so the smallest bottom is x<sup>2</sup> + 2 = 2</div>
+  <div class="math frag small"><span class="lbl">2 · smallest bottom gives the biggest fraction:</span>&nbsp; g(0) = <span class="fr"><i>1</i><i>2</i></span>, the top of the range, and it is reached, so ≤</div>
+  <div class="math frag small"><span class="lbl">3 · as x grows, the bottom grows without limit:</span>&nbsp; g(10) = <span class="fr"><i>1</i><i>102</i></span>, g(100) = <span class="fr"><i>1</i><i>10002</i></span>, getting closer to 0</div>
+  <div class="math frag small"><span class="lbl">4 · 1 over a positive number is never 0 or negative:</span>&nbsp; so 0 is never reached, and that end is &gt;</div>
+  <div class="math frag result">range: 0 &lt; g(x) ≤ ½</div>
+  <div class="math frag"><span class="lbl">now look for two inputs with the same output:</span>&nbsp; g(1) = <span class="fr"><i>1</i><i>3</i></span> and g(−1) = <span class="fr"><i>1</i><i>3</i></span></div>
+  <div class="math frag result">g<sup>−1</sup> does not exist, because g is not one-one.</div>
+  <p class="frag small">Examiners saw many answers give only one side of the range, or mix up ≥ and &gt;. Both ends count. For the reason, "not one-one", "many-one" and "fails the horizontal line test" all score.</p>
+</section>
+
+<!-- 7 · two routes -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 9 · finding f<sup>−1</sup>(x)</p>
+  <h2>Two routes to f<sup>−1</sup>(x). Same answer, both full marks.</h2>
+  <div class="math">f(x) = 5x − 3 &nbsp;<span class="small muted">write y = f(x) first, whichever route you take</span></div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Route 1 · swap first, then solve</p>
+        <div class="math small">y = 5x − 3</div>
+        <div class="math small"><span class="lbl">swap x and y:</span>&nbsp; x = 5y − 3</div>
+        <div class="math small"><span class="lbl">+ 3:</span>&nbsp; x + 3 = 5y</div>
+        <div class="math small"><span class="lbl">÷ 5:</span>&nbsp; y = <span class="fr"><i>x + 3</i><i>5</i></span></div>
+        <p class="small">This is the way we did it on Tuesday. The swap happens first, so the last line is already in x.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">Route 2 · solve first, then swap</p>
+        <div class="math small">y = 5x − 3</div>
+        <div class="math small"><span class="lbl">+ 3:</span>&nbsp; y + 3 = 5x</div>
+        <div class="math small"><span class="lbl">÷ 5:</span>&nbsp; x = <span class="fr"><i>y + 3</i><i>5</i></span></div>
+        <div class="math small"><span class="lbl">swap the letters:</span>&nbsp; y = <span class="fr"><i>x + 3</i><i>5</i></span></div>
+        <p class="small">Make x the subject, then rename the letters. The algebra is identical. Only the moment of the swap moved.</p>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">f<sup>−1</sup>(x) = <span class="fr"><i>x + 3</i><i>5</i></span></div>
+  <p class="frag small"><b>Pick either and stick with it.</b> The 2023 mark scheme lists both. The one thing both need: the final line is written as <b>f<sup>−1</sup>(x) = …</b> in terms of x. <b>Also swapped:</b> domain of f<sup>−1</sup> = range of f, and range of f<sup>−1</sup> = domain of f.</p>
+</section>
+
+<!-- 8 · exam: domain of f^-1 -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(b)</p>
+  <h2>f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> for x &gt; 3. Find the domain of f<sup>−1</sup>. <span class="marks">[1]</span></h2>
+  <p class="small muted">Tuesday's function. The paper gave f(x) = 1 + <span class="fr"><i>2a</i><i>x − a</i></span>, and we found a = 3.</p>
+  <div class="math frag"><span class="lbl">the domain of f<sup>−1</sup> is the range of f, so find the range, starting from the domain:</span></div>
+  <div class="math frag small"><span class="lbl">1 · start from the domain:</span>&nbsp; x &gt; 3</div>
+  <div class="math frag small"><span class="lbl">2 · subtract 3 from both sides:</span>&nbsp; x − 3 &gt; 0, so the bottom is always positive</div>
+  <div class="math frag small"><span class="lbl">3 · 6 over a positive number is positive:</span>&nbsp; <span class="fr"><i>6</i><i>x − 3</i></span> &gt; 0</div>
+  <div class="math frag small"><span class="lbl">4 · add 1 to both sides:</span>&nbsp; 1 + <span class="fr"><i>6</i><i>x − 3</i></span> &gt; 1</div>
+  <div class="math frag"><span class="lbl">range of f:</span>&nbsp; f(x) &gt; 1</div>
+  <div class="math frag result">domain of f<sup>−1</sup>: &nbsp;x &gt; 1</div>
+  <p class="frag small bad">On the real paper, examiners saw x &gt; 3 (the domain of f), x ≠ 1, and range and domain mixed up. The mark scheme gives <b>zero for f<sup>−1</sup>(x) &gt; 1</b>. A domain is a set of inputs, so write it in x.</p>
+</section>
+
+<!-- 9 · exam: expression for f^-1 -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(c)</p>
+  <h2>Same f. Find an expression for f<sup>−1</sup>(x). <span class="marks">[3]</span></h2>
+  <div class="math">f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> for x &gt; 3</div>
+  <div class="math frag"><span class="lbl">write y = f(x), then swap x and y:</span>&nbsp; x = 1 + <span class="fr"><i>6</i><i>y − 3</i></span></div>
+  <div class="math frag"><span class="lbl">− 1, then flip both sides over and × 6:</span>&nbsp; x − 1 = <span class="fr"><i>6</i><i>y − 3</i></span> &nbsp;→&nbsp; y − 3 = <span class="fr"><i>6</i><i>x − 1</i></span></div>
+  <div class="math frag"><span class="lbl">+ 3:</span>&nbsp; y = 3 + <span class="fr"><i>6</i><i>x − 1</i></span></div>
+  <div class="math frag result">f<sup>−1</sup>(x) = 3 + <span class="fr"><i>6</i><i>x − 1</i></span> &nbsp;or&nbsp; <span class="fr"><i>3x + 3</i><i>x − 1</i></span></div>
+  <div class="math frag small"><span class="lbl">check it: on Tuesday f(5) = 4, so f<sup>−1</sup> should send 4 back to 5:</span>&nbsp; 3 + <span class="fr"><i>6</i><i>4 − 1</i></span> = 3 + 2 = 5 ✓</div>
+  <p class="frag small">Either form earns all 3 marks. A last line still in y loses the final mark.</p>
+</section>
+
+<!-- 10 · sign trap -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 9 · the syllabus's own example</p>
+  <h2>A square root gives ±. The domain picks one.</h2>
+  <div class="math">h(x) = (2x + 3)<sup>2</sup> − 4 for x &lt; −<span class="fr"><i>3</i><i>2</i></span></div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Swap and solve</p>
+        <div class="math small">y = (2x + 3)<sup>2</sup> − 4</div>
+        <div class="math small"><span class="lbl">swap:</span>&nbsp; x = (2y + 3)<sup>2</sup> − 4</div>
+        <div class="math small"><span class="lbl">+ 4:</span>&nbsp; (2y + 3)<sup>2</sup> = x + 4</div>
+        <div class="math small"><span class="lbl">square root:</span>&nbsp; 2y + 3 = ±√(x + 4)</div>
+        <p class="small">Two possible signs. Only one of them is right.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">Let the domain decide</p>
+        <p class="small">The outputs of h<sup>−1</sup> are the inputs of h, so y &lt; −<span class="fr"><i>3</i><i>2</i></span>.</p>
+        <div class="math small">y &lt; −<span class="fr"><i>3</i><i>2</i></span> &nbsp;→&nbsp; 2y &lt; −3 &nbsp;→&nbsp; 2y + 3 &lt; 0</div>
+        <p class="small">2y + 3 is negative, so take the <b>negative</b> root.</p>
+        <div class="math small">2y + 3 = −√(x + 4) &nbsp;→&nbsp; 2y = −3 − √(x + 4)</div>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">h<sup>−1</sup>(x) = <span class="fr"><i>−3 − √(x + 4)</i><i>2</i></span> &nbsp;for x &gt; −4</div>
+  <div class="math frag small"><span class="lbl">where x &gt; −4 comes from: domain of h<sup>−1</sup> = range of h.</span>&nbsp; x &lt; −<span class="fr"><i>3</i><i>2</i></span> → 2x + 3 &lt; 0 → (2x + 3)<sup>2</sup> &gt; 0 → (2x + 3)<sup>2</sup> − 4 &gt; −4, so h(x) &gt; −4</div>
+  <p class="frag small">Check: h<sup>−1</sup>(0) = <span class="fr"><i>−3 − 2</i><i>2</i></span> = −<span class="fr"><i>5</i><i>2</i></span>, and h(−<span class="fr"><i>5</i><i>2</i></span>) = (−2)<sup>2</sup> − 4 = 0 ✓</p>
+</section>
+
+<!-- 11 · the graph -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 6 of 9 · the graph</p>
+  <h2>f<sup>−1</sup> is the reflection of f in the line y = x.</h2>
+  <p>Finding the inverse swapped x and y. So every point (a, b) on y = f(x) becomes the point (b, a) on y = f<sup>−1</sup>(x), and swapping the coordinates is exactly what a reflection in y = x does.</p>
+  <div class="math frag">f(4) = 9, so (4, 9) is on f &nbsp;→&nbsp; (9, 4) is on f<sup>−1</sup></div>
   <div class="card frag">
-    <p class="eyebrow">See it break, with real numbers</p>
-    <div class="math small">f(x) = x<sup>2</sup> for x ≥ 0 &nbsp;·&nbsp; g(x) = <span class="fr"><i>1</i><i>x − 5</i></span> for x &gt; 5</div>
-    <div class="math small"><span class="lbl">try x = 1:</span>&nbsp; f(1) = 1<sup>2</sup> = 1. &nbsp;Now g(1): is 1 &gt; 5? <span class="bad">No.</span> g(1) doesn't exist.</div>
-    <p class="small" style="margin:0">One input sent f's output somewhere g can't follow. That's enough on its own: gf cannot be formed for this f and g. The next slide lets you drag f's domain and watch the verdict flip.</p>
+    <p class="eyebrow">What a Cambridge sketch needs</p>
+    <div class="steps">
+      <p class="small"><span class="n">1</span>The line y = x, drawn and labeled. The syllabus says sketches should include the mirror line y = x.</p>
+      <p class="small"><span class="n">2</span>Both curves, mirror images across that line. End points and asymptotes swap too: an asymptote x = 3 on f becomes y = 3 on f<sup>−1</sup>.</p>
+      <p class="small"><span class="n">3</span>f<sup>−1</sup> sitting where its domain says. Its x-values are the range of f.</p>
+    </div>
   </div>
-  <p class="frag small muted">This exact condition shows up on real Cambridge papers with different letters. On the June 2025 paper most candidates missed it. The ones who got credit named exactly which range wasn't inside which domain, the same move you just made.</p>
+  <p class="frag small bad">June 2024 examiner report: "The mirror line of y = x was often omitted." Draw the line first, then reflect.</p>
 </section>
 
-<!-- 7 · widget -->
+<!-- 12 · mirror lab -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 4 of 5 · see it flip</p>
-  <h2>Drag the boundary. Watch the verdict change.</h2>
+  <p class="eyebrow">Direct instruction · 7 of 9 · the Mirror Lab</p>
+  <h2>Drag the point. Watch its reflection.</h2>
   <div class="lab">
-    <svg class="fig" id="ex-k-svg" viewBox="0 0 480 260" style="width:min(480px,38vw)" aria-label="A number line showing the domain of g and the range of f"></svg>
+    <svg class="fig" id="ml-svg" viewBox="0 0 440 440" aria-label="The graph of f, its reflection in the line y equals x, and a point with its mirror image"></svg>
     <div class="panel">
-      <div class="math small result" style="max-width:none">f(x) = x<sup>2</sup> for x ≥ <span id="ex-k-val">3.0</span> &nbsp;·&nbsp; g(x) = <span class="fr"><i>1</i><i>x − 5</i></span> for x &gt; 5</div>
-      <label for="ex-k">Drag the start of f's domain, k</label>
-      <input type="range" id="ex-k" min="0" max="4" step="0.1" value="3">
-      <div class="read" id="ex-k-read"></div>
-      <div class="verdict ok" id="ex-k-verdict"></div>
+      <div class="picks" id="ml-picks">
+        <button type="button" data-i="0" aria-pressed="true">2x + 1</button>
+        <button type="button" data-i="1" aria-pressed="false">x<sup>2</sup> + 1, x ≥ 0</button>
+        <button type="button" data-i="2" aria-pressed="false">1 + <span class="fr"><i>6</i><i>x − 3</i></span>, x &gt; 3</button>
+        <button type="button" data-i="3" aria-pressed="false">x<sup>2</sup>, x ∈ ℝ</button>
+      </div>
+      <label for="ml-t">Move the point along f</label>
+      <input type="range" id="ml-t" min="0" max="1000" value="500">
+      <div class="read" id="ml-read"></div>
+      <button type="button" class="toggle" id="ml-show" aria-pressed="false">Show the whole reflected curve</button>
+      <div class="verdict ok" id="ml-verdict"></div>
     </div>
   </div>
-  <p class="frag small">Drag k below about 2.24 (√5) and the range of f dips to include numbers ≤ 5, which g can't accept, and the verdict flips to red. Nothing about g changed. Only f's domain did, which changed f's range. That's the whole condition in one slider.</p>
+  <p class="frag small">Try the last one, x<sup>2</sup> on all of ℝ. Its reflection fails: one input would need two outputs. That is the many-one problem from earlier, seen on the graph.</p>
 </section>
 
-<!-- 8 · specimen Q2 -->
+<!-- 13 · undo check -->
 <section class="slide">
-  <p class="eyebrow">Worked example · real past paper · Specimen Paper 1, Q2</p>
-  <h2>f : x ↦ 3x + 2, g : x ↦ 4x − 12, both for x ∈ ℝ. Find gf(x).</h2>
-  <p class="small muted">The full question asks you to solve f<sup>−1</sup>(x) = gf(x). Today: find gf(x), the piece you already have the tools for.</p>
-  <div class="math frag"><span class="lbl">apply f first, because f is closest to x in gf(x):</span>&nbsp; gf(x) = g( f(x) ) = g(3x + 2)</div>
-  <div class="math frag"><span class="lbl">put (3x + 2) into g's rule and multiply out:</span>&nbsp; 4(3x + 2) − 12 = 12x + 8 − 12</div>
-  <div class="math frag result">gf(x) = 12x − 4</div>
-  <p class="frag small">That's gf(x) done. Next, a quick preview of how f<sup>−1</sup> itself is found, so that equation isn't a black box.</p>
-</section>
-
-<!-- 9 · preview: inverse -->
-<section class="slide">
-  <p class="eyebrow">Preview · Session 3</p>
-  <h2>How f<sup>−1</sup> is found, quickly.</h2>
-  <div class="math">f(x) = 3x + 2</div>
-  <p class="small muted">Full inverse-function theory, including when an inverse exists at all, is Session 3. Here's just the mechanic, so today's equation isn't a mystery.</p>
-  <div class="math frag"><span class="lbl">write y = f(x), then swap x and y:</span>&nbsp; y = 3x + 2 &nbsp;→&nbsp; x = 3y + 2</div>
-  <div class="math frag"><span class="lbl">solve that new equation for y:</span>&nbsp; x − 2 = 3y &nbsp;→&nbsp; y = <span class="fr"><i>x − 2</i><i>3</i></span></div>
-  <div class="math frag result">f<sup>−1</sup>(x) = <span class="fr"><i>x − 2</i><i>3</i></span></div>
-  <p class="frag small">Session 3 covers why swapping x and y works, when an inverse exists at all, and finishes solving f<sup>−1</sup>(x) = gf(x), that is <span class="fr"><i>x − 2</i><i>3</i></span> = 12x − 4.</p>
-</section>
-
-<!-- 10 · unknowns 1 -->
-<section class="slide">
-  <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(a) · 1 of 2</p>
-  <h2>Use a composite to find missing constants.</h2>
-  <div class="card">
-    <p style="margin:0">f(x) = 1 + <span class="fr"><i>2a</i><i>x − a</i></span> for x &gt; a, and g(x) = bx − 2. Given that f(7) = <span class="fr"><i>5</i><i>2</i></span> and gf(5) = 4, find a and b. <span class="marks">[4]</span></p>
+  <p class="eyebrow">Direct instruction · 8 of 9 · check your answer</p>
+  <h2>How to check your f<sup>−1</sup> is right.</h2>
+  <p class="small">Why: f<sup>−1</sup> undoes f, so doing one then the other must give back exactly what you started with. If it doesn't, your inverse has a mistake. Cambridge also asks you to show this directly.</p>
+  <div class="math">f(x) = 2x + 1 &nbsp;·&nbsp; f<sup>−1</sup>(x) = <span class="fr"><i>x − 1</i><i>2</i></span></div>
+  <div class="cols">
+    <div class="frag">
+      <div class="math small"><span class="lbl">f<sup>−1</sup>f(x), f first:</span></div>
+      <div class="math small">f<sup>−1</sup>(2x + 1) = <span class="fr"><i>(2x + 1) − 1</i><i>2</i></span> = <span class="fr"><i>2x</i><i>2</i></span></div>
+      <div class="math small result">= x</div>
+    </div>
+    <div class="frag">
+      <div class="math small"><span class="lbl">ff<sup>−1</sup>(x), f<sup>−1</sup> first:</span></div>
+      <div class="math small">f(<span class="fr"><i>x − 1</i><i>2</i></span>) = 2 · <span class="fr"><i>x − 1</i><i>2</i></span> + 1 = x − 1 + 1</div>
+      <div class="math small result">= x</div>
+    </div>
   </div>
-  <div class="math frag"><span class="lbl">use f(7) = <span class="fr"><i>5</i><i>2</i></span> first, because it only involves a:</span>&nbsp; 1 + <span class="fr"><i>2a</i><i>7 − a</i></span> = <span class="fr"><i>5</i><i>2</i></span> &nbsp;→&nbsp; <span class="fr"><i>2a</i><i>7 − a</i></span> = <span class="fr"><i>3</i><i>2</i></span></div>
-  <div class="math frag"><span class="lbl">cross-multiply:</span>&nbsp; 4a = 3(7 − a) = 21 − 3a</div>
-  <div class="math frag result">7a = 21 &nbsp;→&nbsp; a = 3</div>
-  <p class="frag small">With a known, the second fact, gf(5) = 4, is what finds b.</p>
+  <p class="frag"><b>The quick version for exams:</b> pick an x in the domain, work out f of it, then put that answer into your f<sup>−1</sup>. If you don't get your x back, the inverse is wrong. It takes thirty seconds and it catches sign errors.</p>
 </section>
 
-<!-- 11 · unknowns 2 -->
+<!-- 14 · practice together -->
 <section class="slide">
-  <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(a) · 2 of 2</p>
-  <h2>Now use the composite to find b.</h2>
-  <div class="math">f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> &nbsp;·&nbsp; g(x) = bx − 2 &nbsp;·&nbsp; gf(5) = 4</div>
-  <div class="math frag"><span class="lbl">find f(5) first, using a = 3:</span>&nbsp; f(5) = 1 + <span class="fr"><i>6</i><i>5 − 3</i></span> = 1 + 3 = 4</div>
-  <div class="math frag"><span class="lbl">gf(5) = g( f(5) ) = g(4):</span>&nbsp; g(4) = 4b − 2</div>
-  <div class="math frag"><span class="lbl">set it equal to the given value:</span>&nbsp; 4b − 2 = 4 &nbsp;→&nbsp; 4b = 6</div>
-  <div class="math frag result">b = <span class="fr"><i>3</i><i>2</i></span></div>
-  <p class="frag small">Examiners noted that students who found f(5) first did best. A common slip was dropping the "1 +" from f.</p>
-</section>
-
-<!-- 12 · practice together -->
-<section class="slide">
-  <p class="eyebrow">Practice · together · 6 min</p>
-  <h2>Different shapes, on purpose. Tap to check.</h2>
+  <p class="eyebrow">Practice · together · 7 min</p>
+  <h2>Three different shapes. Tap to check.</h2>
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">1.&nbsp; f(x) = x + 4, g(x) = x<sup>2</sup>. Find gf(3).</div>
-        <div class="ans"><div class="math small">f(3) = 7 &nbsp;→&nbsp; g(7) = 49</div><div class="math small result">gf(3) = 49</div></div>
+        <div class="math small">1.&nbsp; Is p(x) = x<sup>2</sup> − 4x for x ∈ ℝ one-one? Justify.</div>
+        <div class="ans">
+          <div class="math small">p(0) = 0 and p(4) = 16 − 16 = 0: two inputs, one output</div>
+          <div class="math small result">No. p is many-one, so p<sup>−1</sup> does not exist.</div>
+        </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">2.&nbsp; f(x) = 5 − x, g(x) = 2x + 1. Find gf(x).</div>
-        <div class="ans"><div class="math small">gf(x) = 2(5 − x) + 1 = 10 − 2x + 1</div><div class="math small result">gf(x) = 11 − 2x</div></div>
+        <div class="math small">2.&nbsp; q(x) = 5 − 2x for x ∈ ℝ. Find q<sup>−1</sup>(x).</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = 5 − 2y &nbsp;→&nbsp; 2y = 5 − x</div>
+          <div class="math small result">q<sup>−1</sup>(x) = <span class="fr"><i>5 − x</i><i>2</i></span></div>
+          <div class="math small"><span class="lbl">check:</span>&nbsp; q(1) = 3, and q<sup>−1</sup>(3) = <span class="fr"><i>5 − 3</i><i>2</i></span> = 1 ✓</div>
+        </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">3.&nbsp; Same f and g as Q2. Find fg(x) and compare.</div>
-        <div class="ans"><div class="math small">fg(x) = 5 − (2x + 1)</div><div class="math small result">fg(x) = 4 − 2x</div><div class="math small">different from gf(x) = 11 − 2x: order matters</div></div>
+        <div class="math small">3.&nbsp; r(x) = <span class="fr"><i>4</i><i>x + 1</i></span> for x &gt; 0. Find the domain of r<sup>−1</sup>.</div>
+        <div class="ans">
+          <div class="math small">x &gt; 0 &nbsp;→&nbsp; x + 1 &gt; 1 &nbsp;→&nbsp; 0 &lt; <span class="fr"><i>4</i><i>x + 1</i></span> &lt; 4</div>
+          <div class="math small"><span class="lbl">range of r:</span>&nbsp; 0 &lt; r(x) &lt; 4</div>
+          <div class="math small result">domain of r<sup>−1</sup>: 0 &lt; x &lt; 4</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 13 · practice on your own -->
+<!-- 15 · practice on your own -->
 <section class="slide">
-  <p class="eyebrow">Practice · on your own · 7 min</p>
-  <h2>Can gf be formed? Tap to check.</h2>
+  <p class="eyebrow">Practice · on your own · 8 min</p>
+  <h2>Your turn. Tap to check when you're done.</h2>
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">4.&nbsp; f(x) = <span class="fr"><i>1</i><i>x</i></span> for x &gt; 0, so f(x) &gt; 0. g(x) = x − 3 for x ∈ ℝ.</div>
-        <div class="ans"><div class="math small">g's domain is all of ℝ, so it accepts every possible output of f</div><div class="math small result">Yes, gf can be formed.</div></div>
+        <div class="math small">4.&nbsp; Same r as Q3. Find r<sup>−1</sup>(x).</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = <span class="fr"><i>4</i><i>y + 1</i></span> &nbsp;→&nbsp; y + 1 = <span class="fr"><i>4</i><i>x</i></span></div>
+          <div class="math small result">r<sup>−1</sup>(x) = <span class="fr"><i>4</i><i>x</i></span> − 1</div>
+          <div class="math small"><span class="lbl">check:</span>&nbsp; r(1) = 2, and r<sup>−1</sup>(2) = 2 − 1 = 1 ✓</div>
+        </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">5.&nbsp; f(x) = x<sup>2</sup> for x ∈ ℝ, so f(x) ≥ 0. g(x) = √(x − 10) for x ≥ 10.</div>
-        <div class="ans"><div class="math small">range of f starts at 0, domain of g starts at 10. f(2) = 4, and g isn't defined at 4</div><div class="math small result">No, gf cannot be formed.</div></div>
+        <div class="math small">5.&nbsp; s(x) = (x − 3)<sup>2</sup> + 2 for x ≥ 3. Find s<sup>−1</sup>(x) and its domain.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = (y − 3)<sup>2</sup> + 2 &nbsp;→&nbsp; y − 3 = ±√(x − 2)</div>
+          <div class="math small"><span class="lbl">y ≥ 3, so y − 3 ≥ 0: take the + root</span></div>
+          <div class="math small result">s<sup>−1</sup>(x) = 3 + √(x − 2) for x ≥ 2</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">6.&nbsp; The point (2, 7) is on y = t(x), and t is one-one. Name a point that must be on y = t<sup>−1</sup>(x).</div>
+        <div class="ans"><div class="math small result">(7, 2): swap the coordinates, which reflects (2, 7) in y = x.</div></div>
       </div>
     </div>
   </div>
+  <p class="small muted">Q3 and Q4 share a function on purpose: the domain you found in Q3 is the domain of the answer to Q4.</p>
 </section>
 
-<!-- 14 · recap -->
+<!-- 16 · recap -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 5 of 5 · recap</p>
-  <h2>Two things to leave with.</h2>
-  <p class="frag"><b>Notation.</b> Whichever symbol you see, gf(x) or (f∘g)(x), find the function touching x and apply that one first. On a Cambridge paper, answer in gf(x) form.</p>
-  <p class="frag"><b>The existence condition.</b> gf only exists when the whole range of f fits inside the domain of g. Check the two sets, and name them in your answer. That's what the mark scheme rewards.</p>
-  <p class="frag small muted">Next session: one-one functions and inverses in full, including finishing today's Specimen Paper question.</p>
+  <p class="eyebrow">Direct instruction · 9 of 9 · recap</p>
+  <h2>Three things to carry out of here.</h2>
+  <p class="frag"><b>Only one-one functions have inverses.</b> Two inputs with the same output means no inverse, and a restriction like "for x ≥ 3" is often what makes a function one-one.</p>
+  <p class="frag"><b>Swap, solve, then check the sign.</b> After a square root, the domain of the original function tells you which sign to keep. Domain of f<sup>−1</sup> = range of f.</p>
+  <p class="frag"><b>Sketch with the mirror line.</b> f<sup>−1</sup> is f reflected in y = x. Draw and label y = x every time.</p>
 </section>
 
-<!-- 15 · exit ticket -->
+<!-- 17 · exit ticket -->
 <section class="slide">
   <p class="eyebrow">Exit ticket · 5 min</p>
   <h2>Schoology, Paper 1 → 1.2 Functions.</h2>
-  <p>Four questions, each with a fresh pair of functions.</p>
+  <p>Four questions. One of them asks for the full method, so show how you chose the sign.</p>
   <div class="math result">Press Submit before you close the tab. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 18 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework · and where to practice more</p>
+  <h2>Before next class.</h2>
+  <ul>
+    <li>Finish any practice question from today you didn't get to, and check it with the undo test.</li>
+    <li class="frag"><b>Khan Academy:</b> if you haven't done them yet, lessons 29–31 cover exactly this. Invertible functions, inverse functions in graphs and tables, and verifying inverses by composition.</li>
+  </ul>
+  <p class="frag small muted">Next session: transformations. Moving, stretching and reflecting whole graphs.</p>
 </section>
 
 
@@ -914,7 +1071,7 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 
 <div class="hud">
   <div class="left">
-    <span class="name">1.2 · Session 2</span>
+    <span class="name">1.2 · Session 3</span>
     <span class="here" id="here"></span>
   </div>
   <div class="nav">
@@ -947,7 +1104,7 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
     <kbd>End</kbd><span>Last slide, everything revealed.</span>
     <kbd>?</kbd><span>This list.</span>
   </div>
-  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. On the existence-condition slide, drag the slider.</p>
+  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. In the Mirror Lab, pick a function and drag the slider.</p>
 </div>
 
 <script>
@@ -1269,39 +1426,100 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 </script>
 
 <script>
-/* ---------- existence condition: drag the start of f's domain ----------
-   f(x) = x^2 for x >= k, so the range of f is f(x) >= k^2. g(x) = 1/(x - 5)
-   needs x > 5. gf exists exactly when k^2 > 5, so the verdict flips at k = sqrt 5. */
+/* ---------- Mirror Lab: a point on f and its reflection in y = x ----------
+   Four functions. Three are one-one and the reflected point always lands on
+   y = f^-1(x). The fourth is x^2 on all of R: its reflection has two outputs
+   for one input, which is the many-one problem drawn. */
 (function () {
   'use strict';
-  var input = document.getElementById('ex-k');
-  if (!input) return;
-  var svg = document.getElementById('ex-k-svg'), read = document.getElementById('ex-k-read'),
-      verdict = document.getElementById('ex-k-verdict'), kval = document.getElementById('ex-k-val');
-  var W = 480, H = 260, pad = 40;
-  function X(v) { return pad + (v / 16) * (W - 2 * pad); }
+  var svg = document.getElementById('ml-svg');
+  if (!svg) return;
+  var slider = document.getElementById('ml-t'), read = document.getElementById('ml-read'),
+      verdict = document.getElementById('ml-verdict'), showBtn = document.getElementById('ml-show');
+  var picks = [].slice.call(document.querySelectorAll('#ml-picks button'));
+  var M = '−';
+  function fmt(v) { var r = Math.round(v * 100) / 100; var s = Math.abs(r).toFixed(2).replace(/\.?0+$/, ''); return (r < 0 ? M : '') + s; }
+  var FNS = [
+    { a: -3, b: 4.5, f: function (x) { return 2 * x + 1; }, one: true, name: '2x + 1' },
+    { a: 0, b: 3, f: function (x) { return x * x + 1; }, one: true, name: 'x² + 1 for x ≥ 0', dot: true },
+    { a: 3.65, b: 10, f: function (x) { return 1 + 6 / (x - 3); }, one: true, name: '1 + 6/(x − 3) for x > 3', asym: true },
+    { a: -3.1, b: 3.1, f: function (x) { return x * x; }, one: false, name: 'x² for x ∈ ℝ' }
+  ];
+  var fi = 0, showAll = false;
+  var LO = -4, HI = 11, S = 440, P = 26;
+  function px(v) { return P + (v - LO) / (HI - LO) * (S - 2 * P); }
+  function py(v) { return S - P - (v - LO) / (HI - LO) * (S - 2 * P); }
+  function cl(v) { return Math.max(LO - 1, Math.min(HI + 1, v)); }
+  function path(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + px(cl(p[0])).toFixed(1) + ' ' + py(cl(p[1])).toFixed(1); }).join(' '); }
   function draw() {
-    var k = parseFloat(input.value), lo = k * k, ok = lo > 5;
-    kval.textContent = k.toFixed(1);
-    var s = '<line x1="' + pad + '" y1="' + H / 2 + '" x2="' + (W - pad) + '" y2="' + H / 2 + '" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>';
-    for (var v = 0; v <= 16; v += 1) {
-      s += '<line x1="' + X(v) + '" y1="' + (H / 2 - 5) + '" x2="' + X(v) + '" y2="' + (H / 2 + 5) + '" stroke="rgba(255,255,255,0.4)"/>';
-      if (v % 2 === 0) s += '<text x="' + X(v) + '" y="' + (H / 2 + 24) + '" font-family="JetBrains Mono, monospace" font-size="13" fill="#b0b0b0" text-anchor="middle">' + v + '</text>';
+    var F = FNS[fi];
+    var a = F.a + (F.b - F.a) * (slider.value / 1000), b = F.f(a);
+    var s = '', v;
+    for (v = LO; v <= HI; v++) {
+      var ax = v === 0;
+      s += '<line x1="' + px(v) + '" y1="' + py(LO) + '" x2="' + px(v) + '" y2="' + py(HI) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(v) + '" x2="' + px(HI) + '" y2="' + py(v) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      if (v % 2 === 0 && v !== 0) {
+        var t = v < 0 ? M + (-v) : String(v);
+        s += '<text x="' + px(v) + '" y="' + (py(0) + 16) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="middle">' + t + '</text>';
+        s += '<text x="' + (px(0) - 6) + '" y="' + (py(v) + 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="end">' + t + '</text>';
+      }
     }
-    s += '<line x1="' + X(5) + '" y1="' + (H / 2 - 36) + '" x2="' + X(16) + '" y2="' + (H / 2 - 36) + '" stroke="#00e5ff" stroke-width="6" stroke-linecap="round" opacity="0.7"/>';
-    s += '<circle cx="' + X(5) + '" cy="' + (H / 2 - 36) + '" r="6" fill="#0f0f0f" stroke="#00e5ff" stroke-width="2.5"/>';
-    s += '<text x="' + X(5) + '" y="' + (H / 2 - 52) + '" font-family="JetBrains Mono, monospace" font-size="13" fill="#00e5ff">domain of g: x &gt; 5</text>';
-    var c = ok ? '#4fe08a' : '#ff6b6b', st = Math.min(lo, 16);
-    s += '<line x1="' + X(st) + '" y1="' + (H / 2 + 50) + '" x2="' + X(16) + '" y2="' + (H / 2 + 50) + '" stroke="' + c + '" stroke-width="6" stroke-linecap="round"/>';
-    s += '<circle cx="' + X(st) + '" cy="' + (H / 2 + 50) + '" r="6" fill="' + c + '"/>';
-    s += '<text x="' + Math.min(X(st), W - 190) + '" y="' + (H / 2 + 76) + '" font-family="JetBrains Mono, monospace" font-size="13" fill="' + c + '">range of f: f(x) ≥ ' + lo.toFixed(2) + '</text>';
+    s += '<line x1="' + px(LO) + '" y1="' + py(LO) + '" x2="' + px(HI) + '" y2="' + py(HI) + '" stroke="#b0b0b0" stroke-width="1.6" stroke-dasharray="7 6"/>';
+    s += '<text x="' + px(7.6) + '" y="' + py(9.4) + '" font-family="JetBrains Mono, monospace" font-size="14" fill="#b0b0b0">y = x</text>';
+    if (F.asym) {
+      s += '<line x1="' + px(3) + '" y1="' + py(LO) + '" x2="' + px(3) + '" y2="' + py(HI) + '" stroke="#00e5ff" stroke-dasharray="3 5" opacity="0.55"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(1) + '" x2="' + px(HI) + '" y2="' + py(1) + '" stroke="#00e5ff" stroke-dasharray="3 5" opacity="0.55"/>';
+      if (showAll) {
+        s += '<line x1="' + px(LO) + '" y1="' + py(3) + '" x2="' + px(HI) + '" y2="' + py(3) + '" stroke="#ffc46b" stroke-dasharray="3 5" opacity="0.6"/>';
+        s += '<line x1="' + px(1) + '" y1="' + py(LO) + '" x2="' + px(1) + '" y2="' + py(HI) + '" stroke="#ffc46b" stroke-dasharray="3 5" opacity="0.6"/>';
+      }
+    }
+    var lo = F.asym ? 3.55 : F.a, hi = F.asym ? 11 : F.b, pts = [], i;
+    for (i = 0; i <= 240; i++) { var x = lo + (hi - lo) * i / 240; pts.push([x, F.f(x)]); }
+    s += '<path d="' + path(pts) + '" fill="none" stroke="#00e5ff" stroke-width="3"/>';
+    if (showAll) {
+      s += '<path d="' + path(pts.map(function (p) { return [p[1], p[0]]; })) + '" fill="none" stroke="' + (F.one ? '#ffc46b' : '#ff6b6b') + '" stroke-width="3"' + (F.one ? '' : ' stroke-dasharray="8 5"') + '/>';
+    }
+    /* trail: the part of the reflected curve the point has covered so far */
+    var tr = [], ta = F.asym ? Math.max(F.a, 3.55) : F.a;
+    for (i = 0; i <= 160; i++) { var xx = ta + (a - ta) * i / 160; tr.push([F.f(xx), xx]); }
+    s += '<path d="' + path(tr) + '" fill="none" stroke="' + (F.one ? '#ffc46b' : '#ff6b6b') + '" stroke-width="3.5" stroke-linecap="round"/>';
+    if (!F.one) { var tr2 = []; for (i = 0; i <= 160; i++) { var x2 = ta + (a - ta) * i / 160; tr2.push([F.f(x2), -x2]); } s += '<path d="' + path(tr2) + '" fill="none" stroke="#ff6b6b" stroke-width="3.5" stroke-dasharray="6 4"/>'; }
+    if (F.dot) { s += '<circle cx="' + px(0) + '" cy="' + py(1) + '" r="4" fill="#00e5ff"/>'; if (showAll) s += '<circle cx="' + px(1) + '" cy="' + py(0) + '" r="4" fill="#ffc46b"/>'; }
+    var mid = (a + b) / 2;
+    s += '<line x1="' + px(a) + '" y1="' + py(b) + '" x2="' + px(b) + '" y2="' + py(a) + '" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.7"/>';
+    s += '<circle cx="' + px(mid) + '" cy="' + py(mid) + '" r="3.5" fill="#b0b0b0"/>';
+    s += '<circle cx="' + px(a) + '" cy="' + py(b) + '" r="7" fill="#00e5ff"/>';
+    s += '<circle cx="' + px(b) + '" cy="' + py(a) + '" r="7" fill="#ffc46b"/>';
+    if (!F.one && Math.abs(a) > 0.05) s += '<circle cx="' + px(b) + '" cy="' + py(-a) + '" r="7" fill="none" stroke="#ff6b6b" stroke-width="2.5"/>';
     svg.innerHTML = s;
-    read.innerHTML = '<span class="lw">k =</span> <b>' + k.toFixed(1) + '</b><br><span class="lw">smallest output of f:</span> ' + k.toFixed(1) + '<sup>2</sup> = <b>' + lo.toFixed(2) + '</b><br><span class="lw">is every output &gt; 5?</span> <b>' + (ok ? 'yes' : 'no') + '</b>';
-    verdict.className = 'verdict ' + (ok ? 'ok' : 'no');
-    verdict.textContent = ok ? 'gf can be formed. The whole range of f sits inside the domain of g.'
-                             : 'gf cannot be formed. f can output ' + lo.toFixed(2) + ', and g is not defined there.';
+    read.innerHTML = '<span class="lw">on f</span> &nbsp;<b>(' + fmt(a) + ', ' + fmt(b) + ')</b><br><span class="lw">reflected</span> &nbsp;<span style="color:#ffc46b">(' + fmt(b) + ', ' + fmt(a) + ')</span>';
+    if (F.one) {
+      verdict.className = 'verdict ok';
+      verdict.textContent = 'f(x) = ' + F.name + ' is one-one. Every reflected point lands on y = f⁻¹(x).';
+    } else if (Math.abs(a) > 0.05) {
+      verdict.className = 'verdict no';
+      verdict.textContent = 'f(' + fmt(a) + ') = f(' + fmt(-a) + ') = ' + fmt(b) + '. Reflected, the input ' + fmt(b) + ' would need two outputs, ' + fmt(a) + ' and ' + fmt(-a) + '. No inverse function.';
+    } else {
+      verdict.className = 'verdict no';
+      verdict.textContent = 'At x = 0 there is one point. Move away from 0 and a second input with the same output appears.';
+    }
   }
-  input.addEventListener('input', draw);
+  picks.forEach(function (b) {
+    b.addEventListener('click', function () {
+      fi = +b.getAttribute('data-i');
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () {
+    showAll = !showAll;
+    showBtn.setAttribute('aria-pressed', showAll ? 'true' : 'false');
+    showBtn.textContent = showAll ? 'Hide the reflected curve' : 'Show the whole reflected curve';
+    draw();
+  });
+  slider.addEventListener('input', draw);
   draw();
 })();
 </script>
