@@ -1,0 +1,766 @@
+/* ============================================================
+   THINK IN BITS · 9709 deck system
+   Tokens mirror www.thinkinbits.site so classroom material and
+   the public site read as one brand.
+
+   Committed dark, single theme. A projected deck must look
+   identical every time it is opened, regardless of the laptop's
+   OS theme setting. The @media print block at the bottom flips
+   every token to dark-on-white for the PDF export.
+
+   Slide archetypes this system supports:
+     title · do-now · direct instruction (prose / stepped table /
+     diagram trio / two-card compare) · worked example (question
+     card + stepped solve) · practice · exit
+   ============================================================ */
+
+:root {
+  /* ground + surfaces */
+  --ground:       #0a0a0a;
+  --ground-far:   #1a1a2e;
+  --surface:      #1a1a1a;
+  --surface-lift: #2a2a2a;
+
+  /* accent */
+  --accent:       #00e5ff;
+  --accent-deep:  #0099cc;
+  --accent-wash:  rgba(0,229,255,0.10);
+  --accent-line:  rgba(0,229,255,0.30);
+
+  /* text */
+  --text:         #ffffff;
+  --text-2:       #b0b0b0;
+
+  /* structure */
+  --hairline:     rgba(255,255,255,0.07);
+  --axis:         rgba(255,255,255,0.85);
+
+  /* semantic, separate from the accent */
+  --ok:           #4fe08a;
+  --warn:         #ff6b6b;
+
+  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- slide shell ---------- */
+.slide {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: safe center;   /* keeps overflow scrollable when content is tall */
+  gap: 1.5vh;
+  padding: 8vh 7vw 13vh;
+  overflow-y: auto;
+  visibility: hidden; opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
+}
+.slide.active {
+  visibility: visible; opacity: 1; transform: none;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s;
+}
+.slide > * { margin: 0; }
+
+/* ---------- typography ---------- */
+h1 {
+  font-size: clamp(32px, 5.4vw, 60px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-wrap: balance;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* The gradient is painted inside the element's box and the glyphs are cut out
+     of it, so any ink outside that box gets no paint at all. At line-height 1.08
+     Poppins overhangs the box by about 9px at 60px, which sliced the descender
+     off the g in "Solving". Pad the box out to cover the overhang and pull the
+     same amount back as negative margin so the layout is unchanged.
+     .slide > h1 is needed to beat `.slide > * { margin: 0 }`. */
+  .slide > h1 { padding: 0.18em 0; margin: -0.18em 0; }
+}
+
+h2 {
+  font-size: clamp(25px, 3.7vw, 43px);
+  font-weight: 600;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  color: var(--accent);
+  text-wrap: balance;
+}
+
+p, li {
+  font-size: clamp(16px, 2.05vw, 24px);
+  color: var(--text);
+  max-width: 66ch;
+}
+ul { padding-left: 1.15em; }
+li + li { margin-top: 1.2vh; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.22vw, 14px);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+
+.small { font-size: clamp(13.5px, 1.62vw, 19px); color: var(--text-2); }
+/* Anything inside an eyebrow whose case carries meaning: a worksheet part label
+   like (a), or a variable. The eyebrow is uppercased, and uppercasing either one
+   changes what it says. */
+.eyebrow .lit, .thumb .eb .lit { text-transform: none; letter-spacing: 0.05em; }
+.muted { color: var(--text-2); }
+/* semantic colors declared after .small so they win at equal specificity */
+.good { color: var(--ok); }
+.bad  { color: var(--warn); }
+.marks { color: var(--accent); font-weight: 600; }
+
+/* ---------- math blocks ---------- */
+.math {
+  font-family: var(--mono);
+  font-size: clamp(16px, 2.25vw, 28px);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  padding: 1.5vh 1.4vw;
+  max-width: max-content;
+  font-variant-numeric: tabular-nums;
+}
+.math.small { font-size: clamp(13.5px, 1.72vw, 20px); color: var(--text); }
+/* a result, not a step: tinted and lit so answers read differently from working */
+.math.result {
+  background: var(--accent-wash);
+  border-color: var(--accent-line);
+  color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+.math sup, li sup, p sup, span sup { font-size: 0.62em; }
+
+/* ---------- cards ---------- */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 20px;
+  padding: 2.4vh 1.8vw;
+  box-shadow: var(--shadow-card);
+}
+.card > * { margin: 0; }
+
+.cols { display: flex; gap: 3vw; flex-wrap: wrap; align-items: flex-start; }
+.cols > div { flex: 1 1 260px; display: flex; flex-direction: column; gap: 1.2vh; }
+
+/* ---------- agenda + stepped tables ---------- */
+.agenda { display: flex; flex-direction: column; gap: 1.1vh; }
+.agenda .row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 2vw;
+  padding-bottom: 1.1vh;
+  border-bottom: 1px solid var(--hairline);
+  font-size: clamp(14.5px, 1.92vw, 23px);
+}
+.agenda .t {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  color: var(--accent);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.agenda .t.good { color: var(--ok); }
+.agenda .t.bad  { color: var(--warn); }
+.steps .n {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 0.8em;
+}
+
+/* ---------- tool links ---------- */
+.toolchip {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: clamp(13px, 1.55vw, 18px);
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-line);
+  border-radius: 50px;
+  padding: 0.9vh 1.6vw;
+  margin: 0.4vh 0.4vw 0 0;
+  text-decoration: none;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+.toolchip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
+.toolchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- diagram trios ---------- */
+.cases { display: flex; gap: 2.6vw; flex-wrap: wrap; align-items: flex-start; }
+.cases .c { display: flex; flex-direction: column; gap: 0.7vh; text-align: center; }
+.cases .lab {
+  font-family: var(--mono);
+  font-size: clamp(13px, 1.6vw, 19px);
+  color: var(--text-2);
+}
+.cases .lab b { color: var(--text); }
+svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
+
+/* ---------- two-route compare slides ----------
+   Both columns plus a shared answer have to fit a 900px projector
+   without scrolling mid-explanation, so this archetype runs denser
+   than the rest of the deck. */
+.slide.duo { gap: 0.75vh; padding-top: 5vh; padding-bottom: 9.5vh; }
+.slide.duo h2 { font-size: clamp(22px, 3.1vw, 35px); }
+.slide.duo .cols { gap: 2vw; align-items: stretch; }
+.slide.duo .cols > div { display: flex; }
+.slide.duo .cols > div > .card { flex: 1; }
+.slide.duo .card svg { max-width: 320px; margin: 0 auto; }
+.slide.duo .card { padding: 1.3vh 1.3vw; gap: 0.42vh; }
+.slide.duo .card .small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.34; }
+.slide.duo .card .math { padding: 0.85vh 1vw; font-size: clamp(12.5px, 1.5vw, 17.5px); }
+.slide.duo > .math { padding: 1vh 1.2vw; }
+.slide.duo .card ul { padding-left: 1.05em; margin: 0; }
+.slide.duo .card li + li { margin-top: 0.35vh; }
+.slide.duo .card li.small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.32; }
+.slide.duo .card .math.result { font-size: clamp(15px, 1.95vw, 23px); padding: 0.8vh 1.1vw; }
+
+/* ---------- stepped reveal ---------- */
+.frag { visibility: hidden; opacity: 0; transform: translateY(8px); transition: opacity .28s ease, transform .28s ease; }
+.frag.on { visibility: visible; opacity: 1; transform: none; }
+/* A revealed .frag sets visibility:visible, which beats the hidden visibility
+   it would otherwise inherit from a slide that is no longer active. Left alone,
+   steps revealed on an earlier slide keep sitting over the live one at opacity 0
+   and swallow taps meant for it. Belt and braces: kill the visibility and the
+   pointer events on every slide that is not the one on screen. */
+.slide:not(.active) { pointer-events: none; }
+.slide:not(.active) .frag.on { visibility: hidden; }
+
+/* ---------- blank board: a full-screen writing surface, any time ----------
+   Deliberately NOT an annotation layer over the slides. Amali asked for a
+   clean surface to work equations on, so this replaces the view entirely
+   and the slide underneath is untouched when you come back. */
+.board { position: fixed; inset: 0; z-index: 40; display: none; background: #0d0d12; touch-action: none; }
+.board.on { display: block; }
+.board.light { background: #f7f7f5; }
+.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+.board-bar {
+  /* left:0;right:0 + margin auto, NOT left:50%+translate. With left:50% the bar's
+     shrink-to-fit width is capped at half the viewport and the toolbar wraps. */
+  position: absolute; left: 0; right: 0; bottom: 2.2vh; margin: 0 auto;
+  width: max-content;
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: center;
+  max-width: 96vw; padding: 8px 11px; border-radius: 50px; z-index: 2;
+  background: rgba(18,18,24,0.92); border: 1px solid var(--hairline);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+.board.light .board-bar { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.13); }
+.board-bar button {
+  font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer;
+  color: var(--text); background: var(--surface-lift);
+  border: 1px solid var(--hairline); border-radius: 50px;
+  padding: 10px 14px; min-height: 46px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.board.light .board-bar button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
+.board-bar button:hover { border-color: var(--accent-line); }
+.board-bar button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+.board-bar .swatch { width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
+.board-bar .swatch[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255,255,255,0.55); }
+.board.light .board-bar .swatch[aria-pressed="true"] { border-color: #14141a; box-shadow: 0 0 0 2px #fff; }
+.board-bar .sep { width: 1px; height: 26px; background: var(--hairline); }
+.board.light .board-bar .sep { background: rgba(0,0,0,0.15); }
+.board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
+.board.light .board-bar .pg { color: #55555f; }
+
+/* ---------- progress rail + HUD ---------- */
+.progress {
+  position: fixed; top: 0; left: 0;
+  height: 3px; width: 0;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+  box-shadow: 0 0 12px rgba(0,229,255,0.5);
+  transition: width .3s ease;
+  z-index: 6;
+}
+
+.hud {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.4vh 2.4vw;
+  border-top: 1px solid var(--hairline);
+  background: rgba(10,10,10,0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 5;
+}
+.hud .name {
+  font-family: var(--mono);
+  font-size: clamp(10px, 1.15vw, 13px);
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+}
+.hud .nav { display: flex; align-items: center; gap: 12px; }
+.hud button {
+  font-family: var(--font);
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+  background: var(--surface-lift);
+  border: 1px solid var(--hairline);
+  border-radius: 50px;
+  padding: 0.5vh 1.3vw;
+  min-width: 46px;
+  transition: background .18s ease, border-color .18s ease;
+}
+.hud button:hover { background: #333; border-color: var(--accent-line); }
+.hud button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hud .count {
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.3vw, 15px);
+  color: var(--text-2);
+  min-width: 66px; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ---------- parabolas draw themselves on ---------- */
+svg.mini path { stroke-dasharray: 320; stroke-dashoffset: 320; }
+.slide.active .cases:not(.frag) svg.mini path,
+.cases.frag.on svg.mini path { animation: draw .9s ease-out forwards; }
+svg.mini circle { opacity: 0; transition: opacity .3s ease .75s; }
+.slide.active .cases:not(.frag) svg.mini circle,
+.cases.frag.on svg.mini circle { opacity: 1; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* ---------- title entrance, first load only ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+body.intro .slide.active > .eyebrow { animation: rise .5s ease-out both; }
+body.intro .slide.active > h1 { animation: rise .6s ease-out .15s both; }
+body.intro .slide.active .agenda .row { animation: rise .5s ease-out both; }
+body.intro .slide.active .agenda .row:nth-child(1) { animation-delay: .35s; }
+body.intro .slide.active .agenda .row:nth-child(2) { animation-delay: .43s; }
+body.intro .slide.active .agenda .row:nth-child(3) { animation-delay: .51s; }
+body.intro .slide.active .agenda .row:nth-child(4) { animation-delay: .59s; }
+body.intro .slide.active .agenda .row:nth-child(5) { animation-delay: .67s; }
+body.intro .slide.active .agenda .row:nth-child(6) { animation-delay: .75s; }
+
+/* ---------- tap to check ---------- */
+.check { display: flex; flex-direction: column; gap: 0.8vh; cursor: pointer; border-radius: 16px; }
+.check > .math:first-child { transition: border-color .15s ease, box-shadow .15s ease; }
+.check:hover > .math:first-child { border-color: var(--accent-line); }
+.check:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.check > .math:first-child::after {
+  content: "tap to check";
+  font-family: var(--mono); font-size: clamp(9px, 0.95vw, 11px);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-2); margin-left: 1.4em; vertical-align: middle;
+}
+.check.open > .math:first-child::after { content: "tap to hide"; }
+.check .ans { display: none; }
+.check.open .ans { display: block; animation: rise .3s ease-out both; }
+
+/* ---------- live explorers ---------- */
+.explore {
+  display: flex; gap: 2.5vw; align-items: center; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: 20px; padding: 2vh 1.8vw; box-shadow: var(--shadow-card);
+}
+.explore svg { width: clamp(200px, 27vw, 340px); height: auto; display: block; flex: 0 0 auto; }
+.explore .panel { display: flex; flex-direction: column; gap: 0.8vh; flex: 1 1 220px; min-width: 200px; }
+.explore label {
+  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px);
+  color: var(--text-2); letter-spacing: .04em;
+}
+.explore input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+.explore input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.explore .read { font-family: var(--mono); font-size: clamp(15px, 1.9vw, 22px); color: var(--text); font-variant-numeric: tabular-nums; }
+.explore .read b { color: var(--accent); font-weight: 700; }
+.explore .verdict { font-weight: 600; font-size: clamp(15px, 1.9vw, 22px); }
+.explore .verdict.two  { color: var(--ok); }
+.explore .verdict.one  { color: var(--accent); }
+.explore .verdict.none { color: var(--warn); }
+
+/* ---------- HUD extras ---------- */
+.hud .left { display: flex; align-items: baseline; gap: 1.2vw; min-width: 0; }
+.hud .here {
+  font-size: clamp(11px, 1.25vw, 14px); color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 34vw;
+}
+.hud .timer {
+  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 15px);
+  color: var(--text-2); min-width: 64px; text-align: center;
+  font-variant-numeric: tabular-nums; cursor: pointer; user-select: none;
+  border-radius: 50px; padding: 0.4vh 0.8vw; border: 1px solid transparent;
+}
+.hud .timer:hover { border-color: var(--hairline); }
+.hud .timer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hud .timer.on { color: var(--accent); }
+.hud .timer.late { color: var(--warn); }
+.hud button svg { display: block; }
+
+/* ---------- first-load hint ---------- */
+.hint {
+  position: fixed; left: 50%; top: 3vh;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--surface-lift); border: 1px solid var(--accent-line);
+  border-radius: 50px; padding: 1vh 1.8vw;
+  font-family: var(--mono); font-size: clamp(11px, 1.2vw, 14px); color: var(--text);
+  box-shadow: var(--shadow-glow); z-index: 7;
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
+}
+.hint.show { opacity: 1; visibility: visible; transform: translateX(-50%); transition: opacity .3s ease, transform .3s ease, visibility 0s; }
+
+/* ---------- overlays: all slides, key help ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 20;
+  background: rgba(10,10,10,0.93);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; flex-direction: column;
+  padding: 6vh 6vw 8vh; overflow-y: auto;
+  visibility: hidden; opacity: 0;
+  transition: opacity .25s ease, visibility 0s linear .25s;
+}
+.overlay.open { visibility: visible; opacity: 1; transition: opacity .25s ease, visibility 0s; }
+.overlay h3 { font-size: clamp(20px, 2.6vw, 30px); font-weight: 600; color: var(--accent); margin: 0 0 2.4vh; }
+.overlay .close { position: fixed; top: 2.4vh; right: 2.4vw; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.4vw; }
+.thumb {
+  display: flex; flex-direction: column; gap: 0.6vh; text-align: left;
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px;
+  padding: 1.6vh 1.2vw; cursor: pointer; color: var(--text); font: inherit;
+  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.thumb:hover, .thumb:focus-visible { border-color: var(--accent-line); transform: translateY(-2px); box-shadow: var(--shadow-glow); outline: none; }
+.thumb.current { border-color: var(--accent); }
+.thumb .num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .12em; }
+.thumb .eb  { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; }
+.thumb .tt  { font-size: clamp(14px, 1.3vw, 17px); font-weight: 500; line-height: 1.3; }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 1.4vh 2.2vw; align-items: center; max-width: 680px; }
+.keys span { color: var(--text-2); font-size: clamp(14px, 1.5vw, 18px); }
+kbd {
+  font-family: var(--mono); font-size: 0.85em; color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline); border-bottom-width: 2px;
+  border-radius: 8px; padding: 2px 10px; white-space: nowrap;
+}
+
+
+/* ---------- sign table on the number line ----------
+   A compact grid of signs, one column per region. Runs in the mono face
+   so the + and − line up under each other at projector distance. */
+.sgn {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.3vh 0;
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.4vw, 16px);
+  font-variant-numeric: tabular-nums;
+}
+.sgn th, .sgn td {
+  border: 1px solid var(--hairline);
+  padding: 0.4vh 0.4vw;
+  text-align: center;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.sgn th { color: var(--text-2); }
+.sgn tr:last-child th, .sgn tr:last-child td {
+  border-top: 1px solid var(--accent-line);
+  font-weight: 700;
+}
+.slide.duo .card .sgn { font-size: clamp(10.5px, 1.25vw, 14px); }
+.slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 0.3vh 0.3vw; }
+.sgn td.zero { color: var(--accent); font-weight: 700; }
+
+/* a lookup table, not a sign table: no bolded final row, and the word columns
+   read left-aligned because they are prose, not signs */
+.sgn.lookup tr:last-child th, .sgn.lookup tr:last-child td { border-top: 1px solid var(--hairline); font-weight: 500; }
+.sgn.lookup td:nth-child(2), .sgn.lookup td:nth-child(3),
+.sgn.lookup th:nth-child(2), .sgn.lookup th:nth-child(3) { text-align: left; padding-left: 0.7vw; }
+.sgn.lookup td:first-child { font-weight: 700; color: var(--text); }
+
+/* the region readout on the between/outside explorer: colored by which
+   shape the answer takes, so the swap is visible before it is read */
+.explore .verdict.between { color: var(--ok); font-family: var(--mono); }
+.explore .verdict.outside { color: var(--accent); font-family: var(--mono); }
+
+/* ---------- narrow and short screens: clear the HUD, and breathe ----------
+   The slide's bottom padding is in vh, and the HUD is a fixed bar in px, so on a
+   short or narrow viewport the last line of a slide slid underneath it. Below the
+   projector widths the padding gets a px floor, and everything that is measured in
+   vh (card padding, column gaps) gets a px value instead, because a vh gap on a
+   700px-tall phone is not a gap at all. Projector sizes are untouched, so the
+   900px gate is unaffected. */
+@media (max-width: 1000px) {
+  .slide { padding: 6vh 6vw max(13vh, 124px); gap: 14px; }
+  .slide.duo { padding-top: 5vh; padding-bottom: max(9.5vh, 124px); gap: 14px; }
+  .cols, .slide.duo .cols { gap: 18px; }
+  .cols > div { gap: 12px; }
+  .card { padding: 18px 18px; gap: 12px; }
+  .slide.duo .card { padding: 18px 18px; gap: 10px; }
+  .slide.duo .card .small, .slide.duo .card li.small { font-size: 15px; line-height: 1.5; }
+  .slide.duo .card .math { font-size: 16px; padding: 10px 14px; }
+  .slide.duo .card .math.result { font-size: 19px; padding: 10px 14px; }
+  .small { font-size: 15.5px; line-height: 1.55; }
+  li + li, .slide.duo .card li + li { margin-top: 8px; }
+  .sgn, .slide.duo .card .sgn { font-size: 13px; }
+  .sgn th, .sgn td, .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 6px 5px; }
+  .explore { padding: 18px 18px; gap: 18px; }
+}
+
+/* ---------- reduced motion: everything settles instantly ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .slide, .frag, .progress, .overlay, .hint, .thumb, .toolchip, .check > .math:first-child { transition: none !important; }
+  svg.mini path { stroke-dashoffset: 0; animation: none !important; }
+  svg.mini circle { opacity: 1; transition: none; }
+  body.intro .slide.active > *, body.intro .slide.active .agenda .row { animation: none !important; }
+  .check.open .ans { animation: none; }
+}
+
+/* ---------- print: flip every token to dark-on-white ---------- */
+@media print {
+  :root {
+    --ground: #ffffff; --ground-far: #ffffff;
+    --surface: #f4f6f8; --surface-lift: #eceff2;
+    --accent: #0072a3; --accent-deep: #005b82;
+    --accent-wash: rgba(0,114,163,0.08);
+    --accent-line: rgba(0,114,163,0.35);
+    --text: #10161f; --text-2: #4a5563;
+    --hairline: rgba(16,22,31,0.16);
+    --axis: rgba(16,22,31,0.85);
+    --ok: #1c7a4f; --warn: #b03a2b;
+    --shadow-card: none; --shadow-glow: none;
+    color-scheme: light;
+  }
+  body { background: #fff; background-image: none; overflow: visible; }
+  .slide {
+    display: flex !important;
+    visibility: visible !important; opacity: 1 !important; transform: none !important;
+    position: static;
+    page-break-after: always;
+    height: auto; min-height: 92vh;
+    overflow: visible;
+    padding: 4vh 5vw;
+  }
+  .frag, .slide:not(.active) .frag.on { visibility: visible !important; opacity: 1; transform: none; }
+  .slide:not(.active) { pointer-events: auto; }
+  .hud, .progress, .hint, .overlay, .board { display: none !important; }
+  svg.mini path { stroke-dashoffset: 0 !important; animation: none !important; }
+  svg.mini circle { opacity: 1 !important; }
+  .check .ans { display: block; }
+  .check > .math:first-child::after { content: none; }
+  .explore input, .explore label { display: none; }
+  /* the gradient-clipped h1 would print as invisible text */
+  h1 {
+    background: none !important;
+    color: var(--text) !important;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* ---------- 1.2 additions, built on the same tokens ---------- */
+.math .lbl { color: var(--text-2); font-size: 0.78em; }
+.quote {
+  border-left: 3px solid var(--accent); padding: 0.4vh 0 0.4vh 1.1vw;
+  font-style: italic; color: var(--text-2);
+  font-size: clamp(13.5px, 1.55vw, 18px); max-width: 80ch;
+}
+.warnbox { border-color: rgba(255,107,107,0.35); }
+.warnbox .eyebrow { color: var(--warn); }
+.fnrow { display: flex; gap: 0.8vw; flex-wrap: wrap; }
+.fnrow .math { padding: 0.9vh 1.2vw; }
+
+/* live labs: a graph beside a working panel */
+.lab { display: flex; gap: 2vw; align-items: center; flex-wrap: wrap;
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px;
+  padding: 1.6vh 1.6vw; box-shadow: var(--shadow-card); }
+.lab .fig, .lab canvas { display: block; width: min(460px, 38vw); height: auto; flex: 0 0 auto;
+  background: #0f0f0f; border-radius: 14px; }
+.lab .panel { display: flex; flex-direction: column; gap: 0.9vh; flex: 1 1 260px; min-width: 240px; }
+.lab label { font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2); letter-spacing: .04em; }
+.lab input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+.lab input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.lab .read { font-family: var(--mono); font-size: clamp(13px, 1.55vw, 18px); line-height: 1.7; font-variant-numeric: tabular-nums; }
+.lab .read .lw { color: var(--text-2); }
+.lab .read b { color: var(--accent); }
+.lab .verdict { font-family: var(--mono); font-size: clamp(13px, 1.5vw, 17px); font-weight: 600;
+  border-radius: 12px; padding: 0.9vh 1vw; border: 1px solid var(--hairline); line-height: 1.45; }
+.lab .verdict.ok { color: var(--ok); border-color: rgba(79,224,138,0.45); background: rgba(79,224,138,0.08); }
+.lab .verdict.no { color: var(--warn); border-color: rgba(255,107,107,0.45); background: rgba(255,107,107,0.08); }
+.picks { display: flex; gap: 0.5vw; flex-wrap: wrap; }
+.picks button {
+  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
+  color: var(--text); background: var(--surface-lift); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px;
+}
+.picks button:hover { border-color: var(--accent-line); }
+.picks button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+.lab .toggle { align-self: flex-start; font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
+  color: var(--accent); background: transparent; border: 1px solid var(--accent-line); border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px; }
+.lab .toggle[aria-pressed="true"] { background: var(--accent-wash); }
+@media (max-width: 1000px) {
+  .lab { padding: 16px; gap: 16px; }
+  .lab .fig, .lab canvas { width: 100%; max-width: 460px; }
+}
+@media print { .lab input, .picks, .lab .toggle { display: none; } }
+p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
+.lab .cval { color: var(--accent); font-weight: 700; }
+.slide.duo > .math { font-size: clamp(13px, 1.6vw, 19px); padding: 0.7vh 1vw; }
+.slide.duo > p { font-size: clamp(13.5px, 1.6vw, 18px); }
+
+
+/* ============================================================
+   SHARED ENGINE ADDITIONS · Sep 23, 2026
+   Key labels on buttons, countdown timer, resume toast,
+   phone reading mode, print button, responsive bottom bar.
+   ============================================================ */
+
+/* ---------- key labels on buttons, toggled with K ---------- */
+.hud .hk {
+  display: none;
+  font-family: var(--mono); font-size: 0.72em; font-weight: 600;
+  color: var(--text-2); background: rgba(255,255,255,0.06);
+  border: 1px solid var(--hairline); border-radius: 6px;
+  padding: 0 5px; margin-left: 6px; line-height: 1.5;
+}
+body.show-keys .hud .hk { display: inline-block; }
+.hud button { display: inline-flex; align-items: center; justify-content: center; gap: 2px; }
+.hud button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+.hud .timer-wrap { display: inline-flex; align-items: center; gap: 4px; position: relative; }
+.hud .timer.count-down { color: var(--accent); }
+.hud .timer.ending { color: #ffc46b; }
+.hud .timer.up { color: var(--warn); animation: tpulse 1s ease-in-out infinite; }
+@keyframes tpulse { 50% { opacity: .45; } }
+.tmenu {
+  position: absolute; bottom: calc(100% + 10px); right: 0; z-index: 8;
+  display: none; flex-direction: column; gap: 6px; min-width: 190px;
+  background: rgba(18,18,24,0.97); border: 1px solid var(--hairline); border-radius: 16px;
+  padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+.tmenu.open { display: flex; }
+.tmenu .lab2 { font-family: var(--mono); font-size: 11px; color: var(--text-2); letter-spacing: .1em; text-transform: uppercase; padding: 2px 4px; }
+.tmenu button { justify-content: flex-start !important; width: 100%; }
+.tmenu .row2 { display: flex; gap: 6px; }
+.tmenu input { width: 70px; font-family: var(--mono); font-size: 14px; background: var(--surface-lift); color: var(--text); border: 1px solid var(--hairline); border-radius: 10px; padding: 6px 8px; }
+
+/* ---------- resume toast ---------- */
+.toast {
+  position: fixed; left: 50%; top: 3vh; transform: translateX(-50%); z-index: 30;
+  display: none; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+  background: var(--surface-lift); border: 1px solid var(--accent-line); border-radius: 50px;
+  padding: 8px 10px 8px 18px; box-shadow: var(--shadow-glow);
+  font-family: var(--mono); font-size: clamp(12px, 1.25vw, 15px); color: var(--text); max-width: 94vw;
+}
+.toast.show { display: flex; }
+.toast button {
+  font-family: var(--font); font-size: 14px; font-weight: 500; cursor: pointer; min-height: 38px;
+  color: var(--text); background: var(--surface); border: 1px solid var(--hairline); border-radius: 50px; padding: 6px 14px;
+}
+.toast button.go { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+
+/* ---------- reading mode: every step visible, slide scrolls like a page ---------- */
+body.reading .frag { visibility: visible !important; opacity: 1 !important; transform: none !important; }
+body.reading .slide { justify-content: flex-start; }
+
+/* ---------- stacked fractions ---------- */
+.fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.12em; line-height: 1.12; font-size: 0.92em; }
+.fr > i { font-style: normal; padding: 0 0.18em; }
+.fr > i:first-child { border-bottom: 1.5px solid currentColor; }
+.slide h1 .fr, .slide h2 .fr { font-size: 0.72em; }
+
+/* ---------- responsive: tablet and phone ---------- */
+@media (max-width: 760px) {
+  .slide, .slide.duo { padding: 5vh 16px 150px; gap: 12px; }
+  .cols, .slide.duo .cols { flex-direction: column; gap: 12px; }
+  .cols > div { flex: 1 1 auto; width: 100%; }
+  .math { max-width: 100%; overflow-x: auto; }
+  .agenda .row { font-size: 15px; }
+  .hud { flex-wrap: wrap; gap: 6px; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); }
+  .hud .left { width: 100%; justify-content: space-between; }
+  .hud .name { display: none; }
+  .hud .here { max-width: 100%; font-size: 12px; }
+  .hud .nav { width: 100%; justify-content: space-between; gap: 6px; }
+  .hud button { min-width: 44px; min-height: 44px; padding: 6px 10px; }
+  .hud .count { min-width: 48px; }
+  .hud .hk { display: none !important; }
+  #keysBtn { display: none; }
+  .board-bar { bottom: calc(10px + env(safe-area-inset-bottom)); gap: 5px; padding: 6px 8px; }
+  .board-bar button { min-height: 44px; padding: 8px 11px; font-size: 14px; }
+  .board-bar .swatch { width: 36px; height: 36px; min-height: 36px; }
+  .overlay { padding: 5vh 16px 12vh; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .keys { grid-template-columns: 1fr; gap: 6px; }
+  .tmenu { right: auto; left: 50%; transform: translateX(-50%); }
+  .lab, .explore { flex-direction: column; align-items: stretch; }
+  .lab .fig, .lab canvas, .explore svg { width: 100% !important; max-width: 460px; margin: 0 auto; }
+  table.sgn { display: block; overflow-x: auto; }
+}
+@media (max-width: 760px) and (orientation: landscape) {
+  .slide, .slide.duo { padding-bottom: 110px; }
+}
+@media print {
+  .toast, .tmenu { display: none !important; }
+  .fr > i:first-child { border-bottom-color: #10161f; }
+}
+
+/* ---------- typeset math (self-hosted KaTeX) ----------
+   Math inside a .math block keeps the block's color and size; KaTeX brings its
+   own textbook serif for the symbols. Prose stays Poppins, widgets stay mono. */
+.katex { font-size: 1.08em; color: inherit; }
+.math .katex { font-size: 1.12em; }
+.eyebrow .katex { font-size: 1em; letter-spacing: 0; text-transform: none; }
+h1 .katex, h2 .katex { font-size: 0.95em; }
+.katex-display { margin: 0.4em 0; overflow-x: auto; overflow-y: hidden; }
+.math.result .katex { color: var(--accent); }
+.katex .mfrac .frac-line { border-bottom-width: 0.06em; }
+@media print { .katex { color: #10161f; } .math.result .katex { color: var(--accent); } }
+
+/* phone bottom bar: keep only what a student needs */
+@media (max-width: 760px) {
+  .hud .timer-wrap, #revealBtn, #fsBtn { display: none !important; }
+  .hud .nav { justify-content: space-between; }
+}
+
+/* ---------- fixes from the six-deck migration ---------- */
+/* slide children never flex-shrink: on a tall slide the slide scrolls instead of squashing a block */
+.slide > * { flex-shrink: 0; }
+/* an expression never breaks mid-way on a projector; phones may wrap between expressions */
+@media (min-width: 761px) { .slide .katex { white-space: nowrap; } }
+.hud .name { white-space: nowrap; }
+/* inside two-column layouts a long expression may break at = or +, so the columns stay side by side */
+@media (min-width: 761px) { .cols .katex { white-space: normal; } .cols > div { min-width: 0; } }
+@media (max-width: 760px) { .hint { display: none !important; } }

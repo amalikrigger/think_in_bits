@@ -2,157 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Solving Through to Roots</title>
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* Intersection Lab: the line is dragged straight on the canvas, and the
+       tangent case gets its own color between "two crossings" and "misses". */
+    #labCanvas { aspect-ratio: 1 / 1; touch-action: none; cursor: ew-resize; }
+    .lab .verdict.one { color: #ffc46b; border-color: rgba(255,196,107,0.45); background: rgba(255,196,107,0.08); }
+  </style>
 </head>
-<body>
-<title>Solving Through to Roots</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
-<style>
-  :root {
-    --cyan: #00e5ff; --cyan-dark: #0099cc;
-    --bg: #0a0a0a; --bg-end: #1a1a2e;
-    --surface: #1a1a1a; --surface-alt: #0f0f0f; --surface-light: #2a2a2a;
-    --ink: #ffffff; --mist: #b0b0b0;
-    --line: rgba(255,255,255,0.08); --line-strong: rgba(255,255,255,0.16);
-    --cyan-10: rgba(0,229,255,0.1); --cyan-30: rgba(0,229,255,0.3); --cyan-03: rgba(0,229,255,0.03);
-    --ok: #4ADE80; --no: #FF7A6B; --focus: #6FD8FF; --warm: #FFC46B;
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; color: var(--ink);
-    background: linear-gradient(160deg, var(--bg) 0%, var(--bg-end) 100%);
-    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
-    line-height: 1.45; overflow: hidden;
-  }
-  .slide { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; padding: 6vh 8vw 11vh; }
-  .slide.active { display: flex; }
-  .slide:not(.active) { pointer-events: none; }
-  .eyebrow { font-family: "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: 0.13em; font-size: clamp(11px, 1.3vw, 15px); color: var(--cyan); margin: 0 0 1.1vh; }
-  .lit { text-transform: none; letter-spacing: 0.04em; }
-  .slide > h1 {
-    font-size: clamp(30px, 5.6vw, 60px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance;
-    background-image: linear-gradient(100deg, var(--ink) 0%, var(--cyan) 62%, var(--cyan-dark) 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    padding: 0.18em 0; margin: -0.18em 0 2vh;
-  }
-  h2 { font-size: clamp(22px, 3.2vw, 38px); font-weight: 700; letter-spacing: -0.015em; margin: 0 0 2vh; text-wrap: balance; }
-  p, li { font-size: clamp(15px, 1.9vw, 22px); margin: 0 0 1.3vh; max-width: 68ch; }
-  ul, ol { margin: 0; padding-left: 1.2em; }
-  li { margin-bottom: 1.1vh; }
-  .math { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: clamp(15px, 2vw, 25px); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 14px; padding: 1.1vh 1.1vw; margin: 0 0 1.1vh; max-width: max-content; }
-  .math.tight { margin-bottom: 0.7vh; }
-  .math sup, li sup, p sup { font-size: 0.62em; }
-  .muted { color: var(--mist); }
-  .small { font-size: clamp(13px, 1.5vw, 17px); }
-  .good { color: var(--ok); } .bad { color: var(--no); }
-  .step { font-family: "JetBrains Mono", monospace; color: var(--mist); font-size: 0.72em; }
-  .frag { visibility: hidden; }
-  .frag.on { visibility: visible; }
-  .slide:not(.active) .frag.on { visibility: hidden; }
-  .cols { display: flex; gap: 2.5vw; flex-wrap: wrap; align-items: flex-start; }
-  .cols > div { flex: 1 1 260px; }
-  .card { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 20px; padding: 1.6vh 1.4vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-  .agenda { display: flex; flex-direction: column; gap: 1vh; margin-top: 1vh; }
-  .agenda .row { display: flex; justify-content: space-between; gap: 2vw; border-bottom: 1px solid var(--line); padding-bottom: 0.8vh; font-size: clamp(14px, 1.8vw, 21px); }
-  .agenda .t { font-family: "JetBrains Mono", monospace; color: var(--cyan); white-space: nowrap; }
-  .slide.dense { padding: 4vh 6vw 10vh; }
-  .slide.dense h2 { font-size: clamp(20px, 2.8vw, 32px); margin-bottom: 1.3vh; }
-  .slide.dense .math { font-size: clamp(13px, 1.7vw, 20px); padding: 0.7vh 0.85vw; margin-bottom: 0.7vh; }
-  .slide.dense .math.tight { margin-bottom: 0.4vh; }
-  .slide.dense .math.small { font-size: clamp(12px, 1.4vw, 15px); }
-  .slide.dense p, .slide.dense li { font-size: clamp(13.5px, 1.65vw, 19px); margin-bottom: 0.8vh; }
-  .slide.dense .small { font-size: clamp(11.5px, 1.35vw, 15px); }
-  .slide.dense .card { padding: 1.1vh 1.1vw; }
-  .slide.dense .step { font-size: 0.68em; }
-  .check { cursor: pointer; border-radius: 12px; }
-  .check:focus-visible { outline: 2px solid var(--focus); }
-  .check .hint { font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); font-family: "JetBrains Mono", monospace; margin: 0 0 1.2vh; }
-  .check .sol { display: none; }
-  .check.open .sol { display: block; }
-  .sol .math { border-left-color: var(--ok); }
-  .toolchip { display: inline-block; font-size: clamp(13px, 1.6vw, 19px); font-weight: 600; background: var(--cyan-10); border: 1px solid var(--cyan); color: var(--cyan); border-radius: 999px; padding: 0.6vh 1.2vw; text-decoration: none; margin: 0.5vh 0.4vw 0 0; box-shadow: 0 8px 20px rgba(0,229,255,0.15); }
-  .plain { background: var(--cyan-03); border: 1px solid var(--cyan-30); border-radius: 20px; padding: 1.3vh 1.4vw; margin: 0 0 1.4vh; max-width: 72ch; }
-  .plain p:last-child { margin-bottom: 0; }
-
-  /* shared widget shell */
-  .widget { margin-top: 1.2vh; background: var(--surface-alt); border: 1px solid var(--line-strong); border-radius: 20px; padding: 1.3vh 1.2vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-  .widget-label { font-family: "JetBrains Mono", monospace; font-size: clamp(11px, 1.3vw, 13px); color: var(--mist); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.8vh; }
-  .widget-types { display: flex; gap: 0.6vw; flex-wrap: wrap; margin-bottom: 1vh; }
-  .u-btn { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.5vw, 16px); cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 0.7vh 1.3vw; }
-  .u-btn.active { background: var(--cyan-10); border-color: var(--cyan); color: var(--cyan); box-shadow: 0 8px 20px rgba(0,229,255,0.2); }
-  .u-btn:focus-visible { outline: 2px solid var(--focus); }
-  .widget-row { display: flex; align-items: center; gap: 1vw; flex-wrap: wrap; margin-bottom: 1vh; }
-  .widget-row label { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.5vw, 16px); color: var(--mist); }
-  .widget-row input[type="range"] { width: min(260px, 36vw); accent-color: var(--cyan); }
-  .widget-row .uval { font-family: "JetBrains Mono", monospace; font-size: clamp(15px, 1.8vw, 20px); color: var(--cyan); min-width: 3.5em; }
-  .verdict { font-family: "JetBrains Mono", monospace; font-size: clamp(13px, 1.6vw, 18px); border-radius: 12px; padding: 0.9vh 1vw; border: 1px solid var(--line-strong); background: var(--surface); margin-bottom: 0.7vh; }
-  .verdict.ok { border-color: var(--ok); color: var(--ok); }
-  .verdict.no { border-color: var(--no); color: var(--no); }
-  .backout { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.5vw, 16px); color: var(--mist); border-radius: 12px; padding: 0.9vh 1vw; border: 1px dashed var(--line-strong); background: var(--surface); }
-  .backout b { color: var(--ink); }
-
-  /* intersection lab, slide 3 */
-  .lab { display: flex; gap: 1.4vw; align-items: flex-start; flex-wrap: wrap; }
-  .lab-canvas-wrap { flex: 0 0 auto; background: var(--surface-alt); border: 1px solid var(--line-strong); border-radius: 20px; padding: 0.9vh 0.7vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-  #labCanvas { display: block; width: min(400px, 36vw); height: auto; aspect-ratio: 1 / 1; touch-action: none; cursor: ew-resize; border-radius: 12px; }
-  .lab-side { flex: 1 1 300px; min-width: 260px; max-width: 620px; }
-  .lab-controls { display: flex; align-items: center; gap: 0.8vw; flex-wrap: wrap; margin-bottom: 0.9vh; }
-  .lab-controls input[type="range"] { flex: 1 1 140px; min-width: 120px; accent-color: var(--cyan); }
-  .lab-controls .cval { font-family: "JetBrains Mono", monospace; font-size: clamp(14px, 1.7vw, 19px); color: var(--cyan); min-width: 4.6em; }
-  .lab-btn { font-family: "JetBrains Mono", monospace; font-size: clamp(11.5px, 1.3vw, 14px); cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 0.55vh 1vw; }
-  .lab-btn:hover { border-color: var(--cyan); color: var(--cyan); }
-  .lab-btn:focus-visible { outline: 2px solid var(--focus); }
-  .lab-work { font-family: "JetBrains Mono", monospace; font-size: clamp(11.5px, 1.4vw, 15.5px); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 14px; padding: 0.8vh 0.9vw; margin-bottom: 0.7vh; line-height: 1.75; }
-  .lab-work .lw { color: var(--mist); }
-  .lab-verdict { font-family: "JetBrains Mono", monospace; font-size: clamp(12.5px, 1.5vw, 17px); border-radius: 12px; padding: 0.85vh 1vw; border: 1px solid var(--line-strong); background: var(--surface); }
-  .lab-verdict.two { border-color: var(--ok); color: var(--ok); }
-  .lab-verdict.one { border-color: var(--warm); color: var(--warm); }
-  .lab-verdict.none { border-color: var(--no); color: var(--no); }
-
-  .hud { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: space-between; padding: 1.1vh 2vw; border-top: 1px solid var(--line); background: rgba(10,10,10,0.85); backdrop-filter: blur(6px); z-index: 5; }
-  .hud .name { font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); font-family: "JetBrains Mono", monospace; }
-  .hud .nav { display: flex; align-items: center; gap: 8px; }
-  .hud button { font: inherit; cursor: pointer; background: var(--surface-light); border: 1px solid var(--line-strong); color: var(--ink); border-radius: 50px; padding: 5px 14px; font-size: clamp(12px, 1.4vw, 15px); }
-  .hud button:hover { border-color: var(--cyan); color: var(--cyan); }
-  .hud button:focus-visible { outline: 2px solid var(--focus); }
-  .hud .count { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.4vw, 15px); color: var(--mist); min-width: 52px; text-align: center; }
-  .hud .timer { font-family: "JetBrains Mono", monospace; font-size: clamp(12px, 1.5vw, 16px); color: var(--mist); font-variant-numeric: tabular-nums; }
-  .hud .timer.warn { color: var(--no); font-weight: 600; }
-  .hud .timer.paused { opacity: 0.5; }
-
-  /* blank board */
-  .board { position: fixed; inset: 0; background: #05050a; z-index: 30; }
-  .board canvas { width: 100%; height: 100%; touch-action: none; cursor: crosshair; display: block; }
-  .board-hint { position: fixed; left: 50%; bottom: 2.2vh; transform: translateX(-50%); font-family: "JetBrains Mono", monospace; font-size: clamp(11px, 1.3vw, 14px); color: var(--mist); background: rgba(255,255,255,0.06); border: 1px solid var(--line-strong); border-radius: 999px; padding: 0.8vh 1.6vw; }
-
-  /* overview grid */
-  .overview { position: fixed; inset: 0; background: rgba(5,5,10,0.97); z-index: 25; padding: 6vh 5vw; overflow: auto; }
-  .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.4vw; max-width: 1200px; margin: 0 auto; }
-  .ov-card { cursor: pointer; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 16px; padding: 1.6vh 1.2vw; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-  .ov-card:hover { border-color: var(--cyan); }
-  .ov-num { font-family: "JetBrains Mono", monospace; color: var(--cyan); font-size: 13px; margin-bottom: 0.6vh; }
-  .ov-title { font-weight: 600; font-size: 15px; }
-
-  /* Phones get the same deck, stacked. A slide that runs past the screen scrolls
-     instead of being cut off, and the lab canvas takes the width it needs once
-     the two-column layout has collapsed. Projector widths are untouched. */
-  @media (max-width: 700px) {
-    .slide { justify-content: flex-start; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 3.5vh 6vw 13vh; }
-    #labCanvas { width: min(340px, 78vw); }
-    .lab-side { flex: 1 1 100%; }
-    .widget-row input[type="range"] { width: min(260px, 62vw); }
-  }
-
-  @media print {
-    body { overflow: visible; background: #fff; color: #111; }
-    .slide { display: flex !important; position: static; page-break-after: always; height: 95vh; pointer-events: auto; }
-    .frag, .slide:not(.active) .frag.on { visibility: visible; }
-    .check .sol { display: block; }
-    .hud, .board, .overview { display: none; }
-  }
-</style>
+<body data-deck-name="1.1 · Session 3" data-help-note="On a phone or tablet, swipe left and right. Tap any practice question to check the answer. In the Intersection Lab, drag the slider or the line itself. In the validity checker, pick a nickname, then drag the value of u.">
 
 <!-- 1 · title -->
 <section class="slide active">
@@ -170,87 +33,82 @@
 </section>
 
 <!-- 2 · do now -->
-<section class="slide">
+<section class="slide duo">
   <p class="eyebrow">Do Now · 5 min</p>
   <h2>Solve the pair.</h2>
-  <div class="math">x + y = 5</div>
-  <div class="math">x<sup>2</sup> + y<sup>2</sup> = 17</div>
-  <div class="math frag tight"><span class="step">rearrange the linear</span>&nbsp; y = 5 − x</div>
-  <div class="math frag tight"><span class="step">put it into the quadratic</span>&nbsp; x<sup>2</sup> + (5 − x)<sup>2</sup> = 17</div>
-  <div class="math frag tight"><span class="step">expand and collect</span>&nbsp; 2x<sup>2</sup> − 10x + 8 = 0</div>
-  <div class="math frag tight"><span class="step">divide both sides by 2</span>&nbsp; x<sup>2</sup> − 5x + 4 = 0</div>
-  <div class="math frag good">x = 1 or x = 4, so the answers are (1, 4) and (4, 1)</div>
-  <p class="frag muted small">That last quadratic, x<sup>2</sup> − 5x + 4 = 0, is the same one that ran through Session 2.</p>
+  <div class="math">\(x + y = 5\)</div>
+  <div class="math">\(x^2 + y^2 = 17\)</div>
+  <div class="math frag"><span class="lbl">rearrange the linear</span>&nbsp; \(y = 5 - x\)</div>
+  <div class="math frag"><span class="lbl">put it into the quadratic</span>&nbsp; \(x^2 + (5 - x)^2 = 17\)</div>
+  <div class="math frag"><span class="lbl">expand and collect</span>&nbsp; \(2x^2 - 10x + 8 = 0\)</div>
+  <div class="math frag"><span class="lbl">divide both sides by 2</span>&nbsp; \(x^2 - 5x + 4 = 0\)</div>
+  <div class="math frag result">\(x = 1\) or \(x = 4\), so the answers are \((1, 4)\) and \((4, 1)\)</div>
+  <p class="frag muted small">That last quadratic, \(x^2 - 5x + 4 = 0\), is the same one that ran through Session 2.</p>
 </section>
 
 <!-- 3 · the intersection lab -->
-<section class="slide dense">
+<section class="slide duo">
   <p class="eyebrow">The Intersection Lab · 4 min</p>
   <h2>Two answers, because there are two crossing points.</h2>
-  <p class="small muted" style="margin-bottom:1vh">x + y = 5 is a straight line. x<sup>2</sup> + y<sup>2</sup> = 17 is a circle. Solving them together asks one question: where do they touch? Drag the slider to slide the line across the circle.</p>
+  <p class="small muted">\(x + y = 5\) is a straight line. \(x^2 + y^2 = 17\) is a circle. Solving them together asks one question: where do they touch? Drag the slider to slide the line across the circle.</p>
   <div class="lab">
-    <div class="lab-canvas-wrap">
-      <canvas id="labCanvas" width="660" height="660" aria-label="A circle with a movable straight line crossing it"></canvas>
-    </div>
-    <div class="lab-side">
-      <div class="lab-controls">
-        <label for="cRange" class="step">line: x + y =</label>
-        <span class="cval" id="cVal">5</span>
-        <input type="range" id="cRange" min="-8" max="8" step="0.25" value="5" aria-label="move the line">
+    <canvas id="labCanvas" width="660" height="660" aria-label="A circle with a movable straight line crossing it"></canvas>
+    <div class="panel">
+      <label for="cRange">line: x + y = <span class="cval" id="cVal">5</span></label>
+      <input type="range" id="cRange" min="-8" max="8" step="0.25" value="5" aria-label="move the line">
+      <div class="picks">
+        <button id="labDoNow" type="button">Back to the Do Now</button>
+        <button id="labTangent" type="button">Make it just touch</button>
+        <button id="labMiss" type="button">Make it miss</button>
       </div>
-      <div class="lab-controls">
-        <button class="lab-btn" id="labDoNow" type="button">Back to the Do Now</button>
-        <button class="lab-btn" id="labTangent" type="button">Make it just touch</button>
-        <button class="lab-btn" id="labMiss" type="button">Make it miss</button>
-      </div>
-      <div class="lab-work" id="labWork"></div>
-      <div class="lab-verdict" id="labVerdict"></div>
+      <div class="read" id="labWork"></div>
+      <div class="verdict" id="labVerdict"></div>
     </div>
   </div>
-  <p class="frag small" style="margin-top:0.9vh"><b>The discriminant is back.</b> Δ &gt; 0 means the line cuts the circle twice. Δ = 0 means it just touches, which is the tangency you met in Session 1. Δ &lt; 0 means it misses, and the algebra says the same thing by refusing to give you a real answer.</p>
+  <p class="frag small"><b>The discriminant is back.</b> \(\Delta &gt; 0\) means the line cuts the circle twice. \(\Delta = 0\) means it just touches, which is the tangency you met in Session 1. \(\Delta &lt; 0\) means it misses, and the algebra says the same thing by refusing to give you a real answer.</p>
 </section>
 
 <!-- 4 · substitution -->
-<section class="slide dense">
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 1 of 6</p>
   <h2>One linear + one quadratic: substitute, solve, pair up.</h2>
   <ol>
     <li class="frag"><b>Substitute</b> the linear equation into the quadratic, so only one letter is left.</li>
-    <li class="frag"><b>Solve</b> the quadratic you get. Usually two x-values.</li>
-    <li class="frag"><b>Back-substitute each one.</b> Every x needs its partner y. The answer is a pair of coordinates: an x-value and its matching y-value.</li>
+    <li class="frag"><b>Solve</b> the quadratic you get. Usually two \(x\)-values.</li>
+    <li class="frag"><b>Back-substitute each one.</b> Every \(x\) needs its partner \(y\). The answer is a pair of coordinates: an \(x\)-value and its matching \(y\)-value.</li>
   </ol>
-  <p class="frag bad" style="font-weight:600">Stopping at "x = 1 or x = 4" is half an answer. Those are just the two places on the picture, read off the x-axis. You still owe the height of each one: y = 5 − 1 = 4, and y = 5 − 4 = 1. The answer is (1, 4) and (4, 1).</p>
+  <p class="frag bad" style="font-weight:600">Stopping at "\(x = 1\) or \(x = 4\)" is half an answer. Those are just the two places on the picture, read off the \(x\)-axis. You still owe the height of each one: \(y = 5 - 1 = 4\), and \(y = 5 - 4 = 1\). The answer is \((1, 4)\) and \((4, 1)\).</p>
   <p class="frag"><b>Why not use elimination</b>, the way you would with two linear equations? Elimination scales one or both equations so a variable's coefficient matches the other equation, then adds or subtracts to cancel that variable out.</p>
-  <div class="math frag tight small"><span class="step">try it: multiply the linear equation by 3</span>&nbsp; 3 × (x + y = 5) → 3x + 3y = 15: still only x and y to the first power, nothing to cancel against x<sup>2</sup> + y<sup>2</sup> = 17</div>
-  <p class="frag">Multiplying the linear equation by any constant keeps it linear. It never grows an x<sup>2</sup> or a y<sup>2</sup> to cancel, so no multiple of it lines up with the quadratic. Substitution is the only route, which is the word the syllabus uses.</p>
+  <div class="math frag small"><span class="lbl">try it: multiply the linear equation by 3</span>&nbsp; \(3 \times (x + y = 5) \to 3x + 3y = 15\): still only \(x\) and \(y\) to the first power, nothing to cancel against \(x^2 + y^2 = 17\)</div>
+  <p class="frag">Multiplying the linear equation by any constant keeps it linear. It never grows an \(x^2\) or a \(y^2\) to cancel, so no multiple of it lines up with the quadratic. Substitution is the only route, which is the word the syllabus uses.</p>
 </section>
 
 <!-- 5 · worked simultaneous pair -->
-<section class="slide dense">
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 2 of 6 · worked</p>
   <h2>All of it, on one pair.</h2>
-  <div class="math tight"><span class="step">linear</span>&nbsp; 2x + y = 7&nbsp;&nbsp;&nbsp;<span class="step">quadratic</span>&nbsp; x<sup>2</sup> + xy = 10</div>
-  <div class="math frag tight"><span class="step">1 · rearrange the linear for y</span>&nbsp; y = 7 − 2x</div>
-  <div class="math frag tight"><span class="step">2 · substitute into the quadratic</span>&nbsp; x<sup>2</sup> + x(7 − 2x) = 10</div>
-  <div class="math frag tight"><span class="step">3 · expand the bracket</span>&nbsp; x<sup>2</sup> + 7x − 2x<sup>2</sup> = 10</div>
-  <div class="math frag tight"><span class="step">4 · everything on one side</span>&nbsp; −x<sup>2</sup> + 7x − 10 = 0</div>
-  <div class="math frag tight"><span class="step">5 · multiply by −1 so x<sup>2</sup> is positive</span>&nbsp; x<sup>2</sup> − 7x + 10 = 0</div>
-  <div class="math frag tight"><span class="step">6 · factor and solve</span>&nbsp; (x − 2)(x − 5) = 0 → x = 2 or x = 5</div>
-  <div class="math frag tight"><span class="step">7 · each x back into y = 7 − 2x</span>&nbsp; x = 2 → y = 3&nbsp;&nbsp;·&nbsp;&nbsp;x = 5 → y = −3</div>
-  <div class="math frag good">(2, 3) and (5, −3)</div>
-  <div class="math frag small"><span class="step">check both in both originals</span>&nbsp; 2(2) + 3 = 7 ✓, 2<sup>2</sup> + 2(3) = 10 ✓&nbsp;&nbsp;·&nbsp;&nbsp;2(5) + (−3) = 7 ✓, 5<sup>2</sup> + 5(−3) = 10 ✓</div>
-  <p class="frag"><b>Why each x keeps its own y:</b> the y came out of <i>that</i> x through y = 7 − 2x, so they travel together. Swap them and it breaks. Try (2, −3): 2(2) + (−3) = 1, and the linear equation wanted 7.</p>
+  <div class="math"><span class="lbl">linear</span>&nbsp; \(2x + y = 7\)&nbsp;&nbsp;&nbsp;<span class="lbl">quadratic</span>&nbsp; \(x^2 + xy = 10\)</div>
+  <div class="math frag"><span class="lbl">1 · rearrange the linear for \(y\)</span>&nbsp; \(y = 7 - 2x\)</div>
+  <div class="math frag"><span class="lbl">2 · substitute into the quadratic</span>&nbsp; \(x^2 + x(7 - 2x) = 10\)</div>
+  <div class="math frag"><span class="lbl">3 · expand the bracket</span>&nbsp; \(x^2 + 7x - 2x^2 = 10\)</div>
+  <div class="math frag"><span class="lbl">4 · everything on one side</span>&nbsp; \(-x^2 + 7x - 10 = 0\)</div>
+  <div class="math frag"><span class="lbl">5 · multiply by \(-1\) so \(x^2\) is positive</span>&nbsp; \(x^2 - 7x + 10 = 0\)</div>
+  <div class="math frag"><span class="lbl">6 · factor and solve</span>&nbsp; \((x - 2)(x - 5) = 0 \to x = 2\) or \(x = 5\)</div>
+  <div class="math frag"><span class="lbl">7 · each \(x\) back into \(y = 7 - 2x\)</span>&nbsp; \(x = 2 \to y = 3\)&nbsp;&nbsp;·&nbsp;&nbsp;\(x = 5 \to y = -3\)</div>
+  <div class="math frag result">\((2, 3)\) and \((5, -3)\)</div>
+  <div class="math frag small"><span class="lbl">check both in both originals</span>&nbsp; \(2(2) + 3 = 7\) ✓, \(2^2 + 2(3) = 10\) ✓&nbsp;&nbsp;·&nbsp;&nbsp;\(2(5) + (-3) = 7\) ✓, \(5^2 + 5(-3) = 10\) ✓</div>
+  <p class="frag"><b>Why each \(x\) keeps its own \(y\):</b> the \(y\) came out of <i>that</i> \(x\) through \(y = 7 - 2x\), so they travel together. Swap them and it breaks. Try \((2, -3)\): \(2(2) + (-3) = 1\), and the linear equation wanted 7.</p>
 </section>
 
 <!-- 6 · the nickname idea -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 3 of 6</p>
   <h2>The nickname trick.</h2>
-  <div class="plain">
-    <p>You already know how to solve anything shaped like <b>u<sup>2</sup> + bu + c = 0</b>. So when an equation is too ugly to solve, the move is to make it that shape.</p>
-    <p class="frag">Find the piece that keeps showing up. Cover it with a single letter, <b>u</b>. Solve the easy equation you are left with. Then uncover it and finish the job.</p>
+  <div class="card">
+    <p>You already know how to solve anything shaped like <b>\(u^2 + bu + c = 0\)</b>. So when an equation is too ugly to solve, the move is to make it that shape.</p>
+    <p class="frag">Find the piece that keeps showing up. Cover it with a single letter, <b>\(u\)</b>. Solve the easy equation you are left with. Then uncover it and finish the job.</p>
   </div>
-  <p class="frag">A nickname is not an answer. If a friend is called Red, "Red" is not a person: you still have to go find the person. Same here. Landing on u = 4 does not end the question, it starts the last step.</p>
+  <p class="frag">A nickname is not an answer. If a friend is called Red, "Red" is not a person: you still have to go find the person. Same here. Landing on \(u = 4\) does not end the question, it starts the last step.</p>
 </section>
 
 <!-- 7 · recognizing disguises -->
@@ -258,496 +116,345 @@
   <p class="eyebrow">Direct instruction · 4 of 6</p>
   <h2>Spot the repeated piece.</h2>
   <p>In each one, the same thing appears twice: once squared, once on its own. That repeated thing is what gets the nickname.</p>
-  <div class="math tight">x<sup>4</sup> − 5x<sup>2</sup> + 4 = 0 <span class="muted">(x<sup>4</sup> is (x<sup>2</sup>)<sup>2</sup>, so let u = x<sup>2</sup>)</span></div>
-  <div class="math frag tight">x − 4√x + 3 = 0 <span class="muted">(x is (√x)<sup>2</sup>, so let u = √x)</span></div>
-  <div class="math frag tight">tan<sup>2</sup>x − tan x − 1 = 0 <span class="muted">(let u = tan x)</span></div>
-  <p class="frag small muted">Standard form first, every time. That third one is usually printed as tan<sup>2</sup>x = 1 + tan x, and nothing works until everything is on one side.</p>
-  <p class="frag">The part practice sets usually skip is what comes after: swapping back to x once u is known. Getting "u = 1" is not the finish line, it is one more equation to solve.</p>
+  <div class="math">\(x^4 - 5x^2 + 4 = 0\) <span class="muted">(\(x^4\) is \((x^2)^2\), so let \(u = x^2\))</span></div>
+  <div class="math frag">\(x - 4\sqrt{x} + 3 = 0\) <span class="muted">(\(x\) is \((\sqrt{x})^2\), so let \(u = \sqrt{x}\))</span></div>
+  <div class="math frag">\(\tan^2 x - \tan x - 1 = 0\) <span class="muted">(let \(u = \tan x\))</span></div>
+  <p class="frag small muted">Standard form first, every time. That third one is usually printed as <span style="white-space:nowrap">\(\tan^2 x = 1 + \tan x\),</span> and nothing works until everything is on one side.</p>
+  <p class="frag">The part practice sets usually skip is what comes after: swapping back to \(x\) once \(u\) is known. Getting "\(u = 1\)" is not the finish line, it is one more equation to solve.</p>
 </section>
 
 <!-- 8 · the full arc -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 5 of 6</p>
   <h2>The full arc, once.</h2>
-  <div class="math tight">x<sup>4</sup> − 5x<sup>2</sup> + 4 = 0</div>
-  <div class="math frag tight"><span class="step">let u = x<sup>2</sup></span>&nbsp; u<sup>2</sup> − 5u + 4 = 0 → (u − 1)(u − 4) = 0 → u = 1 or 4</div>
-  <div class="math frag tight"><span class="step">undo the nickname</span>&nbsp; x<sup>2</sup> = 1 → x = ±1&nbsp;&nbsp;·&nbsp;&nbsp;x<sup>2</sup> = 4 → x = ±2</div>
-  <div class="math frag good">Four roots: x = −2, −1, 1, 2</div>
-  <p class="frag">Two u-values turned into four x-values, because each x<sup>2</sup> = number question has a positive and a negative answer. Dropping the ± is how a correct method still loses half the marks.</p>
+  <div class="math">\(x^4 - 5x^2 + 4 = 0\)</div>
+  <div class="math frag"><span class="lbl">let \(u = x^2\)</span>&nbsp; \(u^2 - 5u + 4 = 0 \to (u - 1)(u - 4) = 0 \to u = 1\) or \(4\)</div>
+  <div class="math frag"><span class="lbl">undo the nickname</span>&nbsp; \(x^2 = 1 \to x = \pm 1\)&nbsp;&nbsp;·&nbsp;&nbsp;\(x^2 = 4 \to x = \pm 2\)</div>
+  <div class="math frag result">Four roots: \(x = -2, -1, 1, 2\)</div>
+  <p class="frag">Two \(u\)-values turned into four \(x\)-values, because each \(x^2 = \text{number}\) question has a positive and a negative answer. Dropping the \(\pm\) is how a correct method still loses half the marks.</p>
   <p class="frag">This one had four real roots. A degree-four equation does not always get four. You will see one in a moment that gets two.</p>
 </section>
 
 <!-- 9 · validity -->
-<section class="slide dense">
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 6 of 6</p>
-  <h2>Some answers for u are impossible.</h2>
+  <h2>Some answers for \(u\) are impossible.</h2>
   <p>Before you undo the nickname, ask what that nickname is allowed to be, and why.</p>
-  <div class="math tight">u = x<sup>2</sup> <span class="muted">cannot be negative, since squaring a real number never gives a negative result</span></div>
-  <div class="math frag tight">u = √x <span class="muted">cannot be negative either, since the √ symbol always means the non-negative root</span></div>
-  <div class="math frag tight">u = cos x <span class="muted">lives between −1 and 1, the whole range cosine ever takes</span></div>
-  <div class="math frag tight">u = x<sup>3</sup> <span class="muted">can be anything, negatives included, since every real number has exactly one real cube root</span></div>
+  <div class="math">\(u = x^2\) <span class="muted">cannot be negative, since squaring a real number never gives a negative result</span></div>
+  <div class="math frag">\(u = \sqrt{x}\) <span class="muted">cannot be negative either, since the \(\sqrt{\ }\) symbol always means the non-negative root</span></div>
+  <div class="math frag">\(u = \cos x\) <span class="muted">lives between \(-1\) and \(1\), the whole range cosine ever takes</span></div>
+  <div class="math frag">\(u = x^3\) <span class="muted">can be anything, negatives included, since every real number has exactly one real cube root</span></div>
   <p class="frag">Check the nickname you actually used. Do not assume negative means reject: it depends which of the four you're using.</p>
-  <p class="frag">A u-value outside its range has <b>no solution</b>. Write down why you're rejecting it: that line is what earns the mark. The safety check is always the same, put your answer back into the original equation and see if it holds.</p>
-  <div class="widget frag" id="validityWidget">
-    <p class="widget-label">Try it: pick a nickname, pick a value, and watch what comes back</p>
-    <div class="widget-types" role="group" aria-label="choose the substitution">
-      <button class="u-btn active" data-type="xsq">u = x²</button>
-      <button class="u-btn" data-type="sqrt">u = √x</button>
-      <button class="u-btn" data-type="cos">u = cos x</button>
-      <button class="u-btn" data-type="cube">u = x³</button>
-    </div>
-    <div class="widget-row">
-      <label for="uRange">candidate value of u:</label>
+  <p class="frag">A \(u\)-value outside its range has <b>no solution</b>. Write down why you're rejecting it: that line is what earns the mark. The safety check is always the same, put your answer back into the original equation and see if it holds.</p>
+  <div class="lab frag" id="validityWidget">
+    <div class="panel">
+      <p class="small muted" style="margin:0">Try it: pick a nickname, pick a value, and watch what comes back</p>
+      <div class="picks" role="group" aria-label="choose the substitution">
+        <button type="button" class="u-btn" data-type="xsq" aria-pressed="true">u = x²</button>
+        <button type="button" class="u-btn" data-type="sqrt" aria-pressed="false">u = √x</button>
+        <button type="button" class="u-btn" data-type="cos" aria-pressed="false">u = cos x</button>
+        <button type="button" class="u-btn" data-type="cube" aria-pressed="false">u = x³</button>
+      </div>
+      <label for="uRange">candidate value of u: <span class="cval" id="uVal">−8</span></label>
       <input type="range" id="uRange" min="-10" max="10" step="0.5" value="-8">
-      <span class="uval" id="uVal">−8</span>
+      <div class="verdict" id="uVerdict"></div>
+      <div class="read" id="uBackout"></div>
     </div>
-    <div class="verdict" id="uVerdict"></div>
-    <div class="backout" id="uBackout"></div>
   </div>
 </section>
 
 <!-- 10 · worked -->
 <section class="slide">
   <p class="eyebrow">Worked example · 7 min · <span class="lit">wkshtF</span> Q1</p>
-  <h2>x<sup>4</sup> − 3x<sup>2</sup> − 4 = 0</h2>
-  <div class="math frag tight"><span class="step">let u = x<sup>2</sup></span>&nbsp; u<sup>2</sup> − 3u − 4 = 0 → (u − 4)(u + 1) = 0 → u = 4 or u = −1</div>
-  <div class="math frag tight"><span class="step">check each u against its range</span>&nbsp; u = x<sup>2</sup>, so u cannot be negative</div>
-  <div class="math frag tight">x<sup>2</sup> = 4 → x = ±2&nbsp;&nbsp;·&nbsp;&nbsp;<span class="bad">x<sup>2</sup> = −1 → no real solution, reject</span></div>
-  <div class="math frag good">x = ±2 only</div>
-  <div class="math frag small"><span class="step">check</span>&nbsp; x = 2: 16 − 12 − 4 = 0 ✓&nbsp;&nbsp;·&nbsp;&nbsp;x = −2: 16 − 12 − 4 = 0 ✓</div>
-  <p class="frag">Same u = x<sup>2</sup> substitution as the arc before it, and this time one branch really does get rejected. <b>Writing down why u = −1 is rejected earns the mark.</b> An answer of x = ±2 with no reason given looks like a guess.</p>
+  <h2>\(x^4 - 3x^2 - 4 = 0\)</h2>
+  <div class="math frag"><span class="lbl">let \(u = x^2\)</span>&nbsp; \(u^2 - 3u - 4 = 0 \to (u - 4)(u + 1) = 0 \to u = 4\) or \(u = -1\)</div>
+  <div class="math frag"><span class="lbl">check each \(u\) against its range</span>&nbsp; \(u = x^2\), so \(u\) cannot be negative</div>
+  <div class="math frag">\(x^2 = 4 \to x = \pm 2\)&nbsp;&nbsp;·&nbsp;&nbsp;<span class="bad">\(x^2 = -1 \to\) no real solution, reject</span></div>
+  <div class="math frag result">\(x = \pm 2\) only</div>
+  <div class="math frag small"><span class="lbl">check</span>&nbsp; \(x = 2\): \(16 - 12 - 4 = 0\) ✓&nbsp;&nbsp;·&nbsp;&nbsp;\(x = -2\): \(16 - 12 - 4 = 0\) ✓</div>
+  <p class="frag">Same \(u = x^2\) substitution as the arc before it, and this time one branch really does get rejected. <b>Writing down why \(u = -1\) is rejected earns the mark.</b> An answer of \(x = \pm 2\) with no reason given looks like a guess.</p>
 </section>
 
-<!-- 11 · practice -->
-<section class="slide dense">
-  <p class="eyebrow">Practice · 18 min · <span class="lit">wkshtF</span></p>
+<!-- 11 · practice, together -->
+<section class="slide">
+  <p class="eyebrow">Practice · together · 9 min · <span class="lit">wkshtF</span></p>
   <h2>Your turn. Tap a question to check it.</h2>
   <div class="cols">
-    <div class="card">
-      <p class="eyebrow" style="margin-bottom:0.7vh">Together · 9 min</p>
-      <div class="check" tabindex="0" role="button">
-        <div class="math small tight">Q2&nbsp; x − 4√x + 3 = 0</div>
-        <p class="hint">tap to check</p>
-        <div class="sol">
-          <div class="math small tight"><span class="step">u = √x</span>&nbsp; u<sup>2</sup> − 4u + 3 = 0 → (u − 1)(u − 3) = 0 → u = 1 or 3</div>
-          <div class="math small tight">both are ≥ 0, so both survive: √x = 1 → x = 1&nbsp;·&nbsp;√x = 3 → x = 9</div>
-          <div class="math small good">x = 1 or 9&nbsp;&nbsp;<span class="step">check: 1 − 4 + 3 = 0 ✓, 9 − 12 + 3 = 0 ✓</span></div>
-        </div>
-      </div>
-      <div class="check" tabindex="0" role="button">
-        <div class="math small tight">Q5&nbsp; x<sup>4</sup> = 10x<sup>2</sup> − 9</div>
-        <p class="hint">tap to check</p>
-        <div class="sol">
-          <div class="math small tight"><span class="step">standard form first: everything on one side, equals zero</span>&nbsp; x<sup>4</sup> − 10x<sup>2</sup> + 9 = 0</div>
-          <div class="math small tight"><span class="step">u = x<sup>2</sup></span>&nbsp; u<sup>2</sup> − 10u + 9 = 0 → (u − 1)(u − 9) = 0 → u = 1 or 9</div>
-          <div class="math small tight">both are ≥ 0, so keep both: x<sup>2</sup> = 1 → x = ±1&nbsp;·&nbsp;x<sup>2</sup> = 9 → x = ±3</div>
-          <div class="math small good">x = −3, −1, 1, 3</div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">Q2&nbsp; \(x - 4\sqrt{x} + 3 = 0\)</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">\(u = \sqrt{x}\)</span>&nbsp; \(u^2 - 4u + 3 = 0 \to (u - 1)(u - 3) = 0 \to u = 1\) or \(3\)</div>
+          <div class="math small">both are \(\ge 0\), so both survive: \(\sqrt{x} = 1 \to x = 1\)&nbsp;·&nbsp;\(\sqrt{x} = 3 \to x = 9\)</div>
+          <div class="math small result">\(x = 1\) or \(9\)&nbsp;&nbsp;<span class="lbl">check: \(1 - 4 + 3 = 0\) ✓, \(9 - 12 + 3 = 0\) ✓</span></div>
         </div>
       </div>
     </div>
-    <div class="card">
-      <p class="eyebrow" style="margin-bottom:0.7vh">On your own · 9 min</p>
-      <div class="check" tabindex="0" role="button">
-        <div class="math small tight">Q4&nbsp; 3sin<sup>2</sup>x + 2sin x − 1 = 0</div>
-        <p class="hint">tap to check</p>
-        <div class="sol">
-          <div class="math small tight"><span class="step">u = sin x</span>&nbsp; 3u<sup>2</sup> + 2u − 1 = 0 → (3u − 1)(u + 1) = 0 → u = 1/3 or −1</div>
-          <div class="math small tight">both sit inside −1 ≤ sin x ≤ 1, so both survive</div>
-          <div class="math small good">sin x = 1/3 or sin x = −1</div>
-          <div class="math small">&nbsp;<span class="step">check</span>&nbsp; 3(1/3)² + 2(1/3) − 1 = 1/3 + 2/3 − 1 = 0 ✓&nbsp;&nbsp;·&nbsp;&nbsp;3(−1)² + 2(−1) − 1 = 3 − 2 − 1 = 0 ✓</div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">Q5&nbsp; \(x^4 = 10x^2 - 9\)</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">standard form first: everything on one side, equals zero</span>&nbsp; \(x^4 - 10x^2 + 9 = 0\)</div>
+          <div class="math small"><span class="lbl">\(u = x^2\)</span>&nbsp; \(u^2 - 10u + 9 = 0 \to (u - 1)(u - 9) = 0 \to u = 1\) or \(9\)</div>
+          <div class="math small">both are \(\ge 0\), so keep both: \(x^2 = 1 \to x = \pm 1\)&nbsp;·&nbsp;\(x^2 = 9 \to x = \pm 3\)</div>
+          <div class="math small result">\(x = -3, -1, 1, 3\)</div>
         </div>
       </div>
-      <div class="check" tabindex="0" role="button">
-        <div class="math small tight">Q7&nbsp; cos<sup>2</sup>x − 2cos x = 8</div>
-        <p class="hint">tap to check</p>
-        <div class="sol">
-          <div class="math small tight"><span class="step">standard form</span>&nbsp; cos<sup>2</sup>x − 2cos x − 8 = 0</div>
-          <div class="math small tight"><span class="step">u = cos x</span>&nbsp; u<sup>2</sup> − 2u − 8 = 0 → (u − 4)(u + 2) = 0 → u = 4 or −2</div>
-          <div class="math small tight"><span class="bad">both fall outside −1 ≤ cos x ≤ 1, so reject both</span></div>
-          <div class="math small good">No solutions. That is the answer.</div>
-          <div class="math small">&nbsp;<span class="step">check</span>&nbsp; cos x can never reach 4 or −2, since nothing satisfies −1 ≤ cos x ≤ 1 there, so there is nothing left to substitute back</div>
-        </div>
-      </div>
-      <p class="small">Stop at the values of sin x and cos x. Solving on to the angle is a 1.5 skill, so an unfinished-looking answer here is <b>correct</b>.</p>
     </div>
   </div>
 </section>
 
-<!-- 12 · recap -->
+<!-- 12 · practice, on your own -->
+<section class="slide">
+  <p class="eyebrow">Practice · on your own · 9 min · <span class="lit">wkshtF</span></p>
+  <h2>Your turn. Tap a question to check it.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">Q4&nbsp; \(3\sin^2 x + 2\sin x - 1 = 0\)</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">\(u = \sin x\)</span>&nbsp; \(3u^2 + 2u - 1 = 0 \to (3u - 1)(u + 1) = 0 \to u = \dfrac{1}{3}\) or \(-1\)</div>
+          <div class="math small">both sit inside \(-1 \le \sin x \le 1\), so both survive</div>
+          <div class="math small result">\(\sin x = \dfrac{1}{3}\) or \(\sin x = -1\)</div>
+          <div class="math small"><span class="lbl">check</span>&nbsp; \(3\left(\dfrac{1}{3}\right)^2 + 2\left(\dfrac{1}{3}\right) - 1 = \dfrac{1}{3} + \dfrac{2}{3} - 1 = 0\) ✓&nbsp;&nbsp;·&nbsp;&nbsp;\(3(-1)^2 + 2(-1) - 1 = 3 - 2 - 1 = 0\) ✓</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">Q7&nbsp; \(\cos^2 x - 2\cos x = 8\)</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">standard form</span>&nbsp; \(\cos^2 x - 2\cos x - 8 = 0\)</div>
+          <div class="math small"><span class="lbl">\(u = \cos x\)</span>&nbsp; \(u^2 - 2u - 8 = 0 \to (u - 4)(u + 2) = 0 \to u = 4\) or \(-2\)</div>
+          <div class="math small"><span class="bad">both fall outside \(-1 \le \cos x \le 1\), so reject both</span></div>
+          <div class="math small result">No solutions. That is the answer.</div>
+          <div class="math small"><span class="lbl">check</span>&nbsp; \(\cos x\) can never reach \(4\) or \(-2\), since nothing satisfies \(-1 \le \cos x \le 1\) there, so there is nothing left to substitute back</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="small">Stop at the values of \(\sin x\) and \(\cos x\). Solving for the angle comes in 1.5, so this answer is <b>complete</b>.</p>
+</section>
+
+<!-- 13 · recap -->
 <section class="slide">
   <p class="eyebrow">Recap · 2 min</p>
   <h2>Both halves of today were the same move.</h2>
   <p>Neither problem today was a quadratic when you met it. Both became one, and you already knew what to do from there.</p>
-  <div class="math frag tight"><span class="step">two equations, two letters</span>&nbsp; substitute the linear one in → an ordinary quadratic in x</div>
-  <div class="math frag tight"><span class="step">one ugly equation</span>&nbsp; nickname the repeated piece → an ordinary quadratic in u</div>
-  <p class="frag"><b>And both have a last step people skip.</b> On a pair, every x owes you its y. On a disguise, every u owes you its x, and some u-values owe you nothing at all because they were impossible.</p>
+  <div class="math frag"><span class="lbl">two equations, two letters</span>&nbsp; substitute the linear one in → an ordinary quadratic in \(x\)</div>
+  <div class="math frag"><span class="lbl">one ugly equation</span>&nbsp; nickname the repeated piece → an ordinary quadratic in \(u\)</div>
+  <p class="frag"><b>And both have a last step people skip.</b> On a pair, every \(x\) owes you its \(y\). On a disguise, every \(u\) owes you its \(x\), and some \(u\)-values owe you nothing at all because they were impossible.</p>
 </section>
 
-<!-- 13 · exit + homework -->
+<!-- 14 · exit + homework -->
 <section class="slide">
   <p class="eyebrow">Exit ticket · 5 min</p>
   <h2>Last check, five minutes, on Schoology.</h2>
-  <div class="math">Solve&nbsp; x<sup>6</sup> + 7x<sup>3</sup> = 8.&nbsp; <span class="muted small">Hint: what's the nickname, and what is it allowed to be?</span></div>
+  <div class="math">Solve&nbsp; \(x^6 + 7x^3 = 8\).&nbsp; <span class="muted small">Hint: what's the nickname, and what is it allowed to be?</span></div>
   <p class="frag small muted" style="margin-top:1vh">A cubic hiding inside a quadratic like this is a real Cambridge exam pattern, not just a practice-sheet one.</p>
   <p class="frag" style="margin-top:1vh"><b>Before you leave, press Submit.</b> An attempt left open scores nothing.</p>
   <p class="frag"><b>Homework:</b> Transum "Hidden Quadratics," Levels 1 and 2 (free and auto-marked).</p>
   <p class="frag small muted">Self-check with full worked solutions: Paul's Online Notes, 6 problems. tutorial.math.lamar.edu/problems/alg/reducibletoquadratic.aspx</p>
   <p class="frag">
-    <a class="toolchip" href="https://www.thinkinbits.site/math/1.1-quadratics/intersection-lab/" target="_blank" rel="noopener">Intersection Lab</a>
-    <a class="toolchip" href="https://www.thinkinbits.site/math/1.1-quadratics/quadratics-sprint/" target="_blank" rel="noopener">Quadratics Sprint</a>
+    <a class="toolchip" href="../intersection-lab/" target="_blank" rel="noopener">Intersection Lab</a>
+    <a class="toolchip" href="../quadratics-sprint/" target="_blank" rel="noopener">Quadratics Sprint</a>
   </p>
 </section>
 
-<div class="hud">
-  <span class="name">1.1 · Session 3 · Solving Through to Roots</span>
-  <div class="nav">
-    <span class="timer" id="timer" title="T pauses, Shift+T resets">00:00</span>
-    <button id="boardBtn" aria-label="Blank board" title="W">Board</button>
-    <button id="overviewBtn" aria-label="Overview" title="O">Overview</button>
-    <button id="prevBtn" aria-label="Previous">←</button>
-    <span class="count" id="count"></span>
-    <button id="nextBtn" aria-label="Next">→</button>
-  </div>
-</div>
-
-<div class="board" id="board" hidden>
-  <canvas id="boardCanvas"></canvas>
-  <div class="board-hint">Draw with mouse, trackpad, finger, or stylus · W or Esc to close · C to clear</div>
-</div>
-
-<div class="overview" id="overview" hidden>
-  <div class="overview-grid" id="overviewGrid"></div>
-</div>
-
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
 <script>
+/* ---------- the Intersection Lab, slide 3 ----------
+   Line x + y = c against the circle x^2 + y^2 = 17.
+   Substituting y = c - x gives 2x^2 - 2cx + (c^2 - 17) = 0, so the whole
+   picture is controlled by one discriminant: 136 - 4c^2. */
 (function () {
   'use strict';
-  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
-  var idx = 0;
-  var h = parseInt((location.hash || '').replace('#', ''), 10);
-  if (h >= 1 && h <= slides.length) idx = h - 1;
-  function frags(s) { return Array.prototype.slice.call(s.querySelectorAll('.frag')); }
-  function show(i, revealAll) {
-    idx = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach(function (s, j) { s.classList.toggle('active', j === idx); });
-    frags(slides[idx]).forEach(function (f) { f.classList.toggle('on', !!revealAll); });
-    document.getElementById('count').textContent = (idx + 1) + ' / ' + slides.length;
-    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
-  }
-  function next() {
-    var pending = frags(slides[idx]).filter(function (f) { return !f.classList.contains('on'); });
-    if (pending.length) { pending[0].classList.add('on'); return; }
-    if (idx < slides.length - 1) show(idx + 1, false);
-  }
-  function prev() {
-    var on = frags(slides[idx]).filter(function (f) { return f.classList.contains('on'); });
-    if (on.length) { on[on.length - 1].classList.remove('on'); return; }
-    if (idx > 0) show(idx - 1, true);
-  }
-  document.getElementById('nextBtn').addEventListener('click', next);
-  document.getElementById('prevBtn').addEventListener('click', prev);
-
-  Array.prototype.forEach.call(document.querySelectorAll('.check'), function (c) {
-    function toggle() { c.classList.toggle('open'); }
-    c.addEventListener('click', toggle);
-    c.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
-    });
-  });
-
-  var el = document.getElementById('timer');
-  var elapsed = 0, running = true, last = Date.now();
-  function paint() {
-    var m = Math.floor(elapsed / 60), s = elapsed % 60;
-    el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-    el.classList.toggle('warn', elapsed >= 55 * 60);
-    el.classList.toggle('paused', !running);
-  }
-  setInterval(function () {
-    var now = Date.now();
-    if (running) { elapsed += Math.round((now - last) / 1000); }
-    last = now;
-    paint();
-  }, 1000);
-  paint();
-
   function neg(n) { return (n < 0 ? '−' + Math.abs(n) : String(n)); }
+  var canvas = document.getElementById('labCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var range = document.getElementById('cRange');
+  var cValEl = document.getElementById('cVal');
+  var workEl = document.getElementById('labWork');
+  var verdictEl = document.getElementById('labVerdict');
+  var R2 = 17, R = Math.sqrt(R2);
+  var VIEW = 6.6;                       /* world units from center to edge */
+  var S = canvas.width / (2 * VIEW);    /* pixels per world unit */
+  var CX = canvas.width / 2, CY = canvas.height / 2;
+  function px(x) { return CX + x * S; }
+  function py(y) { return CY - y * S; }
+  function r1(n) { return Math.round(n * 100) / 100; }
 
-  /* ---------- the Intersection Lab, slide 3 ----------
-     Line x + y = c against the circle x^2 + y^2 = 17.
-     Substituting y = c - x gives 2x^2 - 2cx + (c^2 - 17) = 0, so the whole
-     picture is controlled by one discriminant: 136 - 4c^2. */
-  (function () {
-    var canvas = document.getElementById('labCanvas');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var range = document.getElementById('cRange');
-    var cValEl = document.getElementById('cVal');
-    var workEl = document.getElementById('labWork');
-    var verdictEl = document.getElementById('labVerdict');
-    var R2 = 17, R = Math.sqrt(R2);
-    var VIEW = 6.6;                       /* world units from center to edge */
-    var S = canvas.width / (2 * VIEW);    /* pixels per world unit */
-    var CX = canvas.width / 2, CY = canvas.height / 2;
-    function px(x) { return CX + x * S; }
-    function py(y) { return CY - y * S; }
-    function r1(n) { return Math.round(n * 100) / 100; }
+  function roots(c) {
+    var disc = 136 - 4 * c * c;
+    if (disc < -1e-9) return { disc: disc, xs: [] };
+    if (Math.abs(disc) <= 1e-9) return { disc: 0, xs: [c / 2] };
+    var s = Math.sqrt(disc);
+    return { disc: disc, xs: [(2 * c - s) / 4, (2 * c + s) / 4] };
+  }
 
-    function roots(c) {
-      var disc = 136 - 4 * c * c;
-      if (disc < -1e-9) return { disc: disc, xs: [] };
-      if (Math.abs(disc) <= 1e-9) return { disc: 0, xs: [c / 2] };
-      var s = Math.sqrt(disc);
-      return { disc: disc, xs: [(2 * c - s) / 4, (2 * c + s) / 4] };
+  function draw(c, res) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    /* grid */
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    for (var g = -6; g <= 6; g++) {
+      ctx.beginPath(); ctx.moveTo(px(g), py(-VIEW)); ctx.lineTo(px(g), py(VIEW)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(-VIEW), py(g)); ctx.lineTo(px(VIEW), py(g)); ctx.stroke();
     }
-
-    function draw(c, res) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      /* grid */
-      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-      ctx.lineWidth = 1;
-      for (var g = -6; g <= 6; g++) {
-        ctx.beginPath(); ctx.moveTo(px(g), py(-VIEW)); ctx.lineTo(px(g), py(VIEW)); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(px(-VIEW), py(g)); ctx.lineTo(px(VIEW), py(g)); ctx.stroke();
-      }
-      /* axes */
-      ctx.strokeStyle = 'rgba(255,255,255,0.28)';
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(px(-VIEW), py(0)); ctx.lineTo(px(VIEW), py(0)); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(px(0), py(-VIEW)); ctx.lineTo(px(0), py(VIEW)); ctx.stroke();
-      /* circle */
-      ctx.strokeStyle = '#00e5ff';
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(px(0), py(0), R * S, 0, Math.PI * 2); ctx.stroke();
-      /* line */
-      ctx.strokeStyle = res.xs.length === 0 ? '#FF7A6B' : (res.xs.length === 1 ? '#FFC46B' : '#4ADE80');
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(px(-VIEW), py(c + VIEW)); ctx.lineTo(px(VIEW), py(c - VIEW)); ctx.stroke();
-      /* intersection dots */
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '600 20px "JetBrains Mono", monospace';
-      res.xs.forEach(function (x) {
-        var y = c - x;
-        ctx.beginPath(); ctx.arc(px(x), py(y), 7, 0, Math.PI * 2); ctx.fill();
-        ctx.fillText('(' + neg(r1(x)) + ', ' + neg(r1(y)) + ')', px(x) + 12, py(y) - 10);
-      });
-      /* label the circle */
-      ctx.fillStyle = 'rgba(0,229,255,0.75)';
-      ctx.font = '500 19px "JetBrains Mono", monospace';
-      ctx.fillText('x² + y² = 17', 14, 28);
-    }
-
-    /* The slider snaps to 0.25, but tangency sits at c = √34 = 5.83..., which is
-       not on that grid. So the true value lives here and the slider only carries
-       the thumb position, letting the tangent button land exactly on Δ = 0. */
-    var curC = 5;
-    function setC(c, moveThumb) {
-      curC = c;
-      if (moveThumb) range.value = String(Math.max(-8, Math.min(8, Math.round(c * 4) / 4)));
-      render();
-    }
-
-    function render() {
-      var c = curC;
-      var res = roots(c);
-      var cs = neg(r1(c));
-      cValEl.textContent = cs;
-      draw(c, res);
-
-      /* Write 2x² − 2cx + (c² − 17) = 0 the way it would be written by hand, so
-         a negative c gives "+ 10x" and never "− −10x". */
-      var bx = r1(-2 * c), cc = r1(c * c - 17);
-      var mid = bx === 0 ? '' : (bx > 0 ? ' + ' + bx + 'x' : ' − ' + Math.abs(bx) + 'x');
-      var tail = cc === 0 ? '' : (cc > 0 ? ' + ' + cc : ' − ' + Math.abs(cc));
-      var work =
-        '<span class="lw">y =</span> ' + cs + ' − x<br>' +
-        '<span class="lw">sub in:</span> x² + (' + cs + ' − x)² = 17<br>' +
-        '<span class="lw">tidy:</span> 2x²' + mid + tail + ' = 0<br>' +
-        '<span class="lw">Δ =</span> 136 − 4(' + cs + ')² = <b>' + neg(r1(res.disc)) + '</b>';
-      workEl.innerHTML = work;
-
-      if (res.xs.length === 2) {
-        var p1 = '(' + neg(r1(res.xs[0])) + ', ' + neg(r1(c - res.xs[0])) + ')';
-        var p2 = '(' + neg(r1(res.xs[1])) + ', ' + neg(r1(c - res.xs[1])) + ')';
-        verdictEl.className = 'lab-verdict two';
-        verdictEl.textContent = '✓ Δ > 0: two crossings, so two answer pairs. ' + p1 + ' and ' + p2;
-      } else if (res.xs.length === 1) {
-        var t = '(' + neg(r1(res.xs[0])) + ', ' + neg(r1(c - res.xs[0])) + ')';
-        verdictEl.className = 'lab-verdict one';
-        verdictEl.textContent = '◐ Δ = 0: the line is a tangent. One answer, twice over: ' + t;
-      } else {
-        verdictEl.className = 'lab-verdict none';
-        verdictEl.textContent = '✗ Δ < 0: the line misses the circle, so there is no real answer.';
-      }
-    }
-
-    range.addEventListener('input', function () { curC = parseFloat(range.value); render(); });
-    document.getElementById('labDoNow').addEventListener('click', function () { setC(5, true); });
-    document.getElementById('labTangent').addEventListener('click', function () { setC(Math.sqrt(34), true); });
-    document.getElementById('labMiss').addEventListener('click', function () { setC(7, true); });
-    /* drag the line straight on the canvas */
-    canvas.addEventListener('pointerdown', function (e) {
-      canvas.setPointerCapture(e.pointerId);
-      canvas.__drag = true;
+    /* axes */
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(px(-VIEW), py(0)); ctx.lineTo(px(VIEW), py(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px(0), py(-VIEW)); ctx.lineTo(px(0), py(VIEW)); ctx.stroke();
+    /* circle */
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(px(0), py(0), R * S, 0, Math.PI * 2); ctx.stroke();
+    /* line */
+    ctx.strokeStyle = res.xs.length === 0 ? '#FF7A6B' : (res.xs.length === 1 ? '#FFC46B' : '#4ADE80');
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(px(-VIEW), py(c + VIEW)); ctx.lineTo(px(VIEW), py(c - VIEW)); ctx.stroke();
+    /* intersection dots */
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '600 20px "JetBrains Mono", monospace';
+    res.xs.forEach(function (x) {
+      var y = c - x;
+      ctx.beginPath(); ctx.arc(px(x), py(y), 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillText('(' + neg(r1(x)) + ', ' + neg(r1(y)) + ')', px(x) + 12, py(y) - 10);
     });
-    canvas.addEventListener('pointermove', function (e) {
-      if (!canvas.__drag) return;
-      var r = canvas.getBoundingClientRect();
-      var wx = ((e.clientX - r.left) / r.width * canvas.width - CX) / S;
-      var wy = (CY - (e.clientY - r.top) / r.height * canvas.height) / S;
-      setC(Math.max(-8, Math.min(8, Math.round((wx + wy) * 4) / 4)), true);
-    });
-    canvas.addEventListener('pointerup', function () { canvas.__drag = false; });
-    canvas.addEventListener('pointercancel', function () { canvas.__drag = false; });
+    /* label the circle */
+    ctx.fillStyle = 'rgba(0,229,255,0.75)';
+    ctx.font = '500 19px "JetBrains Mono", monospace';
+    ctx.fillText('x² + y² = 17', 14, 28);
+  }
+
+  /* The slider snaps to 0.25, but tangency sits at c = √34 = 5.83..., which is
+     not on that grid. So the true value lives here and the slider only carries
+     the thumb position, letting the tangent button land exactly on Δ = 0. */
+  var curC = 5;
+  function setC(c, moveThumb) {
+    curC = c;
+    if (moveThumb) range.value = String(Math.max(-8, Math.min(8, Math.round(c * 4) / 4)));
     render();
-    window.__labSetC = function (c) { setC(c, true); };
-    window.__labState = function () {
-      return { c: curC, disc: roots(curC).disc, verdict: verdictEl.textContent, work: workEl.textContent };
-    };
-  })();
+  }
 
-  /* ---------- validity-check widget, slide 9 ---------- */
-  (function () {
-    var widget = document.getElementById('validityWidget');
-    if (!widget) return;
-    var typeBtns = Array.prototype.slice.call(widget.querySelectorAll('.u-btn'));
-    var range = document.getElementById('uRange');
-    var uValEl = document.getElementById('uVal');
-    var verdict = document.getElementById('uVerdict');
-    var backout = document.getElementById('uBackout');
-    var currentType = 'xsq';
-    function r2(n) { return Math.round(n * 100) / 100; }
-    function evaluate() {
-      var u = parseFloat(range.value);
-      uValEl.textContent = neg(u);
-      var ok, reason, back;
-      if (currentType === 'xsq') {
-        ok = u >= 0;
-        reason = ok ? 'valid: squaring a real number can land here' : 'impossible: x² can never be negative';
-        if (!ok) back = 'x² = ' + neg(u) + ' gives <b>no real x at all</b>. Say so, and say why.';
-        else if (u === 0) back = 'x² = 0 gives <b>1 value</b> of x: x = 0';
-        else back = 'x² = ' + neg(u) + ' gives <b>2 values</b> of x: x = ±' + r2(Math.sqrt(u));
-      } else if (currentType === 'sqrt') {
-        ok = u >= 0;
-        reason = ok ? 'valid: √x can land here' : 'impossible: √x is never negative';
-        if (!ok) back = '√x = ' + neg(u) + ' gives <b>no real x at all</b>. Say so, and say why.';
-        else back = '√x = ' + neg(u) + ' gives <b>1 value</b> of x: x = ' + r2(u * u);
-      } else if (currentType === 'cos') {
-        ok = u >= -1 && u <= 1;
-        reason = ok ? 'valid: inside the range cosine actually takes' : 'impossible: outside −1 ≤ cos x ≤ 1';
-        if (!ok) back = 'cos x = ' + neg(u) + ' gives <b>no x at all</b>. Say so, and say why.';
-        else if (u === 1 || u === -1) back = 'cos x = ' + neg(u) + ' gives <b>1 angle</b> between 0° and 360°';
-        else back = 'cos x = ' + neg(u) + ' gives <b>2 angles</b> between 0° and 360°';
-      } else {
-        ok = true;
-        reason = 'valid: every real number has a real cube root';
-        back = 'x³ = ' + neg(u) + ' gives <b>1 value</b> of x: x = ' + neg(r2(Math.cbrt(u)));
-      }
-      verdict.textContent = (ok ? '✓ ' : '✗ ') + reason;
-      verdict.classList.toggle('ok', ok);
-      verdict.classList.toggle('no', !ok);
-      backout.innerHTML = 'undo the nickname: ' + back;
-    }
-    typeBtns.forEach(function (b) {
-      b.addEventListener('click', function () {
-        typeBtns.forEach(function (x) { x.classList.remove('active'); });
-        b.classList.add('active');
-        currentType = b.getAttribute('data-type');
-        evaluate();
-      });
-    });
-    range.addEventListener('input', evaluate);
-    evaluate();
-  })();
+  function render() {
+    var c = curC;
+    var res = roots(c);
+    var cs = neg(r1(c));
+    cValEl.textContent = cs;
+    draw(c, res);
 
-  /* blank board */
-  (function () {
-    var board = document.getElementById('board');
-    var canvas = document.getElementById('boardCanvas');
-    var ctx = canvas.getContext('2d');
-    var drawing = false, lastX = 0, lastY = 0;
-    function resize() {
-      var r = canvas.getBoundingClientRect();
-      canvas.width = r.width * devicePixelRatio;
-      canvas.height = r.height * devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
-      ctx.strokeStyle = '#00e5ff';
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-    }
-    function openBoard() { board.hidden = false; requestAnimationFrame(resize); }
-    function closeBoard() { board.hidden = true; }
-    function toggleBoard() { if (board.hidden) openBoard(); else closeBoard(); }
-    function clearBoard() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-    canvas.addEventListener('pointerdown', function (e) {
-      drawing = true; lastX = e.offsetX; lastY = e.offsetY;
-      canvas.setPointerCapture(e.pointerId);
-    });
-    canvas.addEventListener('pointermove', function (e) {
-      if (!drawing) return;
-      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke();
-      lastX = e.offsetX; lastY = e.offsetY;
-    });
-    canvas.addEventListener('pointerup', function () { drawing = false; });
-    document.getElementById('boardBtn').addEventListener('click', toggleBoard);
-    window.__toggleBoard = toggleBoard;
-    window.__closeBoard = closeBoard;
-    window.__boardIsOpen = function () { return !board.hidden; };
-    window.__clearBoard = clearBoard;
-  })();
+    /* Write 2x² − 2cx + (c² − 17) = 0 the way it would be written by hand, so
+       a negative c gives "+ 10x" and never "− −10x". */
+    var bx = r1(-2 * c), cc = r1(c * c - 17);
+    var mid = bx === 0 ? '' : (bx > 0 ? ' + ' + bx + 'x' : ' − ' + Math.abs(bx) + 'x');
+    var tail = cc === 0 ? '' : (cc > 0 ? ' + ' + cc : ' − ' + Math.abs(cc));
+    var work =
+      '<span class="lw">y =</span> ' + cs + ' − x<br>' +
+      '<span class="lw">sub in:</span> x² + (' + cs + ' − x)² = 17<br>' +
+      '<span class="lw">tidy:</span> 2x²' + mid + tail + ' = 0<br>' +
+      '<span class="lw">Δ =</span> 136 − 4(' + cs + ')² = <b>' + neg(r1(res.disc)) + '</b>';
+    workEl.innerHTML = work;
 
-  /* overview grid */
-  (function () {
-    var overview = document.getElementById('overview');
-    var grid = document.getElementById('overviewGrid');
-    slides.forEach(function (s, i) {
-      var heading = s.querySelector('h1, h2');
-      var card = document.createElement('div');
-      card.className = 'ov-card';
-      card.innerHTML = '<div class="ov-num">Slide ' + (i + 1) + '</div><div class="ov-title">' +
-        (heading ? heading.textContent : '') + '</div>';
-      card.addEventListener('click', function () { show(i, false); closeOverview(); });
-      grid.appendChild(card);
-    });
-    function openOverview() { overview.hidden = false; }
-    function closeOverview() { overview.hidden = true; }
-    function toggleOverview() { if (overview.hidden) openOverview(); else closeOverview(); }
-    document.getElementById('overviewBtn').addEventListener('click', toggleOverview);
-    window.__toggleOverview = toggleOverview;
-    window.__closeOverview = closeOverview;
-    window.__overviewIsOpen = function () { return !overview.hidden; };
-  })();
+    if (res.xs.length === 2) {
+      var p1 = '(' + neg(r1(res.xs[0])) + ', ' + neg(r1(c - res.xs[0])) + ')';
+      var p2 = '(' + neg(r1(res.xs[1])) + ', ' + neg(r1(c - res.xs[1])) + ')';
+      verdictEl.className = 'verdict ok';
+      verdictEl.textContent = '✓ Δ > 0: two crossings, so two answer pairs. ' + p1 + ' and ' + p2;
+    } else if (res.xs.length === 1) {
+      var t = '(' + neg(r1(res.xs[0])) + ', ' + neg(r1(c - res.xs[0])) + ')';
+      verdictEl.className = 'verdict one';
+      verdictEl.textContent = '◐ Δ = 0: the line is a tangent. One answer, twice over: ' + t;
+    } else {
+      verdictEl.className = 'verdict no';
+      verdictEl.textContent = '✗ Δ < 0: the line misses the circle, so there is no real answer.';
+    }
+  }
 
-  document.addEventListener('keydown', function (e) {
-    if (window.__overviewIsOpen && window.__overviewIsOpen()) {
-      if (e.key === 'Escape' || e.key === 'o' || e.key === 'O') { window.__closeOverview(); }
-      return;
-    }
-    if (window.__boardIsOpen && window.__boardIsOpen()) {
-      if (e.key === 'Escape' || e.key === 'w' || e.key === 'W') { window.__closeBoard(); }
-      else if (e.key === 'c' || e.key === 'C') { window.__clearBoard(); }
-      return;
-    }
-    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') return;
-    }
-    if (e.key === 'w' || e.key === 'W') { window.__toggleBoard(); return; }
-    if (e.key === 'o' || e.key === 'O') { window.__toggleOverview(); return; }
-    if (e.key === 'T') { elapsed = 0; running = true; last = Date.now(); paint(); return; }
-    if (e.key === 't') { running = !running; last = Date.now(); paint(); return; }
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
-    else if (e.key === 'Home') show(0, false);
-    else if (e.key === 'End') show(slides.length - 1, true);
+  range.addEventListener('input', function () { curC = parseFloat(range.value); render(); });
+  document.getElementById('labDoNow').addEventListener('click', function () { setC(5, true); });
+  document.getElementById('labTangent').addEventListener('click', function () { setC(Math.sqrt(34), true); });
+  document.getElementById('labMiss').addEventListener('click', function () { setC(7, true); });
+  /* drag the line straight on the canvas */
+  canvas.addEventListener('pointerdown', function (e) {
+    canvas.setPointerCapture(e.pointerId);
+    canvas.__drag = true;
   });
-  window.addEventListener('hashchange', function () {
-    var n = parseInt((location.hash || '').replace('#', ''), 10);
-    if (n >= 1 && n <= slides.length && n - 1 !== idx) show(n - 1, false);
+  canvas.addEventListener('pointermove', function (e) {
+    if (!canvas.__drag) return;
+    var r = canvas.getBoundingClientRect();
+    var wx = ((e.clientX - r.left) / r.width * canvas.width - CX) / S;
+    var wy = (CY - (e.clientY - r.top) / r.height * canvas.height) / S;
+    setC(Math.max(-8, Math.min(8, Math.round((wx + wy) * 4) / 4)), true);
   });
-  show(idx, false);
+  canvas.addEventListener('pointerup', function () { canvas.__drag = false; });
+  canvas.addEventListener('pointercancel', function () { canvas.__drag = false; });
+  render();
+  window.__labSetC = function (c) { setC(c, true); };
+  window.__labState = function () {
+    return { c: curC, disc: roots(curC).disc, verdict: verdictEl.textContent, work: workEl.textContent };
+  };
+})();
+
+/* ---------- validity-check widget, slide 9 ---------- */
+(function () {
+  'use strict';
+  function neg(n) { return (n < 0 ? '−' + Math.abs(n) : String(n)); }
+  var widget = document.getElementById('validityWidget');
+  if (!widget) return;
+  var typeBtns = Array.prototype.slice.call(widget.querySelectorAll('.u-btn'));
+  var range = document.getElementById('uRange');
+  var uValEl = document.getElementById('uVal');
+  var verdict = document.getElementById('uVerdict');
+  var backout = document.getElementById('uBackout');
+  var currentType = 'xsq';
+  function r2(n) { return Math.round(n * 100) / 100; }
+  function evaluate() {
+    var u = parseFloat(range.value);
+    uValEl.textContent = neg(u);
+    var ok, reason, back;
+    if (currentType === 'xsq') {
+      ok = u >= 0;
+      reason = ok ? 'valid: squaring a real number can land here' : 'impossible: x² can never be negative';
+      if (!ok) back = 'x² = ' + neg(u) + ' gives <b>no real x at all</b>. Say so, and say why.';
+      else if (u === 0) back = 'x² = 0 gives <b>1 value</b> of x: x = 0';
+      else back = 'x² = ' + neg(u) + ' gives <b>2 values</b> of x: x = ±' + r2(Math.sqrt(u));
+    } else if (currentType === 'sqrt') {
+      ok = u >= 0;
+      reason = ok ? 'valid: √x can land here' : 'impossible: √x is never negative';
+      if (!ok) back = '√x = ' + neg(u) + ' gives <b>no real x at all</b>. Say so, and say why.';
+      else back = '√x = ' + neg(u) + ' gives <b>1 value</b> of x: x = ' + r2(u * u);
+    } else if (currentType === 'cos') {
+      ok = u >= -1 && u <= 1;
+      reason = ok ? 'valid: inside the range cosine actually takes' : 'impossible: outside −1 ≤ cos x ≤ 1';
+      if (!ok) back = 'cos x = ' + neg(u) + ' gives <b>no x at all</b>. Say so, and say why.';
+      else if (u === 1 || u === -1) back = 'cos x = ' + neg(u) + ' gives <b>1 angle</b> between 0° and 360°';
+      else back = 'cos x = ' + neg(u) + ' gives <b>2 angles</b> between 0° and 360°';
+    } else {
+      ok = true;
+      reason = 'valid: every real number has a real cube root';
+      back = 'x³ = ' + neg(u) + ' gives <b>1 value</b> of x: x = ' + neg(r2(Math.cbrt(u)));
+    }
+    verdict.textContent = (ok ? '✓ ' : '✗ ') + reason;
+    verdict.classList.toggle('ok', ok);
+    verdict.classList.toggle('no', !ok);
+    backout.innerHTML = 'undo the nickname: ' + back;
+  }
+  typeBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      typeBtns.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
+      currentType = b.getAttribute('data-type');
+      evaluate();
+    });
+  });
+  range.addEventListener('input', evaluate);
+  evaluate();
 })();
 </script>
-
 </body>
 </html>

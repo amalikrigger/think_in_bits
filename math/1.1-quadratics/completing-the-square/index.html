@@ -2,529 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Completing the Square &amp; the Discriminant</title>
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+  /* deck.css also defines a global .lab (live-lab panel). Here .lab is only the
+     caption under each diagram in a .cases trio, so strip the panel styling. */
+  .cases .lab { display: block; background: none; border: 0; border-radius: 0; padding: 0; box-shadow: none; }
+  /* practice slide: five short checks sit two to a row instead of one tall column */
+  .slide.duo .cols > div.qgrid { flex: 1.35 1 420px; display: grid; grid-template-columns: 1fr 1fr; gap: 1.2vh 1.2vw; align-items: start; }
+  @media (max-width: 700px) { .slide.duo .cols > div.qgrid { grid-template-columns: 1fr; } }
+  </style>
 </head>
-<body>
-<title>Completing the Square & the Discriminant</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<style>
-/* ============================================================
-   THINK IN BITS · 9709 deck system
-   Tokens mirror www.thinkinbits.site so classroom material and
-   the public site read as one brand.
-
-   Committed dark, single theme. A projected deck must look
-   identical every time it is opened, regardless of the laptop's
-   OS theme setting. The @media print block at the bottom flips
-   every token to dark-on-white for the PDF export.
-
-   Slide archetypes this system supports:
-     title · do-now · direct instruction (prose / stepped table /
-     diagram trio / two-card compare) · worked example (question
-     card + stepped solve) · practice · exit
-   ============================================================ */
-
-:root {
-  /* ground + surfaces */
-  --ground:       #0a0a0a;
-  --ground-far:   #1a1a2e;
-  --surface:      #1a1a1a;
-  --surface-lift: #2a2a2a;
-
-  /* accent */
-  --accent:       #00e5ff;
-  --accent-deep:  #0099cc;
-  --accent-wash:  rgba(0,229,255,0.10);
-  --accent-line:  rgba(0,229,255,0.30);
-
-  /* text */
-  --text:         #ffffff;
-  --text-2:       #b0b0b0;
-
-  /* structure */
-  --hairline:     rgba(255,255,255,0.07);
-  --axis:         rgba(255,255,255,0.85);
-
-  /* semantic, separate from the accent */
-  --ok:           #4fe08a;
-  --warn:         #ff6b6b;
-
-  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
-  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
-
-  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  color-scheme: dark;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-
-body {
-  margin: 0;
-  background: var(--ground);
-  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
-  background-attachment: fixed;
-  color: var(--text);
-  font-family: var(--font);
-  line-height: 1.5;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- slide shell ---------- */
-.slide {
-  position: absolute; inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-content: safe center;   /* keeps overflow scrollable when content is tall */
-  gap: 1.5vh;
-  padding: 8vh 7vw 13vh;
-  overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.slide.active {
-  visibility: visible; opacity: 1; transform: none;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s;
-}
-.slide > * { margin: 0; }
-
-/* ---------- typography ---------- */
-h1 {
-  font-size: clamp(32px, 5.4vw, 60px);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  text-wrap: balance;
-}
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  h1 {
-    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  /* The gradient is painted inside the element's box and the glyphs are cut out
-     of it, so any ink outside that box gets no paint at all. At line-height 1.08
-     Poppins overhangs the box by about 9px at 60px, which sliced the descenders
-     off the p and g in "Completing". Pad the box out to cover the overhang and
-     pull the same amount back as negative margin so the layout is unchanged.
-     .slide > h1 is needed to beat `.slide > * { margin: 0 }`. */
-  .slide > h1 { padding: 0.18em 0; margin: -0.18em 0; }
-}
-
-h2 {
-  font-size: clamp(25px, 3.7vw, 43px);
-  font-weight: 600;
-  line-height: 1.16;
-  letter-spacing: -0.015em;
-  color: var(--accent);
-  text-wrap: balance;
-}
-
-p, li {
-  font-size: clamp(16px, 2.05vw, 24px);
-  color: var(--text);
-  max-width: 66ch;
-}
-ul { padding-left: 1.15em; }
-li + li { margin-top: 1.2vh; }
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.22vw, 14px);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--accent);
-}
-
-.small { font-size: clamp(13.5px, 1.62vw, 19px); color: var(--text-2); }
-.muted { color: var(--text-2); }
-/* semantic colors declared after .small so they win at equal specificity */
-.good { color: var(--ok); }
-.bad  { color: var(--warn); }
-.marks { color: var(--accent); font-weight: 600; }
-
-/* ---------- math blocks ---------- */
-.math {
-  font-family: var(--mono);
-  font-size: clamp(16px, 2.25vw, 28px);
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
-  padding: 1.5vh 1.4vw;
-  max-width: max-content;
-  font-variant-numeric: tabular-nums;
-}
-.math.small { font-size: clamp(13.5px, 1.72vw, 20px); color: var(--text); }
-/* a result, not a step: tinted and lit so answers read differently from working */
-.math.result {
-  background: var(--accent-wash);
-  border-color: var(--accent-line);
-  color: var(--accent);
-  box-shadow: var(--shadow-glow);
-}
-.math sup, li sup, p sup, span sup { font-size: 0.62em; }
-
-/* ---------- cards ---------- */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1vh;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 20px;
-  padding: 2.4vh 1.8vw;
-  box-shadow: var(--shadow-card);
-}
-.card > * { margin: 0; }
-
-.cols { display: flex; gap: 3vw; flex-wrap: wrap; align-items: flex-start; }
-.cols > div { flex: 1 1 260px; display: flex; flex-direction: column; gap: 1.2vh; }
-
-/* ---------- agenda + stepped tables ---------- */
-.agenda { display: flex; flex-direction: column; gap: 1.1vh; }
-.agenda .row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 2vw;
-  padding-bottom: 1.1vh;
-  border-bottom: 1px solid var(--hairline);
-  font-size: clamp(14.5px, 1.92vw, 23px);
-}
-.agenda .t {
-  font-family: var(--mono);
-  font-size: 0.92em;
-  color: var(--accent);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.agenda .t.good { color: var(--ok); }
-.agenda .t.bad  { color: var(--warn); }
-.steps .n {
-  font-family: var(--mono);
-  font-weight: 700;
-  color: var(--accent);
-  margin-right: 0.8em;
-}
-
-/* ---------- tool links ---------- */
-.toolchip {
-  display: inline-block;
-  font-family: var(--font);
-  font-size: clamp(13px, 1.55vw, 18px);
-  font-weight: 500;
-  color: var(--accent);
-  background: var(--accent-wash);
-  border: 1px solid var(--accent-line);
-  border-radius: 50px;
-  padding: 0.9vh 1.6vw;
-  margin: 0.4vh 0.4vw 0 0;
-  text-decoration: none;
-  transition: background .2s ease, box-shadow .2s ease;
-}
-.toolchip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
-.toolchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* ---------- diagram trios ---------- */
-.cases { display: flex; gap: 2.6vw; flex-wrap: wrap; align-items: flex-start; }
-.cases .c { display: flex; flex-direction: column; gap: 0.7vh; text-align: center; }
-.cases .lab {
-  font-family: var(--mono);
-  font-size: clamp(13px, 1.6vw, 19px);
-  color: var(--text-2);
-}
-.cases .lab b { color: var(--text); }
-svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
-
-/* ---------- two-route compare slides ----------
-   Both columns plus a shared answer have to fit a 900px projector
-   without scrolling mid-explanation, so this archetype runs denser
-   than the rest of the deck. */
-.slide.duo { gap: 0.75vh; padding-top: 5vh; padding-bottom: 9.5vh; }
-.slide.duo h2 { font-size: clamp(22px, 3.1vw, 35px); }
-.slide.duo .cols { gap: 2vw; }
-.slide.duo .card { padding: 1.3vh 1.3vw; gap: 0.42vh; }
-.slide.duo .card .small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.34; }
-.slide.duo .card .math { padding: 0.85vh 1vw; font-size: clamp(12.5px, 1.5vw, 17.5px); }
-.slide.duo > .math { padding: 1vh 1.2vw; }
-.slide.duo .card ul { padding-left: 1.05em; margin: 0; }
-.slide.duo .card li + li { margin-top: 0.35vh; }
-.slide.duo .card li.small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.32; }
-.slide.duo .card .math.result { font-size: clamp(15px, 1.95vw, 23px); padding: 0.8vh 1.1vw; }
-
-/* ---------- stepped reveal ---------- */
-.frag { visibility: hidden; opacity: 0; transform: translateY(8px); transition: opacity .28s ease, transform .28s ease; }
-.frag.on { visibility: visible; opacity: 1; transform: none; }
-
-/* ---------- blank board: a full-screen writing surface, any time ----------
-   Deliberately NOT an annotation layer over the slides. Amali asked for a
-   clean surface to work equations on, so this replaces the view entirely
-   and the slide underneath is untouched when you come back. */
-.board { position: fixed; inset: 0; z-index: 40; display: none; background: #0d0d12; touch-action: none; }
-.board.on { display: block; }
-.board.light { background: #f7f7f5; }
-.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
-
-.board-bar {
-  /* left:0;right:0 + margin auto, NOT left:50%+translate. With left:50% the bar's
-     shrink-to-fit width is capped at half the viewport and the toolbar wraps. */
-  position: absolute; left: 0; right: 0; bottom: 2.2vh; margin: 0 auto;
-  width: max-content;
-  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: center;
-  max-width: 96vw; padding: 8px 11px; border-radius: 50px; z-index: 2;
-  background: rgba(18,18,24,0.92); border: 1px solid var(--hairline);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
-}
-.board.light .board-bar { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.13); }
-.board-bar button {
-  font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer;
-  color: var(--text); background: var(--surface-lift);
-  border: 1px solid var(--hairline); border-radius: 50px;
-  padding: 10px 14px; min-height: 46px;
-  transition: border-color .15s ease, background .15s ease;
-}
-.board.light .board-bar button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
-.board-bar button:hover { border-color: var(--accent-line); }
-.board-bar button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
-.board-bar .swatch { width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
-.board-bar .swatch[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255,255,255,0.55); }
-.board.light .board-bar .swatch[aria-pressed="true"] { border-color: #14141a; box-shadow: 0 0 0 2px #fff; }
-.board-bar .sep { width: 1px; height: 26px; background: var(--hairline); }
-.board.light .board-bar .sep { background: rgba(0,0,0,0.15); }
-.board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
-.board.light .board-bar .pg { color: #55555f; }
-
-/* ---------- progress rail + HUD ---------- */
-.progress {
-  position: fixed; top: 0; left: 0;
-  height: 3px; width: 0;
-  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
-  box-shadow: 0 0 12px rgba(0,229,255,0.5);
-  transition: width .3s ease;
-  z-index: 6;
-}
-
-.hud {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.4vh 2.4vw;
-  border-top: 1px solid var(--hairline);
-  background: rgba(10,10,10,0.82);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 5;
-}
-.hud .name {
-  font-family: var(--mono);
-  font-size: clamp(10px, 1.15vw, 13px);
-  letter-spacing: 0.06em;
-  color: var(--text-2);
-}
-.hud .nav { display: flex; align-items: center; gap: 12px; }
-.hud button {
-  font-family: var(--font);
-  font-size: clamp(13px, 1.4vw, 16px);
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--text);
-  background: var(--surface-lift);
-  border: 1px solid var(--hairline);
-  border-radius: 50px;
-  padding: 0.5vh 1.3vw;
-  min-width: 46px;
-  transition: background .18s ease, border-color .18s ease;
-}
-.hud button:hover { background: #333; border-color: var(--accent-line); }
-.hud button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .count {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2);
-  min-width: 66px; text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-
-/* ---------- parabolas draw themselves on ---------- */
-svg.mini path { stroke-dasharray: 320; stroke-dashoffset: 320; }
-.slide.active .cases:not(.frag) svg.mini path,
-.cases.frag.on svg.mini path { animation: draw .9s ease-out forwards; }
-svg.mini circle { opacity: 0; transition: opacity .3s ease .75s; }
-.slide.active .cases:not(.frag) svg.mini circle,
-.cases.frag.on svg.mini circle { opacity: 1; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-
-/* ---------- title entrance, first load only ---------- */
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-body.intro .slide.active > .eyebrow { animation: rise .5s ease-out both; }
-body.intro .slide.active > h1 { animation: rise .6s ease-out .15s both; }
-body.intro .slide.active .agenda .row { animation: rise .5s ease-out both; }
-body.intro .slide.active .agenda .row:nth-child(1) { animation-delay: .35s; }
-body.intro .slide.active .agenda .row:nth-child(2) { animation-delay: .43s; }
-body.intro .slide.active .agenda .row:nth-child(3) { animation-delay: .51s; }
-body.intro .slide.active .agenda .row:nth-child(4) { animation-delay: .59s; }
-body.intro .slide.active .agenda .row:nth-child(5) { animation-delay: .67s; }
-body.intro .slide.active .agenda .row:nth-child(6) { animation-delay: .75s; }
-
-/* ---------- tap to check ---------- */
-.check { display: flex; flex-direction: column; gap: 0.8vh; cursor: pointer; border-radius: 16px; }
-.check > .math:first-child { transition: border-color .15s ease, box-shadow .15s ease; }
-.check:hover > .math:first-child { border-color: var(--accent-line); }
-.check:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.check > .math:first-child::after {
-  content: "tap to check";
-  font-family: var(--mono); font-size: clamp(9px, 0.95vw, 11px);
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-2); margin-left: 1.4em; vertical-align: middle;
-}
-.check.open > .math:first-child::after { content: "tap to hide"; }
-.check .ans { display: none; }
-.check.open .ans { display: block; animation: rise .3s ease-out both; }
-
-/* ---------- live explorers ---------- */
-.explore {
-  display: flex; gap: 2.5vw; align-items: center; flex-wrap: wrap;
-  background: var(--surface); border: 1px solid var(--hairline);
-  border-radius: 20px; padding: 2vh 1.8vw; box-shadow: var(--shadow-card);
-}
-.explore svg { width: clamp(200px, 27vw, 340px); height: auto; display: block; flex: 0 0 auto; }
-.explore .panel { display: flex; flex-direction: column; gap: 1.2vh; flex: 1 1 220px; min-width: 200px; }
-.explore label {
-  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px);
-  color: var(--text-2); letter-spacing: .04em;
-}
-.explore input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.explore input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-.explore .read { font-family: var(--mono); font-size: clamp(15px, 1.9vw, 22px); color: var(--text); font-variant-numeric: tabular-nums; }
-.explore .read b { color: var(--accent); font-weight: 700; }
-.explore .verdict { font-weight: 600; font-size: clamp(15px, 1.9vw, 22px); }
-.explore .verdict.two  { color: var(--ok); }
-.explore .verdict.one  { color: var(--accent); }
-.explore .verdict.none { color: var(--warn); }
-
-/* ---------- HUD extras ---------- */
-.hud .left { display: flex; align-items: baseline; gap: 1.2vw; min-width: 0; }
-.hud .here {
-  font-size: clamp(11px, 1.25vw, 14px); color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 34vw;
-}
-.hud .timer {
-  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2); min-width: 64px; text-align: center;
-  font-variant-numeric: tabular-nums; cursor: pointer; user-select: none;
-  border-radius: 50px; padding: 0.4vh 0.8vw; border: 1px solid transparent;
-}
-.hud .timer:hover { border-color: var(--hairline); }
-.hud .timer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .timer.on { color: var(--accent); }
-.hud .timer.late { color: var(--warn); }
-.hud button svg { display: block; }
-
-/* ---------- first-load hint ---------- */
-.hint {
-  position: fixed; left: 50%; top: 3vh;
-  transform: translateX(-50%) translateY(-8px);
-  background: var(--surface-lift); border: 1px solid var(--accent-line);
-  border-radius: 50px; padding: 1vh 1.8vw;
-  font-family: var(--mono); font-size: clamp(11px, 1.2vw, 14px); color: var(--text);
-  box-shadow: var(--shadow-glow); z-index: 7;
-  opacity: 0; visibility: hidden;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.hint.show { opacity: 1; visibility: visible; transform: translateX(-50%); transition: opacity .3s ease, transform .3s ease, visibility 0s; }
-
-/* ---------- overlays: all slides, key help ---------- */
-.overlay {
-  position: fixed; inset: 0; z-index: 20;
-  background: rgba(10,10,10,0.93);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  display: flex; flex-direction: column;
-  padding: 6vh 6vw 8vh; overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transition: opacity .25s ease, visibility 0s linear .25s;
-}
-.overlay.open { visibility: visible; opacity: 1; transition: opacity .25s ease, visibility 0s; }
-.overlay h3 { font-size: clamp(20px, 2.6vw, 30px); font-weight: 600; color: var(--accent); margin: 0 0 2.4vh; }
-.overlay .close { position: fixed; top: 2.4vh; right: 2.4vw; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.4vw; }
-.thumb {
-  display: flex; flex-direction: column; gap: 0.6vh; text-align: left;
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px;
-  padding: 1.6vh 1.2vw; cursor: pointer; color: var(--text); font: inherit;
-  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
-}
-.thumb:hover, .thumb:focus-visible { border-color: var(--accent-line); transform: translateY(-2px); box-shadow: var(--shadow-glow); outline: none; }
-.thumb.current { border-color: var(--accent); }
-.thumb .num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .12em; }
-.thumb .eb  { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; }
-.thumb .tt  { font-size: clamp(14px, 1.3vw, 17px); font-weight: 500; line-height: 1.3; }
-.keys { display: grid; grid-template-columns: auto 1fr; gap: 1.4vh 2.2vw; align-items: center; max-width: 680px; }
-.keys span { color: var(--text-2); font-size: clamp(14px, 1.5vw, 18px); }
-kbd {
-  font-family: var(--mono); font-size: 0.85em; color: var(--text);
-  background: var(--surface-lift); border: 1px solid var(--hairline); border-bottom-width: 2px;
-  border-radius: 8px; padding: 2px 10px; white-space: nowrap;
-}
-
-/* ---------- reduced motion: everything settles instantly ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .slide, .frag, .progress, .overlay, .hint, .thumb, .toolchip, .check > .math:first-child { transition: none !important; }
-  svg.mini path { stroke-dashoffset: 0; animation: none !important; }
-  svg.mini circle { opacity: 1; transition: none; }
-  body.intro .slide.active > *, body.intro .slide.active .agenda .row { animation: none !important; }
-  .check.open .ans { animation: none; }
-}
-
-/* ---------- print: flip every token to dark-on-white ---------- */
-@media print {
-  :root {
-    --ground: #ffffff; --ground-far: #ffffff;
-    --surface: #f4f6f8; --surface-lift: #eceff2;
-    --accent: #0072a3; --accent-deep: #005b82;
-    --accent-wash: rgba(0,114,163,0.08);
-    --accent-line: rgba(0,114,163,0.35);
-    --text: #10161f; --text-2: #4a5563;
-    --hairline: rgba(16,22,31,0.16);
-    --axis: rgba(16,22,31,0.85);
-    --ok: #1c7a4f; --warn: #b03a2b;
-    --shadow-card: none; --shadow-glow: none;
-    color-scheme: light;
-  }
-  body { background: #fff; background-image: none; overflow: visible; }
-  .slide {
-    display: flex !important;
-    visibility: visible !important; opacity: 1 !important; transform: none !important;
-    position: static;
-    page-break-after: always;
-    height: auto; min-height: 92vh;
-    overflow: visible;
-    padding: 4vh 5vw;
-  }
-  .frag { visibility: visible; opacity: 1; transform: none; }
-  .hud, .progress, .hint, .overlay, .board { display: none !important; }
-  svg.mini path { stroke-dashoffset: 0 !important; animation: none !important; }
-  svg.mini circle { opacity: 1 !important; }
-  .check .ans { display: block; }
-  .check > .math:first-child::after { content: none; }
-  .explore input, .explore label { display: none; }
-  /* the gradient-clipped h1 would print as invisible text */
-  h1 {
-    background: none !important;
-    color: var(--text) !important;
-    -webkit-text-fill-color: currentColor;
-  }
-}
-
-</style>
+<body data-deck-name="1.1 · Session 1" data-help-note="Drag the sliders on the discriminant and tangency slides.">
 
 <!-- 1 · title -->
 <section class="slide active">
@@ -544,10 +37,10 @@ kbd {
 <section class="slide">
   <p class="eyebrow">Do Now · 5 min · no notes, no calculator</p>
   <h2>Solve each one.</h2>
-  <div class="check" tabindex="0"><div class="math">x<sup>2</sup> − 5x + 6 = 0</div><div class="math result ans">(x − 2)(x − 3) = 0 &nbsp;→&nbsp; x = 2 or x = 3</div></div>
-  <div class="check" tabindex="0"><div class="math">x<sup>2</sup> − 9 = 0</div><div class="math result ans">(x − 3)(x + 3) = 0 &nbsp;→&nbsp; x = 3 or x = −3</div></div>
-  <div class="check" tabindex="0"><div class="math">x<sup>2</sup> + 4x = 0</div><div class="math result ans">x(x + 4) = 0 &nbsp;→&nbsp; x = 0 or x = −4</div></div>
-  <p class="frag small bad">Two of these lose a root if you rush. <b>x<sup>2</sup> − 9</b> loses the −3 if you only take the positive square root. <b>x<sup>2</sup> + 4x</b> loses x = 0 if you divide both sides by x. Quadratics come in pairs.</p>
+  <div class="check" tabindex="0"><div class="math">\(x^2 - 5x + 6 = 0\)</div><div class="math result ans">\((x - 2)(x - 3) = 0\) &nbsp;→&nbsp; \(x = 2\) or \(x = 3\)</div></div>
+  <div class="check" tabindex="0"><div class="math">\(x^2 - 9 = 0\)</div><div class="math result ans">\((x - 3)(x + 3) = 0\) &nbsp;→&nbsp; \(x = 3\) or \(x = -3\)</div></div>
+  <div class="check" tabindex="0"><div class="math">\(x^2 + 4x = 0\)</div><div class="math result ans">\(x(x + 4) = 0\) &nbsp;→&nbsp; \(x = 0\) or \(x = -4\)</div></div>
+  <p class="frag small bad">Two of these lose a root if you rush. <b>\(x^2 - 9\)</b> loses the \(-3\) if you only take the positive square root. <b>\(x^2 + 4x\)</b> loses \(x = 0\) if you divide both sides by \(x\). Quadratics come in pairs.</p>
 </section>
 
 <!-- 3 · three methods -->
@@ -566,49 +59,51 @@ kbd {
 <section class="slide">
   <p class="eyebrow">Direct instruction · 2 of 12</p>
   <h2>Completing the square: halve, then correct.</h2>
-  <div class="math">x<sup>2</sup> − 6x + 5</div>
-  <div class="math frag result">(x − 3)<sup>2</sup> − 9 + 5 &nbsp;=&nbsp; (x − 3)<sup>2</sup> − 4</div>
-  <p>Halve the −6 to get −3. Now check what you built: (x − 3)<sup>2</sup> expands to x<sup>2</sup> − 6x + <b>9</b>. That is 9 more than you wanted, so subtract 9 to put it back. Then combine with the 5.</p>
-  <div class="math frag">ax<sup>2</sup> + bx + c ≡ a(x + p)<sup>2</sup> + q</div>
-  <p class="frag small">The ≡ sign means "is identical to". It is not asking you to solve anything. It says these two are the same expression written two ways, for every value of x.</p>
-  <p class="frag">Squaring anything gives zero or more, never less. So (x + p)<sup>2</sup> is at its smallest when it is <b>exactly zero</b>, which happens when x + p = 0, so x = −p. At that x nothing is left but q. That point <b>(−p, q)</b> is the vertex.</p>
+  <div class="fnrow">
+    <div class="math">\(x^2 - 6x + 5\)</div>
+    <div class="math frag result">\((x - 3)^2 - 9 + 5 \;=\; (x - 3)^2 - 4\)</div>
+  </div>
+  <p>Halve the \(-6\) to get \(-3\). Now check what you built: \((x - 3)^2\) expands to \(x^2 - 6x + \mathbf{9}\). That is 9 more than you wanted, so subtract 9 to put it back. Then combine with the 5.</p>
+  <div class="math frag">\(ax^2 + bx + c \equiv a(x + p)^2 + q\)</div>
+  <p class="frag small">The \(\equiv\) sign means "is identical to". It is not asking you to solve anything. It says these two are the same expression written two ways, for every value of \(x\).</p>
+  <p class="frag">Squaring anything gives zero or more, never less. So \((x + p)^2\) is at its smallest when it is <b>exactly zero</b>, which happens when \(x + p = 0\), so \(x = -p\). At that \(x\) nothing is left but \(q\). That point <b>\((-p, q)\)</b> is the vertex.</p>
   <p class="frag" style="margin-top:1.2vh"><a class="toolchip" href="../vertex-form-explorer/" target="_blank" rel="noopener">Vertex Form Explorer: drag the vertex and watch the equation change</a></p>
 </section>
 
 <!-- 5 · two routes when a ≠ 1 -->
 <section class="slide duo">
   <p class="eyebrow">Direct instruction · 3 of 12</p>
-  <h2>When a ≠ 1 there are two routes. Both are right.</h2>
-  <div class="math">3x<sup>2</sup> + 4x − 15 = 0</div>
+  <h2>When \(a \ne 1\) there are two routes. Both are right.</h2>
+  <div class="math">\(3x^2 + 4x - 15 = 0\)</div>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Route 1 · factor the a out</p>
-        <p class="small">Pull the 3 out of the x<sup>2</sup> and x terms. Leave the −15 outside.</p>
-        <div class="math small">3(x<sup>2</sup> + 4/3 x) − 15 = 0</div>
-        <p class="small">Half of 4/3 is 2/3. Square it, 4/9, and subtract it inside.</p>
-        <div class="math small">3[(x + 2/3)<sup>2</sup> − 4/9] − 15 = 0</div>
-        <p class="small">Multiply back out. The 4/9 sits inside, so it becomes 4/3.</p>
-        <div class="math small">3(x + 2/3)<sup>2</sup> − 49/3 = 0</div>
-        <p class="small">Add 49/3 to both sides, then divide by 3.</p>
-        <div class="math small">(x + 2/3)<sup>2</sup> = 49/9</div>
+        <p class="small">Pull the 3 out of the \(x^2\) and \(x\) terms. Leave the \(-15\) outside.</p>
+        <div class="math small">\(3\left(x^2 + \dfrac{4}{3}x\right) - 15 = 0\)</div>
+        <p class="small">Half of \(\tfrac{4}{3}\) is \(\tfrac{2}{3}\). Square it, \(\tfrac{4}{9}\), and subtract it inside.</p>
+        <div class="math small">\(3\left[\left(x + \dfrac{2}{3}\right)^2 - \dfrac{4}{9}\right] - 15 = 0\)</div>
+        <p class="small">Multiply back out. The \(\tfrac{4}{9}\) sits inside, so it becomes \(\tfrac{4}{3}\).</p>
+        <div class="math small">\(3\left(x + \dfrac{2}{3}\right)^2 - \dfrac{49}{3} = 0\)</div>
+        <p class="small">Add \(\tfrac{49}{3}\) to both sides, then divide by 3.</p>
+        <div class="math small">\(\left(x + \dfrac{2}{3}\right)^2 = \dfrac{49}{9}\)</div>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Route 2 · divide the whole line by a</p>
-        <p class="small">Divide every term by 3. The other side is 0, and 0 ÷ 3 is still 0.</p>
-        <div class="math small">x<sup>2</sup> + 4/3 x − 5 = 0</div>
-        <p class="small">Move the −5 across.</p>
-        <div class="math small">x<sup>2</sup> + 4/3 x = 5</div>
-        <p class="small">Half of 4/3 is 2/3. Square it, 4/9, and add it to <b>both</b> sides.</p>
-        <div class="math small">(x + 2/3)<sup>2</sup> = 5 + 4/9</div>
+        <p class="small">Divide every term by 3. The other side is 0, and \(\tfrac{0}{3}\) is still 0.</p>
+        <div class="math small">\(x^2 + \dfrac{4}{3}x - 5 = 0\)</div>
+        <p class="small">Move the \(-5\) across.</p>
+        <div class="math small">\(x^2 + \dfrac{4}{3}x = 5\)</div>
+        <p class="small">Half of \(\tfrac{4}{3}\) is \(\tfrac{2}{3}\). Square it, \(\tfrac{4}{9}\), and add it to <b>both</b> sides.</p>
+        <div class="math small">\(\left(x + \dfrac{2}{3}\right)^2 = 5 + \dfrac{4}{9}\)</div>
         <p class="small">Tidy the right side.</p>
-        <div class="math small">(x + 2/3)<sup>2</sup> = 49/9</div>
+        <div class="math small">\(\left(x + \dfrac{2}{3}\right)^2 = \dfrac{49}{9}\)</div>
       </div>
     </div>
   </div>
-  <div class="math result frag">x + 2/3 = ± 7/3 &nbsp;→&nbsp; x = 5/3 or x = −3</div>
+  <div class="math result frag">\(x + \dfrac{2}{3} = \pm\dfrac{7}{3}\) &nbsp;→&nbsp; \(x = \dfrac{5}{3}\) or \(x = -3\)</div>
   <p class="frag small">Same bracket, same answer. Route 2 is shorter <b>here</b> only because the other side is 0, so dividing costs nothing. <b>On a question like this one, divide.</b></p>
   <p class="frag" style="margin-top:0.8vh"><a class="toolchip" href="../two-routes/" target="_blank" rel="noopener">Two Routes, One Answer: run any quadratic down both at once</a></p>
 </section>
@@ -617,29 +112,29 @@ kbd {
 <section class="slide duo">
   <p class="eyebrow">Direct instruction · 4 of 12</p>
   <h2>No equals sign? Then dividing needs one more step.</h2>
-  <p class="small">wkshtA and wkshtC never say "= 0". They say <b>write in the form A(x + B)<sup>2</sup> + C</b>. There is no other side to divide into, and setting it equal to zero yourself just solves for x instead.</p>
-  <div class="math">2x<sup>2</sup> − 12x + 5</div>
+  <p class="small">wkshtA and wkshtC never say "= 0". They say <b>write in the form \(A(x + B)^2 + C\)</b>. There is no other side to divide into, and setting it equal to zero yourself just solves for \(x\) instead.</p>
+  <div class="math">\(2x^2 - 12x + 5\)</div>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Route 1 · factor the a out</p>
-        <div class="math small">2(x<sup>2</sup> − 6x) + 5</div>
-        <div class="math small">2[(x − 3)<sup>2</sup> − 9] + 5</div>
-        <div class="math small">2(x − 3)<sup>2</sup> − 18 + 5</div>
-        <div class="math small result">2(x − 3)<sup>2</sup> − 13</div>
+        <div class="math small">\(2(x^2 - 6x) + 5\)</div>
+        <div class="math small">\(2\left[(x - 3)^2 - 9\right] + 5\)</div>
+        <div class="math small">\(2(x - 3)^2 - 18 + 5\)</div>
+        <div class="math small result">\(2(x - 3)^2 - 13\)</div>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.4vh">Route 2 · divide, then put the a back</p>
-        <div class="math small">x<sup>2</sup> − 6x + 5/2</div>
-        <div class="math small">(x − 3)<sup>2</sup> − 9 + 5/2</div>
-        <div class="math small">(x − 3)<sup>2</sup> − 13/2 &nbsp;<span style="color:var(--warn)">not finished</span></div>
-        <div class="math small result">× 2 &nbsp;→&nbsp; 2(x − 3)<sup>2</sup> − 13</div>
+        <div class="math small">\(x^2 - 6x + \dfrac{5}{2}\)</div>
+        <div class="math small">\((x - 3)^2 - 9 + \dfrac{5}{2}\)</div>
+        <div class="math small">\((x - 3)^2 - \dfrac{13}{2}\) &nbsp;<span style="color:var(--warn)">not finished</span></div>
+        <div class="math small result">\(\times 2\) &nbsp;→&nbsp; \(2(x - 3)^2 - 13\)</div>
       </div>
     </div>
   </div>
-  <p class="frag small bad">Same trap on both routes, and it is the a: Route 1 brings the −9 back out as −9 instead of <b>−18</b>, Route 2 stops one line early. The bracket survives either way, so x = 3 is right. The minimum value is not: it is <b>−13</b>.</p>
+  <p class="frag small bad">Same trap on both routes, and it is the \(a\): Route 1 brings the \(-9\) back out as \(-9\) instead of <b>\(-18\)</b>, Route 2 stops one line early. The bracket survives either way, so \(x = 3\) is right. The minimum value is not: it is <b>\(-13\)</b>.</p>
   <p class="frag small">So the whole thing comes down to one question, asked <b>before</b> you start. Next slide.</p>
 </section>
 
@@ -652,144 +147,144 @@ kbd {
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.6vh">If there is an = 0</p>
-        <div class="math result">divide by a</div>
+        <div class="math result">divide by \(a\)</div>
         <p class="small" style="margin-top:0.8vh">It looks like one of these:</p>
-        <ul style="margin:0.4vh 0 0"><li class="small">Solve 3x<sup>2</sup> + 4x − 15 = 0</li>
-        <li class="small">Find the roots of 2x<sup>2</sup> − 7x + 3 = 0</li>
-        <li class="small">Find the values of k for which x<sup>2</sup> + kx + 9 = 0 has a repeated root</li>
+        <ul style="margin:0.4vh 0 0"><li class="small">Solve \(3x^2 + 4x - 15 = 0\)</li>
+        <li class="small">Find the roots of \(2x^2 - 7x + 3 = 0\)</li>
+        <li class="small">Find the values of \(k\) for which \(x^2 + kx + 9 = 0\) has a repeated root</li>
         <li class="small">Find where the line meets the curve</li></ul>
-        <p class="small" style="margin-top:0.8vh">The other side is 0, so dividing is free. You never need the a again.</p>
+        <p class="small" style="margin-top:0.8vh">The other side is 0, so dividing is free. You never need the \(a\) again.</p>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.6vh">If there is no equals sign</p>
-        <div class="math result">factor a out</div>
+        <div class="math result">factor \(a\) out</div>
         <p class="small" style="margin-top:0.8vh">It looks like one of these:</p>
-        <ul style="margin:0.4vh 0 0"><li class="small">Express 3x<sup>2</sup> + 4x − 15 in the form a(x + p)<sup>2</sup> + q</li>
-        <li class="small">Write 2x<sup>2</sup> − 12x + 5 as A(x + B)<sup>2</sup> + C</li>
+        <ul style="margin:0.4vh 0 0"><li class="small">Express \(3x^2 + 4x - 15\) in the form \(a(x + p)^2 + q\)</li>
+        <li class="small">Write \(2x^2 - 12x + 5\) as \(A(x + B)^2 + C\)</li>
         <li class="small">Find the vertex, or the turning point</li>
         <li class="small">Find the minimum value, or the maximum value</li>
         <li class="small">State the range</li></ul>
-        <p class="small" style="margin-top:0.8vh">The a stays on the page the whole way, so there is nothing to put back.</p>
+        <p class="small" style="margin-top:0.8vh">The \(a\) stays on the page the whole way, so there is nothing to put back.</p>
       </div>
     </div>
   </div>
-  <p class="frag small">The right-hand list is one question wearing five hats. Vertex, turning point, minimum, maximum, range are all <b>read straight off a(x + p)<sup>2</sup> + q</b>, which is why every one of them needs the a to be right.</p>
+  <p class="frag small">The right-hand list is one question wearing five hats. Vertex, turning point, minimum, maximum, range are all <b>read straight off \(a(x + p)^2 + q\)</b>, which is why every one of them needs the \(a\) to be right.</p>
 </section>
 
-<!-- 7 · route check -->
+<!-- 8 · route check -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 6 of 12</p>
   <h2>Route check. Do not solve these.</h2>
   <p class="small">Read each one and say which route you would take. That is the whole task. Ten seconds each.</p>
   <div class="cols">
     <div>
-      <div class="check" tabindex="0"><div class="math small">1.&nbsp; Solve 5x<sup>2</sup> + 3x − 2 = 0</div><div class="math small result ans">divide by 5</div></div>
-      <div class="check" tabindex="0"><div class="math small">2.&nbsp; Express 3x<sup>2</sup> − 12x + 7 in the<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form a(x + p)<sup>2</sup> + q</div><div class="math small result ans">factor the 3 out</div></div>
+      <div class="check" tabindex="0"><div class="math small">1.&nbsp; Solve \(5x^2 + 3x - 2 = 0\)</div><div class="math small result ans">divide by 5</div></div>
+      <div class="check" tabindex="0"><div class="math small">2.&nbsp; Express \(3x^2 - 12x + 7\) in the<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;form \(a(x + p)^2 + q\)</div><div class="math small result ans">factor the 3 out</div></div>
     </div>
     <div>
-      <div class="check" tabindex="0"><div class="math small">3.&nbsp; Find the minimum value of<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2x<sup>2</sup> − 8x + 1</div><div class="math small result ans">factor the 2 out</div></div>
-      <div class="check" tabindex="0"><div class="math small">4.&nbsp; Find x when 4x<sup>2</sup> − 4x − 3 = 0</div><div class="math small result ans">divide by 4</div></div>
+      <div class="check" tabindex="0"><div class="math small">3.&nbsp; Find the minimum value of<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\(2x^2 - 8x + 1\)</div><div class="math small result ans">factor the 2 out</div></div>
+      <div class="check" tabindex="0"><div class="math small">4.&nbsp; Find \(x\) when \(4x^2 - 4x - 3 = 0\)</div><div class="math small result ans">divide by 4</div></div>
     </div>
   </div>
-  <p class="frag small">Number 3 is the one that catches people. There is no equals sign anywhere in it, and the minimum value <b>is</b> the q, so you need the a on the page to get it right.</p>
+  <p class="frag small">Number 3 is the one that catches people. There is no equals sign anywhere in it, and the minimum value <b>is</b> the \(q\), so you need the \(a\) on the page to get it right.</p>
 </section>
 
-<!-- 6 · what the vertex tells you -->
-<section class="slide">
+<!-- 9 · what the vertex tells you -->
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 7 of 12</p>
   <h2>What the vertex tells you.</h2>
-  <div class="cases" style="margin-bottom:1.6vh">
+  <div class="cases" style="margin-bottom:0.6vh">
     <div class="c">
       <svg class="mini" style="width:clamp(90px,11vw,150px)" viewBox="0 0 120 90"><path d="M20,20 Q60,110 100,20" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="60" cy="65" r="5" fill="var(--accent)"/></svg>
-      <div class="lab">a &gt; 0, opens up<br><span class="good">vertex is the minimum</span></div>
+      <div class="lab">\(a &gt; 0\), opens up<br><span class="good">vertex is the minimum</span></div>
     </div>
     <div class="c">
       <svg class="mini" style="width:clamp(90px,11vw,150px)" viewBox="0 0 120 90"><path d="M20,70 Q60,-20 100,70" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="60" cy="25" r="5" fill="var(--accent)"/></svg>
-      <div class="lab">a &lt; 0, opens down<br><span class="good">vertex is the maximum</span></div>
+      <div class="lab">\(a &lt; 0\), opens down<br><span class="good">vertex is the maximum</span></div>
     </div>
   </div>
   <div class="cols">
     <div>
       <div class="agenda steps">
-        <div class="row"><span><span class="n">1</span>The turning point.</span><span class="t">(−p, q)</span></div>
-        <div class="row frag"><span><span class="n">2</span>Lowest point if a &gt; 0. Highest if a &lt; 0.</span><span class="t">sign of a</span></div>
-        <div class="row frag"><span><span class="n">3</span>The line of symmetry.</span><span class="t">x = −p</span></div>
-        <div class="row frag"><span><span class="n">4</span>The <b>range</b>, meaning every y-value the curve can reach.</span><span class="t">y ≥ q if a &gt; 0</span></div>
-        <div class="row frag"><span><span class="n">5</span>If a &gt; 0 and q &gt; 0, the lowest point sits above the axis.</span><span class="t">no real roots</span></div>
+        <div class="row"><span><span class="n">1</span>The turning point.</span><span class="t">\((-p, q)\)</span></div>
+        <div class="row frag"><span><span class="n">2</span>Lowest point if \(a &gt; 0\). Highest if \(a &lt; 0\).</span><span class="t">sign of \(a\)</span></div>
+        <div class="row frag"><span><span class="n">3</span>The line of symmetry.</span><span class="t">\(x = -p\)</span></div>
+        <div class="row frag"><span><span class="n">4</span>The <b>range</b>, meaning every \(y\)-value the curve can reach.</span><span class="t">\(y \ge q\) if \(a &gt; 0\)</span></div>
+        <div class="row frag"><span><span class="n">5</span>If \(a &gt; 0\) and \(q &gt; 0\), the lowest point sits above the axis.</span><span class="t">no real roots</span></div>
       </div>
-      <p class="frag small bad" style="margin-top:1.2vh">The vertex does not tell you which way it opens. The sign of a does that.</p>
+      <p class="frag small bad" style="margin-top:1.2vh">The vertex does not tell you which way it opens. The sign of \(a\) does that.</p>
     </div>
     <div class="card frag">
       <p class="eyebrow" style="margin-bottom:0.8vh">To sketch any quadratic</p>
-      <p class="small">Which way it opens (sign of a) · the vertex · the y-intercept (put x = 0, that is c).</p>
-      <div class="math small">y = 2x<sup>2</sup> − 12x + 5 = 2(x − 3)<sup>2</sup> − 13</div>
-      <p class="small">Opens up, a = 2. Vertex (3, −13). Crosses the y-axis at 5. Three facts and you have the curve.</p>
+      <p class="small">Which way it opens (sign of \(a\)) · the vertex · the \(y\)-intercept (put \(x = 0\), that is \(c\)).</p>
+      <div class="math small">\(y = 2x^2 - 12x + 5 = 2(x - 3)^2 - 13\)</div>
+      <p class="small">Opens up, \(a = 2\). Vertex \((3, -13)\). Crosses the \(y\)-axis at 5. Three facts and you have the curve.</p>
     </div>
   </div>
 </section>
 
-<!-- 7 · applications -->
-<section class="slide">
+<!-- 10 · applications -->
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 8 of 12</p>
   <h2>Where the vertex shows up outside this room.</h2>
   <div class="cols">
     <div class="card">
       <p class="eyebrow" style="margin-bottom:0.8vh">Physics · projectile motion</p>
-      <p class="small">A ball's height in meters, t seconds after launch:</p>
-      <div class="math small">h = −5t<sup>2</sup> + 20t + 1</div>
-      <div class="math small frag">−5(t<sup>2</sup> − 4t) + 1</div>
-      <div class="math small frag">−5[(t − 2)<sup>2</sup> − 4] + 1</div>
-      <div class="math small frag result">−5(t − 2)<sup>2</sup> + 20 + 1 = −5(t − 2)<sup>2</sup> + 21</div>
-      <p class="small frag">a is negative, so the vertex is the <b>maximum</b>. Highest point <b>21 m</b>, reached at <b>t = 2 s</b>.</p>
+      <p class="small">A ball's height in meters, \(t\) seconds after launch:</p>
+      <div class="math small">\(h = -5t^2 + 20t + 1\)</div>
+      <div class="math small frag">\(-5(t^2 - 4t) + 1\)</div>
+      <div class="math small frag">\(-5\left[(t - 2)^2 - 4\right] + 1\)</div>
+      <div class="math small frag result">\(-5(t - 2)^2 + 20 + 1 = -5(t - 2)^2 + 21\)</div>
+      <p class="small frag">\(a\) is negative, so the vertex is the <b>maximum</b>. Highest point <b>21 m</b>, reached at <b>\(t = 2\) s</b>.</p>
     </div>
     <div class="card">
       <p class="eyebrow" style="margin-bottom:0.8vh">Business · maximizing profit</p>
-      <p class="small">Daily profit in dollars from selling x units:</p>
-      <div class="math small">P = −5x<sup>2</sup> + 300x − 1000</div>
-      <div class="math small frag">−5(x<sup>2</sup> − 60x) − 1000</div>
-      <div class="math small frag">−5[(x − 30)<sup>2</sup> − 900] − 1000</div>
-      <div class="math small frag result">−5(x − 30)<sup>2</sup> + 4500 − 1000 = −5(x − 30)<sup>2</sup> + 3500</div>
+      <p class="small">Daily profit in dollars from selling \(x\) units:</p>
+      <div class="math small">\(P = -5x^2 + 300x - 1000\)</div>
+      <div class="math small frag">\(-5(x^2 - 60x) - 1000\)</div>
+      <div class="math small frag">\(-5\left[(x - 30)^2 - 900\right] - 1000\)</div>
+      <div class="math small frag result">\(-5(x - 30)^2 + 4500 - 1000 = -5(x - 30)^2 + 3500\)</div>
       <p class="small frag">Maximum profit <b>$3500</b>, at <b>30 units</b>. Sell more than that and profit falls again.</p>
     </div>
   </div>
-  <p class="frag small" style="margin-top:1.2vh">Both have a &lt; 0, so both open downward and both vertices are maximums. That has to be true: a ball comes back down, and profit falls once you overproduce. <b>If a question asks for a maximum and your a comes out positive, you have made a sign error.</b> Both answers came straight out of the completed square, with no calculus.</p>
+  <p class="frag small" style="margin-top:1.2vh">Both have \(a &lt; 0\), so both open downward and both vertices are maximums. That has to be true: a ball comes back down, and profit falls once you overproduce. <b>If a question asks for a maximum and your \(a\) comes out positive, you have made a sign error.</b> Both answers came straight out of the completed square, with no calculus.</p>
   <p class="frag" style="margin-top:1vh"><a class="toolchip" href="../snow-cone-stand/" target="_blank" rel="noopener">The Snow Cone Stand: set a price and watch the profit curve</a></p>
 </section>
 
-<!-- 6 · discriminant -->
+<!-- 11 · what is a root / discriminant -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 9 of 12</p>
   <h2>First: what is a root?</h2>
-  <p>A <b>root</b> is a value of x that makes the expression equal zero. On the graph, the roots are <b>where the curve crosses the x-axis</b>, because the x-axis is the line y = 0.</p>
-  <div class="math">x = [−b ± √(b<sup>2</sup> − 4ac)] / 2a</div>
-  <div class="math">Δ = b<sup>2</sup> − 4ac</div>
-  <p class="frag">The <b>±</b> is what gives you two answers. Δ decides whether it can.</p>
+  <p>A <b>root</b> is a value of \(x\) that makes the expression equal zero. On the graph, the roots are <b>where the curve crosses the \(x\)-axis</b>, because the \(x\)-axis is the line \(y = 0\).</p>
+  <div class="math">\(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</div>
+  <div class="math">\(\Delta = b^2 - 4ac\)</div>
+  <p class="frag">The <b>\(\pm\)</b> is what gives you two answers. \(\Delta\) decides whether it can.</p>
   <div class="agenda steps">
-    <div class="row frag"><span>√Δ is a real number, so −b + √Δ and −b − √Δ differ.</span><span class="t">Δ &gt; 0 · two roots</span></div>
-    <div class="row frag"><span>√0 = 0. Adding and subtracting zero give the same answer.</span><span class="t">Δ = 0 · one root</span></div>
-    <div class="row frag"><span>No real square root of a negative. The ± has nothing to use.</span><span class="t">Δ &lt; 0 · none</span></div>
+    <div class="row frag"><span>\(\sqrt{\Delta}\) is a real number, so \(-b + \sqrt{\Delta}\) and \(-b - \sqrt{\Delta}\) differ.</span><span class="t">\(\Delta &gt; 0\) · two roots</span></div>
+    <div class="row frag"><span>\(\sqrt{0} = 0\). Adding and subtracting zero give the same answer.</span><span class="t">\(\Delta = 0\) · one root</span></div>
+    <div class="row frag"><span>No real square root of a negative. The \(\pm\) has nothing to use.</span><span class="t">\(\Delta &lt; 0\) · none</span></div>
   </div>
-  <p class="frag small">The −b and the 2a move the answers around. Only Δ changes how many there are.</p>
+  <p class="frag small">The \(-b\) and the \(2a\) move the answers around. Only \(\Delta\) changes how many there are.</p>
 </section>
 
-<!-- three cases -->
+<!-- 12 · three cases -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 10 of 12</p>
   <h2>The three cases, drawn.</h2>
   <div class="cases">
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><line x1="5" y1="55" x2="115" y2="55" stroke="var(--axis)" stroke-width="2.5"/><path d="M15,15 Q60,120 105,15" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-      <div class="lab">Δ &gt; 0<br><span class="good">two real roots</span></div>
+      <div class="lab">\(\Delta &gt; 0\)<br><span class="good">two real roots</span></div>
     </div>
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><line x1="5" y1="55" x2="115" y2="55" stroke="var(--axis)" stroke-width="2.5"/><path d="M20,15 Q60,95 100,15" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-      <div class="lab">Δ = 0<br><span>one <b>repeated root</b></span></div>
+      <div class="lab">\(\Delta = 0\)<br><span>one <b>repeated root</b></span></div>
     </div>
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><line x1="5" y1="70" x2="115" y2="70" stroke="var(--axis)" stroke-width="2.5"/><path d="M20,15 Q60,75 100,15" fill="none" stroke="var(--accent)" stroke-width="3"/></svg>
-      <div class="lab">Δ &lt; 0<br><span class="bad">no real roots</span></div>
+      <div class="lab">\(\Delta &lt; 0\)<br><span class="bad">no real roots</span></div>
     </div>
   </div>
   <p class="frag small">Say "repeated root". It is the syllabus's own term and the exam expects it.</p>
@@ -803,7 +298,7 @@ kbd {
       <circle id="ex-disc-v" r="4.5" fill="var(--accent)"/>
     </svg>
     <div class="panel">
-      <label for="ex-disc-q">Slide the curve · y = x<sup>2</sup> + q</label>
+      <label for="ex-disc-q">Slide the curve · \(y = x^2 + q\)</label>
       <input type="range" id="ex-disc-q" min="-3" max="3" step="0.1" value="-2" list="ex-disc-ticks" aria-label="q, the height of the vertex">
       <datalist id="ex-disc-ticks"><option value="0"></option></datalist>
       <div class="read" id="ex-disc-read"></div>
@@ -812,53 +307,59 @@ kbd {
   </div>
 </section>
 
-<!-- 7 · tangency -->
+<!-- 13 · line meets curve -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 11 of 12</p>
   <h2>When does a line meet a curve?</h2>
-  <p>A meeting point sits on <b>both</b> graphs at the same time. So it has one y-value, and both equations have to give it.</p>
+  <p>A meeting point sits on <b>both</b> graphs at the same time. So it has one \(y\)-value, and both equations have to give it.</p>
   <div class="cols">
     <div>
-      <div class="math">line:&nbsp; y = 4</div>
-      <div class="math">curve:&nbsp; y = x<sup>2</sup></div>
+      <div class="math">line:&nbsp; \(y = 4\)</div>
+      <div class="math">curve:&nbsp; \(y = x^2\)</div>
     </div>
     <div>
-      <p class="frag small">On the line, its y is 4. On the curve, its y is x<sup>2</sup>. Same point, same y.</p>
-      <div class="math frag">x<sup>2</sup> = 4</div>
+      <p class="frag small">On the line, its \(y\) is 4. On the curve, its \(y\) is \(x^2\). Same point, same \(y\).</p>
+      <div class="math frag">\(x^2 = 4\)</div>
     </div>
   </div>
-  <p class="frag"><b>That is what "set line = curve" means.</b> Take the right-hand side of each equation and put an equals sign between them. The y drops out because it was the same on both.</p>
-  <p class="frag">Solve it: x = 2 or x = −2. They meet at <b>(−2, 4)</b> and <b>(2, 4)</b>.</p>
-  <p class="frag small">The exam version is the same two steps. y = kx − k and y = −1/(2x) both start with y, so kx − k = −1/(2x).</p>
+  <p class="frag"><b>That is what "set line = curve" means.</b> Take the right-hand side of each equation and put an equals sign between them. The \(y\) drops out because it was the same on both.</p>
+  <p class="frag">Solve it: \(x = 2\) or \(x = -2\). They meet at <b>\((-2, 4)\)</b> and <b>\((2, 4)\)</b>.</p>
+  <p class="frag small">The exam version is the same two steps. \(y = kx - k\) and \(y = -\tfrac{1}{2x}\) both start with \(y\), so \(kx - k = -\tfrac{1}{2x}\).</p>
 </section>
 
-<!-- tangency -->
-<section class="slide">
+<!-- 14 · tangency -->
+<section class="slide duo">
   <p class="eyebrow">Direct instruction · 12 of 12</p>
   <h2>Tangency: the same three cases, with a different line.</h2>
-  <p>The x-axis is just the line y = 0. It is not special. Swap it for any other line and everything carries over.</p>
+  <p>The \(x\)-axis is just the line \(y = 0\). It is not special. Swap it for any other line and everything carries over.</p>
   <div class="cases frag">
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><path d="M20,20 Q60,110 100,20" fill="none" stroke="var(--accent)" stroke-width="3"/><line x1="15" y1="44.9" x2="105" y2="65.1" stroke="var(--axis)" stroke-width="2.5"/></svg>
-      <div class="lab">cuts twice<br><span class="good">Δ &gt; 0</span></div>
+      <div class="lab">cuts twice<br><span class="good">\(\Delta &gt; 0\)</span></div>
     </div>
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><path d="M20,20 Q60,110 100,20" fill="none" stroke="var(--accent)" stroke-width="3"/><line x1="15" y1="55.3" x2="105" y2="75.6" stroke="var(--axis)" stroke-width="2.5"/><circle cx="56" cy="64.55" r="5" fill="var(--accent)"/></svg>
-      <div class="lab"><b>tangent</b>, touches once<br><span>Δ = 0</span></div>
+      <div class="lab"><b>tangent</b>, touches once<br><span>\(\Delta = 0\)</span></div>
     </div>
     <div class="c">
       <svg class="mini" viewBox="0 0 120 90"><path d="M20,20 Q60,110 100,20" fill="none" stroke="var(--accent)" stroke-width="3"/><line x1="15" y1="66.9" x2="105" y2="87.1" stroke="var(--axis)" stroke-width="2.5"/></svg>
-      <div class="lab">misses<br><span class="bad">Δ &lt; 0</span></div>
+      <div class="lab">misses<br><span class="bad">\(\Delta &lt; 0\)</span></div>
     </div>
   </div>
-  <p class="frag"><b>Same curve, y = x<sup>2</sup>. Three different lines.</b> Make the right-hand sides equal each time, then count the solutions.</p>
-  <p class="frag small">In all three, a = 1 and b = 0, so Δ = b<sup>2</sup> − 4ac collapses to just <b>−4c</b>.</p>
+  <p class="frag"><b>Same curve, \(y = x^2\). Three different lines.</b> Make the right-hand sides equal each time, then count the solutions.</p>
+  <p class="frag small">In all three, \(a = 1\) and \(b = 0\), so \(\Delta = b^2 - 4ac\) collapses to just <b>\(-4c\)</b>.</p>
   <div class="agenda steps">
-    <div class="row frag"><span>y = 4 &nbsp;→&nbsp; x<sup>2</sup> − 4 = 0 &nbsp;→&nbsp; Δ = 16</span><span class="t">cuts at x = ±2</span></div>
-    <div class="row frag"><span>y = 0 &nbsp;→&nbsp; x<sup>2</sup> = 0 &nbsp;→&nbsp; Δ = 0</span><span class="t">tangent at x = 0</span></div>
-    <div class="row frag"><span>y = −1 &nbsp;→&nbsp; x<sup>2</sup> + 1 = 0 &nbsp;→&nbsp; Δ = −4</span><span class="t">misses</span></div>
+    <div class="row frag"><span>\(y = 4\) &nbsp;→&nbsp; \(x^2 - 4 = 0\) &nbsp;→&nbsp; \(\Delta = 16\)</span><span class="t">cuts at \(x = \pm 2\)</span></div>
+    <div class="row frag"><span>\(y = 0\) &nbsp;→&nbsp; \(x^2 = 0\) &nbsp;→&nbsp; \(\Delta = 0\)</span><span class="t">tangent at \(x = 0\)</span></div>
+    <div class="row frag"><span>\(y = -1\) &nbsp;→&nbsp; \(x^2 + 1 = 0\) &nbsp;→&nbsp; \(\Delta = -4\)</span><span class="t">misses</span></div>
   </div>
-  <div class="explore frag" id="ex-tan">
+</section>
+
+<!-- 15 · tangency explorer -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 12 of 12 · continued</p>
+  <h2>Slide the line and count the meeting points.</h2>
+  <div class="explore" id="ex-tan">
     <svg viewBox="0 0 300 200" role="img" aria-label="A fixed parabola with a line you can slide up and down through it">
       <line x1="10" y1="130" x2="290" y2="130" stroke="var(--hairline)" stroke-width="1.5"/>
       <polyline id="ex-tan-curve" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
@@ -867,136 +368,137 @@ kbd {
       <circle id="ex-tan-r2" r="5" fill="var(--ok)"/>
     </svg>
     <div class="panel">
-      <label for="ex-tan-h">Slide the line · y = h, against y = x<sup>2</sup></label>
+      <label for="ex-tan-h">Slide the line · \(y = h\), against \(y = x^2\)</label>
       <input type="range" id="ex-tan-h" min="-2" max="4" step="0.1" value="4" list="ex-tan-ticks" aria-label="h, the height of the line">
       <datalist id="ex-tan-ticks"><option value="0"></option></datalist>
       <div class="read" id="ex-tan-read"></div>
       <div class="verdict" id="ex-tan-verdict"></div>
     </div>
   </div>
-  <p class="frag small">Making the two sides equal builds a <b>new</b> equation. Its roots are the meeting points, and Δ counts them.</p>
-  <p class="frag bad" style="font-weight:600">The classic error: taking Δ of the curve alone. That answers "where does the curve cross the x-axis". Your line never entered the calculation, so it scores nothing.</p>
+  <p class="frag small">Making the two sides equal builds a <b>new</b> equation. Its roots are the meeting points, and \(\Delta\) counts them.</p>
+  <p class="frag bad" style="font-weight:600">The classic error: taking \(\Delta\) of the curve alone. That answers "where does the curve cross the \(x\)-axis". Your line never entered the calculation, so it scores nothing.</p>
 </section>
 
-<!-- discriminant applications -->
+<!-- 15 · discriminant applications: engineering -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · outside class · engineering</p>
   <h2>Satellite dish: finding the tangent line.</h2>
   <p class="small">A dish is a parabola. A signal arriving straight on bounces off toward one focus point. To know the angle it bounces at, you need the <b>tangent line</b> at the spot where it hits.</p>
-  <div class="math">dish: y = x<sup>2</sup>/4 &nbsp;·&nbsp; point of impact: (2, 1)</div>
+  <div class="math">dish: \(y = \dfrac{x^2}{4}\) &nbsp;·&nbsp; point of impact: \((2, 1)\)</div>
   <div class="agenda steps">
-    <div class="row frag"><span><span class="n">1</span>Any line through (2, 1) with slope m.</span><span class="t">y − 1 = m(x − 2) → y = mx − 2m + 1</span></div>
-    <div class="row frag"><span><span class="n">2</span>Make the two right-hand sides equal.</span><span class="t">x<sup>2</sup>/4 = mx − 2m + 1</span></div>
-    <div class="row frag"><span><span class="n">3</span>× 4, then bring everything to one side.</span><span class="t">x<sup>2</sup> − 4mx + 8m − 4 = 0</span></div>
-    <div class="row frag"><span><span class="n">4</span>a = 1, b = −4m, c = 8m − 4.</span><span class="t">Δ = 16m<sup>2</sup> − 32m + 16</span></div>
-    <div class="row frag"><span><span class="n">5</span>Tangent means Δ = 0. Divide by 16.</span><span class="t">(m − 1)<sup>2</sup> = 0 → m = 1</span></div>
+    <div class="row frag"><span><span class="n">1</span>Any line through \((2, 1)\) with slope \(m\).</span><span class="t">\(y - 1 = m(x - 2)\) → \(y = mx - 2m + 1\)</span></div>
+    <div class="row frag"><span><span class="n">2</span>Make the two right-hand sides equal.</span><span class="t">\(\dfrac{x^2}{4} = mx - 2m + 1\)</span></div>
+    <div class="row frag"><span><span class="n">3</span>\(\times 4\), then bring everything to one side.</span><span class="t">\(x^2 - 4mx + 8m - 4 = 0\)</span></div>
+    <div class="row frag"><span><span class="n">4</span>\(a = 1\), \(b = -4m\), \(c = 8m - 4\).</span><span class="t">\(\Delta = 16m^2 - 32m + 16\)</span></div>
+    <div class="row frag"><span><span class="n">5</span>Tangent means \(\Delta = 0\). Divide by 16.</span><span class="t">\((m - 1)^2 = 0\) → \(m = 1\)</span></div>
   </div>
-  <p class="frag"><b>Tangent line: y = x − 1.</b> Check it: x<sup>2</sup>/4 = x − 1 gives (x − 2)<sup>2</sup> = 0, one repeated root at x = 2, exactly the point we started from.</p>
+  <p class="frag"><b>Tangent line: \(y = x - 1\).</b> Check it: \(\tfrac{x^2}{4} = x - 1\) gives \((x - 2)^2 = 0\), one repeated root at \(x = 2\), exactly the point we started from.</p>
 </section>
 
-<!-- applications: business -->
+<!-- 16 · applications: business -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · outside class · business</p>
   <h2>The highest cost a business can survive.</h2>
-  <p class="small">Revenue from selling x units is R(x) = −5x<sup>2</sup> + 300x. Fixed cost is C. The business <b>breaks even</b> when revenue exactly equals cost, so profit is zero.</p>
+  <p class="small">Revenue from selling \(x\) units is \(R(x) = -5x^2 + 300x\). Fixed cost is \(C\). The business <b>breaks even</b> when revenue exactly equals cost, so profit is zero.</p>
   <div class="agenda steps">
-    <div class="row frag"><span><span class="n">1</span>Break even means revenue equals cost.</span><span class="t">−5x<sup>2</sup> + 300x = C</span></div>
-    <div class="row frag"><span><span class="n">2</span>Bring to one side, then × (−1).</span><span class="t">5x<sup>2</sup> − 300x + C = 0</span></div>
-    <div class="row frag"><span><span class="n">3</span>a = 5, b = −300, c = C.</span><span class="t">Δ = 90000 − 20C</span></div>
+    <div class="row frag"><span><span class="n">1</span>Break even means revenue equals cost.</span><span class="t">\(-5x^2 + 300x = C\)</span></div>
+    <div class="row frag"><span><span class="n">2</span>Bring to one side, then \(\times (-1)\).</span><span class="t">\(5x^2 - 300x + C = 0\)</span></div>
+    <div class="row frag"><span><span class="n">3</span>\(a = 5\), \(b = -300\), \(c = C\).</span><span class="t">\(\Delta = 90000 - 20C\)</span></div>
   </div>
   <div class="agenda steps frag" style="margin-top:1.4vh">
-    <div class="row"><span>C &lt; 4500 → Δ &gt; 0. Two break-even points, so a range of outputs makes a profit.</span><span class="t good">viable</span></div>
-    <div class="row"><span>C = 4500 → Δ = 0. One break-even output, x = 30. The best you can do is zero profit.</span><span class="t">knife edge</span></div>
-    <div class="row"><span>C &gt; 4500 → Δ &lt; 0. No output ever breaks even, at any volume.</span><span class="t bad">dead</span></div>
+    <div class="row"><span>\(C &lt; 4500\) → \(\Delta &gt; 0\). Two break-even points, so a range of outputs makes a profit.</span><span class="t good">viable</span></div>
+    <div class="row"><span>\(C = 4500\) → \(\Delta = 0\). One break-even output, \(x = 30\). The best you can do is zero profit.</span><span class="t">knife edge</span></div>
+    <div class="row"><span>\(C &gt; 4500\) → \(\Delta &lt; 0\). No output ever breaks even, at any volume.</span><span class="t bad">dead</span></div>
   </div>
-  <p class="frag small">The vertex says the same thing. Completing the square gives P = −5(x − 30)<sup>2</sup> + (4500 − C), and that vertex height hits zero at exactly C = 4500.</p>
+  <p class="frag small">The vertex says the same thing. Completing the square gives \(P = -5(x - 30)^2 + (4500 - C)\), and that vertex height hits zero at exactly \(C = 4500\).</p>
 </section>
 
-<!-- 8 · worked example: the question -->
+<!-- 17 · worked example: the question -->
 <section class="slide">
   <p class="eyebrow">Worked example · 10 min · real past paper</p>
   <h2>June 2023, Paper 11, Q5 <span class="marks">[5]</span></h2>
   <div class="card">
-    <p style="margin:0">The line with equation y = kx − k, where k is a positive constant, is a tangent to the curve with equation y = −1/(2x).</p>
-    <p style="margin:1vh 0 0">Find, in either order, the value of k and the coordinates of the point where the tangent meets the curve.</p>
+    <p style="margin:0">The line with equation \(y = kx - k\), where \(k\) is a positive constant, is a tangent to the curve with equation \(y = -\dfrac{1}{2x}\).</p>
+    <p style="margin:1vh 0 0">Find, in either order, the value of \(k\) and the coordinates of the point where the tangent meets the curve.</p>
   </div>
   <p class="frag small">Before any algebra: what does "tangent" translate to? The two sides, made equal, must have exactly one solution.</p>
 </section>
 
-<!-- 9 · worked example: the solve -->
-<section class="slide">
+<!-- 18 · worked example: the solve -->
+<section class="slide duo">
   <p class="eyebrow">Worked example · step by step</p>
-  <h2>Tangent ⇒ one solution ⇒ Δ = 0.</h2>
-  <div class="math">kx − k = −1/(2x)</div>
-  <div class="math frag">× 2x:&nbsp; 2x(kx − k) = −1</div>
-  <div class="math frag">expand:&nbsp; 2kx<sup>2</sup> − 2kx = −1 &nbsp;→&nbsp; 2kx<sup>2</sup> − 2kx + 1 = 0</div>
-  <p class="frag small" style="margin:-0.6vh 0 1.2vh">a = 2k &nbsp;·&nbsp; b = −2k &nbsp;·&nbsp; c = 1. k is the unknown you are solving for <b>and</b> part of a and b.</p>
-  <div class="math frag">Δ = 0:&nbsp; (−2k)<sup>2</sup> − 4(2k)(1) = 0 &nbsp;→&nbsp; 4k<sup>2</sup> − 8k = 0</div>
-  <div class="math frag">4k(k − 2) = 0 &nbsp;→&nbsp; k = 0 or k = 2 &nbsp;<span class="bad">→ k = 2</span>
-</div>
-  <p class="frag small">Both are real answers to that equation. The <b>question</b> said k is a positive constant, so k = 0 is rejected. Always check your answers against the wording.</p>
-  <div class="math frag">k = 2 back into the quadratic:&nbsp; 4x<sup>2</sup> − 4x + 1 = 0 → (2x − 1)<sup>2</sup> = 0 → x = ½</div>
-  <div class="math frag result">y = −1/(2 × ½) = −1 &nbsp;→&nbsp; point (½, −1)</div>
-  <p class="frag small">(2x − 1)<sup>2</sup> = 0 has one repeated root, which is the algebra confirming it touches once. Mark scheme accepts a quadratic in x or in y.</p>
+  <h2>Tangent \(\Rightarrow\) one solution \(\Rightarrow\) \(\Delta = 0\).</h2>
+  <div class="math">\(kx - k = -\dfrac{1}{2x}\)</div>
+  <div class="math frag">\(\times\, 2x\):&nbsp; \(2x(kx - k) = -1\)</div>
+  <div class="math frag">expand:&nbsp; \(2kx^2 - 2kx = -1\) &nbsp;→&nbsp; \(2kx^2 - 2kx + 1 = 0\)</div>
+  <p class="frag small" style="margin:-0.6vh 0 1.2vh">\(a = 2k\) &nbsp;·&nbsp; \(b = -2k\) &nbsp;·&nbsp; \(c = 1\). \(k\) is the unknown you are solving for <b>and</b> part of \(a\) and \(b\).</p>
+  <div class="math frag">\(\Delta = 0\):&nbsp; \((-2k)^2 - 4(2k)(1) = 0\) &nbsp;→&nbsp; \(4k^2 - 8k = 0\)</div>
+  <div class="math frag">\(4k(k - 2) = 0\) &nbsp;→&nbsp; \(k = 0\) or \(k = 2\) &nbsp;<span class="bad">→ \(k = 2\)</span></div>
+  <p class="frag small">Both are real answers to that equation. The <b>question</b> said \(k\) is a positive constant, so \(k = 0\) is rejected. Always check your answers against the wording.</p>
+  <div class="math frag">\(k = 2\) back into the quadratic:&nbsp; \(4x^2 - 4x + 1 = 0\) → \((2x - 1)^2 = 0\) → \(x = \dfrac{1}{2}\)</div>
+  <div class="math frag result">\(y = -\dfrac{1}{2 \times \frac{1}{2}} = -1\) &nbsp;→&nbsp; point \(\left(\dfrac{1}{2}, -1\right)\)</div>
+  <p class="frag small">\((2x - 1)^2 = 0\) has one repeated root, which is the algebra confirming it touches once. Mark scheme accepts a quadratic in \(x\) or in \(y\).</p>
 </section>
 
-<!-- practice: guided -->
-<section class="slide">
+<!-- 19 · practice: guided -->
+<section class="slide duo">
   <p class="eyebrow">Practice · together · 10 min · wkshtA Part 3, Q3–4</p>
-  <h2>Write each in the form A(x + B)<sup>2</sup> + C.</h2>
-  <div class="check" tabindex="0"><div class="math">3.&nbsp; 2x<sup>2</sup> − 12x + 5</div><div class="math result ans">2(x − 3)<sup>2</sup> − 13 &nbsp;·&nbsp; vertex (3, −13)</div></div>
-  <div class="check" tabindex="0"><div class="math">4.&nbsp; 4x<sup>2</sup> − 12x + 5</div><div class="math result ans">4(x − 3/2)<sup>2</sup> − 4 &nbsp;·&nbsp; vertex (3/2, −4)</div></div>
-  <div class="check" tabindex="0"><div class="math">5.&nbsp; Solve 2x<sup>2</sup> + 5x − 3 = 0</div><div class="math result ans">divide by 2 &nbsp;→&nbsp; (x + 5/4)<sup>2</sup> = 49/16 &nbsp;→&nbsp; x = 1/2 or x = −3</div></div>
-  <p class="small">Numbers 3 and 4 say "write in the form", so factor the A out. Number 5 has an equals sign, so divide. It is also wkshtC number 4 with an equals sign bolted on. Same quadratic, different question, different route.</p>
-  <p class="frag small">Number 4 gives you a fraction inside the bracket. Keep it as a fraction. Halving −3 gives <b>−3/2</b>, not −1.5 and not −1.</p>
+  <h2>Write each in the form \(A(x + B)^2 + C\).</h2>
+  <div class="cols">
+  <div><div class="check" tabindex="0"><div class="math">3.&nbsp; \(2x^2 - 12x + 5\)</div><div class="math result ans">\(2(x - 3)^2 - 13\) &nbsp;·&nbsp; vertex \((3, -13)\)</div></div></div>
+  <div><div class="check" tabindex="0"><div class="math">4.&nbsp; \(4x^2 - 12x + 5\)</div><div class="math result ans">\(4\left(x - \dfrac{3}{2}\right)^2 - 4\) &nbsp;·&nbsp; vertex \(\left(\dfrac{3}{2}, -4\right)\)</div></div></div>
+  </div>
+  <div class="check" tabindex="0"><div class="math">5.&nbsp; Solve \(2x^2 + 5x - 3 = 0\)</div><div class="math result ans">divide by 2 &nbsp;→&nbsp; \(\left(x + \dfrac{5}{4}\right)^2 = \dfrac{49}{16}\) &nbsp;→&nbsp; \(x = \dfrac{1}{2}\) or \(x = -3\)</div></div>
+  <p class="small">Numbers 3 and 4 say "write in the form", so factor the \(A\) out. Number 5 has an equals sign, so divide. It is also wkshtC number 4 with an equals sign bolted on. Same quadratic, different question, different route.</p>
+  <p class="frag small">Number 4 gives you a fraction inside the bracket. Keep it as a fraction. Halving \(-3\) gives <b>\(-\tfrac{3}{2}\)</b>, not \(-1.5\) and not \(-1\).</p>
 </section>
 
-<!-- practice: independent -->
-<section class="slide">
+<!-- 20 · practice: independent -->
+<section class="slide duo">
   <p class="eyebrow">Practice · on your own · 10 min · wkshtC Q4–8</p>
   <h2>Complete the square for each.</h2>
   <p class="small">No equals signs on this sheet, so whichever route you take, the number in front has to come back.</p>
   <div class="cols">
-    <div>
-      <div class="check" tabindex="0"><div class="math small">4.&nbsp; 2x<sup>2</sup> + 5x − 3</div><div class="math small result ans">2(x + 5/4)<sup>2</sup> − 49/8</div></div>
-      <div class="check" tabindex="0"><div class="math small">5.&nbsp; x<sup>2</sup> + 2x − 9</div><div class="math small result ans">(x + 1)<sup>2</sup> − 10</div></div>
-      <div class="check" tabindex="0"><div class="math small">6.&nbsp; x<sup>2</sup> − 7x − 1</div><div class="math small result ans">(x − 7/2)<sup>2</sup> − 53/4</div></div>
-      <div class="check" tabindex="0"><div class="math small">7.&nbsp; 3x<sup>2</sup> − 2x + 7</div><div class="math small result ans">3(x − 1/3)<sup>2</sup> + 20/3</div></div>
-      <div class="check" tabindex="0"><div class="math small">8.&nbsp; 4x<sup>2</sup> − 4x − 3</div><div class="math small result ans">4(x − 1/2)<sup>2</sup> − 4</div></div>
+    <div class="qgrid">
+      <div class="check" tabindex="0"><div class="math small">4.&nbsp; \(2x^2 + 5x - 3\)</div><div class="math small result ans">\(2\left(x + \dfrac{5}{4}\right)^2 - \dfrac{49}{8}\)</div></div>
+      <div class="check" tabindex="0"><div class="math small">5.&nbsp; \(x^2 + 2x - 9\)</div><div class="math small result ans">\((x + 1)^2 - 10\)</div></div>
+      <div class="check" tabindex="0"><div class="math small">6.&nbsp; \(x^2 - 7x - 1\)</div><div class="math small result ans">\(\left(x - \dfrac{7}{2}\right)^2 - \dfrac{53}{4}\)</div></div>
+      <div class="check" tabindex="0"><div class="math small">7.&nbsp; \(3x^2 - 2x + 7\)</div><div class="math small result ans">\(3\left(x - \dfrac{1}{3}\right)^2 + \dfrac{20}{3}\)</div></div>
+      <div class="check" tabindex="0"><div class="math small">8.&nbsp; \(4x^2 - 4x - 3\)</div><div class="math small result ans">\(4\left(x - \dfrac{1}{2}\right)^2 - 4\)</div></div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow" style="margin-bottom:0.8vh">Then this one</p>
-        <div class="check" tabindex="0"><div class="math small">For what values of k does<br>x<sup>2</sup> + kx + 9 = 0 have a repeated root?</div><div class="math small result ans">Δ = k<sup>2</sup> − 36 = 0 &nbsp;→&nbsp; k = 6 or k = −6</div></div>
-        <p class="frag small bad" style="margin-top:1vh">"Values" is plural. If you found one k, you're halfway.</p>
+        <div class="check" tabindex="0"><div class="math small">For what values of \(k\) does<br>\(x^2 + kx + 9 = 0\) have a repeated root?</div><div class="math small result ans">\(\Delta = k^2 - 36 = 0\) &nbsp;→&nbsp; \(k = 6\) or \(k = -6\)</div></div>
+        <p class="frag small bad" style="margin-top:1vh">"Values" is plural. If you found one \(k\), you're halfway.</p>
       </div>
-      <p class="frag small" style="margin-top:1.4vh">Stop on number 7 when you get there. a is positive and so is the number outside the bracket, so the whole thing can never be zero. Then work out Δ and watch it tell you the same thing.</p>
+      <p class="frag small" style="margin-top:1.4vh">Stop on number 7 when you get there. \(a\) is positive and so is the number outside the bracket, so the whole thing can never be zero. Then work out \(\Delta\) and watch it tell you the same thing.</p>
     </div>
   </div>
 </section>
 
-<!-- extra practice -->
+<!-- 21 · extra practice -->
 <section class="slide">
   <p class="eyebrow">Extra practice · if time, or take it home</p>
   <h2>Solve by factoring.</h2>
   <div class="cols">
     <div>
-      <div class="check" tabindex="0"><div class="math">1.&nbsp; x<sup>2</sup> + 4x − 12 = 0</div><div class="math result ans">(x + 6)(x − 2) = 0 &nbsp;→&nbsp; x = −6 or 2</div></div>
-      <div class="check" tabindex="0"><div class="math">2.&nbsp; x<sup>2</sup> − 5x − 24 = 0</div><div class="math result ans">(x − 8)(x + 3) = 0 &nbsp;→&nbsp; x = 8 or −3</div></div>
+      <div class="check" tabindex="0"><div class="math">1.&nbsp; \(x^2 + 4x - 12 = 0\)</div><div class="math result ans">\((x + 6)(x - 2) = 0\) &nbsp;→&nbsp; \(x = -6\) or 2</div></div>
+      <div class="check" tabindex="0"><div class="math">2.&nbsp; \(x^2 - 5x - 24 = 0\)</div><div class="math result ans">\((x - 8)(x + 3) = 0\) &nbsp;→&nbsp; \(x = 8\) or \(-3\)</div></div>
     </div>
     <div>
-      <div class="check" tabindex="0"><div class="math">3.&nbsp; 3x<sup>2</sup> + 4x − 15 = 0</div><div class="math result ans">(3x − 5)(x + 3) = 0 &nbsp;→&nbsp; x = 5/3 or −3</div></div>
-      <div class="check" tabindex="0"><div class="math">4.&nbsp; x<sup>2</sup> − 3x − 18 = 0</div><div class="math result ans">(x − 6)(x + 3) = 0 &nbsp;→&nbsp; x = 6 or −3</div></div>
+      <div class="check" tabindex="0"><div class="math">3.&nbsp; \(3x^2 + 4x - 15 = 0\)</div><div class="math result ans">\((3x - 5)(x + 3) = 0\) &nbsp;→&nbsp; \(x = \dfrac{5}{3}\) or \(-3\)</div></div>
+      <div class="check" tabindex="0"><div class="math">4.&nbsp; \(x^2 - 3x - 18 = 0\)</div><div class="math result ans">\((x - 6)(x + 3) = 0\) &nbsp;→&nbsp; \(x = 6\) or \(-3\)</div></div>
     </div>
   </div>
-  <p class="frag small">Number 3 has a ≠ 1, so the two numbers you need multiply to a × c = −45 and add to 4. It is also the one we completed the square on both ways earlier. Three routes, one answer. Factoring wins when it factors, and this one does.</p>
+  <p class="frag small">Number 3 has \(a \ne 1\), so the two numbers you need multiply to \(a \times c = -45\) and add to 4. It is also the one we completed the square on both ways earlier. Three routes, one answer. Factoring wins when it factors, and this one does.</p>
 </section>
 
-<!-- 11 · exit + homework -->
+<!-- 22 · exit + homework -->
 <section class="slide">
   <p class="eyebrow">Exit ticket · 5 min</p>
   <h2>Last check, on paper, handed in.</h2>
-  <div class="check" tabindex="0"><div class="math">Find the discriminant of 2x<sup>2</sup> − 4x + 3 and state the number of real roots.</div><div class="math result ans">Δ = (−4)<sup>2</sup> − 4(2)(3) = 16 − 24 = −8 &nbsp;→&nbsp; no real roots</div></div>
+  <div class="check" tabindex="0"><div class="math">Find the discriminant of \(2x^2 - 4x + 3\) and state the number of real roots.</div><div class="math result ans">\(\Delta = (-4)^2 - 4(2)(3) = 16 - 24 = -8\) &nbsp;→&nbsp; no real roots</div></div>
   <p class="frag" style="margin-top:2.5vh"><b>Homework:</b> finish wkshtC. Extension: Underground Mathematics "Discriminating" card sort.</p>
   <p class="frag">
     <a class="toolchip" href="../vertex-form-explorer/" target="_blank" rel="noopener">Vertex Form Explorer</a>
@@ -1006,446 +508,76 @@ kbd {
   </p>
 </section>
 
-<div class="board" id="board" role="dialog" aria-modal="true" aria-label="Blank board">
-  <canvas id="boardCanvas"></canvas>
-  <div class="board-bar">
-    <button class="swatch" type="button" data-color="#ffffff" style="background:#ffffff" aria-pressed="true" aria-label="White pen"></button>
-    <button class="swatch" type="button" data-color="#00e5ff" style="background:#00e5ff" aria-pressed="false" aria-label="Cyan pen"></button>
-    <button class="swatch" type="button" data-color="#4fe08a" style="background:#4fe08a" aria-pressed="false" aria-label="Green pen"></button>
-    <button class="swatch" type="button" data-color="#ff6b6b" style="background:#ff6b6b" aria-pressed="false" aria-label="Red pen"></button>
-    <button id="bErase" type="button" aria-pressed="false">Erase</button>
-    <span class="sep"></span>
-    <button id="bUndo" type="button" title="Undo (Z)">Undo</button>
-    <button id="bClear" type="button">Clear</button>
-    <span class="sep"></span>
-    <button id="bPrev" type="button" aria-label="Previous board page">&lsaquo;</button>
-    <span class="pg" id="bPage">1 / 1</span>
-    <button id="bNext" type="button" aria-label="Next board page">&rsaquo;</button>
-    <button id="bAdd" type="button" aria-label="New board page">+</button>
-    <span class="sep"></span>
-    <button id="bTheme" type="button" aria-label="Light or dark board">Light</button>
-    <button id="bClose" type="button" title="Back to the slide you left (W)">Done</button>
-  </div>
-</div>
-
-<div class="progress" id="progress"></div>
-<div class="hint" id="hint">← → move · Space next step · W blank board · ? for every key</div>
-
-<div class="hud">
-  <div class="left">
-    <span class="name">1.1 · Session 1</span>
-    <span class="here" id="here"></span>
-  </div>
-  <div class="nav">
-    <span class="timer" id="timer" role="button" tabindex="0" title="Click or press T to start and pause. Shift + T resets.">00:00</span>
-    <button id="prevBtn" type="button" aria-label="Previous">←</button>
-    <span class="count" id="count"></span>
-    <button id="nextBtn" type="button" aria-label="Next">→</button>
-    <button id="boardBtn" type="button" aria-label="Blank board" title="Blank board (W)">Board</button>
-    <button id="gridBtn" type="button" aria-label="All slides" title="All slides (O)"><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="6" height="6" rx="1.5"/><rect x="8" y="0" width="6" height="6" rx="1.5"/><rect x="0" y="8" width="6" height="6" rx="1.5"/><rect x="8" y="8" width="6" height="6" rx="1.5"/></svg></button>
-    <button id="helpBtn" type="button" aria-label="Keyboard help" title="Keys (?)">?</button>
-  </div>
-</div>
-
-<div class="overlay" id="grid" role="dialog" aria-modal="true" aria-label="All slides">
-  <h3>All slides</h3>
-  <div class="grid" id="gridInner"></div>
-</div>
-
-<div class="overlay" id="help" role="dialog" aria-modal="true" aria-label="Keys">
-  <h3>Keys</h3>
-  <div class="keys">
-    <kbd>→</kbd><span>Next step, then next slide. Space and Page Down do the same.</span>
-    <kbd>←</kbd><span>Back one step, then back one slide.</span>
-    <kbd>R</kbd><span>Reveal every step on this slide at once.</span>
-    <kbd>O</kbd><span>All slides. Click any one to jump there. Esc closes.</span>
-    <kbd>T</kbd><span>Start or pause the lesson timer. Shift + T resets it. Turns red at 55 minutes.</span>
-    <kbd>W</kbd><span>Blank board. A full-screen writing surface, from any slide. Pens, eraser, undo (Z), and extra pages. Esc or W returns you to the exact slide you left.</span>
-    <kbd>F</kbd><span>Fullscreen on or off.</span>
-    <kbd>Home</kbd><span>First slide.</span>
-    <kbd>End</kbd><span>Last slide, everything revealed.</span>
-    <kbd>?</kbd><span>This list.</span>
-  </div>
-  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. Drag the sliders on the discriminant and tangency slides.</p>
-</div>
-
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
 <script>
+/* ---------- explorer: slide the parabola through the axis ---------- */
 (function () {
   'use strict';
-  var slides = [].slice.call(document.querySelectorAll('.slide'));
-  var idx = 0;
-  var h = parseInt((location.hash || '').replace('#', ''), 10);
-  if (h >= 1 && h <= slides.length) idx = h - 1;
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (id) { return document.getElementById(id); };
-  var m = function (s) { return String(s).replace(/-/g, '\u2212'); };  /* house style: real minus signs */
-
-  function frags(s) { return [].slice.call(s.querySelectorAll('.frag')); }
-  function titleOf(s) {
-    var t = s.querySelector('h1, h2');
-    return t ? t.textContent.replace(/\s+/g, ' ').trim() : '';
-  }
-
-  /* ---------- navigation ---------- */
-  function show(i, revealAll) {
-    idx = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach(function (s, j) {
-      var on = j === idx;
-      s.classList.toggle('active', on);
-      s.setAttribute('aria-hidden', on ? 'false' : 'true');
-    });
-    frags(slides[idx]).forEach(function (f) { f.classList.toggle('on', !!revealAll); });
-    $('count').textContent = (idx + 1) + ' / ' + slides.length;
-    $('here').textContent = titleOf(slides[idx]);
-    $('progress').style.width = ((idx + 1) / slides.length * 100).toFixed(2) + '%';
-    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
-    markGrid();
-  }
-  function next() {
-    var pending = frags(slides[idx]).filter(function (f) { return !f.classList.contains('on'); });
-    if (pending.length) {
-      pending[0].classList.add('on');
-      try { pending[0].scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {}
-      return;
-    }
-    if (idx < slides.length - 1) show(idx + 1, false);
-  }
-  function prev() {
-    var on = frags(slides[idx]).filter(function (f) { return f.classList.contains('on'); });
-    if (on.length) { on[on.length - 1].classList.remove('on'); return; }
-    if (idx > 0) show(idx - 1, true);
-  }
-  function revealAll() { frags(slides[idx]).forEach(function (f) { f.classList.add('on'); }); }
-
-  /* ---------- overlays ---------- */
-  var grid = $('grid'), help = $('help');
-  function anyOpen() { return grid.classList.contains('open') || help.classList.contains('open'); }
-  function closeOverlays() { grid.classList.remove('open'); help.classList.remove('open'); }
-  function toggleOverlay(el) {
-    var was = el.classList.contains('open');
-    closeOverlays();
-    if (!was) el.classList.add('open');
-  }
-  var gi = $('gridInner');
-  slides.forEach(function (s, j) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'thumb';
-    var eb = s.querySelector('.eyebrow');
-    var num = (j + 1 < 10 ? '0' : '') + (j + 1);
-    b.innerHTML = '<span class="num">' + num + '</span>' +
-      (eb ? '<span class="eb">' + eb.textContent + '</span>' : '') +
-      '<span class="tt">' + titleOf(s) + '</span>';
-    b.addEventListener('click', function () { closeOverlays(); show(j, false); });
-    gi.appendChild(b);
-  });
-  function markGrid() {
-    [].slice.call(gi.children).forEach(function (b, j) { b.classList.toggle('current', j === idx); });
-  }
-  [grid, help].forEach(function (o) {
-    o.addEventListener('click', function (e) { if (e.target === o) closeOverlays(); });
-  });
-
-  /* ---------- lesson timer ---------- */
-  var tEl = $('timer'), tStart = null, tAcc = 0, tTick = null;
-  function fmt(ms) {
-    var s = Math.floor(ms / 1000), m = Math.floor(s / 60); s = s % 60;
-    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-  }
-  function tRender() {
-    var ms = tAcc + (tStart ? Date.now() - tStart : 0);
-    tEl.textContent = fmt(ms);
-    tEl.classList.toggle('late', ms >= 55 * 60 * 1000);
-  }
-  function tToggle() {
-    if (tStart) { tAcc += Date.now() - tStart; tStart = null; clearInterval(tTick); tEl.classList.remove('on'); }
-    else { tStart = Date.now(); tTick = setInterval(tRender, 500); tEl.classList.add('on'); }
-    tRender();
-  }
-  function tReset() { tStart = null; tAcc = 0; clearInterval(tTick); tEl.classList.remove('on', 'late'); tRender(); }
-  tEl.addEventListener('click', tToggle);
-  tEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); tToggle(); }
-  });
-
-  /* ---------- fullscreen ---------- */
-  function fullscreen() {
-    var d = document;
-    if (d.fullscreenElement) { d.exitFullscreen && d.exitFullscreen(); }
-    else if (d.documentElement.requestFullscreen) { d.documentElement.requestFullscreen(); }
-  }
-
-  /* ---------- tap to check ---------- */
-  [].slice.call(document.querySelectorAll('.check')).forEach(function (c) {
-    c.setAttribute('role', 'button');
-    c.setAttribute('aria-expanded', 'false');
-    function toggle() {
-      var open = c.classList.toggle('open');
-      c.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    c.addEventListener('click', function (e) { if (e.target.closest('a')) return; toggle(); });
-    c.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
-    });
-  });
-
-  /* ---------- explorer: slide the parabola through the axis ---------- */
-  (function () {
-    var q = $('ex-disc-q'); if (!q) return;
-    var curve = $('ex-disc-curve'), r1 = $('ex-disc-r1'), r2 = $('ex-disc-r2'),
-        v = $('ex-disc-v'), read = $('ex-disc-read'), verdict = $('ex-disc-verdict');
-    var SX = function (x) { return 150 + x * 30; }, SY = function (y) { return 120 - y * 18; };
-    function draw() {
-      var qv = parseFloat(q.value); if (Math.abs(qv) < 0.05) qv = 0;
-      var pts = [];
-      for (var x = -2.7; x <= 2.701; x += 0.1) pts.push(SX(x).toFixed(1) + ',' + SY(x * x + qv).toFixed(1));
-      curve.setAttribute('points', pts.join(' '));
-      v.setAttribute('cx', SX(0)); v.setAttribute('cy', SY(qv));
-      var D = -4 * qv;
-      read.innerHTML = 'q = ' + m(qv.toFixed(1)) + ' &nbsp;·&nbsp; Δ = −4q = <b>' + m(D.toFixed(1)) + '</b>';
-      if (D > 0) {
-        var r = Math.sqrt(-qv);
-        r1.setAttribute('cx', SX(-r)); r2.setAttribute('cx', SX(r));
-        r1.style.display = ''; r2.style.display = '';
-        verdict.textContent = 'two real roots, x = ±' + r.toFixed(2); verdict.className = 'verdict two';
-      } else if (D === 0) {
-        r1.setAttribute('cx', SX(0)); r1.style.display = ''; r2.style.display = 'none';
-        verdict.textContent = 'one repeated root, x = 0'; verdict.className = 'verdict one';
-      } else {
-        r1.style.display = 'none'; r2.style.display = 'none';
-        verdict.textContent = 'no real roots'; verdict.className = 'verdict none';
-      }
-    }
-    q.addEventListener('input', draw); draw();
-  })();
-
-  /* ---------- explorer: slide the line through the parabola ---------- */
-  (function () {
-    var h = $('ex-tan-h'); if (!h) return;
-    var curve = $('ex-tan-curve'), line = $('ex-tan-line'), r1 = $('ex-tan-r1'), r2 = $('ex-tan-r2'),
-        read = $('ex-tan-read'), verdict = $('ex-tan-verdict');
-    var SX = function (x) { return 150 + x * 30; }, SY = function (y) { return 130 - y * 18; };
+  var m = function (s) { return String(s).replace(/-/g, '−'); };  /* house style: real minus signs */
+  var q = $('ex-disc-q'); if (!q) return;
+  var curve = $('ex-disc-curve'), r1 = $('ex-disc-r1'), r2 = $('ex-disc-r2'),
+      v = $('ex-disc-v'), read = $('ex-disc-read'), verdict = $('ex-disc-verdict');
+  var SX = function (x) { return 150 + x * 30; }, SY = function (y) { return 120 - y * 18; };
+  function draw() {
+    var qv = parseFloat(q.value); if (Math.abs(qv) < 0.05) qv = 0;
     var pts = [];
-    for (var x = -2.6; x <= 2.601; x += 0.1) pts.push(SX(x).toFixed(1) + ',' + SY(x * x).toFixed(1));
+    for (var x = -2.7; x <= 2.701; x += 0.1) pts.push(SX(x).toFixed(1) + ',' + SY(x * x + qv).toFixed(1));
     curve.setAttribute('points', pts.join(' '));
-    function draw() {
-      var hv = parseFloat(h.value); if (Math.abs(hv) < 0.05) hv = 0;
-      line.setAttribute('y1', SY(hv)); line.setAttribute('y2', SY(hv));
-      var D = 4 * hv;
-      read.innerHTML = 'h = ' + m(hv.toFixed(1)) + ' &nbsp;·&nbsp; x<sup>2</sup> − h = 0 &nbsp;·&nbsp; Δ = 4h = <b>' + m(D.toFixed(1)) + '</b>';
-      if (D > 0) {
-        var r = Math.sqrt(hv);
-        r1.setAttribute('cx', SX(-r)); r1.setAttribute('cy', SY(hv));
-        r2.setAttribute('cx', SX(r));  r2.setAttribute('cy', SY(hv));
-        r1.style.display = ''; r2.style.display = '';
-        verdict.textContent = 'cuts twice, x = ±' + r.toFixed(2); verdict.className = 'verdict two';
-      } else if (D === 0) {
-        r1.setAttribute('cx', SX(0)); r1.setAttribute('cy', SY(0));
-        r1.style.display = ''; r2.style.display = 'none';
-        verdict.textContent = 'tangent, touches once at x = 0'; verdict.className = 'verdict one';
-      } else {
-        r1.style.display = 'none'; r2.style.display = 'none';
-        verdict.textContent = 'misses the curve'; verdict.className = 'verdict none';
-      }
+    v.setAttribute('cx', SX(0)); v.setAttribute('cy', SY(qv));
+    var D = -4 * qv;
+    read.innerHTML = 'q = ' + m(qv.toFixed(1)) + ' &nbsp;·&nbsp; Δ = −4q = <b>' + m(D.toFixed(1)) + '</b>';
+    if (D > 0) {
+      var r = Math.sqrt(-qv);
+      r1.setAttribute('cx', SX(-r)); r2.setAttribute('cx', SX(r));
+      r1.style.display = ''; r2.style.display = '';
+      verdict.textContent = 'two real roots, x = ±' + r.toFixed(2); verdict.className = 'verdict two';
+    } else if (D === 0) {
+      r1.setAttribute('cx', SX(0)); r1.style.display = ''; r2.style.display = 'none';
+      verdict.textContent = 'one repeated root, x = 0'; verdict.className = 'verdict one';
+    } else {
+      r1.style.display = 'none'; r2.style.display = 'none';
+      verdict.textContent = 'no real roots'; verdict.className = 'verdict none';
     }
-    h.addEventListener('input', draw); draw();
-  })();
-
-  /* ---------- first-load hint ---------- */
-  var hint = $('hint'), hintT = null;
-  function hideHint() { hint.classList.remove('show'); clearTimeout(hintT); }
-  (function () {
-    var seen = false;
-    try { seen = localStorage.getItem('tib-deck-hint') === '1'; } catch (e) {}
-    if (seen) return;
-    setTimeout(function () { hint.classList.add('show'); }, 900);
-    hintT = setTimeout(hideHint, 7000);
-    try { localStorage.setItem('tib-deck-hint', '1'); } catch (e) {}
-  })();
-
-  /* ---------- title entrance, once ---------- */
-  if (idx === 0 && !reduce) {
-    document.body.classList.add('intro');
-    setTimeout(function () { document.body.classList.remove('intro'); }, 2200);
   }
+  q.addEventListener('input', draw); draw();
+})();
 
-  /* ---------- buttons ---------- */
-  $('nextBtn').addEventListener('click', next);
-  $('prevBtn').addEventListener('click', prev);
-  $('gridBtn').addEventListener('click', function () { toggleOverlay(grid); });
-  $('helpBtn').addEventListener('click', function () { toggleOverlay(help); });
-
-  /* ---------- blank board ----------
-     A full-screen writing surface that replaces the slide rather than drawing
-     over it. Strokes are stored normalized (0..1) so a resize, a rotate or
-     entering fullscreen redraws them correctly instead of stretching them. */
-  var boardOn = false;
-  var toggleBoard;
-  (function () {
-    var wrap = $('board'), cv = $('boardCanvas'), ctx = cv.getContext('2d');
-    var pages = [[]], pi = 0;
-    var color = '#ffffff', size = 4, erasing = false;
-    var drawing = false, cur = null, penSeen = false;
-
-    function W() { return wrap.clientWidth; }
-    function H() { return wrap.clientHeight; }
-
-    function resize() {
-      var r = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(W() * r); cv.height = Math.round(H() * r);
-      ctx.setTransform(r, 0, 0, r, 0, 0);
-      redraw();
+/* ---------- explorer: slide the line through the parabola ---------- */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var m = function (s) { return String(s).replace(/-/g, '−'); };
+  var h = $('ex-tan-h'); if (!h) return;
+  var curve = $('ex-tan-curve'), line = $('ex-tan-line'), r1 = $('ex-tan-r1'), r2 = $('ex-tan-r2'),
+      read = $('ex-tan-read'), verdict = $('ex-tan-verdict');
+  var SX = function (x) { return 150 + x * 30; }, SY = function (y) { return 130 - y * 18; };
+  var pts = [];
+  for (var x = -2.6; x <= 2.601; x += 0.1) pts.push(SX(x).toFixed(1) + ',' + SY(x * x).toFixed(1));
+  curve.setAttribute('points', pts.join(' '));
+  function draw() {
+    var hv = parseFloat(h.value); if (Math.abs(hv) < 0.05) hv = 0;
+    line.setAttribute('y1', SY(hv)); line.setAttribute('y2', SY(hv));
+    var D = 4 * hv;
+    read.innerHTML = 'h = ' + m(hv.toFixed(1)) + ' &nbsp;·&nbsp; x<sup>2</sup> − h = 0 &nbsp;·&nbsp; Δ = 4h = <b>' + m(D.toFixed(1)) + '</b>';
+    if (D > 0) {
+      var r = Math.sqrt(hv);
+      r1.setAttribute('cx', SX(-r)); r1.setAttribute('cy', SY(hv));
+      r2.setAttribute('cx', SX(r));  r2.setAttribute('cy', SY(hv));
+      r1.style.display = ''; r2.style.display = '';
+      verdict.textContent = 'cuts twice, x = ±' + r.toFixed(2); verdict.className = 'verdict two';
+    } else if (D === 0) {
+      r1.setAttribute('cx', SX(0)); r1.setAttribute('cy', SY(0));
+      r1.style.display = ''; r2.style.display = 'none';
+      verdict.textContent = 'tangent, touches once at x = 0'; verdict.className = 'verdict one';
+    } else {
+      r1.style.display = 'none'; r2.style.display = 'none';
+      verdict.textContent = 'misses the curve'; verdict.className = 'verdict none';
     }
-    function style(s) {
-      ctx.globalCompositeOperation = s.erase ? 'destination-out' : 'source-over';
-      ctx.strokeStyle = s.color; ctx.lineWidth = s.size;
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    }
-    function redraw() {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.clearRect(0, 0, W(), H());
-      pages[pi].forEach(function (s) {
-        if (!s.pts.length) return;
-        style(s);
-        ctx.beginPath();
-        s.pts.forEach(function (p, i) {
-          var x = p[0] * W(), y = p[1] * H();
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
-        if (s.pts.length === 1) ctx.lineTo(s.pts[0][0] * W() + 0.01, s.pts[0][1] * H());
-        ctx.stroke();
-      });
-      ctx.globalCompositeOperation = 'source-over';
-      $('bPage').textContent = (pi + 1) + ' / ' + pages.length;
-    }
-    function seg(s, a, b) {
-      style(s);
-      ctx.beginPath();
-      ctx.moveTo(a[0] * W(), a[1] * H());
-      ctx.lineTo(b[0] * W(), b[1] * H());
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-    }
-    function at(e) { return [e.clientX / W(), e.clientY / H()]; }
-    function reject(e) { return penSeen && e.pointerType === 'touch'; }  /* palm rejection once a stylus is seen */
-
-    cv.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'pen') penSeen = true;
-      if (reject(e)) return;
-      e.preventDefault();
-      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
-      drawing = true;
-      cur = { color: color, size: erasing ? size * 7 : size, erase: erasing, pts: [at(e)] };
-      pages[pi].push(cur);
-      seg(cur, cur.pts[0], cur.pts[0]);
-    });
-    cv.addEventListener('pointermove', function (e) {
-      if (!drawing || !cur || reject(e)) return;
-      e.preventDefault();
-      var p = at(e);
-      seg(cur, cur.pts[cur.pts.length - 1], p);
-      cur.pts.push(p);
-    });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
-      cv.addEventListener(ev, function () { drawing = false; cur = null; });
-    });
-
-    [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (b) {
-      b.addEventListener('click', function () {
-        color = b.getAttribute('data-color');
-        erasing = false; $('bErase').setAttribute('aria-pressed', 'false');
-        [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (o) {
-          o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
-        });
-      });
-    });
-    $('bErase').addEventListener('click', function () {
-      erasing = !erasing;
-      this.setAttribute('aria-pressed', erasing ? 'true' : 'false');
-    });
-    function undo() { pages[pi].pop(); redraw(); }
-    $('bUndo').addEventListener('click', undo);
-    $('bClear').addEventListener('click', function () { pages[pi] = []; redraw(); });
-    $('bPrev').addEventListener('click', function () { if (pi > 0) { pi--; redraw(); } });
-    $('bNext').addEventListener('click', function () { if (pi < pages.length - 1) { pi++; redraw(); } });
-    $('bAdd').addEventListener('click', function () { pages.splice(pi + 1, 0, []); pi++; redraw(); });
-    $('bTheme').addEventListener('click', function () {
-      var lightNow = wrap.classList.toggle('light');
-      this.textContent = lightNow ? 'Dark' : 'Light';
-      /* swap the default ink so it stays visible against the new ground */
-      var from = lightNow ? '#ffffff' : '#14141a', to = lightNow ? '#14141a' : '#ffffff';
-      var sw = wrap.querySelector('.swatch[data-color="' + from + '"]');
-      if (sw) { sw.setAttribute('data-color', to); sw.style.background = to; if (color === from) color = to; }
-      redraw();
-    });
-    $('bClose').addEventListener('click', function () { toggleBoard(false); });
-
-    window.addEventListener('resize', function () { if (boardOn) resize(); });
-
-    toggleBoard = function (want) {
-      boardOn = (want === undefined) ? !boardOn : !!want;
-      wrap.classList.toggle('on', boardOn);
-      document.body.classList.toggle('boarding', boardOn);
-      if (boardOn) { closeOverlays(); resize(); }
-    };
-    wrap.__undo = undo;
-    wrap.__page = function (d) {
-      if (d < 0 && pi > 0) { pi--; redraw(); }
-      else if (d > 0 && pi < pages.length - 1) { pi++; redraw(); }
-    };
-  })();
-  $('boardBtn').addEventListener('click', function () { toggleBoard(); });
-
-  /* ---------- keys ---------- */
-  document.addEventListener('keydown', function (e) {
-    var t = e.target;
-    var widget = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.closest('.check') || t.closest('.timer'));
-    if (widget && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter'].indexOf(e.key) >= 0) return;
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (boardOn) {
-      if (e.key === 'Escape' || e.key === 'w' || e.key === 'W') { e.preventDefault(); toggleBoard(false); }
-      else if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); $('board').__undo(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); $('board').__page(-1); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); $('board').__page(1); }
-      return;
-    }
-    if (e.key === 'Escape') { closeOverlays(); return; }
-    if (anyOpen() && e.key !== 'o' && e.key !== 'O' && e.key !== '?') return;
-    switch (e.key) {
-      case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); next(); break;
-      case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
-      case 'Home': e.preventDefault(); show(0, false); break;
-      case 'End': e.preventDefault(); show(slides.length - 1, true); break;
-      case 'r': case 'R': revealAll(); break;
-      case 'o': case 'O': toggleOverlay(grid); break;
-      case '?': toggleOverlay(help); break;
-      case 't': case 'T': e.shiftKey ? tReset() : tToggle(); break;
-      case 'f': case 'F': fullscreen(); break;
-      case 'w': case 'W': e.preventDefault(); toggleBoard(true); break;
-      default: return;
-    }
-    hideHint();
-  });
-
-  /* ---------- swipe ---------- */
-  var tx = null, ty = null;
-  document.addEventListener('touchstart', function (e) {
-    if (e.touches.length !== 1) return;
-    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    if (tx === null) return;
-    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    tx = ty = null;
-    if (anyOpen() || e.target.closest('input, .check, .explore, .hud')) return;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { dx < 0 ? next() : prev(); hideHint(); }
-  }, { passive: true });
-
-  window.addEventListener('hashchange', function () {
-    var n = parseInt((location.hash || '').replace('#', ''), 10);
-    if (n >= 1 && n <= slides.length && n - 1 !== idx) show(n - 1, false);
-  });
-
-  show(idx, false);
+  }
+  h.addEventListener('input', draw); draw();
 })();
 </script>
 </body>

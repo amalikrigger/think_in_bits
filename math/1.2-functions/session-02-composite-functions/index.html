@@ -2,662 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Functions That Feed Each Other</title>
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* on projector widths, keep each inline expression on one line so "x = 2" never splits across a wrap;
+       on a phone a long line has to be allowed to break */
+  </style>
 </head>
-<body>
-<title>Functions That Feed Each Other</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<style>
-/* ============================================================
-   THINK IN BITS · 9709 deck system
-   Tokens mirror www.thinkinbits.site so classroom material and
-   the public site read as one brand.
-
-   Committed dark, single theme. A projected deck must look
-   identical every time it is opened, regardless of the laptop's
-   OS theme setting. The @media print block at the bottom flips
-   every token to dark-on-white for the PDF export.
-
-   Slide archetypes this system supports:
-     title · do-now · direct instruction (prose / stepped table /
-     diagram trio / two-card compare) · worked example (question
-     card + stepped solve) · practice · exit
-   ============================================================ */
-
-:root {
-  /* ground + surfaces */
-  --ground:       #0a0a0a;
-  --ground-far:   #1a1a2e;
-  --surface:      #1a1a1a;
-  --surface-lift: #2a2a2a;
-
-  /* accent */
-  --accent:       #00e5ff;
-  --accent-deep:  #0099cc;
-  --accent-wash:  rgba(0,229,255,0.10);
-  --accent-line:  rgba(0,229,255,0.30);
-
-  /* text */
-  --text:         #ffffff;
-  --text-2:       #b0b0b0;
-
-  /* structure */
-  --hairline:     rgba(255,255,255,0.07);
-  --axis:         rgba(255,255,255,0.85);
-
-  /* semantic, separate from the accent */
-  --ok:           #4fe08a;
-  --warn:         #ff6b6b;
-
-  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
-  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
-
-  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  color-scheme: dark;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-
-body {
-  margin: 0;
-  background: var(--ground);
-  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
-  background-attachment: fixed;
-  color: var(--text);
-  font-family: var(--font);
-  line-height: 1.5;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- slide shell ---------- */
-.slide {
-  position: absolute; inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-content: safe center;   /* keeps overflow scrollable when content is tall */
-  gap: 1.5vh;
-  padding: 8vh 7vw 13vh;
-  overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.slide.active {
-  visibility: visible; opacity: 1; transform: none;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s;
-}
-.slide > * { margin: 0; }
-
-/* ---------- typography ---------- */
-h1 {
-  font-size: clamp(32px, 5.4vw, 60px);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  text-wrap: balance;
-}
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  h1 {
-    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  /* The gradient is painted inside the element's box and the glyphs are cut out
-     of it, so any ink outside that box gets no paint at all. At line-height 1.08
-     Poppins overhangs the box by about 9px at 60px, which sliced the descender
-     off the g in "Solving". Pad the box out to cover the overhang and pull the
-     same amount back as negative margin so the layout is unchanged.
-     .slide > h1 is needed to beat `.slide > * { margin: 0 }`. */
-  .slide > h1 { padding: 0.18em 0; margin: -0.18em 0; }
-}
-
-h2 {
-  font-size: clamp(25px, 3.7vw, 43px);
-  font-weight: 600;
-  line-height: 1.16;
-  letter-spacing: -0.015em;
-  color: var(--accent);
-  text-wrap: balance;
-}
-
-p, li {
-  font-size: clamp(16px, 2.05vw, 24px);
-  color: var(--text);
-  max-width: 66ch;
-}
-ul { padding-left: 1.15em; }
-li + li { margin-top: 1.2vh; }
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.22vw, 14px);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--accent);
-}
-
-.small { font-size: clamp(13.5px, 1.62vw, 19px); color: var(--text-2); }
-/* Anything inside an eyebrow whose case carries meaning: a worksheet part label
-   like (a), or a variable. The eyebrow is uppercased, and uppercasing either one
-   changes what it says. */
-.eyebrow .lit, .thumb .eb .lit { text-transform: none; letter-spacing: 0.05em; }
-.muted { color: var(--text-2); }
-/* semantic colors declared after .small so they win at equal specificity */
-.good { color: var(--ok); }
-.bad  { color: var(--warn); }
-.marks { color: var(--accent); font-weight: 600; }
-
-/* ---------- math blocks ---------- */
-.math {
-  font-family: var(--mono);
-  font-size: clamp(16px, 2.25vw, 28px);
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
-  padding: 1.5vh 1.4vw;
-  max-width: max-content;
-  font-variant-numeric: tabular-nums;
-}
-.math.small { font-size: clamp(13.5px, 1.72vw, 20px); color: var(--text); }
-/* a result, not a step: tinted and lit so answers read differently from working */
-.math.result {
-  background: var(--accent-wash);
-  border-color: var(--accent-line);
-  color: var(--accent);
-  box-shadow: var(--shadow-glow);
-}
-.math sup, li sup, p sup, span sup { font-size: 0.62em; }
-
-/* ---------- cards ---------- */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1vh;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 20px;
-  padding: 2.4vh 1.8vw;
-  box-shadow: var(--shadow-card);
-}
-.card > * { margin: 0; }
-
-.cols { display: flex; gap: 3vw; flex-wrap: wrap; align-items: flex-start; }
-.cols > div { flex: 1 1 260px; display: flex; flex-direction: column; gap: 1.2vh; }
-
-/* ---------- agenda + stepped tables ---------- */
-.agenda { display: flex; flex-direction: column; gap: 1.1vh; }
-.agenda .row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 2vw;
-  padding-bottom: 1.1vh;
-  border-bottom: 1px solid var(--hairline);
-  font-size: clamp(14.5px, 1.92vw, 23px);
-}
-.agenda .t {
-  font-family: var(--mono);
-  font-size: 0.92em;
-  color: var(--accent);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.agenda .t.good { color: var(--ok); }
-.agenda .t.bad  { color: var(--warn); }
-.steps .n {
-  font-family: var(--mono);
-  font-weight: 700;
-  color: var(--accent);
-  margin-right: 0.8em;
-}
-
-/* ---------- tool links ---------- */
-.toolchip {
-  display: inline-block;
-  font-family: var(--font);
-  font-size: clamp(13px, 1.55vw, 18px);
-  font-weight: 500;
-  color: var(--accent);
-  background: var(--accent-wash);
-  border: 1px solid var(--accent-line);
-  border-radius: 50px;
-  padding: 0.9vh 1.6vw;
-  margin: 0.4vh 0.4vw 0 0;
-  text-decoration: none;
-  transition: background .2s ease, box-shadow .2s ease;
-}
-.toolchip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
-.toolchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* ---------- diagram trios ---------- */
-.cases { display: flex; gap: 2.6vw; flex-wrap: wrap; align-items: flex-start; }
-.cases .c { display: flex; flex-direction: column; gap: 0.7vh; text-align: center; }
-.cases .lab {
-  font-family: var(--mono);
-  font-size: clamp(13px, 1.6vw, 19px);
-  color: var(--text-2);
-}
-.cases .lab b { color: var(--text); }
-svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
-
-/* ---------- two-route compare slides ----------
-   Both columns plus a shared answer have to fit a 900px projector
-   without scrolling mid-explanation, so this archetype runs denser
-   than the rest of the deck. */
-.slide.duo { gap: 0.75vh; padding-top: 5vh; padding-bottom: 9.5vh; }
-.slide.duo h2 { font-size: clamp(22px, 3.1vw, 35px); }
-.slide.duo .cols { gap: 2vw; align-items: stretch; }
-.slide.duo .cols > div { display: flex; }
-.slide.duo .cols > div > .card { flex: 1; }
-.slide.duo .card svg { max-width: 320px; margin: 0 auto; }
-.slide.duo .card { padding: 1.3vh 1.3vw; gap: 0.42vh; }
-.slide.duo .card .small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.34; }
-.slide.duo .card .math { padding: 0.85vh 1vw; font-size: clamp(12.5px, 1.5vw, 17.5px); }
-.slide.duo > .math { padding: 1vh 1.2vw; }
-.slide.duo .card ul { padding-left: 1.05em; margin: 0; }
-.slide.duo .card li + li { margin-top: 0.35vh; }
-.slide.duo .card li.small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.32; }
-.slide.duo .card .math.result { font-size: clamp(15px, 1.95vw, 23px); padding: 0.8vh 1.1vw; }
-
-/* ---------- stepped reveal ---------- */
-.frag { visibility: hidden; opacity: 0; transform: translateY(8px); transition: opacity .28s ease, transform .28s ease; }
-.frag.on { visibility: visible; opacity: 1; transform: none; }
-/* A revealed .frag sets visibility:visible, which beats the hidden visibility
-   it would otherwise inherit from a slide that is no longer active. Left alone,
-   steps revealed on an earlier slide keep sitting over the live one at opacity 0
-   and swallow taps meant for it. Belt and braces: kill the visibility and the
-   pointer events on every slide that is not the one on screen. */
-.slide:not(.active) { pointer-events: none; }
-.slide:not(.active) .frag.on { visibility: hidden; }
-
-/* ---------- blank board: a full-screen writing surface, any time ----------
-   Deliberately NOT an annotation layer over the slides. Amali asked for a
-   clean surface to work equations on, so this replaces the view entirely
-   and the slide underneath is untouched when you come back. */
-.board { position: fixed; inset: 0; z-index: 40; display: none; background: #0d0d12; touch-action: none; }
-.board.on { display: block; }
-.board.light { background: #f7f7f5; }
-.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
-
-.board-bar {
-  /* left:0;right:0 + margin auto, NOT left:50%+translate. With left:50% the bar's
-     shrink-to-fit width is capped at half the viewport and the toolbar wraps. */
-  position: absolute; left: 0; right: 0; bottom: 2.2vh; margin: 0 auto;
-  width: max-content;
-  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: center;
-  max-width: 96vw; padding: 8px 11px; border-radius: 50px; z-index: 2;
-  background: rgba(18,18,24,0.92); border: 1px solid var(--hairline);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
-}
-.board.light .board-bar { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.13); }
-.board-bar button {
-  font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer;
-  color: var(--text); background: var(--surface-lift);
-  border: 1px solid var(--hairline); border-radius: 50px;
-  padding: 10px 14px; min-height: 46px;
-  transition: border-color .15s ease, background .15s ease;
-}
-.board.light .board-bar button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
-.board-bar button:hover { border-color: var(--accent-line); }
-.board-bar button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
-.board-bar .swatch { width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
-.board-bar .swatch[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255,255,255,0.55); }
-.board.light .board-bar .swatch[aria-pressed="true"] { border-color: #14141a; box-shadow: 0 0 0 2px #fff; }
-.board-bar .sep { width: 1px; height: 26px; background: var(--hairline); }
-.board.light .board-bar .sep { background: rgba(0,0,0,0.15); }
-.board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
-.board.light .board-bar .pg { color: #55555f; }
-
-/* ---------- progress rail + HUD ---------- */
-.progress {
-  position: fixed; top: 0; left: 0;
-  height: 3px; width: 0;
-  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
-  box-shadow: 0 0 12px rgba(0,229,255,0.5);
-  transition: width .3s ease;
-  z-index: 6;
-}
-
-.hud {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.4vh 2.4vw;
-  border-top: 1px solid var(--hairline);
-  background: rgba(10,10,10,0.82);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 5;
-}
-.hud .name {
-  font-family: var(--mono);
-  font-size: clamp(10px, 1.15vw, 13px);
-  letter-spacing: 0.06em;
-  color: var(--text-2);
-}
-.hud .nav { display: flex; align-items: center; gap: 12px; }
-.hud button {
-  font-family: var(--font);
-  font-size: clamp(13px, 1.4vw, 16px);
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--text);
-  background: var(--surface-lift);
-  border: 1px solid var(--hairline);
-  border-radius: 50px;
-  padding: 0.5vh 1.3vw;
-  min-width: 46px;
-  transition: background .18s ease, border-color .18s ease;
-}
-.hud button:hover { background: #333; border-color: var(--accent-line); }
-.hud button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .count {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2);
-  min-width: 66px; text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-
-/* ---------- parabolas draw themselves on ---------- */
-svg.mini path { stroke-dasharray: 320; stroke-dashoffset: 320; }
-.slide.active .cases:not(.frag) svg.mini path,
-.cases.frag.on svg.mini path { animation: draw .9s ease-out forwards; }
-svg.mini circle { opacity: 0; transition: opacity .3s ease .75s; }
-.slide.active .cases:not(.frag) svg.mini circle,
-.cases.frag.on svg.mini circle { opacity: 1; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-
-/* ---------- title entrance, first load only ---------- */
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-body.intro .slide.active > .eyebrow { animation: rise .5s ease-out both; }
-body.intro .slide.active > h1 { animation: rise .6s ease-out .15s both; }
-body.intro .slide.active .agenda .row { animation: rise .5s ease-out both; }
-body.intro .slide.active .agenda .row:nth-child(1) { animation-delay: .35s; }
-body.intro .slide.active .agenda .row:nth-child(2) { animation-delay: .43s; }
-body.intro .slide.active .agenda .row:nth-child(3) { animation-delay: .51s; }
-body.intro .slide.active .agenda .row:nth-child(4) { animation-delay: .59s; }
-body.intro .slide.active .agenda .row:nth-child(5) { animation-delay: .67s; }
-body.intro .slide.active .agenda .row:nth-child(6) { animation-delay: .75s; }
-
-/* ---------- tap to check ---------- */
-.check { display: flex; flex-direction: column; gap: 0.8vh; cursor: pointer; border-radius: 16px; }
-.check > .math:first-child { transition: border-color .15s ease, box-shadow .15s ease; }
-.check:hover > .math:first-child { border-color: var(--accent-line); }
-.check:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.check > .math:first-child::after {
-  content: "tap to check";
-  font-family: var(--mono); font-size: clamp(9px, 0.95vw, 11px);
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-2); margin-left: 1.4em; vertical-align: middle;
-}
-.check.open > .math:first-child::after { content: "tap to hide"; }
-.check .ans { display: none; }
-.check.open .ans { display: block; animation: rise .3s ease-out both; }
-
-/* ---------- live explorers ---------- */
-.explore {
-  display: flex; gap: 2.5vw; align-items: center; flex-wrap: wrap;
-  background: var(--surface); border: 1px solid var(--hairline);
-  border-radius: 20px; padding: 2vh 1.8vw; box-shadow: var(--shadow-card);
-}
-.explore svg { width: clamp(200px, 27vw, 340px); height: auto; display: block; flex: 0 0 auto; }
-.explore .panel { display: flex; flex-direction: column; gap: 0.8vh; flex: 1 1 220px; min-width: 200px; }
-.explore label {
-  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px);
-  color: var(--text-2); letter-spacing: .04em;
-}
-.explore input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.explore input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-.explore .read { font-family: var(--mono); font-size: clamp(15px, 1.9vw, 22px); color: var(--text); font-variant-numeric: tabular-nums; }
-.explore .read b { color: var(--accent); font-weight: 700; }
-.explore .verdict { font-weight: 600; font-size: clamp(15px, 1.9vw, 22px); }
-.explore .verdict.two  { color: var(--ok); }
-.explore .verdict.one  { color: var(--accent); }
-.explore .verdict.none { color: var(--warn); }
-
-/* ---------- HUD extras ---------- */
-.hud .left { display: flex; align-items: baseline; gap: 1.2vw; min-width: 0; }
-.hud .here {
-  font-size: clamp(11px, 1.25vw, 14px); color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 34vw;
-}
-.hud .timer {
-  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2); min-width: 64px; text-align: center;
-  font-variant-numeric: tabular-nums; cursor: pointer; user-select: none;
-  border-radius: 50px; padding: 0.4vh 0.8vw; border: 1px solid transparent;
-}
-.hud .timer:hover { border-color: var(--hairline); }
-.hud .timer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .timer.on { color: var(--accent); }
-.hud .timer.late { color: var(--warn); }
-.hud button svg { display: block; }
-
-/* ---------- first-load hint ---------- */
-.hint {
-  position: fixed; left: 50%; top: 3vh;
-  transform: translateX(-50%) translateY(-8px);
-  background: var(--surface-lift); border: 1px solid var(--accent-line);
-  border-radius: 50px; padding: 1vh 1.8vw;
-  font-family: var(--mono); font-size: clamp(11px, 1.2vw, 14px); color: var(--text);
-  box-shadow: var(--shadow-glow); z-index: 7;
-  opacity: 0; visibility: hidden;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.hint.show { opacity: 1; visibility: visible; transform: translateX(-50%); transition: opacity .3s ease, transform .3s ease, visibility 0s; }
-
-/* ---------- overlays: all slides, key help ---------- */
-.overlay {
-  position: fixed; inset: 0; z-index: 20;
-  background: rgba(10,10,10,0.93);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  display: flex; flex-direction: column;
-  padding: 6vh 6vw 8vh; overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transition: opacity .25s ease, visibility 0s linear .25s;
-}
-.overlay.open { visibility: visible; opacity: 1; transition: opacity .25s ease, visibility 0s; }
-.overlay h3 { font-size: clamp(20px, 2.6vw, 30px); font-weight: 600; color: var(--accent); margin: 0 0 2.4vh; }
-.overlay .close { position: fixed; top: 2.4vh; right: 2.4vw; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.4vw; }
-.thumb {
-  display: flex; flex-direction: column; gap: 0.6vh; text-align: left;
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px;
-  padding: 1.6vh 1.2vw; cursor: pointer; color: var(--text); font: inherit;
-  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
-}
-.thumb:hover, .thumb:focus-visible { border-color: var(--accent-line); transform: translateY(-2px); box-shadow: var(--shadow-glow); outline: none; }
-.thumb.current { border-color: var(--accent); }
-.thumb .num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .12em; }
-.thumb .eb  { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; }
-.thumb .tt  { font-size: clamp(14px, 1.3vw, 17px); font-weight: 500; line-height: 1.3; }
-.keys { display: grid; grid-template-columns: auto 1fr; gap: 1.4vh 2.2vw; align-items: center; max-width: 680px; }
-.keys span { color: var(--text-2); font-size: clamp(14px, 1.5vw, 18px); }
-kbd {
-  font-family: var(--mono); font-size: 0.85em; color: var(--text);
-  background: var(--surface-lift); border: 1px solid var(--hairline); border-bottom-width: 2px;
-  border-radius: 8px; padding: 2px 10px; white-space: nowrap;
-}
-
-
-/* ---------- sign table on the number line ----------
-   A compact grid of signs, one column per region. Runs in the mono face
-   so the + and − line up under each other at projector distance. */
-.sgn {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 0.3vh 0;
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.4vw, 16px);
-  font-variant-numeric: tabular-nums;
-}
-.sgn th, .sgn td {
-  border: 1px solid var(--hairline);
-  padding: 0.4vh 0.4vw;
-  text-align: center;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.sgn th { color: var(--text-2); }
-.sgn tr:last-child th, .sgn tr:last-child td {
-  border-top: 1px solid var(--accent-line);
-  font-weight: 700;
-}
-.slide.duo .card .sgn { font-size: clamp(10.5px, 1.25vw, 14px); }
-.slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 0.3vh 0.3vw; }
-.sgn td.zero { color: var(--accent); font-weight: 700; }
-
-/* a lookup table, not a sign table: no bolded final row, and the word columns
-   read left-aligned because they are prose, not signs */
-.sgn.lookup tr:last-child th, .sgn.lookup tr:last-child td { border-top: 1px solid var(--hairline); font-weight: 500; }
-.sgn.lookup td:nth-child(2), .sgn.lookup td:nth-child(3),
-.sgn.lookup th:nth-child(2), .sgn.lookup th:nth-child(3) { text-align: left; padding-left: 0.7vw; }
-.sgn.lookup td:first-child { font-weight: 700; color: var(--text); }
-
-/* the region readout on the between/outside explorer: colored by which
-   shape the answer takes, so the swap is visible before it is read */
-.explore .verdict.between { color: var(--ok); font-family: var(--mono); }
-.explore .verdict.outside { color: var(--accent); font-family: var(--mono); }
-
-/* ---------- narrow and short screens: clear the HUD, and breathe ----------
-   The slide's bottom padding is in vh, and the HUD is a fixed bar in px, so on a
-   short or narrow viewport the last line of a slide slid underneath it. Below the
-   projector widths the padding gets a px floor, and everything that is measured in
-   vh (card padding, column gaps) gets a px value instead, because a vh gap on a
-   700px-tall phone is not a gap at all. Projector sizes are untouched, so the
-   900px gate is unaffected. */
-@media (max-width: 1000px) {
-  .slide { padding: 6vh 6vw max(13vh, 124px); gap: 14px; }
-  .slide.duo { padding-top: 5vh; padding-bottom: max(9.5vh, 124px); gap: 14px; }
-  .cols, .slide.duo .cols { gap: 18px; }
-  .cols > div { gap: 12px; }
-  .card { padding: 18px 18px; gap: 12px; }
-  .slide.duo .card { padding: 18px 18px; gap: 10px; }
-  .slide.duo .card .small, .slide.duo .card li.small { font-size: 15px; line-height: 1.5; }
-  .slide.duo .card .math { font-size: 16px; padding: 10px 14px; }
-  .slide.duo .card .math.result { font-size: 19px; padding: 10px 14px; }
-  .small { font-size: 15.5px; line-height: 1.55; }
-  li + li, .slide.duo .card li + li { margin-top: 8px; }
-  .sgn, .slide.duo .card .sgn { font-size: 13px; }
-  .sgn th, .sgn td, .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 6px 5px; }
-  .explore { padding: 18px 18px; gap: 18px; }
-}
-
-/* ---------- reduced motion: everything settles instantly ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .slide, .frag, .progress, .overlay, .hint, .thumb, .toolchip, .check > .math:first-child { transition: none !important; }
-  svg.mini path { stroke-dashoffset: 0; animation: none !important; }
-  svg.mini circle { opacity: 1; transition: none; }
-  body.intro .slide.active > *, body.intro .slide.active .agenda .row { animation: none !important; }
-  .check.open .ans { animation: none; }
-}
-
-/* ---------- print: flip every token to dark-on-white ---------- */
-@media print {
-  :root {
-    --ground: #ffffff; --ground-far: #ffffff;
-    --surface: #f4f6f8; --surface-lift: #eceff2;
-    --accent: #0072a3; --accent-deep: #005b82;
-    --accent-wash: rgba(0,114,163,0.08);
-    --accent-line: rgba(0,114,163,0.35);
-    --text: #10161f; --text-2: #4a5563;
-    --hairline: rgba(16,22,31,0.16);
-    --axis: rgba(16,22,31,0.85);
-    --ok: #1c7a4f; --warn: #b03a2b;
-    --shadow-card: none; --shadow-glow: none;
-    color-scheme: light;
-  }
-  body { background: #fff; background-image: none; overflow: visible; }
-  .slide {
-    display: flex !important;
-    visibility: visible !important; opacity: 1 !important; transform: none !important;
-    position: static;
-    page-break-after: always;
-    height: auto; min-height: 92vh;
-    overflow: visible;
-    padding: 4vh 5vw;
-  }
-  .frag, .slide:not(.active) .frag.on { visibility: visible !important; opacity: 1; transform: none; }
-  .slide:not(.active) { pointer-events: auto; }
-  .hud, .progress, .hint, .overlay, .board { display: none !important; }
-  svg.mini path { stroke-dashoffset: 0 !important; animation: none !important; }
-  svg.mini circle { opacity: 1 !important; }
-  .check .ans { display: block; }
-  .check > .math:first-child::after { content: none; }
-  .explore input, .explore label { display: none; }
-  /* the gradient-clipped h1 would print as invisible text */
-  h1 {
-    background: none !important;
-    color: var(--text) !important;
-    -webkit-text-fill-color: currentColor;
-  }
-}
-
-/* ---------- 1.2 additions, built on the same tokens ---------- */
-.math .lbl { color: var(--text-2); font-size: 0.78em; }
-.quote {
-  border-left: 3px solid var(--accent); padding: 0.4vh 0 0.4vh 1.1vw;
-  font-style: italic; color: var(--text-2);
-  font-size: clamp(13.5px, 1.55vw, 18px); max-width: 80ch;
-}
-.warnbox { border-color: rgba(255,107,107,0.35); }
-.warnbox .eyebrow { color: var(--warn); }
-.fnrow { display: flex; gap: 0.8vw; flex-wrap: wrap; }
-.fnrow .math { padding: 0.9vh 1.2vw; }
-
-/* live labs: a graph beside a working panel */
-.lab { display: flex; gap: 2vw; align-items: center; flex-wrap: wrap;
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px;
-  padding: 1.6vh 1.6vw; box-shadow: var(--shadow-card); }
-.lab .fig, .lab canvas { display: block; width: min(460px, 38vw); height: auto; flex: 0 0 auto;
-  background: #0f0f0f; border-radius: 14px; }
-.lab .panel { display: flex; flex-direction: column; gap: 0.9vh; flex: 1 1 260px; min-width: 240px; }
-.lab label { font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2); letter-spacing: .04em; }
-.lab input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.lab input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-.lab .read { font-family: var(--mono); font-size: clamp(13px, 1.55vw, 18px); line-height: 1.7; font-variant-numeric: tabular-nums; }
-.lab .read .lw { color: var(--text-2); }
-.lab .read b { color: var(--accent); }
-.lab .verdict { font-family: var(--mono); font-size: clamp(13px, 1.5vw, 17px); font-weight: 600;
-  border-radius: 12px; padding: 0.9vh 1vw; border: 1px solid var(--hairline); line-height: 1.45; }
-.lab .verdict.ok { color: var(--ok); border-color: rgba(79,224,138,0.45); background: rgba(79,224,138,0.08); }
-.lab .verdict.no { color: var(--warn); border-color: rgba(255,107,107,0.45); background: rgba(255,107,107,0.08); }
-.picks { display: flex; gap: 0.5vw; flex-wrap: wrap; }
-.picks button {
-  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
-  color: var(--text); background: var(--surface-lift); border: 1px solid var(--hairline);
-  border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px;
-}
-.picks button:hover { border-color: var(--accent-line); }
-.picks button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
-.lab .toggle { align-self: flex-start; font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
-  color: var(--accent); background: transparent; border: 1px solid var(--accent-line); border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px; }
-.lab .toggle[aria-pressed="true"] { background: var(--accent-wash); }
-@media (max-width: 1000px) {
-  .lab { padding: 16px; gap: 16px; }
-  .lab .fig, .lab canvas { width: 100%; max-width: 460px; }
-}
-@media print { .lab input, .picks, .lab .toggle { display: none; } }
-p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
-.lab .cval { color: var(--accent); font-weight: 700; }
-.fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.12em; line-height: 1.12; font-size: 0.92em; }
-.fr > i { font-style: normal; padding: 0 0.18em; }
-.fr > i:first-child { border-bottom: 1.5px solid currentColor; }
-.slide.duo > .math { font-size: clamp(13px, 1.6vw, 19px); padding: 0.7vh 1vw; }
-.slide.duo > p { font-size: clamp(13.5px, 1.6vw, 18px); }
-
-</style>
-
+<body data-deck-name="1.2 · Session 2" data-help-note="On the existence-condition slide, drag the slider.">
 <!-- 1 · title -->
 <section class="slide active">
   <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 2 of 5</p>
@@ -677,15 +33,15 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 <section class="slide">
   <p class="eyebrow">Do Now · 5 min</p>
   <h2>Same two functions, two different orders.</h2>
-  <div class="math">f(x) = 2x − 3 &nbsp;·&nbsp; g(x) = 1 − 2x &nbsp;·&nbsp; both x ∈ ℝ</div>
-  <p>Start from x = 2 each time. Tap to check.</p>
+  <div class="math">\(f(x) = 2x - 3\) &nbsp;·&nbsp; \(g(x) = 1 - 2x\) &nbsp;·&nbsp; both \(x \in \mathbb{R}\)</div>
+  <p>Start from \(x = 2\) each time. Tap to check.</p>
   <div class="check" tabindex="0">
-    <div class="math small">A.&nbsp; Work out f first, then feed that result into g.</div>
-    <div class="ans"><div class="math small result">f(2) = 2(2) − 3 = 1 &nbsp;→&nbsp; g(1) = 1 − 2(1) = −1</div></div>
+    <div class="math small">A.&nbsp; Work out \(f\) first, then feed that result into \(g\).</div>
+    <div class="ans"><div class="math small result">\(f(2) = 2(2) - 3 = 1\) &nbsp;→&nbsp; \(g(1) = 1 - 2(1) = -1\)</div></div>
   </div>
   <div class="check" tabindex="0">
-    <div class="math small">B.&nbsp; Work out g first, then feed that result into f.</div>
-    <div class="ans"><div class="math small result">g(2) = 1 − 2(2) = −3 &nbsp;→&nbsp; f(−3) = 2(−3) − 3 = −9</div></div>
+    <div class="math small">B.&nbsp; Work out \(g\) first, then feed that result into \(f\).</div>
+    <div class="ans"><div class="math small result">\(g(2) = 1 - 2(2) = -3\) &nbsp;→&nbsp; \(f(-3) = 2(-3) - 3 = -9\)</div></div>
   </div>
   <p class="frag">Two different answers from the same starting number. <b>The order you apply the functions in changes the result.</b></p>
 </section>
@@ -699,7 +55,7 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
     <p class="eyebrow">Think of an assembly line</p>
     <p class="small">Station 1 takes a part and does something to it. Station 2 takes whatever comes off station 1 and does something else to it. <b>Swap the order of the stations and a different product comes off the line</b>, even though both stations do exactly the same job either way.</p>
   </div>
-  <div class="math frag result">f then g gave −1. g then f gave −9. Same functions, same start, different order.</div>
+  <div class="math frag result">\(f\) then \(g\) gave \(-1\). \(g\) then \(f\) gave \(-9\). Same functions, same start, different order.</div>
 </section>
 
 <!-- 4 · two notations -->
@@ -710,50 +66,50 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
     <div>
       <div class="card">
         <p class="eyebrow">Cambridge exam notation</p>
-        <div class="math result">gf(x)</div>
-        <p class="small">No circle, the letters just sit next to each other. <b>f is written right next to x</b>, so f is applied first. Then g is applied to that result.</p>
-        <div class="math small">gf(x) = g( f(x) )</div>
+        <div class="math result">\(gf(x)\)</div>
+        <p class="small">No circle, the letters just sit next to each other. <b>\(f\) is written right next to \(x\)</b>, so \(f\) is applied first. Then \(g\) is applied to that result.</p>
+        <div class="math small">\(gf(x) = g\big(f(x)\big)\)</div>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow">Khan Academy notation</p>
-        <div class="math result">(f∘g)(x)</div>
-        <p class="small">Read "f composed with g". <b>g is written right next to x</b>, inside the brackets, so g is applied first. Then f is applied to that result.</p>
-        <div class="math small">(f∘g)(x) = f( g(x) )</div>
+        <div class="math result">\((f \circ g)(x)\)</div>
+        <p class="small">Read "f composed with g". <b>\(g\) is written right next to \(x\)</b>, inside the brackets, so \(g\) is applied first. Then \(f\) is applied to that result.</p>
+        <div class="math small">\((f \circ g)(x) = f\big(g(x)\big)\)</div>
       </div>
     </div>
   </div>
-  <p class="frag small"><b>The rule that works for both:</b> find whichever function is written closest to x and do that one first, then apply the other to the result. Don't just read left to right. In both notations, the function you meet first on the page is applied second.</p>
-  <p class="frag small muted">On a Cambridge paper, always answer in gf(x) form. That's what the mark scheme expects.</p>
+  <p class="frag small"><b>The rule that works for both:</b> find whichever function is written closest to \(x\) and do that one first, then apply the other to the result. Don't just read left to right. In both notations, the function you meet first on the page is applied second.</p>
+  <p class="frag small muted">On a Cambridge paper, always answer in \(gf(x)\) form. That's what the mark scheme expects.</p>
 </section>
 
 <!-- 5 · worked, symbolic -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 3 of 5 · worked example</p>
-  <h2>Turn it into a formula that works for any x.</h2>
-  <div class="math">f(x) = 2x − 3 &nbsp;·&nbsp; g(x) = 1 − 2x</div>
-  <div class="math frag small"><span class="lbl">gf(x): apply f first, but keep it as x, no number yet:</span>&nbsp; gf(x) = g( f(x) ) = g(2x − 3) = 1 − 2(2x − 3)</div>
-  <div class="math frag result">gf(x) = 1 − 4x + 6 = 7 − 4x</div>
-  <div class="math frag small"><span class="lbl">check against Row A of the Do Now, x = 2:</span>&nbsp; 7 − 4(2) = 7 − 8 = −1 ✓</div>
-  <div class="math frag small"><span class="lbl">fg(x): apply g first:</span>&nbsp; fg(x) = f( g(x) ) = f(1 − 2x) = 2(1 − 2x) − 3 = 2 − 4x − 3</div>
-  <div class="math frag result">fg(x) = −4x − 1</div>
-  <div class="math frag small"><span class="lbl">check against Row B, x = 2:</span>&nbsp; −8 − 1 = −9 ✓</div>
+  <h2>Turn it into a formula that works for any \(x\).</h2>
+  <div class="math">\(f(x) = 2x - 3\) &nbsp;·&nbsp; \(g(x) = 1 - 2x\)</div>
+  <div class="math frag small"><span class="lbl">\(gf(x)\): apply \(f\) first, but keep it as \(x\), no number yet:</span>&nbsp; \(gf(x) = g\big(f(x)\big) = g(2x - 3) = 1 - 2(2x - 3)\)</div>
+  <div class="math frag result">\(gf(x) = 1 - 4x + 6 = 7 - 4x\)</div>
+  <div class="math frag small"><span class="lbl">check against Row A of the Do Now, \(x = 2\):</span>&nbsp; \(7 - 4(2) = 7 - 8 = -1\) ✓</div>
+  <div class="math frag small"><span class="lbl">\(fg(x)\): apply \(g\) first:</span>&nbsp; \(fg(x) = f\big(g(x)\big) = f(1 - 2x) = 2(1 - 2x) - 3 = 2 - 4x - 3\)</div>
+  <div class="math frag result">\(fg(x) = -4x - 1\)</div>
+  <div class="math frag small"><span class="lbl">check against Row B, \(x = 2\):</span>&nbsp; \(-8 - 1 = -9\) ✓</div>
 </section>
 
 <!-- 6 · existence condition -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 4 of 5 · the condition</p>
-  <h2>gf can't always be formed.</h2>
+  <h2>\(gf\) can't always be formed.</h2>
   <div class="card">
-    <p style="margin:0"><b>gf can only be formed when the whole range of f fits inside the domain of g.</b></p>
-    <p class="small" style="margin:0">g has to be able to accept every single output f could ever produce. If f can output a number g isn't defined for, the chain breaks at that point.</p>
+    <p style="margin:0"><b>\(gf\) can only be formed when the whole range of \(f\) fits inside the domain of \(g\).</b></p>
+    <p class="small" style="margin:0">\(g\) has to be able to accept every single output \(f\) could ever produce. If \(f\) can output a number \(g\) isn't defined for, the chain breaks at that point.</p>
   </div>
   <div class="card frag">
     <p class="eyebrow">See it break, with real numbers</p>
-    <div class="math small">f(x) = x<sup>2</sup> for x ≥ 0 &nbsp;·&nbsp; g(x) = <span class="fr"><i>1</i><i>x − 5</i></span> for x &gt; 5</div>
-    <div class="math small"><span class="lbl">try x = 1:</span>&nbsp; f(1) = 1<sup>2</sup> = 1. &nbsp;Now g(1): is 1 &gt; 5? <span class="bad">No.</span> g(1) doesn't exist.</div>
-    <p class="small" style="margin:0">One input sent f's output somewhere g can't follow. That's enough on its own: gf cannot be formed for this f and g. The next slide lets you drag f's domain and watch the verdict flip.</p>
+    <div class="math small">\(f(x) = x^2\) for \(x \ge 0\) &nbsp;·&nbsp; \(g(x) = \dfrac{1}{x - 5}\) for \(x &gt; 5\)</div>
+    <div class="math small"><span class="lbl">try \(x = 1\):</span>&nbsp; \(f(1) = 1^2 = 1\). &nbsp;Now \(g(1)\): is \(1 &gt; 5\)? <span class="bad">No.</span> \(g(1)\) doesn't exist.</div>
+    <p class="small" style="margin:0">One input sent \(f\)'s output somewhere \(g\) can't follow. That's enough on its own: \(gf\) cannot be formed for this \(f\) and \(g\). The next slide lets you drag \(f\)'s domain and watch the verdict flip.</p>
   </div>
   <p class="frag small muted">This exact condition shows up on real Cambridge papers with different letters. On the June 2025 paper most candidates missed it. The ones who got credit named exactly which range wasn't inside which domain, the same move you just made.</p>
 </section>
@@ -765,37 +121,37 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="lab">
     <svg class="fig" id="ex-k-svg" viewBox="0 0 480 260" style="width:min(480px,38vw)" aria-label="A number line showing the domain of g and the range of f"></svg>
     <div class="panel">
-      <div class="math small result" style="max-width:none">f(x) = x<sup>2</sup> for x ≥ <span id="ex-k-val">3.0</span> &nbsp;·&nbsp; g(x) = <span class="fr"><i>1</i><i>x − 5</i></span> for x &gt; 5</div>
+      <div class="math small result" style="max-width:none">\(f(x) = x^2\) for \(x \ge\) <span id="ex-k-val">3.0</span> &nbsp;·&nbsp; \(g(x) = \dfrac{1}{x - 5}\) for \(x &gt; 5\)</div>
       <label for="ex-k">Drag the start of f's domain, k</label>
       <input type="range" id="ex-k" min="0" max="4" step="0.1" value="3">
       <div class="read" id="ex-k-read"></div>
       <div class="verdict ok" id="ex-k-verdict"></div>
     </div>
   </div>
-  <p class="frag small">Drag k below about 2.24 (√5) and the range of f dips to include numbers ≤ 5, which g can't accept, and the verdict flips to red. Nothing about g changed. Only f's domain did, which changed f's range. That's the whole condition in one slider.</p>
+  <p class="frag small">Drag \(k\) below about 2.24 (\(\sqrt{5}\)) and the range of \(f\) dips to include numbers \(\le 5\), which \(g\) can't accept, and the verdict flips to red. Nothing about \(g\) changed. Only \(f\)'s domain did, which changed \(f\)'s range. That's the whole condition in one slider.</p>
 </section>
 
 <!-- 8 · specimen Q2 -->
 <section class="slide">
   <p class="eyebrow">Worked example · real past paper · Specimen Paper 1, Q2</p>
-  <h2>f : x ↦ 3x + 2, g : x ↦ 4x − 12, both for x ∈ ℝ. Find gf(x).</h2>
-  <p class="small muted">The full question asks you to solve f<sup>−1</sup>(x) = gf(x). Today: find gf(x), the piece you already have the tools for.</p>
-  <div class="math frag"><span class="lbl">apply f first, because f is closest to x in gf(x):</span>&nbsp; gf(x) = g( f(x) ) = g(3x + 2)</div>
-  <div class="math frag"><span class="lbl">put (3x + 2) into g's rule and multiply out:</span>&nbsp; 4(3x + 2) − 12 = 12x + 8 − 12</div>
-  <div class="math frag result">gf(x) = 12x − 4</div>
-  <p class="frag small">That's gf(x) done. Next, a quick preview of how f<sup>−1</sup> itself is found, so that equation isn't a black box.</p>
+  <h2>\(f : x \mapsto 3x + 2\), \(g : x \mapsto 4x - 12\), both for \(x \in \mathbb{R}\). Find \(gf(x)\).</h2>
+  <p class="small muted">The full question asks you to solve \(f^{-1}(x) = gf(x)\). Today: find \(gf(x)\), the piece you already have the tools for.</p>
+  <div class="math frag"><span class="lbl">apply \(f\) first, because \(f\) is closest to \(x\) in \(gf(x)\):</span>&nbsp; \(gf(x) = g\big(f(x)\big) = g(3x + 2)\)</div>
+  <div class="math frag"><span class="lbl">put \((3x + 2)\) into \(g\)'s rule and multiply out:</span>&nbsp; \(4(3x + 2) - 12 = 12x + 8 - 12\)</div>
+  <div class="math frag result">\(gf(x) = 12x - 4\)</div>
+  <p class="frag small">That's \(gf(x)\) done. Next, a quick preview of how \(f^{-1}\) itself is found, so that equation isn't a black box.</p>
 </section>
 
 <!-- 9 · preview: inverse -->
 <section class="slide">
   <p class="eyebrow">Preview · Session 3</p>
-  <h2>How f<sup>−1</sup> is found, quickly.</h2>
-  <div class="math">f(x) = 3x + 2</div>
+  <h2>How \(f^{-1}\) is found, quickly.</h2>
+  <div class="math">\(f(x) = 3x + 2\)</div>
   <p class="small muted">Full inverse-function theory, including when an inverse exists at all, is Session 3. Here's just the mechanic, so today's equation isn't a mystery.</p>
-  <div class="math frag"><span class="lbl">write y = f(x), then swap x and y:</span>&nbsp; y = 3x + 2 &nbsp;→&nbsp; x = 3y + 2</div>
-  <div class="math frag"><span class="lbl">solve that new equation for y:</span>&nbsp; x − 2 = 3y &nbsp;→&nbsp; y = <span class="fr"><i>x − 2</i><i>3</i></span></div>
-  <div class="math frag result">f<sup>−1</sup>(x) = <span class="fr"><i>x − 2</i><i>3</i></span></div>
-  <p class="frag small">Session 3 covers why swapping x and y works, when an inverse exists at all, and finishes solving f<sup>−1</sup>(x) = gf(x), that is <span class="fr"><i>x − 2</i><i>3</i></span> = 12x − 4.</p>
+  <div class="math frag"><span class="lbl">write \(y = f(x)\), then swap \(x\) and \(y\):</span>&nbsp; \(y = 3x + 2\) &nbsp;→&nbsp; \(x = 3y + 2\)</div>
+  <div class="math frag"><span class="lbl">solve that new equation for \(y\):</span>&nbsp; \(x - 2 = 3y\) &nbsp;→&nbsp; \(y = \dfrac{x - 2}{3}\)</div>
+  <div class="math frag result">\(f^{-1}(x) = \dfrac{x - 2}{3}\)</div>
+  <p class="frag small">Session 3 covers why swapping \(x\) and \(y\) works, when an inverse exists at all, and finishes solving \(f^{-1}(x) = gf(x)\), that is \(\tfrac{x - 2}{3} = 12x - 4\).</p>
 </section>
 
 <!-- 10 · unknowns 1 -->
@@ -803,24 +159,24 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(a) · 1 of 2</p>
   <h2>Use a composite to find missing constants.</h2>
   <div class="card">
-    <p style="margin:0">f(x) = 1 + <span class="fr"><i>2a</i><i>x − a</i></span> for x &gt; a, and g(x) = bx − 2. Given that f(7) = <span class="fr"><i>5</i><i>2</i></span> and gf(5) = 4, find a and b. <span class="marks">[4]</span></p>
+    <p style="margin:0">\(f(x) = 1 + \dfrac{2a}{x - a}\) for \(x &gt; a\), and \(g(x) = bx - 2\). Given that \(f(7) = \tfrac{5}{2}\) and \(gf(5) = 4\), find \(a\) and \(b\). <span class="marks">[4]</span></p>
   </div>
-  <div class="math frag"><span class="lbl">use f(7) = <span class="fr"><i>5</i><i>2</i></span> first, because it only involves a:</span>&nbsp; 1 + <span class="fr"><i>2a</i><i>7 − a</i></span> = <span class="fr"><i>5</i><i>2</i></span> &nbsp;→&nbsp; <span class="fr"><i>2a</i><i>7 − a</i></span> = <span class="fr"><i>3</i><i>2</i></span></div>
-  <div class="math frag"><span class="lbl">cross-multiply:</span>&nbsp; 4a = 3(7 − a) = 21 − 3a</div>
-  <div class="math frag result">7a = 21 &nbsp;→&nbsp; a = 3</div>
-  <p class="frag small">With a known, the second fact, gf(5) = 4, is what finds b.</p>
+  <div class="math frag"><span class="lbl">use \(f(7) = \tfrac{5}{2}\) first, because it only involves \(a\):</span>&nbsp; \(1 + \dfrac{2a}{7 - a} = \dfrac{5}{2}\) &nbsp;→&nbsp; \(\dfrac{2a}{7 - a} = \dfrac{3}{2}\)</div>
+  <div class="math frag"><span class="lbl">cross-multiply:</span>&nbsp; \(4a = 3(7 - a) = 21 - 3a\)</div>
+  <div class="math frag result">\(7a = 21\) &nbsp;→&nbsp; \(a = 3\)</div>
+  <p class="frag small">With \(a\) known, the second fact, \(gf(5) = 4\), is what finds \(b\).</p>
 </section>
 
 <!-- 11 · unknowns 2 -->
 <section class="slide">
   <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(a) · 2 of 2</p>
-  <h2>Now use the composite to find b.</h2>
-  <div class="math">f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> &nbsp;·&nbsp; g(x) = bx − 2 &nbsp;·&nbsp; gf(5) = 4</div>
-  <div class="math frag"><span class="lbl">find f(5) first, using a = 3:</span>&nbsp; f(5) = 1 + <span class="fr"><i>6</i><i>5 − 3</i></span> = 1 + 3 = 4</div>
-  <div class="math frag"><span class="lbl">gf(5) = g( f(5) ) = g(4):</span>&nbsp; g(4) = 4b − 2</div>
-  <div class="math frag"><span class="lbl">set it equal to the given value:</span>&nbsp; 4b − 2 = 4 &nbsp;→&nbsp; 4b = 6</div>
-  <div class="math frag result">b = <span class="fr"><i>3</i><i>2</i></span></div>
-  <p class="frag small">Examiners noted that students who found f(5) first did best. A common slip was dropping the "1 +" from f.</p>
+  <h2>Now use the composite to find \(b\).</h2>
+  <div class="math">\(f(x) = 1 + \dfrac{6}{x - 3}\) &nbsp;·&nbsp; \(g(x) = bx - 2\) &nbsp;·&nbsp; \(gf(5) = 4\)</div>
+  <div class="math frag"><span class="lbl">find \(f(5)\) first, using \(a = 3\):</span>&nbsp; \(f(5) = 1 + \dfrac{6}{5 - 3} = 1 + 3 = 4\)</div>
+  <div class="math frag"><span class="lbl">\(gf(5) = g\big(f(5)\big) = g(4)\):</span>&nbsp; \(g(4) = 4b - 2\)</div>
+  <div class="math frag"><span class="lbl">set it equal to the given value:</span>&nbsp; \(4b - 2 = 4\) &nbsp;→&nbsp; \(4b = 6\)</div>
+  <div class="math frag result">\(b = \dfrac{3}{2}\)</div>
+  <p class="frag small">Examiners noted that students who found \(f(5)\) first did best. A common slip was dropping the "1 +" from \(f\).</p>
 </section>
 
 <!-- 12 · practice together -->
@@ -830,20 +186,20 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">1.&nbsp; f(x) = x + 4, g(x) = x<sup>2</sup>. Find gf(3).</div>
-        <div class="ans"><div class="math small">f(3) = 7 &nbsp;→&nbsp; g(7) = 49</div><div class="math small result">gf(3) = 49</div></div>
+        <div class="math small">1.&nbsp; \(f(x) = x + 4\), \(g(x) = x^2\). Find \(gf(3)\).</div>
+        <div class="ans"><div class="math small">\(f(3) = 7\) &nbsp;→&nbsp; \(g(7) = 49\)</div><div class="math small result">\(gf(3) = 49\)</div></div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">2.&nbsp; f(x) = 5 − x, g(x) = 2x + 1. Find gf(x).</div>
-        <div class="ans"><div class="math small">gf(x) = 2(5 − x) + 1 = 10 − 2x + 1</div><div class="math small result">gf(x) = 11 − 2x</div></div>
+        <div class="math small">2.&nbsp; \(f(x) = 5 - x\), \(g(x) = 2x + 1\). Find \(gf(x)\).</div>
+        <div class="ans"><div class="math small">\(gf(x) = 2(5 - x) + 1 = 10 - 2x + 1\)</div><div class="math small result">\(gf(x) = 11 - 2x\)</div></div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">3.&nbsp; Same f and g as Q2. Find fg(x) and compare.</div>
-        <div class="ans"><div class="math small">fg(x) = 5 − (2x + 1)</div><div class="math small result">fg(x) = 4 − 2x</div><div class="math small">different from gf(x) = 11 − 2x: order matters</div></div>
+        <div class="math small">3.&nbsp; Same \(f\) and \(g\) as Q2. Find \(fg(x)\) and compare.</div>
+        <div class="ans"><div class="math small">\(fg(x) = 5 - (2x + 1)\)</div><div class="math small result">\(fg(x) = 4 - 2x\)</div><div class="math small">different from \(gf(x) = 11 - 2x\): order matters</div></div>
       </div>
     </div>
   </div>
@@ -852,18 +208,18 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 <!-- 13 · practice on your own -->
 <section class="slide">
   <p class="eyebrow">Practice · on your own · 7 min</p>
-  <h2>Can gf be formed? Tap to check.</h2>
+  <h2>Can \(gf\) be formed? Tap to check.</h2>
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">4.&nbsp; f(x) = <span class="fr"><i>1</i><i>x</i></span> for x &gt; 0, so f(x) &gt; 0. g(x) = x − 3 for x ∈ ℝ.</div>
-        <div class="ans"><div class="math small">g's domain is all of ℝ, so it accepts every possible output of f</div><div class="math small result">Yes, gf can be formed.</div></div>
+        <div class="math small">4.&nbsp; \(f(x) = \dfrac{1}{x}\) for \(x &gt; 0\), so \(f(x) &gt; 0\). \(g(x) = x - 3\) for \(x \in \mathbb{R}\).</div>
+        <div class="ans"><div class="math small">\(g\)'s domain is all of \(\mathbb{R}\), so it accepts every possible output of \(f\)</div><div class="math small result">Yes, \(gf\) can be formed.</div></div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">5.&nbsp; f(x) = x<sup>2</sup> for x ∈ ℝ, so f(x) ≥ 0. g(x) = √(x − 10) for x ≥ 10.</div>
-        <div class="ans"><div class="math small">range of f starts at 0, domain of g starts at 10. f(2) = 4, and g isn't defined at 4</div><div class="math small result">No, gf cannot be formed.</div></div>
+        <div class="math small">5.&nbsp; \(f(x) = x^2\) for \(x \in \mathbb{R}\), so \(f(x) \ge 0\). \(g(x) = \sqrt{x - 10}\) for \(x \ge 10\).</div>
+        <div class="ans"><div class="math small">range of \(f\) starts at 0, domain of \(g\) starts at 10. \(f(2) = 4\), and \(g\) isn't defined at 4</div><div class="math small result">No, \(gf\) cannot be formed.</div></div>
       </div>
     </div>
   </div>
@@ -873,8 +229,8 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 <section class="slide">
   <p class="eyebrow">Direct instruction · 5 of 5 · recap</p>
   <h2>Two things to leave with.</h2>
-  <p class="frag"><b>Notation.</b> Whichever symbol you see, gf(x) or (f∘g)(x), find the function touching x and apply that one first. On a Cambridge paper, answer in gf(x) form.</p>
-  <p class="frag"><b>The existence condition.</b> gf only exists when the whole range of f fits inside the domain of g. Check the two sets, and name them in your answer. That's what the mark scheme rewards.</p>
+  <p class="frag"><b>Notation.</b> Whichever symbol you see, \(gf(x)\) or \((f \circ g)(x)\), find the function touching \(x\) and apply that one first. On a Cambridge paper, answer in \(gf(x)\) form.</p>
+  <p class="frag"><b>The existence condition.</b> \(gf\) only exists when the whole range of \(f\) fits inside the domain of \(g\). Check the two sets, and name them in your answer. That's what the mark scheme rewards.</p>
   <p class="frag small muted">Next session: one-one functions and inverses in full, including finishing today's Specimen Paper question.</p>
 </section>
 
@@ -886,388 +242,9 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="math result">Press Submit before you close the tab. An attempt left open scores nothing.</div>
 </section>
 
-
-<div class="board" id="board" role="dialog" aria-modal="true" aria-label="Blank board">
-  <canvas id="boardCanvas"></canvas>
-  <div class="board-bar">
-    <button class="swatch" type="button" data-color="#ffffff" style="background:#ffffff" aria-pressed="true" aria-label="White pen"></button>
-    <button class="swatch" type="button" data-color="#00e5ff" style="background:#00e5ff" aria-pressed="false" aria-label="Cyan pen"></button>
-    <button class="swatch" type="button" data-color="#4fe08a" style="background:#4fe08a" aria-pressed="false" aria-label="Green pen"></button>
-    <button class="swatch" type="button" data-color="#ff6b6b" style="background:#ff6b6b" aria-pressed="false" aria-label="Red pen"></button>
-    <button id="bErase" type="button" aria-pressed="false">Erase</button>
-    <span class="sep"></span>
-    <button id="bUndo" type="button" title="Undo (Z)">Undo</button>
-    <button id="bClear" type="button">Clear</button>
-    <span class="sep"></span>
-    <button id="bPrev" type="button" aria-label="Previous board page">&lsaquo;</button>
-    <span class="pg" id="bPage">1 / 1</span>
-    <button id="bNext" type="button" aria-label="Next board page">&rsaquo;</button>
-    <button id="bAdd" type="button" aria-label="New board page">+</button>
-    <span class="sep"></span>
-    <button id="bTheme" type="button" aria-label="Light or dark board">Light</button>
-    <button id="bClose" type="button" title="Back to the slide you left (W)">Done</button>
-  </div>
-</div>
-
-<div class="progress" id="progress"></div>
-<div class="hint" id="hint">← → move · Space next step · W blank board · ? for every key</div>
-
-<div class="hud">
-  <div class="left">
-    <span class="name">1.2 · Session 2</span>
-    <span class="here" id="here"></span>
-  </div>
-  <div class="nav">
-    <span class="timer" id="timer" role="button" tabindex="0" title="Click or press T to start and pause. Shift + T resets.">00:00</span>
-    <button id="prevBtn" type="button" aria-label="Previous">←</button>
-    <span class="count" id="count"></span>
-    <button id="nextBtn" type="button" aria-label="Next">→</button>
-    <button id="boardBtn" type="button" aria-label="Blank board" title="Blank board (W)">Board</button>
-    <button id="gridBtn" type="button" aria-label="All slides" title="All slides (O)"><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="6" height="6" rx="1.5"/><rect x="8" y="0" width="6" height="6" rx="1.5"/><rect x="0" y="8" width="6" height="6" rx="1.5"/><rect x="8" y="8" width="6" height="6" rx="1.5"/></svg></button>
-    <button id="helpBtn" type="button" aria-label="Keyboard help" title="Keys (?)">?</button>
-  </div>
-</div>
-
-<div class="overlay" id="grid" role="dialog" aria-modal="true" aria-label="All slides">
-  <h3>All slides</h3>
-  <div class="grid" id="gridInner"></div>
-</div>
-
-<div class="overlay" id="help" role="dialog" aria-modal="true" aria-label="Keys">
-  <h3>Keys</h3>
-  <div class="keys">
-    <kbd>→</kbd><span>Next step, then next slide. Space and Page Down do the same.</span>
-    <kbd>←</kbd><span>Back one step, then back one slide.</span>
-    <kbd>R</kbd><span>Reveal every step on this slide at once.</span>
-    <kbd>O</kbd><span>All slides. Click any one to jump there. Esc closes.</span>
-    <kbd>T</kbd><span>Start or pause the lesson timer. Shift + T resets it. Turns red at 55 minutes.</span>
-    <kbd>W</kbd><span>Blank board. A full-screen writing surface, from any slide. Pens, eraser, undo (Z), and extra pages. Esc or W returns you to the exact slide you left.</span>
-    <kbd>F</kbd><span>Fullscreen on or off.</span>
-    <kbd>Home</kbd><span>First slide.</span>
-    <kbd>End</kbd><span>Last slide, everything revealed.</span>
-    <kbd>?</kbd><span>This list.</span>
-  </div>
-  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. On the existence-condition slide, drag the slider.</p>
-</div>
-
-<script>
-(function () {
-  'use strict';
-  var slides = [].slice.call(document.querySelectorAll('.slide'));
-  var idx = 0;
-  var h = parseInt((location.hash || '').replace('#', ''), 10);
-  if (h >= 1 && h <= slides.length) idx = h - 1;
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var $ = function (id) { return document.getElementById(id); };
-  var m = function (s) { return String(s).replace(/-/g, '\u2212'); };  /* house style: real minus signs */
-
-  function frags(s) { return [].slice.call(s.querySelectorAll('.frag')); }
-  function titleOf(s) {
-    var t = s.querySelector('h1, h2');
-    return t ? t.textContent.replace(/\s+/g, ' ').trim() : '';
-  }
-
-  /* ---------- navigation ---------- */
-  function show(i, revealAll) {
-    idx = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach(function (s, j) {
-      var on = j === idx;
-      s.classList.toggle('active', on);
-      s.setAttribute('aria-hidden', on ? 'false' : 'true');
-    });
-    frags(slides[idx]).forEach(function (f) { f.classList.toggle('on', !!revealAll); });
-    $('count').textContent = (idx + 1) + ' / ' + slides.length;
-    $('here').textContent = titleOf(slides[idx]);
-    $('progress').style.width = ((idx + 1) / slides.length * 100).toFixed(2) + '%';
-    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
-    markGrid();
-  }
-  function next() {
-    var pending = frags(slides[idx]).filter(function (f) { return !f.classList.contains('on'); });
-    if (pending.length) {
-      pending[0].classList.add('on');
-      try { pending[0].scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {}
-      return;
-    }
-    if (idx < slides.length - 1) show(idx + 1, false);
-  }
-  function prev() {
-    var on = frags(slides[idx]).filter(function (f) { return f.classList.contains('on'); });
-    if (on.length) { on[on.length - 1].classList.remove('on'); return; }
-    if (idx > 0) show(idx - 1, true);
-  }
-  function revealAll() { frags(slides[idx]).forEach(function (f) { f.classList.add('on'); }); }
-
-  /* ---------- overlays ---------- */
-  var grid = $('grid'), help = $('help');
-  function anyOpen() { return grid.classList.contains('open') || help.classList.contains('open'); }
-  function closeOverlays() { grid.classList.remove('open'); help.classList.remove('open'); }
-  function toggleOverlay(el) {
-    var was = el.classList.contains('open');
-    closeOverlays();
-    if (!was) el.classList.add('open');
-  }
-  var gi = $('gridInner');
-  slides.forEach(function (s, j) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'thumb';
-    var eb = s.querySelector('.eyebrow');
-    var num = (j + 1 < 10 ? '0' : '') + (j + 1);
-    b.innerHTML = '<span class="num">' + num + '</span>' +
-      (eb ? '<span class="eb">' + eb.innerHTML + '</span>' : '') +
-      '<span class="tt">' + titleOf(s) + '</span>';
-    b.addEventListener('click', function () { closeOverlays(); show(j, false); });
-    gi.appendChild(b);
-  });
-  function markGrid() {
-    [].slice.call(gi.children).forEach(function (b, j) { b.classList.toggle('current', j === idx); });
-  }
-  [grid, help].forEach(function (o) {
-    o.addEventListener('click', function (e) { if (e.target === o) closeOverlays(); });
-  });
-
-  /* ---------- lesson timer ---------- */
-  var tEl = $('timer'), tStart = null, tAcc = 0, tTick = null;
-  function fmt(ms) {
-    var s = Math.floor(ms / 1000), m = Math.floor(s / 60); s = s % 60;
-    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-  }
-  function tRender() {
-    var ms = tAcc + (tStart ? Date.now() - tStart : 0);
-    tEl.textContent = fmt(ms);
-    tEl.classList.toggle('late', ms >= 55 * 60 * 1000);
-  }
-  function tToggle() {
-    if (tStart) { tAcc += Date.now() - tStart; tStart = null; clearInterval(tTick); tEl.classList.remove('on'); }
-    else { tStart = Date.now(); tTick = setInterval(tRender, 500); tEl.classList.add('on'); }
-    tRender();
-  }
-  function tReset() { tStart = null; tAcc = 0; clearInterval(tTick); tEl.classList.remove('on', 'late'); tRender(); }
-  tEl.addEventListener('click', tToggle);
-  tEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); tToggle(); }
-  });
-
-  /* ---------- fullscreen ---------- */
-  function fullscreen() {
-    var d = document;
-    if (d.fullscreenElement) { d.exitFullscreen && d.exitFullscreen(); }
-    else if (d.documentElement.requestFullscreen) { d.documentElement.requestFullscreen(); }
-  }
-
-  /* ---------- tap to check ---------- */
-  [].slice.call(document.querySelectorAll('.check')).forEach(function (c) {
-    c.setAttribute('role', 'button');
-    c.setAttribute('aria-expanded', 'false');
-    function toggle() {
-      var open = c.classList.toggle('open');
-      c.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    c.addEventListener('click', function (e) { if (e.target.closest('a')) return; toggle(); });
-    c.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
-    });
-  });
-
-  /* ---------- first-load hint ---------- */
-  var hint = $('hint'), hintT = null;
-  function hideHint() { hint.classList.remove('show'); clearTimeout(hintT); }
-  (function () {
-    var seen = false;
-    try { seen = localStorage.getItem('tib-deck-hint') === '1'; } catch (e) {}
-    if (seen) return;
-    setTimeout(function () { hint.classList.add('show'); }, 900);
-    hintT = setTimeout(hideHint, 7000);
-    try { localStorage.setItem('tib-deck-hint', '1'); } catch (e) {}
-  })();
-
-  /* ---------- title entrance, once ---------- */
-  if (idx === 0 && !reduce) {
-    document.body.classList.add('intro');
-    setTimeout(function () { document.body.classList.remove('intro'); }, 2200);
-  }
-
-  /* ---------- buttons ---------- */
-  $('nextBtn').addEventListener('click', next);
-  $('prevBtn').addEventListener('click', prev);
-  $('gridBtn').addEventListener('click', function () { toggleOverlay(grid); });
-  $('helpBtn').addEventListener('click', function () { toggleOverlay(help); });
-
-  /* ---------- blank board ----------
-     A full-screen writing surface that replaces the slide rather than drawing
-     over it. Strokes are stored normalized (0..1) so a resize, a rotate or
-     entering fullscreen redraws them correctly instead of stretching them. */
-  var boardOn = false;
-  var toggleBoard;
-  (function () {
-    var wrap = $('board'), cv = $('boardCanvas'), ctx = cv.getContext('2d');
-    var pages = [[]], pi = 0;
-    var color = '#ffffff', size = 4, erasing = false;
-    var drawing = false, cur = null, penSeen = false;
-
-    function W() { return wrap.clientWidth; }
-    function H() { return wrap.clientHeight; }
-
-    function resize() {
-      var r = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(W() * r); cv.height = Math.round(H() * r);
-      ctx.setTransform(r, 0, 0, r, 0, 0);
-      redraw();
-    }
-    function style(s) {
-      ctx.globalCompositeOperation = s.erase ? 'destination-out' : 'source-over';
-      ctx.strokeStyle = s.color; ctx.lineWidth = s.size;
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    }
-    function redraw() {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.clearRect(0, 0, W(), H());
-      pages[pi].forEach(function (s) {
-        if (!s.pts.length) return;
-        style(s);
-        ctx.beginPath();
-        s.pts.forEach(function (p, i) {
-          var x = p[0] * W(), y = p[1] * H();
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
-        if (s.pts.length === 1) ctx.lineTo(s.pts[0][0] * W() + 0.01, s.pts[0][1] * H());
-        ctx.stroke();
-      });
-      ctx.globalCompositeOperation = 'source-over';
-      $('bPage').textContent = (pi + 1) + ' / ' + pages.length;
-    }
-    function seg(s, a, b) {
-      style(s);
-      ctx.beginPath();
-      ctx.moveTo(a[0] * W(), a[1] * H());
-      ctx.lineTo(b[0] * W(), b[1] * H());
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-    }
-    function at(e) { return [e.clientX / W(), e.clientY / H()]; }
-    function reject(e) { return penSeen && e.pointerType === 'touch'; }  /* palm rejection once a stylus is seen */
-
-    cv.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'pen') penSeen = true;
-      if (reject(e)) return;
-      e.preventDefault();
-      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
-      drawing = true;
-      cur = { color: color, size: erasing ? size * 7 : size, erase: erasing, pts: [at(e)] };
-      pages[pi].push(cur);
-      seg(cur, cur.pts[0], cur.pts[0]);
-    });
-    cv.addEventListener('pointermove', function (e) {
-      if (!drawing || !cur || reject(e)) return;
-      e.preventDefault();
-      var p = at(e);
-      seg(cur, cur.pts[cur.pts.length - 1], p);
-      cur.pts.push(p);
-    });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
-      cv.addEventListener(ev, function () { drawing = false; cur = null; });
-    });
-
-    [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (b) {
-      b.addEventListener('click', function () {
-        color = b.getAttribute('data-color');
-        erasing = false; $('bErase').setAttribute('aria-pressed', 'false');
-        [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (o) {
-          o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
-        });
-      });
-    });
-    $('bErase').addEventListener('click', function () {
-      erasing = !erasing;
-      this.setAttribute('aria-pressed', erasing ? 'true' : 'false');
-    });
-    function undo() { pages[pi].pop(); redraw(); }
-    $('bUndo').addEventListener('click', undo);
-    $('bClear').addEventListener('click', function () { pages[pi] = []; redraw(); });
-    $('bPrev').addEventListener('click', function () { if (pi > 0) { pi--; redraw(); } });
-    $('bNext').addEventListener('click', function () { if (pi < pages.length - 1) { pi++; redraw(); } });
-    $('bAdd').addEventListener('click', function () { pages.splice(pi + 1, 0, []); pi++; redraw(); });
-    $('bTheme').addEventListener('click', function () {
-      var lightNow = wrap.classList.toggle('light');
-      this.textContent = lightNow ? 'Dark' : 'Light';
-      /* swap the default ink so it stays visible against the new ground */
-      var from = lightNow ? '#ffffff' : '#14141a', to = lightNow ? '#14141a' : '#ffffff';
-      var sw = wrap.querySelector('.swatch[data-color="' + from + '"]');
-      if (sw) { sw.setAttribute('data-color', to); sw.style.background = to; if (color === from) color = to; }
-      redraw();
-    });
-    $('bClose').addEventListener('click', function () { toggleBoard(false); });
-
-    window.addEventListener('resize', function () { if (boardOn) resize(); });
-
-    toggleBoard = function (want) {
-      boardOn = (want === undefined) ? !boardOn : !!want;
-      wrap.classList.toggle('on', boardOn);
-      document.body.classList.toggle('boarding', boardOn);
-      if (boardOn) { closeOverlays(); resize(); }
-    };
-    wrap.__undo = undo;
-    wrap.__page = function (d) {
-      if (d < 0 && pi > 0) { pi--; redraw(); }
-      else if (d > 0 && pi < pages.length - 1) { pi++; redraw(); }
-    };
-  })();
-  $('boardBtn').addEventListener('click', function () { toggleBoard(); });
-
-  /* ---------- keys ---------- */
-  document.addEventListener('keydown', function (e) {
-    var t = e.target;
-    var widget = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.closest('.check') || t.closest('.timer'));
-    if (widget && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter'].indexOf(e.key) >= 0) return;
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (boardOn) {
-      if (e.key === 'Escape' || e.key === 'w' || e.key === 'W') { e.preventDefault(); toggleBoard(false); }
-      else if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); $('board').__undo(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); $('board').__page(-1); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); $('board').__page(1); }
-      return;
-    }
-    if (e.key === 'Escape') { closeOverlays(); return; }
-    if (anyOpen() && e.key !== 'o' && e.key !== 'O' && e.key !== '?') return;
-    switch (e.key) {
-      case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); next(); break;
-      case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
-      case 'Home': e.preventDefault(); show(0, false); break;
-      case 'End': e.preventDefault(); show(slides.length - 1, true); break;
-      case 'r': case 'R': revealAll(); break;
-      case 'o': case 'O': toggleOverlay(grid); break;
-      case '?': toggleOverlay(help); break;
-      case 't': case 'T': e.shiftKey ? tReset() : tToggle(); break;
-      case 'f': case 'F': fullscreen(); break;
-      case 'w': case 'W': e.preventDefault(); toggleBoard(true); break;
-      default: return;
-    }
-    hideHint();
-  });
-
-  /* ---------- swipe ---------- */
-  var tx = null, ty = null;
-  document.addEventListener('touchstart', function (e) {
-    if (e.touches.length !== 1) return;
-    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    if (tx === null) return;
-    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    tx = ty = null;
-    if (anyOpen() || e.target.closest('input, .check, .explore, .hud')) return;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { dx < 0 ? next() : prev(); hideHint(); }
-  }, { passive: true });
-
-  window.addEventListener('hashchange', function () {
-    var n = parseInt((location.hash || '').replace('#', ''), 10);
-    if (n >= 1 && n <= slides.length && n - 1 !== idx) show(n - 1, false);
-  });
-
-  show(idx, false);
-})();
-</script>
-
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
 <script>
 /* ---------- existence condition: drag the start of f's domain ----------
    f(x) = x^2 for x >= k, so the range of f is f(x) >= k^2. g(x) = 1/(x - 5)
@@ -1305,7 +282,6 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   draw();
 })();
 </script>
-
 
 </body>
 </html>

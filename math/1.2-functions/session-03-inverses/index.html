@@ -2,662 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Running a Function Backwards</title>
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* on projector widths, keep each inline expression on one line so "x = 2" never splits across a wrap;
+       on a phone a long line has to be allowed to break */
+  </style>
 </head>
-<body>
-<title>Running a Function Backwards</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-<style>
-/* ============================================================
-   THINK IN BITS · 9709 deck system
-   Tokens mirror www.thinkinbits.site so classroom material and
-   the public site read as one brand.
-
-   Committed dark, single theme. A projected deck must look
-   identical every time it is opened, regardless of the laptop's
-   OS theme setting. The @media print block at the bottom flips
-   every token to dark-on-white for the PDF export.
-
-   Slide archetypes this system supports:
-     title · do-now · direct instruction (prose / stepped table /
-     diagram trio / two-card compare) · worked example (question
-     card + stepped solve) · practice · exit
-   ============================================================ */
-
-:root {
-  /* ground + surfaces */
-  --ground:       #0a0a0a;
-  --ground-far:   #1a1a2e;
-  --surface:      #1a1a1a;
-  --surface-lift: #2a2a2a;
-
-  /* accent */
-  --accent:       #00e5ff;
-  --accent-deep:  #0099cc;
-  --accent-wash:  rgba(0,229,255,0.10);
-  --accent-line:  rgba(0,229,255,0.30);
-
-  /* text */
-  --text:         #ffffff;
-  --text-2:       #b0b0b0;
-
-  /* structure */
-  --hairline:     rgba(255,255,255,0.07);
-  --axis:         rgba(255,255,255,0.85);
-
-  /* semantic, separate from the accent */
-  --ok:           #4fe08a;
-  --warn:         #ff6b6b;
-
-  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
-  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
-
-  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  color-scheme: dark;
-}
-
-* { box-sizing: border-box; }
-html, body { height: 100%; }
-
-body {
-  margin: 0;
-  background: var(--ground);
-  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
-  background-attachment: fixed;
-  color: var(--text);
-  font-family: var(--font);
-  line-height: 1.5;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ---------- slide shell ---------- */
-.slide {
-  position: absolute; inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  justify-content: safe center;   /* keeps overflow scrollable when content is tall */
-  gap: 1.5vh;
-  padding: 8vh 7vw 13vh;
-  overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.slide.active {
-  visibility: visible; opacity: 1; transform: none;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s;
-}
-.slide > * { margin: 0; }
-
-/* ---------- typography ---------- */
-h1 {
-  font-size: clamp(32px, 5.4vw, 60px);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  text-wrap: balance;
-}
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  h1 {
-    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  /* The gradient is painted inside the element's box and the glyphs are cut out
-     of it, so any ink outside that box gets no paint at all. At line-height 1.08
-     Poppins overhangs the box by about 9px at 60px, which sliced the descender
-     off the g in "Solving". Pad the box out to cover the overhang and pull the
-     same amount back as negative margin so the layout is unchanged.
-     .slide > h1 is needed to beat `.slide > * { margin: 0 }`. */
-  .slide > h1 { padding: 0.18em 0; margin: -0.18em 0; }
-}
-
-h2 {
-  font-size: clamp(25px, 3.7vw, 43px);
-  font-weight: 600;
-  line-height: 1.16;
-  letter-spacing: -0.015em;
-  color: var(--accent);
-  text-wrap: balance;
-}
-
-p, li {
-  font-size: clamp(16px, 2.05vw, 24px);
-  color: var(--text);
-  max-width: 66ch;
-}
-ul { padding-left: 1.15em; }
-li + li { margin-top: 1.2vh; }
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.22vw, 14px);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--accent);
-}
-
-.small { font-size: clamp(13.5px, 1.62vw, 19px); color: var(--text-2); }
-/* Anything inside an eyebrow whose case carries meaning: a worksheet part label
-   like (a), or a variable. The eyebrow is uppercased, and uppercasing either one
-   changes what it says. */
-.eyebrow .lit, .thumb .eb .lit { text-transform: none; letter-spacing: 0.05em; }
-.muted { color: var(--text-2); }
-/* semantic colors declared after .small so they win at equal specificity */
-.good { color: var(--ok); }
-.bad  { color: var(--warn); }
-.marks { color: var(--accent); font-weight: 600; }
-
-/* ---------- math blocks ---------- */
-.math {
-  font-family: var(--mono);
-  font-size: clamp(16px, 2.25vw, 28px);
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
-  padding: 1.5vh 1.4vw;
-  max-width: max-content;
-  font-variant-numeric: tabular-nums;
-}
-.math.small { font-size: clamp(13.5px, 1.72vw, 20px); color: var(--text); }
-/* a result, not a step: tinted and lit so answers read differently from working */
-.math.result {
-  background: var(--accent-wash);
-  border-color: var(--accent-line);
-  color: var(--accent);
-  box-shadow: var(--shadow-glow);
-}
-.math sup, li sup, p sup, span sup { font-size: 0.62em; }
-
-/* ---------- cards ---------- */
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 1vh;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 20px;
-  padding: 2.4vh 1.8vw;
-  box-shadow: var(--shadow-card);
-}
-.card > * { margin: 0; }
-
-.cols { display: flex; gap: 3vw; flex-wrap: wrap; align-items: flex-start; }
-.cols > div { flex: 1 1 260px; display: flex; flex-direction: column; gap: 1.2vh; }
-
-/* ---------- agenda + stepped tables ---------- */
-.agenda { display: flex; flex-direction: column; gap: 1.1vh; }
-.agenda .row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 2vw;
-  padding-bottom: 1.1vh;
-  border-bottom: 1px solid var(--hairline);
-  font-size: clamp(14.5px, 1.92vw, 23px);
-}
-.agenda .t {
-  font-family: var(--mono);
-  font-size: 0.92em;
-  color: var(--accent);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-.agenda .t.good { color: var(--ok); }
-.agenda .t.bad  { color: var(--warn); }
-.steps .n {
-  font-family: var(--mono);
-  font-weight: 700;
-  color: var(--accent);
-  margin-right: 0.8em;
-}
-
-/* ---------- tool links ---------- */
-.toolchip {
-  display: inline-block;
-  font-family: var(--font);
-  font-size: clamp(13px, 1.55vw, 18px);
-  font-weight: 500;
-  color: var(--accent);
-  background: var(--accent-wash);
-  border: 1px solid var(--accent-line);
-  border-radius: 50px;
-  padding: 0.9vh 1.6vw;
-  margin: 0.4vh 0.4vw 0 0;
-  text-decoration: none;
-  transition: background .2s ease, box-shadow .2s ease;
-}
-.toolchip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
-.toolchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* ---------- diagram trios ---------- */
-.cases { display: flex; gap: 2.6vw; flex-wrap: wrap; align-items: flex-start; }
-.cases .c { display: flex; flex-direction: column; gap: 0.7vh; text-align: center; }
-.cases .lab {
-  font-family: var(--mono);
-  font-size: clamp(13px, 1.6vw, 19px);
-  color: var(--text-2);
-}
-.cases .lab b { color: var(--text); }
-svg.mini { width: clamp(110px, 14vw, 190px); height: auto; display: block; }
-
-/* ---------- two-route compare slides ----------
-   Both columns plus a shared answer have to fit a 900px projector
-   without scrolling mid-explanation, so this archetype runs denser
-   than the rest of the deck. */
-.slide.duo { gap: 0.75vh; padding-top: 5vh; padding-bottom: 9.5vh; }
-.slide.duo h2 { font-size: clamp(22px, 3.1vw, 35px); }
-.slide.duo .cols { gap: 2vw; align-items: stretch; }
-.slide.duo .cols > div { display: flex; }
-.slide.duo .cols > div > .card { flex: 1; }
-.slide.duo .card svg { max-width: 320px; margin: 0 auto; }
-.slide.duo .card { padding: 1.3vh 1.3vw; gap: 0.42vh; }
-.slide.duo .card .small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.34; }
-.slide.duo .card .math { padding: 0.85vh 1vw; font-size: clamp(12.5px, 1.5vw, 17.5px); }
-.slide.duo > .math { padding: 1vh 1.2vw; }
-.slide.duo .card ul { padding-left: 1.05em; margin: 0; }
-.slide.duo .card li + li { margin-top: 0.35vh; }
-.slide.duo .card li.small { font-size: clamp(12px, 1.4vw, 15.5px); line-height: 1.32; }
-.slide.duo .card .math.result { font-size: clamp(15px, 1.95vw, 23px); padding: 0.8vh 1.1vw; }
-
-/* ---------- stepped reveal ---------- */
-.frag { visibility: hidden; opacity: 0; transform: translateY(8px); transition: opacity .28s ease, transform .28s ease; }
-.frag.on { visibility: visible; opacity: 1; transform: none; }
-/* A revealed .frag sets visibility:visible, which beats the hidden visibility
-   it would otherwise inherit from a slide that is no longer active. Left alone,
-   steps revealed on an earlier slide keep sitting over the live one at opacity 0
-   and swallow taps meant for it. Belt and braces: kill the visibility and the
-   pointer events on every slide that is not the one on screen. */
-.slide:not(.active) { pointer-events: none; }
-.slide:not(.active) .frag.on { visibility: hidden; }
-
-/* ---------- blank board: a full-screen writing surface, any time ----------
-   Deliberately NOT an annotation layer over the slides. Amali asked for a
-   clean surface to work equations on, so this replaces the view entirely
-   and the slide underneath is untouched when you come back. */
-.board { position: fixed; inset: 0; z-index: 40; display: none; background: #0d0d12; touch-action: none; }
-.board.on { display: block; }
-.board.light { background: #f7f7f5; }
-.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
-
-.board-bar {
-  /* left:0;right:0 + margin auto, NOT left:50%+translate. With left:50% the bar's
-     shrink-to-fit width is capped at half the viewport and the toolbar wraps. */
-  position: absolute; left: 0; right: 0; bottom: 2.2vh; margin: 0 auto;
-  width: max-content;
-  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: center;
-  max-width: 96vw; padding: 8px 11px; border-radius: 50px; z-index: 2;
-  background: rgba(18,18,24,0.92); border: 1px solid var(--hairline);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
-}
-.board.light .board-bar { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.13); }
-.board-bar button {
-  font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer;
-  color: var(--text); background: var(--surface-lift);
-  border: 1px solid var(--hairline); border-radius: 50px;
-  padding: 10px 14px; min-height: 46px;
-  transition: border-color .15s ease, background .15s ease;
-}
-.board.light .board-bar button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
-.board-bar button:hover { border-color: var(--accent-line); }
-.board-bar button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
-.board-bar .swatch { width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
-.board-bar .swatch[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255,255,255,0.55); }
-.board.light .board-bar .swatch[aria-pressed="true"] { border-color: #14141a; box-shadow: 0 0 0 2px #fff; }
-.board-bar .sep { width: 1px; height: 26px; background: var(--hairline); }
-.board.light .board-bar .sep { background: rgba(0,0,0,0.15); }
-.board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
-.board.light .board-bar .pg { color: #55555f; }
-
-/* ---------- progress rail + HUD ---------- */
-.progress {
-  position: fixed; top: 0; left: 0;
-  height: 3px; width: 0;
-  background: linear-gradient(90deg, var(--accent-deep), var(--accent));
-  box-shadow: 0 0 12px rgba(0,229,255,0.5);
-  transition: width .3s ease;
-  z-index: 6;
-}
-
-.hud {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.4vh 2.4vw;
-  border-top: 1px solid var(--hairline);
-  background: rgba(10,10,10,0.82);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 5;
-}
-.hud .name {
-  font-family: var(--mono);
-  font-size: clamp(10px, 1.15vw, 13px);
-  letter-spacing: 0.06em;
-  color: var(--text-2);
-}
-.hud .nav { display: flex; align-items: center; gap: 12px; }
-.hud button {
-  font-family: var(--font);
-  font-size: clamp(13px, 1.4vw, 16px);
-  font-weight: 500;
-  cursor: pointer;
-  color: var(--text);
-  background: var(--surface-lift);
-  border: 1px solid var(--hairline);
-  border-radius: 50px;
-  padding: 0.5vh 1.3vw;
-  min-width: 46px;
-  transition: background .18s ease, border-color .18s ease;
-}
-.hud button:hover { background: #333; border-color: var(--accent-line); }
-.hud button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .count {
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2);
-  min-width: 66px; text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-
-/* ---------- parabolas draw themselves on ---------- */
-svg.mini path { stroke-dasharray: 320; stroke-dashoffset: 320; }
-.slide.active .cases:not(.frag) svg.mini path,
-.cases.frag.on svg.mini path { animation: draw .9s ease-out forwards; }
-svg.mini circle { opacity: 0; transition: opacity .3s ease .75s; }
-.slide.active .cases:not(.frag) svg.mini circle,
-.cases.frag.on svg.mini circle { opacity: 1; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-
-/* ---------- title entrance, first load only ---------- */
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-body.intro .slide.active > .eyebrow { animation: rise .5s ease-out both; }
-body.intro .slide.active > h1 { animation: rise .6s ease-out .15s both; }
-body.intro .slide.active .agenda .row { animation: rise .5s ease-out both; }
-body.intro .slide.active .agenda .row:nth-child(1) { animation-delay: .35s; }
-body.intro .slide.active .agenda .row:nth-child(2) { animation-delay: .43s; }
-body.intro .slide.active .agenda .row:nth-child(3) { animation-delay: .51s; }
-body.intro .slide.active .agenda .row:nth-child(4) { animation-delay: .59s; }
-body.intro .slide.active .agenda .row:nth-child(5) { animation-delay: .67s; }
-body.intro .slide.active .agenda .row:nth-child(6) { animation-delay: .75s; }
-
-/* ---------- tap to check ---------- */
-.check { display: flex; flex-direction: column; gap: 0.8vh; cursor: pointer; border-radius: 16px; }
-.check > .math:first-child { transition: border-color .15s ease, box-shadow .15s ease; }
-.check:hover > .math:first-child { border-color: var(--accent-line); }
-.check:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.check > .math:first-child::after {
-  content: "tap to check";
-  font-family: var(--mono); font-size: clamp(9px, 0.95vw, 11px);
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-2); margin-left: 1.4em; vertical-align: middle;
-}
-.check.open > .math:first-child::after { content: "tap to hide"; }
-.check .ans { display: none; }
-.check.open .ans { display: block; animation: rise .3s ease-out both; }
-
-/* ---------- live explorers ---------- */
-.explore {
-  display: flex; gap: 2.5vw; align-items: center; flex-wrap: wrap;
-  background: var(--surface); border: 1px solid var(--hairline);
-  border-radius: 20px; padding: 2vh 1.8vw; box-shadow: var(--shadow-card);
-}
-.explore svg { width: clamp(200px, 27vw, 340px); height: auto; display: block; flex: 0 0 auto; }
-.explore .panel { display: flex; flex-direction: column; gap: 0.8vh; flex: 1 1 220px; min-width: 200px; }
-.explore label {
-  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px);
-  color: var(--text-2); letter-spacing: .04em;
-}
-.explore input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.explore input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-.explore .read { font-family: var(--mono); font-size: clamp(15px, 1.9vw, 22px); color: var(--text); font-variant-numeric: tabular-nums; }
-.explore .read b { color: var(--accent); font-weight: 700; }
-.explore .verdict { font-weight: 600; font-size: clamp(15px, 1.9vw, 22px); }
-.explore .verdict.two  { color: var(--ok); }
-.explore .verdict.one  { color: var(--accent); }
-.explore .verdict.none { color: var(--warn); }
-
-/* ---------- HUD extras ---------- */
-.hud .left { display: flex; align-items: baseline; gap: 1.2vw; min-width: 0; }
-.hud .here {
-  font-size: clamp(11px, 1.25vw, 14px); color: var(--text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 34vw;
-}
-.hud .timer {
-  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 15px);
-  color: var(--text-2); min-width: 64px; text-align: center;
-  font-variant-numeric: tabular-nums; cursor: pointer; user-select: none;
-  border-radius: 50px; padding: 0.4vh 0.8vw; border: 1px solid transparent;
-}
-.hud .timer:hover { border-color: var(--hairline); }
-.hud .timer:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hud .timer.on { color: var(--accent); }
-.hud .timer.late { color: var(--warn); }
-.hud button svg { display: block; }
-
-/* ---------- first-load hint ---------- */
-.hint {
-  position: fixed; left: 50%; top: 3vh;
-  transform: translateX(-50%) translateY(-8px);
-  background: var(--surface-lift); border: 1px solid var(--accent-line);
-  border-radius: 50px; padding: 1vh 1.8vw;
-  font-family: var(--mono); font-size: clamp(11px, 1.2vw, 14px); color: var(--text);
-  box-shadow: var(--shadow-glow); z-index: 7;
-  opacity: 0; visibility: hidden;
-  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
-}
-.hint.show { opacity: 1; visibility: visible; transform: translateX(-50%); transition: opacity .3s ease, transform .3s ease, visibility 0s; }
-
-/* ---------- overlays: all slides, key help ---------- */
-.overlay {
-  position: fixed; inset: 0; z-index: 20;
-  background: rgba(10,10,10,0.93);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  display: flex; flex-direction: column;
-  padding: 6vh 6vw 8vh; overflow-y: auto;
-  visibility: hidden; opacity: 0;
-  transition: opacity .25s ease, visibility 0s linear .25s;
-}
-.overlay.open { visibility: visible; opacity: 1; transition: opacity .25s ease, visibility 0s; }
-.overlay h3 { font-size: clamp(20px, 2.6vw, 30px); font-weight: 600; color: var(--accent); margin: 0 0 2.4vh; }
-.overlay .close { position: fixed; top: 2.4vh; right: 2.4vw; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.4vw; }
-.thumb {
-  display: flex; flex-direction: column; gap: 0.6vh; text-align: left;
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px;
-  padding: 1.6vh 1.2vw; cursor: pointer; color: var(--text); font: inherit;
-  transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
-}
-.thumb:hover, .thumb:focus-visible { border-color: var(--accent-line); transform: translateY(-2px); box-shadow: var(--shadow-glow); outline: none; }
-.thumb.current { border-color: var(--accent); }
-.thumb .num { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .12em; }
-.thumb .eb  { font-family: var(--mono); font-size: 10.5px; color: var(--text-2); text-transform: uppercase; letter-spacing: .08em; }
-.thumb .tt  { font-size: clamp(14px, 1.3vw, 17px); font-weight: 500; line-height: 1.3; }
-.keys { display: grid; grid-template-columns: auto 1fr; gap: 1.4vh 2.2vw; align-items: center; max-width: 680px; }
-.keys span { color: var(--text-2); font-size: clamp(14px, 1.5vw, 18px); }
-kbd {
-  font-family: var(--mono); font-size: 0.85em; color: var(--text);
-  background: var(--surface-lift); border: 1px solid var(--hairline); border-bottom-width: 2px;
-  border-radius: 8px; padding: 2px 10px; white-space: nowrap;
-}
-
-
-/* ---------- sign table on the number line ----------
-   A compact grid of signs, one column per region. Runs in the mono face
-   so the + and − line up under each other at projector distance. */
-.sgn {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 0.3vh 0;
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.4vw, 16px);
-  font-variant-numeric: tabular-nums;
-}
-.sgn th, .sgn td {
-  border: 1px solid var(--hairline);
-  padding: 0.4vh 0.4vw;
-  text-align: center;
-  font-weight: 500;
-  white-space: nowrap;
-}
-.sgn th { color: var(--text-2); }
-.sgn tr:last-child th, .sgn tr:last-child td {
-  border-top: 1px solid var(--accent-line);
-  font-weight: 700;
-}
-.slide.duo .card .sgn { font-size: clamp(10.5px, 1.25vw, 14px); }
-.slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 0.3vh 0.3vw; }
-.sgn td.zero { color: var(--accent); font-weight: 700; }
-
-/* a lookup table, not a sign table: no bolded final row, and the word columns
-   read left-aligned because they are prose, not signs */
-.sgn.lookup tr:last-child th, .sgn.lookup tr:last-child td { border-top: 1px solid var(--hairline); font-weight: 500; }
-.sgn.lookup td:nth-child(2), .sgn.lookup td:nth-child(3),
-.sgn.lookup th:nth-child(2), .sgn.lookup th:nth-child(3) { text-align: left; padding-left: 0.7vw; }
-.sgn.lookup td:first-child { font-weight: 700; color: var(--text); }
-
-/* the region readout on the between/outside explorer: colored by which
-   shape the answer takes, so the swap is visible before it is read */
-.explore .verdict.between { color: var(--ok); font-family: var(--mono); }
-.explore .verdict.outside { color: var(--accent); font-family: var(--mono); }
-
-/* ---------- narrow and short screens: clear the HUD, and breathe ----------
-   The slide's bottom padding is in vh, and the HUD is a fixed bar in px, so on a
-   short or narrow viewport the last line of a slide slid underneath it. Below the
-   projector widths the padding gets a px floor, and everything that is measured in
-   vh (card padding, column gaps) gets a px value instead, because a vh gap on a
-   700px-tall phone is not a gap at all. Projector sizes are untouched, so the
-   900px gate is unaffected. */
-@media (max-width: 1000px) {
-  .slide { padding: 6vh 6vw max(13vh, 124px); gap: 14px; }
-  .slide.duo { padding-top: 5vh; padding-bottom: max(9.5vh, 124px); gap: 14px; }
-  .cols, .slide.duo .cols { gap: 18px; }
-  .cols > div { gap: 12px; }
-  .card { padding: 18px 18px; gap: 12px; }
-  .slide.duo .card { padding: 18px 18px; gap: 10px; }
-  .slide.duo .card .small, .slide.duo .card li.small { font-size: 15px; line-height: 1.5; }
-  .slide.duo .card .math { font-size: 16px; padding: 10px 14px; }
-  .slide.duo .card .math.result { font-size: 19px; padding: 10px 14px; }
-  .small { font-size: 15.5px; line-height: 1.55; }
-  li + li, .slide.duo .card li + li { margin-top: 8px; }
-  .sgn, .slide.duo .card .sgn { font-size: 13px; }
-  .sgn th, .sgn td, .slide.duo .card .sgn th, .slide.duo .card .sgn td { padding: 6px 5px; }
-  .explore { padding: 18px 18px; gap: 18px; }
-}
-
-/* ---------- reduced motion: everything settles instantly ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .slide, .frag, .progress, .overlay, .hint, .thumb, .toolchip, .check > .math:first-child { transition: none !important; }
-  svg.mini path { stroke-dashoffset: 0; animation: none !important; }
-  svg.mini circle { opacity: 1; transition: none; }
-  body.intro .slide.active > *, body.intro .slide.active .agenda .row { animation: none !important; }
-  .check.open .ans { animation: none; }
-}
-
-/* ---------- print: flip every token to dark-on-white ---------- */
-@media print {
-  :root {
-    --ground: #ffffff; --ground-far: #ffffff;
-    --surface: #f4f6f8; --surface-lift: #eceff2;
-    --accent: #0072a3; --accent-deep: #005b82;
-    --accent-wash: rgba(0,114,163,0.08);
-    --accent-line: rgba(0,114,163,0.35);
-    --text: #10161f; --text-2: #4a5563;
-    --hairline: rgba(16,22,31,0.16);
-    --axis: rgba(16,22,31,0.85);
-    --ok: #1c7a4f; --warn: #b03a2b;
-    --shadow-card: none; --shadow-glow: none;
-    color-scheme: light;
-  }
-  body { background: #fff; background-image: none; overflow: visible; }
-  .slide {
-    display: flex !important;
-    visibility: visible !important; opacity: 1 !important; transform: none !important;
-    position: static;
-    page-break-after: always;
-    height: auto; min-height: 92vh;
-    overflow: visible;
-    padding: 4vh 5vw;
-  }
-  .frag, .slide:not(.active) .frag.on { visibility: visible !important; opacity: 1; transform: none; }
-  .slide:not(.active) { pointer-events: auto; }
-  .hud, .progress, .hint, .overlay, .board { display: none !important; }
-  svg.mini path { stroke-dashoffset: 0 !important; animation: none !important; }
-  svg.mini circle { opacity: 1 !important; }
-  .check .ans { display: block; }
-  .check > .math:first-child::after { content: none; }
-  .explore input, .explore label { display: none; }
-  /* the gradient-clipped h1 would print as invisible text */
-  h1 {
-    background: none !important;
-    color: var(--text) !important;
-    -webkit-text-fill-color: currentColor;
-  }
-}
-
-/* ---------- 1.2 additions, built on the same tokens ---------- */
-.math .lbl { color: var(--text-2); font-size: 0.78em; }
-.quote {
-  border-left: 3px solid var(--accent); padding: 0.4vh 0 0.4vh 1.1vw;
-  font-style: italic; color: var(--text-2);
-  font-size: clamp(13.5px, 1.55vw, 18px); max-width: 80ch;
-}
-.warnbox { border-color: rgba(255,107,107,0.35); }
-.warnbox .eyebrow { color: var(--warn); }
-.fnrow { display: flex; gap: 0.8vw; flex-wrap: wrap; }
-.fnrow .math { padding: 0.9vh 1.2vw; }
-
-/* live labs: a graph beside a working panel */
-.lab { display: flex; gap: 2vw; align-items: center; flex-wrap: wrap;
-  background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px;
-  padding: 1.6vh 1.6vw; box-shadow: var(--shadow-card); }
-.lab .fig, .lab canvas { display: block; width: min(460px, 38vw); height: auto; flex: 0 0 auto;
-  background: #0f0f0f; border-radius: 14px; }
-.lab .panel { display: flex; flex-direction: column; gap: 0.9vh; flex: 1 1 260px; min-width: 240px; }
-.lab label { font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2); letter-spacing: .04em; }
-.lab input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-.lab input[type=range]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
-.lab .read { font-family: var(--mono); font-size: clamp(13px, 1.55vw, 18px); line-height: 1.7; font-variant-numeric: tabular-nums; }
-.lab .read .lw { color: var(--text-2); }
-.lab .read b { color: var(--accent); }
-.lab .verdict { font-family: var(--mono); font-size: clamp(13px, 1.5vw, 17px); font-weight: 600;
-  border-radius: 12px; padding: 0.9vh 1vw; border: 1px solid var(--hairline); line-height: 1.45; }
-.lab .verdict.ok { color: var(--ok); border-color: rgba(79,224,138,0.45); background: rgba(79,224,138,0.08); }
-.lab .verdict.no { color: var(--warn); border-color: rgba(255,107,107,0.45); background: rgba(255,107,107,0.08); }
-.picks { display: flex; gap: 0.5vw; flex-wrap: wrap; }
-.picks button {
-  font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
-  color: var(--text); background: var(--surface-lift); border: 1px solid var(--hairline);
-  border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px;
-}
-.picks button:hover { border-color: var(--accent-line); }
-.picks button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
-.lab .toggle { align-self: flex-start; font-family: var(--mono); font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
-  color: var(--accent); background: transparent; border: 1px solid var(--accent-line); border-radius: 50px; padding: 0.7vh 1.1vw; min-height: 38px; }
-.lab .toggle[aria-pressed="true"] { background: var(--accent-wash); }
-@media (max-width: 1000px) {
-  .lab { padding: 16px; gap: 16px; }
-  .lab .fig, .lab canvas { width: 100%; max-width: 460px; }
-}
-@media print { .lab input, .picks, .lab .toggle { display: none; } }
-p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
-.lab .cval { color: var(--accent); font-weight: 700; }
-.fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.12em; line-height: 1.12; font-size: 0.92em; }
-.fr > i { font-style: normal; padding: 0 0.18em; }
-.fr > i:first-child { border-bottom: 1.5px solid currentColor; }
-.slide.duo > .math { font-size: clamp(13px, 1.6vw, 19px); padding: 0.7vh 1vw; }
-.slide.duo > p { font-size: clamp(13.5px, 1.6vw, 18px); }
-
-</style>
-
+<body data-deck-name="1.2 · Session 3" data-help-note="In the Mirror Lab, pick a function and drag the slider.">
 <!-- 1 · title -->
 <section class="slide active">
   <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 3 of 5</p>
@@ -666,9 +22,9 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="agenda">
     <div class="row"><span>Do Now: finish Tuesday's exam question</span><span class="t">5 min</span></div>
     <div class="row"><span>What an inverse does, and when one exists</span><span class="t">10 min</span></div>
-    <div class="row"><span>Finding f<sup>−1</sup>(x), two ways, on two real exam questions</span><span class="t">14 min</span></div>
+    <div class="row"><span>Finding \(f^{-1}(x)\), two ways, on two real exam questions</span><span class="t">14 min</span></div>
     <div class="row"><span>The square-root sign trap</span><span class="t">5 min</span></div>
-    <div class="row"><span>The graph: the mirror line y = x, and the Mirror Lab</span><span class="t">8 min</span></div>
+    <div class="row"><span>The graph: the mirror line \(y = x\), and the Mirror Lab</span><span class="t">8 min</span></div>
     <div class="row"><span>Practice, then the exit ticket</span><span class="t">15 min</span></div>
   </div>
 </section>
@@ -678,44 +34,44 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <p class="eyebrow">Do Now · 5 min · Specimen Paper 1, Q2 · the last step</p>
   <h2>Finish Tuesday's question. Tap to check.</h2>
   <div class="card">
-    <p style="margin:0">f : x ↦ 3x + 2 and g : x ↦ 4x − 12, both for x ∈ ℝ. Solve the equation f<sup>−1</sup>(x) = gf(x). <span class="marks">[4]</span></p>
-    <p class="small" style="margin:0">On Tuesday we found both pieces: f<sup>−1</sup>(x) = <span class="fr"><i>x − 2</i><i>3</i></span> and gf(x) = 12x − 4.</p>
+    <p style="margin:0">\(f : x \mapsto 3x + 2\) and \(g : x \mapsto 4x - 12\), both for \(x \in \mathbb{R}\). Solve the equation \(f^{-1}(x) = gf(x)\). <span class="marks">[4]</span></p>
+    <p class="small" style="margin:0">On Tuesday we found both pieces: \(f^{-1}(x) = \tfrac{x - 2}{3}\) and \(gf(x) = 12x - 4\).</p>
   </div>
   <div class="check" tabindex="0">
-    <div class="math">Set them equal and solve for x.</div>
+    <div class="math">Set them equal and solve for \(x\).</div>
     <div class="ans">
-      <div class="math small"><span class="lbl">write the equation, this line earns the method mark:</span>&nbsp; <span class="fr"><i>x − 2</i><i>3</i></span> = 12x − 4</div>
-      <div class="math small"><span class="lbl">× 3 to clear the fraction:</span>&nbsp; x − 2 = 36x − 12</div>
-      <div class="math small"><span class="lbl">collect the x terms on the right:</span>&nbsp; −2 + 12 = 36x − x &nbsp;→&nbsp; 10 = 35x</div>
-      <div class="math small result">x = <span class="fr"><i>10</i><i>35</i></span> = <span class="fr"><i>2</i><i>7</i></span></div>
+      <div class="math small"><span class="lbl">write the equation, this line earns the method mark:</span>&nbsp; \(\dfrac{x - 2}{3} = 12x - 4\)</div>
+      <div class="math small"><span class="lbl">\(\times\, 3\) to clear the fraction:</span>&nbsp; \(x - 2 = 36x - 12\)</div>
+      <div class="math small"><span class="lbl">collect the \(x\) terms on the right:</span>&nbsp; \(-2 + 12 = 36x - x\) &nbsp;→&nbsp; \(10 = 35x\)</div>
+      <div class="math small result">\(x = \dfrac{10}{35} = \dfrac{2}{7}\)</div>
     </div>
   </div>
-  <p class="small muted">Mark scheme: B1 for f<sup>−1</sup>(x), B1 for gf(x), M1 for setting them equal, A1 for <span class="fr"><i>2</i><i>7</i></span>. Today is about where that f<sup>−1</sup> came from, and when it exists at all.</p>
+  <p class="small muted">Mark scheme: B1 for \(f^{-1}(x)\), B1 for \(gf(x)\), M1 for setting them equal, A1 for \(\tfrac{2}{7}\). Today is about where that \(f^{-1}\) came from, and when it exists at all.</p>
 </section>
 
 <!-- 3 · the idea -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 1 of 9</p>
   <h2>An inverse undoes the function.</h2>
-  <div class="math">f(x) = 2x + 1</div>
+  <div class="math">\(f(x) = 2x + 1\)</div>
   <div class="cols">
     <div>
       <div class="card">
-        <p class="eyebrow">Forwards: f</p>
-        <div class="math small">4 → double it → 8 → add 1 → 9</div>
-        <div class="math small result">f(4) = 9</div>
+        <p class="eyebrow">Forwards: <span class="lit">\(f\)</span></p>
+        <div class="math small">\(4\) → double it → \(8\) → add 1 → \(9\)</div>
+        <div class="math small result">\(f(4) = 9\)</div>
       </div>
     </div>
     <div class="frag">
       <div class="card">
-        <p class="eyebrow">Backwards: f<sup>−1</sup></p>
-        <div class="math small">9 → subtract 1 → 8 → halve it → 4</div>
-        <div class="math small result">f<sup>−1</sup>(9) = 4</div>
+        <p class="eyebrow">Backwards: <span class="lit">\(f^{-1}\)</span></p>
+        <div class="math small">\(9\) → subtract 1 → \(8\) → halve it → \(4\)</div>
+        <div class="math small result">\(f^{-1}(9) = 4\)</div>
       </div>
     </div>
   </div>
-  <p class="frag">The inverse does the <b>opposite operations in the opposite order</b>. As a formula, f<sup>−1</sup>(x) = <span class="fr"><i>x − 1</i><i>2</i></span>.</p>
-  <p class="frag small bad"><b>The −1 is not a power.</b> f<sup>−1</sup>(9) means "run f backwards on 9", which is 4. It does not mean 1 ÷ f(9), which would be <span class="fr"><i>1</i><i>19</i></span>. The notation looks like x<sup>−1</sup> = <span class="fr"><i>1</i><i>x</i></span>, and that look-alike trips people up.</p>
+  <p class="frag">The inverse does the <b>opposite operations in the opposite order</b>. As a formula, \(f^{-1}(x) = \tfrac{x - 1}{2}\).</p>
+  <p class="frag small bad"><b>The \(-1\) is not a power.</b> \(f^{-1}(9)\) means "run \(f\) backwards on 9", which is 4. It does not mean \(\tfrac{1}{f(9)}\), which would be \(\tfrac{1}{19}\). The notation looks like \(x^{-1} = \tfrac{1}{x}\), and that look-alike trips people up.</p>
 </section>
 
 <!-- 4 · one-one vs many-one -->
@@ -726,7 +82,7 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
-        <p class="eyebrow">One-one · f(x) = 2x + 1</p>
+        <p class="eyebrow">One-one · <span class="lit">\(f(x) = 2x + 1\)</span></p>
         <svg viewBox="0 0 240 130" style="width:100%;max-width:300px;height:auto;display:block" aria-label="A straight line crossed once by a dashed horizontal line">
           <line x1="10" y1="110" x2="230" y2="110" stroke="var(--axis)" stroke-width="1.5"/>
           <line x1="120" y1="8" x2="120" y2="122" stroke="var(--axis)" stroke-width="1.5"/>
@@ -739,7 +95,7 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
     </div>
     <div>
       <div class="card">
-        <p class="eyebrow">Many-one · f(x) = x<sup>2</sup> for x ∈ ℝ</p>
+        <p class="eyebrow">Many-one · <span class="lit">\(f(x) = x^2\) for \(x \in \mathbb{R}\)</span></p>
         <svg viewBox="0 0 240 130" style="width:100%;max-width:300px;height:auto;display:block" aria-label="A parabola crossed twice by a dashed horizontal line">
           <line x1="10" y1="110" x2="230" y2="110" stroke="var(--axis)" stroke-width="1.5"/>
           <line x1="120" y1="8" x2="120" y2="122" stroke="var(--axis)" stroke-width="1.5"/>
@@ -747,156 +103,156 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
           <line x1="10" y1="40" x2="230" y2="40" stroke="var(--text-2)" stroke-width="1.6" stroke-dasharray="6 5"/>
           <circle cx="69.8" cy="40" r="5.5" fill="var(--warn)"/><circle cx="170.2" cy="40" r="5.5" fill="var(--warn)"/>
         </svg>
-        <p class="small">f(3) = 9 and f(−3) = 9. Ask "which input gave 9?" and there are two answers. A function can only give one output, so there is no inverse.</p>
+        <p class="small">\(f(3) = 9\) and \(f(-3) = 9\). Ask "which input gave 9?" and there are two answers. A function can only give one output, so there is no inverse.</p>
       </div>
     </div>
   </div>
-  <p class="frag small"><b>Two tests, two different questions.</b> The <b>vertical</b> line test asks "is this a function at all?" Both graphs pass it: each x gives one y. The <b>horizontal</b> line test asks "is it one-one, so does it have an inverse?" The line passes it. x<sup>2</sup> on all of ℝ fails it, so x<sup>2</sup> is a function but it is not one-one.</p>
+  <p class="frag small"><b>Two tests, two different questions.</b> The <b>vertical</b> line test asks "is this a function at all?" Both graphs pass it: each \(x\) gives one \(y\). The <b>horizontal</b> line test asks "is it one-one, so does it have an inverse?" The line passes it. \(x^2\) on all of \(\mathbb{R}\) fails it, so \(x^2\) is a function but it is not one-one.</p>
 </section>
 
 <!-- 5 · restricting the domain -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 3 of 9</p>
   <h2>Cut the domain down until it passes the test.</h2>
-  <p>x<sup>2</sup> fails on all of ℝ. Keep only one side of the vertex and every output comes from one input again.</p>
+  <p>\(x^2\) fails on all of \(\mathbb{R}\). Keep only one side of the vertex and every output comes from one input again.</p>
   <div class="cols">
     <div>
       <div class="card">
-        <div class="math small">f(x) = x<sup>2</sup> for x ≥ 0</div>
-        <p class="small">Right half only. 9 now comes from 3 alone. The inverse hands back the <b>original inputs</b>, and those were all ≥ 0, so it must give the positive root.</p>
-        <div class="math small result">f<sup>−1</sup>(x) = √x</div>
+        <div class="math small">\(f(x) = x^2\) for \(x \ge 0\)</div>
+        <p class="small">Right half only. 9 now comes from 3 alone. The inverse hands back the <b>original inputs</b>, and those were all \(\ge 0\), so it must give the positive root.</p>
+        <div class="math small result">\(f^{-1}(x) = \sqrt{x}\)</div>
       </div>
     </div>
     <div class="frag">
       <div class="card">
-        <div class="math small">f(x) = x<sup>2</sup> for x ≤ 0</div>
-        <p class="small">Left half only. 9 now comes from −3 alone. The original inputs were all ≤ 0, so the inverse must hand back a negative number: the negative root. f<sup>−1</sup>(9) = −3.</p>
-        <div class="math small result">f<sup>−1</sup>(x) = −√x</div>
+        <div class="math small">\(f(x) = x^2\) for \(x \le 0\)</div>
+        <p class="small">Left half only. 9 now comes from \(-3\) alone. The original inputs were all \(\le 0\), so the inverse must hand back a negative number: the negative root. \(f^{-1}(9) = -3\).</p>
+        <div class="math small result">\(f^{-1}(x) = -\sqrt{x}\)</div>
       </div>
     </div>
   </div>
-  <p class="frag">This is why Cambridge functions come with "for x &gt; …" attached. <b>The restriction is what makes an inverse possible</b>, and it decides which answer is right. You'll see that on the sign-trap slide.</p>
+  <p class="frag">This is why Cambridge functions come with "for \(x &gt; \dots\)" attached. <b>The restriction is what makes an inverse possible</b>, and it decides which answer is right. You'll see that on the sign-trap slide.</p>
 </section>
 
 <!-- 6 · exam: does g^-1 exist -->
 <section class="slide duo">
   <p class="eyebrow">Worked example · real past paper · 9709/12 June 2024, Q4(b)</p>
-  <h2>g(x) = 1/(x<sup>2</sup> + 2) for x ∈ ℝ. State the range of g and explain whether g<sup>−1</sup> exists. <span class="marks">[2]</span></h2>
-  <div class="math frag small"><span class="lbl">1 · the smallest x<sup>2</sup> can be is 0, at x = 0:</span>&nbsp; so the smallest bottom is x<sup>2</sup> + 2 = 2</div>
-  <div class="math frag small"><span class="lbl">2 · smallest bottom gives the biggest fraction:</span>&nbsp; g(0) = <span class="fr"><i>1</i><i>2</i></span>, the top of the range, and it is reached, so ≤</div>
-  <div class="math frag small"><span class="lbl">3 · as x grows, the bottom grows without limit:</span>&nbsp; g(10) = <span class="fr"><i>1</i><i>102</i></span>, g(100) = <span class="fr"><i>1</i><i>10002</i></span>, getting closer to 0</div>
-  <div class="math frag small"><span class="lbl">4 · 1 over a positive number is never 0 or negative:</span>&nbsp; so 0 is never reached, and that end is &gt;</div>
-  <div class="math frag result">range: 0 &lt; g(x) ≤ ½</div>
-  <div class="math frag"><span class="lbl">now look for two inputs with the same output:</span>&nbsp; g(1) = <span class="fr"><i>1</i><i>3</i></span> and g(−1) = <span class="fr"><i>1</i><i>3</i></span></div>
-  <div class="math frag result">g<sup>−1</sup> does not exist, because g is not one-one.</div>
-  <p class="frag small">Examiners saw many answers give only one side of the range, or mix up ≥ and &gt;. Both ends count. For the reason, "not one-one", "many-one" and "fails the horizontal line test" all score.</p>
+  <h2>\(g(x) = \dfrac{1}{x^2 + 2}\) for \(x \in \mathbb{R}\). State the range of \(g\) and explain whether \(g^{-1}\) exists. <span class="marks">[2]</span></h2>
+  <div class="math frag small"><span class="lbl">1 · the smallest \(x^2\) can be is 0, at \(x = 0\):</span>&nbsp; so the smallest bottom is \(x^2 + 2 = 2\)</div>
+  <div class="math frag small"><span class="lbl">2 · smallest bottom gives the biggest fraction:</span>&nbsp; \(g(0) = \dfrac{1}{2}\), the top of the range, and it is reached, so \(\le\)</div>
+  <div class="math frag small"><span class="lbl">3 · as \(x\) grows, the bottom grows without limit:</span>&nbsp; \(g(10) = \dfrac{1}{102}\), \(g(100) = \dfrac{1}{10002}\), getting closer to 0</div>
+  <div class="math frag small"><span class="lbl">4 · 1 over a positive number is never 0 or negative:</span>&nbsp; so 0 is never reached, and that end is \(&gt;\)</div>
+  <div class="math frag result">range: \(0 &lt; g(x) \le \tfrac12\)</div>
+  <div class="math frag"><span class="lbl">now look for two inputs with the same output:</span>&nbsp; \(g(1) = \dfrac{1}{3}\) and \(g(-1) = \dfrac{1}{3}\)</div>
+  <div class="math frag result">\(g^{-1}\) does not exist, because \(g\) is not one-one.</div>
+  <p class="frag small">Examiners saw many answers give only one side of the range, or mix up \(\ge\) and \(&gt;\). Both ends count. For the reason, "not one-one", "many-one" and "fails the horizontal line test" all score.</p>
 </section>
 
 <!-- 7 · two routes -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 4 of 9 · finding f<sup>−1</sup>(x)</p>
-  <h2>Two routes to f<sup>−1</sup>(x). Same answer, both full marks.</h2>
-  <div class="math">f(x) = 5x − 3 &nbsp;<span class="small muted">write y = f(x) first, whichever route you take</span></div>
+  <p class="eyebrow">Direct instruction · 4 of 9 · finding <span class="lit">\(f^{-1}(x)\)</span></p>
+  <h2>Two routes to \(f^{-1}(x)\). Same answer, both full marks.</h2>
+  <div class="math">\(f(x) = 5x - 3\) &nbsp;<span class="small muted">write \(y = f(x)\) first, whichever route you take</span></div>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
         <p class="eyebrow">Route 1 · swap first, then solve</p>
-        <div class="math small">y = 5x − 3</div>
-        <div class="math small"><span class="lbl">swap x and y:</span>&nbsp; x = 5y − 3</div>
-        <div class="math small"><span class="lbl">+ 3:</span>&nbsp; x + 3 = 5y</div>
-        <div class="math small"><span class="lbl">÷ 5:</span>&nbsp; y = <span class="fr"><i>x + 3</i><i>5</i></span></div>
-        <p class="small">This is the way we did it on Tuesday. The swap happens first, so the last line is already in x.</p>
+        <div class="math small">\(y = 5x - 3\)</div>
+        <div class="math small"><span class="lbl">swap \(x\) and \(y\):</span>&nbsp; \(x = 5y - 3\)</div>
+        <div class="math small"><span class="lbl">\(+\,3\):</span>&nbsp; \(x + 3 = 5y\)</div>
+        <div class="math small"><span class="lbl">\(\div\, 5\):</span>&nbsp; \(y = \dfrac{x + 3}{5}\)</div>
+        <p class="small">This is the way we did it on Tuesday. The swap happens first, so the last line is already in \(x\).</p>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow">Route 2 · solve first, then swap</p>
-        <div class="math small">y = 5x − 3</div>
-        <div class="math small"><span class="lbl">+ 3:</span>&nbsp; y + 3 = 5x</div>
-        <div class="math small"><span class="lbl">÷ 5:</span>&nbsp; x = <span class="fr"><i>y + 3</i><i>5</i></span></div>
-        <div class="math small"><span class="lbl">swap the letters:</span>&nbsp; y = <span class="fr"><i>x + 3</i><i>5</i></span></div>
-        <p class="small">Make x the subject, then rename the letters. The algebra is identical. Only the moment of the swap moved.</p>
+        <div class="math small">\(y = 5x - 3\)</div>
+        <div class="math small"><span class="lbl">\(+\,3\):</span>&nbsp; \(y + 3 = 5x\)</div>
+        <div class="math small"><span class="lbl">\(\div\, 5\):</span>&nbsp; \(x = \dfrac{y + 3}{5}\)</div>
+        <div class="math small"><span class="lbl">swap the letters:</span>&nbsp; \(y = \dfrac{x + 3}{5}\)</div>
+        <p class="small">Make \(x\) the subject, then rename the letters. The algebra is identical. Only the moment of the swap moved.</p>
       </div>
     </div>
   </div>
-  <div class="math result frag">f<sup>−1</sup>(x) = <span class="fr"><i>x + 3</i><i>5</i></span></div>
-  <p class="frag small"><b>Pick either and stick with it.</b> The 2023 mark scheme lists both. The one thing both need: the final line is written as <b>f<sup>−1</sup>(x) = …</b> in terms of x. <b>Also swapped:</b> domain of f<sup>−1</sup> = range of f, and range of f<sup>−1</sup> = domain of f.</p>
+  <div class="math result frag">\(f^{-1}(x) = \dfrac{x + 3}{5}\)</div>
+  <p class="frag small"><b>Pick either and stick with it.</b> The 2023 mark scheme lists both. The one thing both need: the final line is written as <b>\(f^{-1}(x) = \dots\)</b> in terms of \(x\). <b>Also swapped:</b> domain of \(f^{-1}\) = range of \(f\), and range of \(f^{-1}\) = domain of \(f\).</p>
 </section>
 
 <!-- 8 · exam: domain of f^-1 -->
 <section class="slide duo">
   <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(b)</p>
-  <h2>f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> for x &gt; 3. Find the domain of f<sup>−1</sup>. <span class="marks">[1]</span></h2>
-  <p class="small muted">Tuesday's function. The paper gave f(x) = 1 + <span class="fr"><i>2a</i><i>x − a</i></span>, and we found a = 3.</p>
-  <div class="math frag"><span class="lbl">the domain of f<sup>−1</sup> is the range of f, so find the range, starting from the domain:</span></div>
-  <div class="math frag small"><span class="lbl">1 · start from the domain:</span>&nbsp; x &gt; 3</div>
-  <div class="math frag small"><span class="lbl">2 · subtract 3 from both sides:</span>&nbsp; x − 3 &gt; 0, so the bottom is always positive</div>
-  <div class="math frag small"><span class="lbl">3 · 6 over a positive number is positive:</span>&nbsp; <span class="fr"><i>6</i><i>x − 3</i></span> &gt; 0</div>
-  <div class="math frag small"><span class="lbl">4 · add 1 to both sides:</span>&nbsp; 1 + <span class="fr"><i>6</i><i>x − 3</i></span> &gt; 1</div>
-  <div class="math frag"><span class="lbl">range of f:</span>&nbsp; f(x) &gt; 1</div>
-  <div class="math frag result">domain of f<sup>−1</sup>: &nbsp;x &gt; 1</div>
-  <p class="frag small bad">On the real paper, examiners saw x &gt; 3 (the domain of f), x ≠ 1, and range and domain mixed up. The mark scheme gives <b>zero for f<sup>−1</sup>(x) &gt; 1</b>. A domain is a set of inputs, so write it in x.</p>
+  <h2>\(f(x) = 1 + \dfrac{6}{x - 3}\) for \(x &gt; 3\). Find the domain of \(f^{-1}\). <span class="marks">[1]</span></h2>
+  <p class="small muted">Tuesday's function. The paper gave \(f(x) = 1 + \tfrac{2a}{x - a}\), and we found \(a = 3\).</p>
+  <div class="math frag"><span class="lbl">the domain of \(f^{-1}\) is the range of \(f\), so find the range, starting from the domain:</span></div>
+  <div class="math frag small"><span class="lbl">1 · start from the domain:</span>&nbsp; \(x &gt; 3\)</div>
+  <div class="math frag small"><span class="lbl">2 · subtract 3 from both sides:</span>&nbsp; \(x - 3 &gt; 0\), so the bottom is always positive</div>
+  <div class="math frag small"><span class="lbl">3 · 6 over a positive number is positive:</span>&nbsp; \(\dfrac{6}{x - 3} &gt; 0\)</div>
+  <div class="math frag small"><span class="lbl">4 · add 1 to both sides:</span>&nbsp; \(1 + \dfrac{6}{x - 3} &gt; 1\)</div>
+  <div class="math frag"><span class="lbl">range of \(f\):</span>&nbsp; \(f(x) &gt; 1\)</div>
+  <div class="math frag result">domain of \(f^{-1}\): &nbsp;\(x &gt; 1\)</div>
+  <p class="frag small bad">On the real paper, examiners saw \(x &gt; 3\) (the domain of \(f\)), \(x \ne 1\), and range and domain mixed up. The mark scheme gives <b>zero for \(f^{-1}(x) &gt; 1\)</b>. A domain is a set of inputs, so write it in \(x\).</p>
 </section>
 
 <!-- 9 · exam: expression for f^-1 -->
 <section class="slide duo">
   <p class="eyebrow">Worked example · real past paper · 9709/11 June 2023, Q8(c)</p>
-  <h2>Same f. Find an expression for f<sup>−1</sup>(x). <span class="marks">[3]</span></h2>
-  <div class="math">f(x) = 1 + <span class="fr"><i>6</i><i>x − 3</i></span> for x &gt; 3</div>
-  <div class="math frag"><span class="lbl">write y = f(x), then swap x and y:</span>&nbsp; x = 1 + <span class="fr"><i>6</i><i>y − 3</i></span></div>
-  <div class="math frag"><span class="lbl">− 1, then flip both sides over and × 6:</span>&nbsp; x − 1 = <span class="fr"><i>6</i><i>y − 3</i></span> &nbsp;→&nbsp; y − 3 = <span class="fr"><i>6</i><i>x − 1</i></span></div>
-  <div class="math frag"><span class="lbl">+ 3:</span>&nbsp; y = 3 + <span class="fr"><i>6</i><i>x − 1</i></span></div>
-  <div class="math frag result">f<sup>−1</sup>(x) = 3 + <span class="fr"><i>6</i><i>x − 1</i></span> &nbsp;or&nbsp; <span class="fr"><i>3x + 3</i><i>x − 1</i></span></div>
-  <div class="math frag small"><span class="lbl">check it: on Tuesday f(5) = 4, so f<sup>−1</sup> should send 4 back to 5:</span>&nbsp; 3 + <span class="fr"><i>6</i><i>4 − 1</i></span> = 3 + 2 = 5 ✓</div>
-  <p class="frag small">Either form earns all 3 marks. A last line still in y loses the final mark.</p>
+  <h2>Same \(f\). Find an expression for \(f^{-1}(x)\). <span class="marks">[3]</span></h2>
+  <div class="math">\(f(x) = 1 + \dfrac{6}{x - 3}\) for \(x &gt; 3\)</div>
+  <div class="math frag"><span class="lbl">write \(y = f(x)\), then swap \(x\) and \(y\):</span>&nbsp; \(x = 1 + \dfrac{6}{y - 3}\)</div>
+  <div class="math frag"><span class="lbl">\(-\,1\), then flip both sides over and \(\times\, 6\):</span>&nbsp; \(x - 1 = \dfrac{6}{y - 3}\) &nbsp;→&nbsp; \(y - 3 = \dfrac{6}{x - 1}\)</div>
+  <div class="math frag"><span class="lbl">\(+\,3\):</span>&nbsp; \(y = 3 + \dfrac{6}{x - 1}\)</div>
+  <div class="math frag result">\(f^{-1}(x) = 3 + \dfrac{6}{x - 1}\) &nbsp;or&nbsp; \(\dfrac{3x + 3}{x - 1}\)</div>
+  <div class="math frag small"><span class="lbl">check it: on Tuesday \(f(5) = 4\), so \(f^{-1}\) should send 4 back to 5:</span>&nbsp; \(3 + \dfrac{6}{4 - 1} = 3 + 2 = 5\) ✓</div>
+  <p class="frag small">Either form earns all 3 marks. A last line still in \(y\) loses the final mark.</p>
 </section>
 
 <!-- 10 · sign trap -->
 <section class="slide duo">
   <p class="eyebrow">Direct instruction · 5 of 9 · the syllabus's own example</p>
-  <h2>A square root gives ±. The domain picks one.</h2>
-  <div class="math">h(x) = (2x + 3)<sup>2</sup> − 4 for x &lt; −<span class="fr"><i>3</i><i>2</i></span></div>
+  <h2>A square root gives \(\pm\). The domain picks one.</h2>
+  <div class="math">\(h(x) = (2x + 3)^2 - 4\) for \(x &lt; -\dfrac{3}{2}\)</div>
   <div class="cols" style="margin-top:0.4vh">
     <div>
       <div class="card">
         <p class="eyebrow">Swap and solve</p>
-        <div class="math small">y = (2x + 3)<sup>2</sup> − 4</div>
-        <div class="math small"><span class="lbl">swap:</span>&nbsp; x = (2y + 3)<sup>2</sup> − 4</div>
-        <div class="math small"><span class="lbl">+ 4:</span>&nbsp; (2y + 3)<sup>2</sup> = x + 4</div>
-        <div class="math small"><span class="lbl">square root:</span>&nbsp; 2y + 3 = ±√(x + 4)</div>
+        <div class="math small">\(y = (2x + 3)^2 - 4\)</div>
+        <div class="math small"><span class="lbl">swap:</span>&nbsp; \(x = (2y + 3)^2 - 4\)</div>
+        <div class="math small"><span class="lbl">\(+\,4\):</span>&nbsp; \((2y + 3)^2 = x + 4\)</div>
+        <div class="math small"><span class="lbl">square root:</span>&nbsp; \(2y + 3 = \pm\sqrt{x + 4}\)</div>
         <p class="small">Two possible signs. Only one of them is right.</p>
       </div>
     </div>
     <div>
       <div class="card">
         <p class="eyebrow">Let the domain decide</p>
-        <p class="small">The outputs of h<sup>−1</sup> are the inputs of h, so y &lt; −<span class="fr"><i>3</i><i>2</i></span>.</p>
-        <div class="math small">y &lt; −<span class="fr"><i>3</i><i>2</i></span> &nbsp;→&nbsp; 2y &lt; −3 &nbsp;→&nbsp; 2y + 3 &lt; 0</div>
-        <p class="small">2y + 3 is negative, so take the <b>negative</b> root.</p>
-        <div class="math small">2y + 3 = −√(x + 4) &nbsp;→&nbsp; 2y = −3 − √(x + 4)</div>
+        <p class="small">The outputs of \(h^{-1}\) are the inputs of \(h\), so \(y &lt; -\tfrac{3}{2}\).</p>
+        <div class="math small">\(y &lt; -\dfrac{3}{2}\) &nbsp;→&nbsp; \(2y &lt; -3\) &nbsp;→&nbsp; \(2y + 3 &lt; 0\)</div>
+        <p class="small">\(2y + 3\) is negative, so take the <b>negative</b> root.</p>
+        <div class="math small">\(2y + 3 = -\sqrt{x + 4}\) &nbsp;→&nbsp; \(2y = -3 - \sqrt{x + 4}\)</div>
       </div>
     </div>
   </div>
-  <div class="math result frag">h<sup>−1</sup>(x) = <span class="fr"><i>−3 − √(x + 4)</i><i>2</i></span> &nbsp;for x &gt; −4</div>
-  <div class="math frag small"><span class="lbl">where x &gt; −4 comes from: domain of h<sup>−1</sup> = range of h.</span>&nbsp; x &lt; −<span class="fr"><i>3</i><i>2</i></span> → 2x + 3 &lt; 0 → (2x + 3)<sup>2</sup> &gt; 0 → (2x + 3)<sup>2</sup> − 4 &gt; −4, so h(x) &gt; −4</div>
-  <p class="frag small">Check: h<sup>−1</sup>(0) = <span class="fr"><i>−3 − 2</i><i>2</i></span> = −<span class="fr"><i>5</i><i>2</i></span>, and h(−<span class="fr"><i>5</i><i>2</i></span>) = (−2)<sup>2</sup> − 4 = 0 ✓</p>
+  <div class="math result frag">\(h^{-1}(x) = \dfrac{-3 - \sqrt{x + 4}}{2}\) &nbsp;for \(x &gt; -4\)</div>
+  <div class="math frag small"><span class="lbl">where \(x &gt; -4\) comes from: domain of \(h^{-1}\) = range of \(h\).</span>&nbsp; \(x &lt; -\tfrac{3}{2}\) → \(2x + 3 &lt; 0\) → \((2x + 3)^2 &gt; 0\) → \((2x + 3)^2 - 4 &gt; -4\), so \(h(x) &gt; -4\)</div>
+  <p class="frag small">Check: \(h^{-1}(0) = \tfrac{-3 - 2}{2} = -\tfrac{5}{2}\), and \(h\big(-\tfrac{5}{2}\big) = (-2)^2 - 4 = 0\) ✓</p>
 </section>
 
 <!-- 11 · the graph -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 6 of 9 · the graph</p>
-  <h2>f<sup>−1</sup> is the reflection of f in the line y = x.</h2>
-  <p>Finding the inverse swapped x and y. So every point (a, b) on y = f(x) becomes the point (b, a) on y = f<sup>−1</sup>(x), and swapping the coordinates is exactly what a reflection in y = x does.</p>
-  <div class="math frag">f(4) = 9, so (4, 9) is on f &nbsp;→&nbsp; (9, 4) is on f<sup>−1</sup></div>
+  <h2>\(f^{-1}\) is the reflection of \(f\) in the line \(y = x\).</h2>
+  <p>Finding the inverse swapped \(x\) and \(y\). So every point \((a, b)\) on \(y = f(x)\) becomes the point \((b, a)\) on \(y = f^{-1}(x)\), and swapping the coordinates is exactly what a reflection in \(y = x\) does.</p>
+  <div class="math frag">\(f(4) = 9\), so \((4, 9)\) is on \(f\) &nbsp;→&nbsp; \((9, 4)\) is on \(f^{-1}\)</div>
   <div class="card frag">
     <p class="eyebrow">What a Cambridge sketch needs</p>
     <div class="steps">
-      <p class="small"><span class="n">1</span>The line y = x, drawn and labeled. The syllabus says sketches should include the mirror line y = x.</p>
-      <p class="small"><span class="n">2</span>Both curves, mirror images across that line. End points and asymptotes swap too: an asymptote x = 3 on f becomes y = 3 on f<sup>−1</sup>.</p>
-      <p class="small"><span class="n">3</span>f<sup>−1</sup> sitting where its domain says. Its x-values are the range of f.</p>
+      <p class="small"><span class="n">1</span>The line \(y = x\), drawn and labeled. The syllabus says sketches should include the mirror line \(y = x\).</p>
+      <p class="small"><span class="n">2</span>Both curves, mirror images across that line. End points and asymptotes swap too: an asymptote \(x = 3\) on \(f\) becomes \(y = 3\) on \(f^{-1}\).</p>
+      <p class="small"><span class="n">3</span>\(f^{-1}\) sitting where its domain says. Its \(x\)-values are the range of \(f\).</p>
     </div>
   </div>
-  <p class="frag small bad">June 2024 examiner report: "The mirror line of y = x was often omitted." Draw the line first, then reflect.</p>
+  <p class="frag small bad">June 2024 examiner report: "The mirror line of \(y = x\) was often omitted." Draw the line first, then reflect.</p>
 </section>
 
 <!-- 12 · mirror lab -->
@@ -907,10 +263,10 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
     <svg class="fig" id="ml-svg" viewBox="0 0 440 440" aria-label="The graph of f, its reflection in the line y equals x, and a point with its mirror image"></svg>
     <div class="panel">
       <div class="picks" id="ml-picks">
-        <button type="button" data-i="0" aria-pressed="true">2x + 1</button>
-        <button type="button" data-i="1" aria-pressed="false">x<sup>2</sup> + 1, x ≥ 0</button>
-        <button type="button" data-i="2" aria-pressed="false">1 + <span class="fr"><i>6</i><i>x − 3</i></span>, x &gt; 3</button>
-        <button type="button" data-i="3" aria-pressed="false">x<sup>2</sup>, x ∈ ℝ</button>
+        <button type="button" data-i="0" aria-pressed="true">\(2x + 1\)</button>
+        <button type="button" data-i="1" aria-pressed="false">\(x^2 + 1,\ x \ge 0\)</button>
+        <button type="button" data-i="2" aria-pressed="false">\(1 + \tfrac{6}{x - 3},\ x &gt; 3\)</button>
+        <button type="button" data-i="3" aria-pressed="false">\(x^2,\ x \in \mathbb{R}\)</button>
       </div>
       <label for="ml-t">Move the point along f</label>
       <input type="range" id="ml-t" min="0" max="1000" value="500">
@@ -919,28 +275,28 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
       <div class="verdict ok" id="ml-verdict"></div>
     </div>
   </div>
-  <p class="frag small">Try the last one, x<sup>2</sup> on all of ℝ. Its reflection fails: one input would need two outputs. That is the many-one problem from earlier, seen on the graph.</p>
+  <p class="frag small">Try the last one, \(x^2\) on all of \(\mathbb{R}\). Its reflection fails: one input would need two outputs. That is the many-one problem from earlier, seen on the graph.</p>
 </section>
 
 <!-- 13 · undo check -->
 <section class="slide">
   <p class="eyebrow">Direct instruction · 8 of 9 · check your answer</p>
-  <h2>How to check your f<sup>−1</sup> is right.</h2>
-  <p class="small">Why: f<sup>−1</sup> undoes f, so doing one then the other must give back exactly what you started with. If it doesn't, your inverse has a mistake. Cambridge also asks you to show this directly.</p>
-  <div class="math">f(x) = 2x + 1 &nbsp;·&nbsp; f<sup>−1</sup>(x) = <span class="fr"><i>x − 1</i><i>2</i></span></div>
+  <h2>How to check your \(f^{-1}\) is right.</h2>
+  <p class="small">Why: \(f^{-1}\) undoes \(f\), so doing one then the other must give back exactly what you started with. If it doesn't, your inverse has a mistake. Cambridge also asks you to show this directly.</p>
+  <div class="math">\(f(x) = 2x + 1\) &nbsp;·&nbsp; \(f^{-1}(x) = \dfrac{x - 1}{2}\)</div>
   <div class="cols">
     <div class="frag">
-      <div class="math small"><span class="lbl">f<sup>−1</sup>f(x), f first:</span></div>
-      <div class="math small">f<sup>−1</sup>(2x + 1) = <span class="fr"><i>(2x + 1) − 1</i><i>2</i></span> = <span class="fr"><i>2x</i><i>2</i></span></div>
-      <div class="math small result">= x</div>
+      <div class="math small"><span class="lbl">\(f^{-1}f(x)\), \(f\) first:</span></div>
+      <div class="math small">\(f^{-1}(2x + 1) = \dfrac{(2x + 1) - 1}{2} = \dfrac{2x}{2}\)</div>
+      <div class="math small result">\(= x\)</div>
     </div>
     <div class="frag">
-      <div class="math small"><span class="lbl">ff<sup>−1</sup>(x), f<sup>−1</sup> first:</span></div>
-      <div class="math small">f(<span class="fr"><i>x − 1</i><i>2</i></span>) = 2 · <span class="fr"><i>x − 1</i><i>2</i></span> + 1 = x − 1 + 1</div>
-      <div class="math small result">= x</div>
+      <div class="math small"><span class="lbl">\(ff^{-1}(x)\), \(f^{-1}\) first:</span></div>
+      <div class="math small">\(f\Big(\dfrac{x - 1}{2}\Big) = 2 \cdot \dfrac{x - 1}{2} + 1 = x - 1 + 1\)</div>
+      <div class="math small result">\(= x\)</div>
     </div>
   </div>
-  <p class="frag"><b>The quick version for exams:</b> pick an x in the domain, work out f of it, then put that answer into your f<sup>−1</sup>. If you don't get your x back, the inverse is wrong. It takes thirty seconds and it catches sign errors.</p>
+  <p class="frag"><b>The quick version for exams:</b> pick an \(x\) in the domain, work out \(f\) of it, then put that answer into your \(f^{-1}\). If you don't get your \(x\) back, the inverse is wrong. It takes thirty seconds and it catches sign errors.</p>
 </section>
 
 <!-- 14 · practice together -->
@@ -950,30 +306,30 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">1.&nbsp; Is p(x) = x<sup>2</sup> − 4x for x ∈ ℝ one-one? Justify.</div>
+        <div class="math small">1.&nbsp; Is \(p(x) = x^2 - 4x\) for \(x \in \mathbb{R}\) one-one? Justify.</div>
         <div class="ans">
-          <div class="math small">p(0) = 0 and p(4) = 16 − 16 = 0: two inputs, one output</div>
-          <div class="math small result">No. p is many-one, so p<sup>−1</sup> does not exist.</div>
+          <div class="math small">\(p(0) = 0\) and \(p(4) = 16 - 16 = 0\): two inputs, one output</div>
+          <div class="math small result">No. \(p\) is many-one, so \(p^{-1}\) does not exist.</div>
         </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">2.&nbsp; q(x) = 5 − 2x for x ∈ ℝ. Find q<sup>−1</sup>(x).</div>
+        <div class="math small">2.&nbsp; \(q(x) = 5 - 2x\) for \(x \in \mathbb{R}\). Find \(q^{-1}(x)\).</div>
         <div class="ans">
-          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = 5 − 2y &nbsp;→&nbsp; 2y = 5 − x</div>
-          <div class="math small result">q<sup>−1</sup>(x) = <span class="fr"><i>5 − x</i><i>2</i></span></div>
-          <div class="math small"><span class="lbl">check:</span>&nbsp; q(1) = 3, and q<sup>−1</sup>(3) = <span class="fr"><i>5 − 3</i><i>2</i></span> = 1 ✓</div>
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; \(x = 5 - 2y\) &nbsp;→&nbsp; \(2y = 5 - x\)</div>
+          <div class="math small result">\(q^{-1}(x) = \dfrac{5 - x}{2}\)</div>
+          <div class="math small"><span class="lbl">check:</span>&nbsp; \(q(1) = 3\), and \(q^{-1}(3) = \dfrac{5 - 3}{2} = 1\) ✓</div>
         </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">3.&nbsp; r(x) = <span class="fr"><i>4</i><i>x + 1</i></span> for x &gt; 0. Find the domain of r<sup>−1</sup>.</div>
+        <div class="math small">3.&nbsp; \(r(x) = \dfrac{4}{x + 1}\) for \(x &gt; 0\). Find the domain of \(r^{-1}\).</div>
         <div class="ans">
-          <div class="math small">x &gt; 0 &nbsp;→&nbsp; x + 1 &gt; 1 &nbsp;→&nbsp; 0 &lt; <span class="fr"><i>4</i><i>x + 1</i></span> &lt; 4</div>
-          <div class="math small"><span class="lbl">range of r:</span>&nbsp; 0 &lt; r(x) &lt; 4</div>
-          <div class="math small result">domain of r<sup>−1</sup>: 0 &lt; x &lt; 4</div>
+          <div class="math small">\(x &gt; 0\) &nbsp;→&nbsp; \(x + 1 &gt; 1\) &nbsp;→&nbsp; \(0 &lt; \dfrac{4}{x + 1} &lt; 4\)</div>
+          <div class="math small"><span class="lbl">range of \(r\):</span>&nbsp; \(0 &lt; r(x) &lt; 4\)</div>
+          <div class="math small result">domain of \(r^{-1}\): \(0 &lt; x &lt; 4\)</div>
         </div>
       </div>
     </div>
@@ -987,28 +343,28 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <div class="cols">
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">4.&nbsp; Same r as Q3. Find r<sup>−1</sup>(x).</div>
+        <div class="math small">4.&nbsp; Same \(r\) as Q3. Find \(r^{-1}(x)\).</div>
         <div class="ans">
-          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = <span class="fr"><i>4</i><i>y + 1</i></span> &nbsp;→&nbsp; y + 1 = <span class="fr"><i>4</i><i>x</i></span></div>
-          <div class="math small result">r<sup>−1</sup>(x) = <span class="fr"><i>4</i><i>x</i></span> − 1</div>
-          <div class="math small"><span class="lbl">check:</span>&nbsp; r(1) = 2, and r<sup>−1</sup>(2) = 2 − 1 = 1 ✓</div>
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; \(x = \dfrac{4}{y + 1}\) &nbsp;→&nbsp; \(y + 1 = \dfrac{4}{x}\)</div>
+          <div class="math small result">\(r^{-1}(x) = \dfrac{4}{x} - 1\)</div>
+          <div class="math small"><span class="lbl">check:</span>&nbsp; \(r(1) = 2\), and \(r^{-1}(2) = 2 - 1 = 1\) ✓</div>
         </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">5.&nbsp; s(x) = (x − 3)<sup>2</sup> + 2 for x ≥ 3. Find s<sup>−1</sup>(x) and its domain.</div>
+        <div class="math small">5.&nbsp; \(s(x) = (x - 3)^2 + 2\) for \(x \ge 3\). Find \(s^{-1}(x)\) and its domain.</div>
         <div class="ans">
-          <div class="math small"><span class="lbl">swap:</span>&nbsp; x = (y − 3)<sup>2</sup> + 2 &nbsp;→&nbsp; y − 3 = ±√(x − 2)</div>
-          <div class="math small"><span class="lbl">y ≥ 3, so y − 3 ≥ 0: take the + root</span></div>
-          <div class="math small result">s<sup>−1</sup>(x) = 3 + √(x − 2) for x ≥ 2</div>
+          <div class="math small"><span class="lbl">swap:</span>&nbsp; \(x = (y - 3)^2 + 2\) &nbsp;→&nbsp; \(y - 3 = \pm\sqrt{x - 2}\)</div>
+          <div class="math small"><span class="lbl">\(y \ge 3\), so \(y - 3 \ge 0\): take the \(+\) root</span></div>
+          <div class="math small result">\(s^{-1}(x) = 3 + \sqrt{x - 2}\) for \(x \ge 2\)</div>
         </div>
       </div>
     </div>
     <div>
       <div class="check" tabindex="0">
-        <div class="math small">6.&nbsp; The point (2, 7) is on y = t(x), and t is one-one. Name a point that must be on y = t<sup>−1</sup>(x).</div>
-        <div class="ans"><div class="math small result">(7, 2): swap the coordinates, which reflects (2, 7) in y = x.</div></div>
+        <div class="math small">6.&nbsp; The point \((2, 7)\) is on \(y = t(x)\), and \(t\) is one-one. Name a point that must be on \(y = t^{-1}(x)\).</div>
+        <div class="ans"><div class="math small result">\((7, 2)\): swap the coordinates, which reflects \((2, 7)\) in \(y = x\).</div></div>
       </div>
     </div>
   </div>
@@ -1019,9 +375,9 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
 <section class="slide">
   <p class="eyebrow">Direct instruction · 9 of 9 · recap</p>
   <h2>Three things to carry out of here.</h2>
-  <p class="frag"><b>Only one-one functions have inverses.</b> Two inputs with the same output means no inverse, and a restriction like "for x ≥ 3" is often what makes a function one-one.</p>
-  <p class="frag"><b>Swap, solve, then check the sign.</b> After a square root, the domain of the original function tells you which sign to keep. Domain of f<sup>−1</sup> = range of f.</p>
-  <p class="frag"><b>Sketch with the mirror line.</b> f<sup>−1</sup> is f reflected in y = x. Draw and label y = x every time.</p>
+  <p class="frag"><b>Only one-one functions have inverses.</b> Two inputs with the same output means no inverse, and a restriction like "for \(x \ge 3\)" is often what makes a function one-one.</p>
+  <p class="frag"><b>Swap, solve, then check the sign.</b> After a square root, the domain of the original function tells you which sign to keep. Domain of \(f^{-1}\) = range of \(f\).</p>
+  <p class="frag"><b>Sketch with the mirror line.</b> \(f^{-1}\) is \(f\) reflected in \(y = x\). Draw and label \(y = x\) every time.</p>
 </section>
 
 <!-- 17 · exit ticket -->
@@ -1043,388 +399,9 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   <p class="frag small muted">Next session: transformations. Moving, stretching and reflecting whole graphs.</p>
 </section>
 
-
-<div class="board" id="board" role="dialog" aria-modal="true" aria-label="Blank board">
-  <canvas id="boardCanvas"></canvas>
-  <div class="board-bar">
-    <button class="swatch" type="button" data-color="#ffffff" style="background:#ffffff" aria-pressed="true" aria-label="White pen"></button>
-    <button class="swatch" type="button" data-color="#00e5ff" style="background:#00e5ff" aria-pressed="false" aria-label="Cyan pen"></button>
-    <button class="swatch" type="button" data-color="#4fe08a" style="background:#4fe08a" aria-pressed="false" aria-label="Green pen"></button>
-    <button class="swatch" type="button" data-color="#ff6b6b" style="background:#ff6b6b" aria-pressed="false" aria-label="Red pen"></button>
-    <button id="bErase" type="button" aria-pressed="false">Erase</button>
-    <span class="sep"></span>
-    <button id="bUndo" type="button" title="Undo (Z)">Undo</button>
-    <button id="bClear" type="button">Clear</button>
-    <span class="sep"></span>
-    <button id="bPrev" type="button" aria-label="Previous board page">&lsaquo;</button>
-    <span class="pg" id="bPage">1 / 1</span>
-    <button id="bNext" type="button" aria-label="Next board page">&rsaquo;</button>
-    <button id="bAdd" type="button" aria-label="New board page">+</button>
-    <span class="sep"></span>
-    <button id="bTheme" type="button" aria-label="Light or dark board">Light</button>
-    <button id="bClose" type="button" title="Back to the slide you left (W)">Done</button>
-  </div>
-</div>
-
-<div class="progress" id="progress"></div>
-<div class="hint" id="hint">← → move · Space next step · W blank board · ? for every key</div>
-
-<div class="hud">
-  <div class="left">
-    <span class="name">1.2 · Session 3</span>
-    <span class="here" id="here"></span>
-  </div>
-  <div class="nav">
-    <span class="timer" id="timer" role="button" tabindex="0" title="Click or press T to start and pause. Shift + T resets.">00:00</span>
-    <button id="prevBtn" type="button" aria-label="Previous">←</button>
-    <span class="count" id="count"></span>
-    <button id="nextBtn" type="button" aria-label="Next">→</button>
-    <button id="boardBtn" type="button" aria-label="Blank board" title="Blank board (W)">Board</button>
-    <button id="gridBtn" type="button" aria-label="All slides" title="All slides (O)"><svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="6" height="6" rx="1.5"/><rect x="8" y="0" width="6" height="6" rx="1.5"/><rect x="0" y="8" width="6" height="6" rx="1.5"/><rect x="8" y="8" width="6" height="6" rx="1.5"/></svg></button>
-    <button id="helpBtn" type="button" aria-label="Keyboard help" title="Keys (?)">?</button>
-  </div>
-</div>
-
-<div class="overlay" id="grid" role="dialog" aria-modal="true" aria-label="All slides">
-  <h3>All slides</h3>
-  <div class="grid" id="gridInner"></div>
-</div>
-
-<div class="overlay" id="help" role="dialog" aria-modal="true" aria-label="Keys">
-  <h3>Keys</h3>
-  <div class="keys">
-    <kbd>→</kbd><span>Next step, then next slide. Space and Page Down do the same.</span>
-    <kbd>←</kbd><span>Back one step, then back one slide.</span>
-    <kbd>R</kbd><span>Reveal every step on this slide at once.</span>
-    <kbd>O</kbd><span>All slides. Click any one to jump there. Esc closes.</span>
-    <kbd>T</kbd><span>Start or pause the lesson timer. Shift + T resets it. Turns red at 55 minutes.</span>
-    <kbd>W</kbd><span>Blank board. A full-screen writing surface, from any slide. Pens, eraser, undo (Z), and extra pages. Esc or W returns you to the exact slide you left.</span>
-    <kbd>F</kbd><span>Fullscreen on or off.</span>
-    <kbd>Home</kbd><span>First slide.</span>
-    <kbd>End</kbd><span>Last slide, everything revealed.</span>
-    <kbd>?</kbd><span>This list.</span>
-  </div>
-  <p class="small" style="margin-top:3vh">On a phone or tablet, swipe left and right. Tap any practice question to check the answer. In the Mirror Lab, pick a function and drag the slider.</p>
-</div>
-
-<script>
-(function () {
-  'use strict';
-  var slides = [].slice.call(document.querySelectorAll('.slide'));
-  var idx = 0;
-  var h = parseInt((location.hash || '').replace('#', ''), 10);
-  if (h >= 1 && h <= slides.length) idx = h - 1;
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var $ = function (id) { return document.getElementById(id); };
-  var m = function (s) { return String(s).replace(/-/g, '\u2212'); };  /* house style: real minus signs */
-
-  function frags(s) { return [].slice.call(s.querySelectorAll('.frag')); }
-  function titleOf(s) {
-    var t = s.querySelector('h1, h2');
-    return t ? t.textContent.replace(/\s+/g, ' ').trim() : '';
-  }
-
-  /* ---------- navigation ---------- */
-  function show(i, revealAll) {
-    idx = Math.max(0, Math.min(slides.length - 1, i));
-    slides.forEach(function (s, j) {
-      var on = j === idx;
-      s.classList.toggle('active', on);
-      s.setAttribute('aria-hidden', on ? 'false' : 'true');
-    });
-    frags(slides[idx]).forEach(function (f) { f.classList.toggle('on', !!revealAll); });
-    $('count').textContent = (idx + 1) + ' / ' + slides.length;
-    $('here').textContent = titleOf(slides[idx]);
-    $('progress').style.width = ((idx + 1) / slides.length * 100).toFixed(2) + '%';
-    try { history.replaceState(null, '', '#' + (idx + 1)); } catch (e) {}
-    markGrid();
-  }
-  function next() {
-    var pending = frags(slides[idx]).filter(function (f) { return !f.classList.contains('on'); });
-    if (pending.length) {
-      pending[0].classList.add('on');
-      try { pending[0].scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); } catch (e) {}
-      return;
-    }
-    if (idx < slides.length - 1) show(idx + 1, false);
-  }
-  function prev() {
-    var on = frags(slides[idx]).filter(function (f) { return f.classList.contains('on'); });
-    if (on.length) { on[on.length - 1].classList.remove('on'); return; }
-    if (idx > 0) show(idx - 1, true);
-  }
-  function revealAll() { frags(slides[idx]).forEach(function (f) { f.classList.add('on'); }); }
-
-  /* ---------- overlays ---------- */
-  var grid = $('grid'), help = $('help');
-  function anyOpen() { return grid.classList.contains('open') || help.classList.contains('open'); }
-  function closeOverlays() { grid.classList.remove('open'); help.classList.remove('open'); }
-  function toggleOverlay(el) {
-    var was = el.classList.contains('open');
-    closeOverlays();
-    if (!was) el.classList.add('open');
-  }
-  var gi = $('gridInner');
-  slides.forEach(function (s, j) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'thumb';
-    var eb = s.querySelector('.eyebrow');
-    var num = (j + 1 < 10 ? '0' : '') + (j + 1);
-    b.innerHTML = '<span class="num">' + num + '</span>' +
-      (eb ? '<span class="eb">' + eb.innerHTML + '</span>' : '') +
-      '<span class="tt">' + titleOf(s) + '</span>';
-    b.addEventListener('click', function () { closeOverlays(); show(j, false); });
-    gi.appendChild(b);
-  });
-  function markGrid() {
-    [].slice.call(gi.children).forEach(function (b, j) { b.classList.toggle('current', j === idx); });
-  }
-  [grid, help].forEach(function (o) {
-    o.addEventListener('click', function (e) { if (e.target === o) closeOverlays(); });
-  });
-
-  /* ---------- lesson timer ---------- */
-  var tEl = $('timer'), tStart = null, tAcc = 0, tTick = null;
-  function fmt(ms) {
-    var s = Math.floor(ms / 1000), m = Math.floor(s / 60); s = s % 60;
-    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
-  }
-  function tRender() {
-    var ms = tAcc + (tStart ? Date.now() - tStart : 0);
-    tEl.textContent = fmt(ms);
-    tEl.classList.toggle('late', ms >= 55 * 60 * 1000);
-  }
-  function tToggle() {
-    if (tStart) { tAcc += Date.now() - tStart; tStart = null; clearInterval(tTick); tEl.classList.remove('on'); }
-    else { tStart = Date.now(); tTick = setInterval(tRender, 500); tEl.classList.add('on'); }
-    tRender();
-  }
-  function tReset() { tStart = null; tAcc = 0; clearInterval(tTick); tEl.classList.remove('on', 'late'); tRender(); }
-  tEl.addEventListener('click', tToggle);
-  tEl.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); tToggle(); }
-  });
-
-  /* ---------- fullscreen ---------- */
-  function fullscreen() {
-    var d = document;
-    if (d.fullscreenElement) { d.exitFullscreen && d.exitFullscreen(); }
-    else if (d.documentElement.requestFullscreen) { d.documentElement.requestFullscreen(); }
-  }
-
-  /* ---------- tap to check ---------- */
-  [].slice.call(document.querySelectorAll('.check')).forEach(function (c) {
-    c.setAttribute('role', 'button');
-    c.setAttribute('aria-expanded', 'false');
-    function toggle() {
-      var open = c.classList.toggle('open');
-      c.setAttribute('aria-expanded', open ? 'true' : 'false');
-    }
-    c.addEventListener('click', function (e) { if (e.target.closest('a')) return; toggle(); });
-    c.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggle(); }
-    });
-  });
-
-  /* ---------- first-load hint ---------- */
-  var hint = $('hint'), hintT = null;
-  function hideHint() { hint.classList.remove('show'); clearTimeout(hintT); }
-  (function () {
-    var seen = false;
-    try { seen = localStorage.getItem('tib-deck-hint') === '1'; } catch (e) {}
-    if (seen) return;
-    setTimeout(function () { hint.classList.add('show'); }, 900);
-    hintT = setTimeout(hideHint, 7000);
-    try { localStorage.setItem('tib-deck-hint', '1'); } catch (e) {}
-  })();
-
-  /* ---------- title entrance, once ---------- */
-  if (idx === 0 && !reduce) {
-    document.body.classList.add('intro');
-    setTimeout(function () { document.body.classList.remove('intro'); }, 2200);
-  }
-
-  /* ---------- buttons ---------- */
-  $('nextBtn').addEventListener('click', next);
-  $('prevBtn').addEventListener('click', prev);
-  $('gridBtn').addEventListener('click', function () { toggleOverlay(grid); });
-  $('helpBtn').addEventListener('click', function () { toggleOverlay(help); });
-
-  /* ---------- blank board ----------
-     A full-screen writing surface that replaces the slide rather than drawing
-     over it. Strokes are stored normalized (0..1) so a resize, a rotate or
-     entering fullscreen redraws them correctly instead of stretching them. */
-  var boardOn = false;
-  var toggleBoard;
-  (function () {
-    var wrap = $('board'), cv = $('boardCanvas'), ctx = cv.getContext('2d');
-    var pages = [[]], pi = 0;
-    var color = '#ffffff', size = 4, erasing = false;
-    var drawing = false, cur = null, penSeen = false;
-
-    function W() { return wrap.clientWidth; }
-    function H() { return wrap.clientHeight; }
-
-    function resize() {
-      var r = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = Math.round(W() * r); cv.height = Math.round(H() * r);
-      ctx.setTransform(r, 0, 0, r, 0, 0);
-      redraw();
-    }
-    function style(s) {
-      ctx.globalCompositeOperation = s.erase ? 'destination-out' : 'source-over';
-      ctx.strokeStyle = s.color; ctx.lineWidth = s.size;
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    }
-    function redraw() {
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.clearRect(0, 0, W(), H());
-      pages[pi].forEach(function (s) {
-        if (!s.pts.length) return;
-        style(s);
-        ctx.beginPath();
-        s.pts.forEach(function (p, i) {
-          var x = p[0] * W(), y = p[1] * H();
-          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        });
-        if (s.pts.length === 1) ctx.lineTo(s.pts[0][0] * W() + 0.01, s.pts[0][1] * H());
-        ctx.stroke();
-      });
-      ctx.globalCompositeOperation = 'source-over';
-      $('bPage').textContent = (pi + 1) + ' / ' + pages.length;
-    }
-    function seg(s, a, b) {
-      style(s);
-      ctx.beginPath();
-      ctx.moveTo(a[0] * W(), a[1] * H());
-      ctx.lineTo(b[0] * W(), b[1] * H());
-      ctx.stroke();
-      ctx.globalCompositeOperation = 'source-over';
-    }
-    function at(e) { return [e.clientX / W(), e.clientY / H()]; }
-    function reject(e) { return penSeen && e.pointerType === 'touch'; }  /* palm rejection once a stylus is seen */
-
-    cv.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'pen') penSeen = true;
-      if (reject(e)) return;
-      e.preventDefault();
-      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
-      drawing = true;
-      cur = { color: color, size: erasing ? size * 7 : size, erase: erasing, pts: [at(e)] };
-      pages[pi].push(cur);
-      seg(cur, cur.pts[0], cur.pts[0]);
-    });
-    cv.addEventListener('pointermove', function (e) {
-      if (!drawing || !cur || reject(e)) return;
-      e.preventDefault();
-      var p = at(e);
-      seg(cur, cur.pts[cur.pts.length - 1], p);
-      cur.pts.push(p);
-    });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
-      cv.addEventListener(ev, function () { drawing = false; cur = null; });
-    });
-
-    [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (b) {
-      b.addEventListener('click', function () {
-        color = b.getAttribute('data-color');
-        erasing = false; $('bErase').setAttribute('aria-pressed', 'false');
-        [].slice.call(wrap.querySelectorAll('.swatch')).forEach(function (o) {
-          o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
-        });
-      });
-    });
-    $('bErase').addEventListener('click', function () {
-      erasing = !erasing;
-      this.setAttribute('aria-pressed', erasing ? 'true' : 'false');
-    });
-    function undo() { pages[pi].pop(); redraw(); }
-    $('bUndo').addEventListener('click', undo);
-    $('bClear').addEventListener('click', function () { pages[pi] = []; redraw(); });
-    $('bPrev').addEventListener('click', function () { if (pi > 0) { pi--; redraw(); } });
-    $('bNext').addEventListener('click', function () { if (pi < pages.length - 1) { pi++; redraw(); } });
-    $('bAdd').addEventListener('click', function () { pages.splice(pi + 1, 0, []); pi++; redraw(); });
-    $('bTheme').addEventListener('click', function () {
-      var lightNow = wrap.classList.toggle('light');
-      this.textContent = lightNow ? 'Dark' : 'Light';
-      /* swap the default ink so it stays visible against the new ground */
-      var from = lightNow ? '#ffffff' : '#14141a', to = lightNow ? '#14141a' : '#ffffff';
-      var sw = wrap.querySelector('.swatch[data-color="' + from + '"]');
-      if (sw) { sw.setAttribute('data-color', to); sw.style.background = to; if (color === from) color = to; }
-      redraw();
-    });
-    $('bClose').addEventListener('click', function () { toggleBoard(false); });
-
-    window.addEventListener('resize', function () { if (boardOn) resize(); });
-
-    toggleBoard = function (want) {
-      boardOn = (want === undefined) ? !boardOn : !!want;
-      wrap.classList.toggle('on', boardOn);
-      document.body.classList.toggle('boarding', boardOn);
-      if (boardOn) { closeOverlays(); resize(); }
-    };
-    wrap.__undo = undo;
-    wrap.__page = function (d) {
-      if (d < 0 && pi > 0) { pi--; redraw(); }
-      else if (d > 0 && pi < pages.length - 1) { pi++; redraw(); }
-    };
-  })();
-  $('boardBtn').addEventListener('click', function () { toggleBoard(); });
-
-  /* ---------- keys ---------- */
-  document.addEventListener('keydown', function (e) {
-    var t = e.target;
-    var widget = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.closest('.check') || t.closest('.timer'));
-    if (widget && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter'].indexOf(e.key) >= 0) return;
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (boardOn) {
-      if (e.key === 'Escape' || e.key === 'w' || e.key === 'W') { e.preventDefault(); toggleBoard(false); }
-      else if (e.key === 'z' || e.key === 'Z') { e.preventDefault(); $('board').__undo(); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); $('board').__page(-1); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); $('board').__page(1); }
-      return;
-    }
-    if (e.key === 'Escape') { closeOverlays(); return; }
-    if (anyOpen() && e.key !== 'o' && e.key !== 'O' && e.key !== '?') return;
-    switch (e.key) {
-      case 'ArrowRight': case ' ': case 'PageDown': e.preventDefault(); next(); break;
-      case 'ArrowLeft': case 'PageUp': e.preventDefault(); prev(); break;
-      case 'Home': e.preventDefault(); show(0, false); break;
-      case 'End': e.preventDefault(); show(slides.length - 1, true); break;
-      case 'r': case 'R': revealAll(); break;
-      case 'o': case 'O': toggleOverlay(grid); break;
-      case '?': toggleOverlay(help); break;
-      case 't': case 'T': e.shiftKey ? tReset() : tToggle(); break;
-      case 'f': case 'F': fullscreen(); break;
-      case 'w': case 'W': e.preventDefault(); toggleBoard(true); break;
-      default: return;
-    }
-    hideHint();
-  });
-
-  /* ---------- swipe ---------- */
-  var tx = null, ty = null;
-  document.addEventListener('touchstart', function (e) {
-    if (e.touches.length !== 1) return;
-    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', function (e) {
-    if (tx === null) return;
-    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    tx = ty = null;
-    if (anyOpen() || e.target.closest('input, .check, .explore, .hud')) return;
-    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { dx < 0 ? next() : prev(); hideHint(); }
-  }, { passive: true });
-
-  window.addEventListener('hashchange', function () {
-    var n = parseInt((location.hash || '').replace('#', ''), 10);
-    if (n >= 1 && n <= slides.length && n - 1 !== idx) show(n - 1, false);
-  });
-
-  show(idx, false);
-})();
-</script>
-
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
 <script>
 /* ---------- Mirror Lab: a point on f and its reflection in y = x ----------
    Four functions. Three are one-one and the reflected point always lands on
@@ -1523,7 +500,6 @@ p .lit, li .lit { font-family: var(--mono); color: var(--accent); }
   draw();
 })();
 </script>
-
 
 </body>
 </html>
