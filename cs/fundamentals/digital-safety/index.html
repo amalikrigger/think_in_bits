@@ -51,7 +51,7 @@
     <ul>
       <li>A computer with a web browser</li>
       <li>One account you actually control and can change settings on. A personal account is fine and is usually easier than a school one.</li>
-      <li>A text editor for the Day 2 stretch. <a href="https://code.visualstudio.com/">VS Code</a> is on the lab machines.</li>
+      <li>Only for the optional Day 2 bonus: <a href="https://code.visualstudio.com/">VS Code</a>. It is on the lab machines. No VS Code at home? Skip the bonus. Nothing else in this lesson needs it.</li>
     </ul>
   </section>
 
@@ -285,8 +285,9 @@ api_key = os.getenv("API_KEY")</code></pre>
 
   <!-- ============ 15. stretch, part 1: set up ============ -->
   <section class="slide">
-    <h2>Stretch: build it yourself</h2>
-    <p>Required for high school, bonus for middle school. If you have never opened a terminal before, that is fine. This is written for exactly that.</p>
+    <h2>Optional bonus: build it yourself</h2>
+    <div class="callout flag"><b>This part is optional, for high school and middle school.</b> It is a bonus, not a requirement. You need VS Code for it, so if you do not have VS Code, skip ahead to &ldquo;Before you leave today&rdquo;. You lose nothing by skipping it.</div>
+    <p>If you have never opened a terminal before, that is fine. This is written for exactly that.</p>
     <div class="callout note"><b>What a terminal is, in one sentence.</b> A window where you type commands instead of clicking things. That is the whole idea. You are going to type two commands in it.</div>
     <p>We do all of this inside <b>VS Code</b>, which is already on the lab machines, because VS Code lets you make files whose names start with a dot. Finder and File Explorer both fight you on that, and it is the single most annoying part of this for beginners.</p>
   </section>
@@ -352,7 +353,7 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
     <p>What you are looking for:</p>
 <pre><code>Loaded key: not-a-real-key-12345</code></pre>
     <p>Now look back at <code>read_secret.py</code>. The key is printed on your screen, and the key is <b>nowhere in that file</b>. That is the entire point, and you just built it.</p>
-    <div class="callout check"><b>Checkpoint:</b> your terminal printed the key. Screenshot the terminal, and screenshot your <code>.gitignore</code>. Those two are what you submit.</div>
+    <div class="callout check"><b>Checkpoint:</b> your terminal printed the key. Screenshot the terminal, and screenshot your <code>.gitignore</code>. Those two are your optional bonus hand-in.</div>
   </section>
 
   <!-- ============ 15g. stretch, part 7: when it does not work ============ -->
@@ -394,21 +395,21 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
     <ul class="turnin">
       <li>You found an identifying detail in the background of a photo</li>
       <li>You answered which of the two files is safe to post, and why</li>
-      <li>High school: your <code>.env</code>, your <code>.gitignore</code>, and a terminal screenshot printing the key</li>
+      <li>Optional bonus, if you did it: your <code>.gitignore</code> and a terminal screenshot printing the key</li>
     </ul>
   </section>
 
   <!-- ============ 18. base and stretch ============ -->
   <section class="slide">
-    <h2>Base and Stretch</h2>
+    <h2>Base and optional bonus</h2>
     <div class="tiers">
       <div class="tier base">
         <h4>Base &middot; everyone</h4>
         <p>Three passphrases with crack times, two-factor authentication turned on with a screenshot, the phishing red flag identified, and the three secret-handling questions answered correctly.</p>
       </div>
       <div class="tier stretch">
-        <h4>Stretch &middot; required for HS, bonus for MS</h4>
-        <p>A working <code>.env</code> setup: the <code>.env</code> file, a <code>.gitignore</code> containing it, and a script that prints the key without the key appearing anywhere in the script. Screenshot the terminal output.</p>
+        <h4>Optional bonus &middot; HS and MS</h4>
+        <p>A working <code>.env</code> setup: the <code>.env</code> file, a <code>.gitignore</code> containing it, and a script that prints the key without the key appearing anywhere in the script. Screenshot the terminal output. Not required for anyone. It needs VS Code.</p>
       </div>
     </div>
   </section>
@@ -416,12 +417,12 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
   <!-- ============ 19. turn in ============ -->
   <section class="slide">
     <h2>What you turn in</h2>
-    <p>The whole list. Every item comes out of an activity you already did.</p>
+    <p>The whole list. Every item comes out of an activity you already did. <b>Optional bonus, HS and MS:</b> your terminal screenshot and <code>.gitignore</code> from the Day 2 VS Code part. Skipping it costs you nothing.</p>
     <ul class="turnin">
       <li><b>Three passphrases</b> with the crack time the meter gave each one. From Step 2. Never submit a password you actually use.</li>
       <li><b>Screenshot of two-factor turned on</b>, private details blurred. From Step 3.</li>
       <li><b>Screenshot of your inbox score</b>, plus one sentence on each message you got wrong and what gave it away. From Step 4.</li>
-      <li><b>The secrets answer</b>: which file is safe to post and why. From Day 2 Step 4. <b>High school also submits</b> a screenshot of your terminal printing the key, plus your <code>.gitignore</code>.</li>
+      <li><b>The secrets answer</b>: which file is safe to post and why. From Day 2 Step 4.</li>
       <li><b>Reflection</b>, 3 to 5 sentences: what is the biggest security mistake you have been making, and what are you changing?</li>
     </ul>
     <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
