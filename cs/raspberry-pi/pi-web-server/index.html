@@ -88,11 +88,35 @@
     <p>Your phone has one. The laptop next to you has one. Your Pi has one, and for the next three days it is the only thing standing between your project and everybody else being able to see it.</p>
   </section>
 
+  <!-- ============ 3b. claim your folder ============ -->
+  <section class="slide">
+    <h2>Claim your own folder</h2>
+    <p>Everyone in both classes shares these Pis. If two people build a folder with the same name, the second person lands inside the first person's project, sees work they did not do, and overwrites it when they save. So before you build anything, you pick a name that is only yours.</p>
+    <p><b>Your folder name</b> is your first name plus the first letter of your last name, all lowercase, no spaces. Jordan Baptiste is <code>jordanb</code>. If two of you would get the same name, one of you adds a number: <code>jordanb2</code>.</p>
+    <div data-widget="myname"></div>
+    <p>Type it in the box and <b>every command on this page changes to use it</b>. If the box is not there, type your folder name everywhere you see <code data-keep>YOURNAME</code>.</p>
+    <div class="callout check"><b>Checkpoint:</b> your folder name is written on your sticky note, under your IP address.</div>
+  </section>
+
+  <!-- ============ 3c. sharing a pi ============ -->
+  <section class="slide">
+    <h2>Sharing a Pi without wrecking anyone's work</h2>
+    <p>See whose folders are already on this Pi:</p>
+<pre><code>ls ~</code></pre>
+    <p>You will see Desktop, Documents and the rest, plus one folder per student who has used this Pi. Four rules:</p>
+    <ol>
+      <li><b>Only work inside your own folder.</b> Every command in this lesson starts with <code>~/YOURNAME</code>. If a command does not, stop and check.</li>
+      <li><b>Never open, edit or delete a folder that is not yours.</b> Treat it like someone's locker.</li>
+      <li><b>Your name already there, and it is not your work?</b> Someone else has your name. Add a number and use that instead.</li>
+      <li><b>Before you leave, stop your server</b> with <kbd>Ctrl</kbd>+<kbd>C</kbd>. Only one server can use port 5000 at a time, and the next person needs it.</li>
+    </ol>
+  </section>
+
   <!-- ============ 4. day 1 step 2 ============ -->
   <section class="slide">
     <h2>Step 2: Set up your Python workspace</h2>
-    <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>pihealth</code>. First, check whether it is already on your Pi:</p>
-<pre><code>ls ~/pihealth</code></pre>
+    <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>venv</code>, inside your folder. First, check whether you already built it last time:</p>
+<pre><code>ls ~/YOURNAME/venv</code></pre>
     <div class="twrap"><table>
       <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
       <tbody>
@@ -101,12 +125,12 @@
       </tbody>
     </table></div>
     <p><b>Build it.</b> Two commands, one at a time. Wait for the first to finish.</p>
-<pre><code>python3 -m venv ~/pihealth</code></pre>
-<pre><code>~/pihealth/bin/pip install flask psutil</code></pre>
+<pre><code>mkdir -p ~/YOURNAME &amp;&amp; python3 -m venv --prompt YOURNAME ~/YOURNAME/venv</code></pre>
+<pre><code>~/YOURNAME/venv/bin/pip install flask psutil</code></pre>
     <p>The second one downloads for a minute and prints a lot of text. Wait for your prompt to come back.</p>
-    <p><b>Open it.</b> Everyone runs this, whether you just built the workspace or it was already there:</p>
-<pre><code>source ~/pihealth/bin/activate</code></pre>
-    <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(pihealth)</code>.</div>
+    <p><b>Open it.</b> Everyone runs this, whether you just built the workspace or you built it last time:</p>
+<pre><code>source ~/YOURNAME/venv/bin/activate</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(YOURNAME)</code>, your own name. Someone else's name there means you opened their box. Type <code>deactivate</code> and run your own <code>source</code> line.</div>
   </section>
 
   <!-- ============ 5. what a venv is ============ -->
@@ -114,19 +138,21 @@
     <h2>What did you just build?</h2>
     <p>A <strong>virtual environment</strong>: a box that holds one project's extra Python tools and nothing else. Two tools went in the box. <strong>Flask</strong> lets Python run a website. <strong>psutil</strong> lets Python read the computer's own CPU, memory and temperature.</p>
     <p>Think of it like a toolbox for one job. The rest of the Pi is not affected, and if you ever wreck it you delete the folder and build a new one in thirty seconds.</p>
-    <div class="callout warn"><b>The thing that catches everyone.</b> Opening the box only lasts for that one Terminal window. Close it, open a new one, and you are back outside the box. The giveaway is <code>(pihealth)</code> missing from your prompt, and the symptom is <code>ModuleNotFoundError: No module named 'flask'</code>. The fix is always the same: run the <code>source</code> line again.</div>
+    <div class="callout warn"><b>The thing that catches everyone.</b> Opening the box only lasts for that one Terminal window. Close it, open a new one, and you are back outside the box. The giveaway is <code>(YOURNAME)</code> missing from your prompt, and the symptom is <code>ModuleNotFoundError: No module named 'flask'</code>. The fix is always the same: run the <code>source</code> line again.</div>
   </section>
 
   <!-- ============ 6. day 1 step 3 ============ -->
   <section class="slide">
     <h2>Step 3: Make your project folder</h2>
-<pre><code>mkdir -p ~/pi-dashboard/static &amp;&amp; cd ~/pi-dashboard</code></pre>
+<pre><code>mkdir -p ~/YOURNAME/pi-dashboard/static &amp;&amp; cd ~/YOURNAME/pi-dashboard</code></pre>
     <p>You just made this:</p>
-<pre><code>pi-dashboard/
-├── server.py       ← the Python that runs the server (next step)
-└── static/         ← the files your server hands out
-    └── index.html  ← your actual web page (Step 6)</code></pre>
-    <p>The <code>~</code> means your home folder. Whatever your username is, <code>~</code> points at the right place, so you never have to type the full path.</p>
+<pre><code>YOURNAME/               ← your folder, nobody else's
+├── venv/               ← your Python toolbox (Step 2)
+└── pi-dashboard/       ← this project
+    ├── server.py       ← the Python that runs the server (next step)
+    └── static/         ← the files your server hands out
+        └── index.html  ← your actual web page (Step 7)</code></pre>
+    <p>The <code>~</code> means the home folder of the account you are logged in as. Everyone on this Pi shares that account, which is exactly why your work lives one level down, in <code>~/YOURNAME</code>.</p>
   </section>
 
   <!-- ============ 7. day 1 step 4 ============ -->
@@ -318,8 +344,8 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
     <p class="daymark">Day 2</p>
     <h2>Step 1: Load your dashboard on your phone</h2>
     <p>Your server has to be running. If you stopped it:</p>
-<pre><code>source ~/pihealth/bin/activate
-cd ~/pi-dashboard
+<pre><code>source ~/YOURNAME/venv/bin/activate
+cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <p>Now take out your phone, make sure it is on the school network, and type your Pi's IP address and port into the browser:</p>
 <pre><code>http://YOUR-PI-IP:5000</code></pre>
@@ -392,8 +418,8 @@ setInterval(refresh, 2000);                   // do it again in 2 seconds</code>
     <p>The first prints your Pi's name. The second prints how long it has been switched on. Neither of those is the computer you are sitting at. To leave:</p>
 <pre><code>exit</code></pre>
     <p>Now SSH back in and start your server without touching the Pi:</p>
-<pre><code>source ~/pihealth/bin/activate
-cd ~/pi-dashboard
+<pre><code>source ~/YOURNAME/venv/bin/activate
+cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <p>Then open a browser on the lab computer and go to your Pi's address. You just started a server on a computer across the room and loaded its page. Plenty of people do exactly this for a living.</p>
     <div class="callout note"><b>Heads up:</b> when you close the SSH window, the server stops with it. That is normal. There are ways around it, and that is a good thing to ask about if you are curious.</div>
@@ -417,8 +443,8 @@ python3 server.py</code></pre>
     <h2>Step 1: Start the page over</h2>
     <p>Nothing about the Python changes today. The server already works. You are only replacing the page it hands out. Real web work usually goes this way, with the thing underneath staying put while the thing people see gets redesigned.</p>
     <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>. Then:</p>
-<pre><code>rm ~/pi-dashboard/static/index.html</code></pre>
-<pre><code>nano ~/pi-dashboard/static/index.html</code></pre>
+<pre><code>rm ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
+<pre><code>nano ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
     <p>You now have an empty file. Nothing to select, nothing to accidentally delete half of.</p>
   </section>
 
@@ -585,8 +611,8 @@ python3 server.py</code></pre>
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
     <p>Save, exit, then run it:</p>
-<pre><code>source ~/pihealth/bin/activate
-cd ~/pi-dashboard
+<pre><code>source ~/YOURNAME/venv/bin/activate
+cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <div class="callout check"><b>Checkpoint:</b> a dark blue gradient, four frosted cards, big numbers, and a bar under each one that fills up and turns yellow then red as the number climbs. Hover a card and it lifts.</div>
     <div class="callout warn"><b>Same page as before?</b> Hard refresh with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>. Browsers keep old copies.</div>
@@ -612,9 +638,9 @@ python3 server.py</code></pre>
     <p>Here is the loop you will repeat for the rest of the period:</p>
     <ol>
       <li><kbd>Ctrl</kbd>+<kbd>C</kbd> in the Terminal to stop the server</li>
-      <li><code>nano ~/pi-dashboard/static/index.html</code></li>
+      <li><code>nano ~/YOURNAME/pi-dashboard/static/index.html</code></li>
       <li>Change something, <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, <kbd>Ctrl</kbd>+<kbd>X</kbd></li>
-      <li><code>python3 ~/pi-dashboard/server.py</code></li>
+      <li><code>python3 ~/YOURNAME/pi-dashboard/server.py</code></li>
       <li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> in the browser</li>
     </ol>
     <p>You cannot break anything here that retyping will not fix. Change one thing at a time so you know what did what.</p>
@@ -915,11 +941,11 @@ setInterval(tick, 1000);</code></pre>
     <p><b>Screenshots.</b> On the Pi, press <kbd>Print Screen</kbd>. It either drops a file into your home folder or opens a small capture window. If nothing happens, open <b>Menu &rarr; Accessories &rarr; Screenshot</b>. On iPhone it is Side button and Volume Up. On Android it is Power and Volume Down. On a Mac it is <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>, and on Windows <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</p>
     <div class="callout warn"><b>Make sure the address bar is in the shot.</b> Two of your screenshots have to prove <i>where</i> the page was loaded from. Cropped too tight to see the IP, it proves nothing. Capture the whole browser window.</div>
     <p><b>Finding your files.</b> They are where you made them:</p>
-<pre><code>~/pi-dashboard/server.py
-~/pi-dashboard/static/index.html</code></pre>
+<pre><code>~/YOURNAME/pi-dashboard/server.py
+~/YOURNAME/pi-dashboard/static/index.html</code></pre>
     <p>If you cannot find them, this prints exactly where they are:</p>
-<pre><code>ls ~/pi-dashboard ~/pi-dashboard/static</code></pre>
-    <p><b>Getting them uploaded.</b> The short path is to submit from the Pi itself: open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; pi-dashboard. For a phone screenshot, email it to yourself or log in to Schoology on the phone and upload from the camera roll. If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</p>
+<pre><code>ls ~/YOURNAME/pi-dashboard ~/YOURNAME/pi-dashboard/static</code></pre>
+    <p><b>Getting them uploaded.</b> The short path is to submit from the Pi itself: open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; YOURNAME &rarr; pi-dashboard. For a phone screenshot, email it to yourself or log in to Schoology on the phone and upload from the camera roll. If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</p>
   </section>
 
   <!-- ============ 37. vocabulary ============ -->
@@ -955,11 +981,11 @@ setInterval(tick, 1000);</code></pre>
     <h2>When it goes wrong</h2>
     <div class="trouble">
       <details><summary>ModuleNotFoundError: No module named 'flask'</summary>
-        <div class="fix">Look at your prompt. Does it start with <code>(pihealth)</code>? If not, run <code>source ~/pihealth/bin/activate</code>. You need this in every new Terminal window.</div></details>
+        <div class="fix">Look at your prompt. Does it start with <code>(YOURNAME)</code>? If not, run <code>source ~/YOURNAME/venv/bin/activate</code>. You need this in every new Terminal window.</div></details>
       <details><summary>Address already in use</summary>
-        <div class="fix">Your server is already running in another Terminal window. Find it and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you cannot find it, run <code>pkill -f server.py</code> and start again.</div></details>
+        <div class="fix">Your server is already running in another Terminal window. Find it and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you cannot find it, run <code>pkill -f YOURNAME/pi-dashboard/server.py</code> and start again. Never run plain <code>pkill -f server.py</code>. It stops every student&rsquo;s server on this Pi, not just yours.</div></details>
       <details><summary>The page says Not Found.</summary>
-        <div class="fix">Run <code>ls ~/pi-dashboard/static</code>. If <code>index.html</code> is not in that list, you saved it in the wrong folder.</div></details>
+        <div class="fix">Run <code>ls ~/YOURNAME/pi-dashboard/static</code>. If <code>index.html</code> is not in that list, you saved it in the wrong folder.</div></details>
       <details><summary>My phone cannot load it.</summary>
         <div class="fix">Three things, in order. Is the phone on the school network? Is the server still running on the Pi? Did you type <code>:5000</code> after the IP address?</div></details>
       <details><summary>It loads someone else's dashboard.</summary>
@@ -973,7 +999,7 @@ setInterval(tick, 1000);</code></pre>
       <details><summary>I pasted into nano and it came out mangled.</summary>
         <div class="fix">Paste in the Terminal is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>. If the file is a mess, delete it and start the file over. It is faster than repairing it.</div></details>
       <details><summary>I broke it so badly I want to start over.</summary>
-        <div class="fix"><code>rm ~/pi-dashboard/server.py</code> and redo Step 6. This is a normal thing that normal programmers do.</div></details>
+        <div class="fix"><code>rm ~/YOURNAME/pi-dashboard/server.py</code> and redo Step 6. This is a normal thing that normal programmers do.</div></details>
     </div>
   </section>
 

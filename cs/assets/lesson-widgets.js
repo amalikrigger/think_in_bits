@@ -12,6 +12,7 @@
      data-widget="inbox"       phishing triage, scored
      data-widget="push"        git push simulator, shows a key leaking
      data-widget="choice"      click-to-answer question with feedback
+     data-widget="myname"      folder name box, rewrites YOURNAME in every code block
      .turnin                   persistent checklist with progress
    ============================================================ */
 (function () {
@@ -591,6 +592,31 @@
   }
 
   /* ============================================================
+     MY FOLDER NAME: rewrites every YOURNAME in the page's code
+     On purpose it is NOT saved: the Pis are shared, and a saved name
+     would greet the next student with someone else's folder.
+     ============================================================ */
+
+  function buildMyName(host) {
+    var codes = $$('code').filter(function (c) { return !c.hasAttribute('data-keep') && c.textContent.indexOf('YOURNAME') !== -1; });
+    codes.forEach(function (c) { c.setAttribute('data-tpl', c.innerHTML); });
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Your folder</span>' +
+      '<span class="w-sub">First name plus last initial, lowercase, no spaces.</span></div>' +
+      '<label class="w-label" for="' + host.id + '-n">Your folder name</label>' +
+      '<input class="w-input" id="' + host.id + '-n" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="20" placeholder="jordanb">' +
+      '<p class="w-foot">Letters and numbers only. Not saved anywhere, so type it again each time you open this page.</p>';
+    var input = $('.w-input', host);
+    function apply() {
+      var clean = input.value.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 20);
+      if (clean !== input.value) input.value = clean;
+      var name = clean || 'YOURNAME';
+      codes.forEach(function (c) { c.innerHTML = c.getAttribute('data-tpl').split('YOURNAME').join(esc(name)); });
+    }
+    input.addEventListener('input', apply);
+  }
+
+  /* ============================================================
      BOOT
      ============================================================ */
 
@@ -608,6 +634,7 @@
         else if (kind === 'choice') buildChoice(host);
         else if (kind === 'bits') buildBits(host);
         else if (kind === 'cpu') buildCpu(host);
+        else if (kind === 'myname') buildMyName(host);
       } catch (e) {
         // a broken widget must never take the lesson down
         host.innerHTML = '<p class="w-foot">This activity could not load. The lesson still works without it.</p>';
