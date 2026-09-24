@@ -98,6 +98,22 @@
     <div class="callout check"><b>Checkpoint:</b> your folder name is written on your sticky note, under your IP address.</div>
   </section>
 
+  <!-- ============ 3b2. old way vs new way ============ -->
+  <section class="slide">
+    <h2>What changed, with an example</h2>
+    <p>This lesson used to have everyone use the same two names, <code>pihealth</code> and <code>pi-dashboard</code>. Same names on a shared Pi means the second person walks into the first person's work. The names stay the same. They just move inside your own folder.</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>Old way</th><th>New way, for jordanb</th></tr></thead>
+      <tbody>
+        <tr><td>Your folder</td><td>none</td><td><code>~/jordanb</code></td></tr>
+        <tr><td>Python toolbox</td><td><code>~/pihealth</code></td><td><code>~/jordanb/pihealth</code></td></tr>
+        <tr><td>Project</td><td><code>~/pi-dashboard</code></td><td><code>~/jordanb/pi-dashboard</code></td></tr>
+        <tr><td>Prompt shows</td><td><code>(pihealth)</code></td><td><code>(jordanb-pihealth)</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Already built <code>~/pihealth</code> or <code>~/pi-dashboard</code> the old way?</b> Leave them where they are. You cannot tell whose work is in there. Start fresh in your own folder.</div>
+  </section>
+
   <!-- ============ 3c. sharing a pi ============ -->
   <section class="slide">
     <h2>Sharing a Pi without wrecking anyone's work</h2>
@@ -115,8 +131,8 @@
   <!-- ============ 4. day 1 step 2 ============ -->
   <section class="slide">
     <h2>Step 2: Set up your Python workspace</h2>
-    <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>venv</code>, inside your folder. First, check whether you already built it last time:</p>
-<pre><code>ls ~/YOURNAME/venv</code></pre>
+    <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>pihealth</code>, inside your folder. First, check whether you already built it last time:</p>
+<pre><code>ls ~/YOURNAME/pihealth</code></pre>
     <div class="twrap"><table>
       <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
       <tbody>
@@ -125,12 +141,12 @@
       </tbody>
     </table></div>
     <p><b>Build it.</b> Two commands, one at a time. Wait for the first to finish.</p>
-<pre><code>mkdir -p ~/YOURNAME &amp;&amp; python3 -m venv --prompt YOURNAME ~/YOURNAME/venv</code></pre>
-<pre><code>~/YOURNAME/venv/bin/pip install flask psutil</code></pre>
+<pre><code>mkdir -p ~/YOURNAME &amp;&amp; python3 -m venv --prompt YOURNAME-pihealth ~/YOURNAME/pihealth</code></pre>
+<pre><code>~/YOURNAME/pihealth/bin/pip install flask psutil</code></pre>
     <p>The second one downloads for a minute and prints a lot of text. Wait for your prompt to come back.</p>
     <p><b>Open it.</b> Everyone runs this, whether you just built the workspace or you built it last time:</p>
-<pre><code>source ~/YOURNAME/venv/bin/activate</code></pre>
-    <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(YOURNAME)</code>, your own name. Someone else's name there means you opened their box. Type <code>deactivate</code> and run your own <code>source</code> line.</div>
+<pre><code>source ~/YOURNAME/pihealth/bin/activate</code></pre>
+    <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(YOURNAME-pihealth)</code>, your own name. Someone else's name there means you opened their box. Type <code>deactivate</code> and run your own <code>source</code> line.</div>
   </section>
 
   <!-- ============ 5. what a venv is ============ -->
@@ -138,7 +154,7 @@
     <h2>What did you just build?</h2>
     <p>A <strong>virtual environment</strong>: a box that holds one project's extra Python tools and nothing else. Two tools went in the box. <strong>Flask</strong> lets Python run a website. <strong>psutil</strong> lets Python read the computer's own CPU, memory and temperature.</p>
     <p>Think of it like a toolbox for one job. The rest of the Pi is not affected, and if you ever wreck it you delete the folder and build a new one in thirty seconds.</p>
-    <div class="callout warn"><b>The thing that catches everyone.</b> Opening the box only lasts for that one Terminal window. Close it, open a new one, and you are back outside the box. The giveaway is <code>(YOURNAME)</code> missing from your prompt, and the symptom is <code>ModuleNotFoundError: No module named 'flask'</code>. The fix is always the same: run the <code>source</code> line again.</div>
+    <div class="callout warn"><b>The thing that catches everyone.</b> Opening the box only lasts for that one Terminal window. Close it, open a new one, and you are back outside the box. The giveaway is <code>(YOURNAME-pihealth)</code> missing from your prompt, and the symptom is <code>ModuleNotFoundError: No module named 'flask'</code>. The fix is always the same: run the <code>source</code> line again.</div>
   </section>
 
   <!-- ============ 6. day 1 step 3 ============ -->
@@ -147,7 +163,7 @@
 <pre><code>mkdir -p ~/YOURNAME/pi-dashboard/static &amp;&amp; cd ~/YOURNAME/pi-dashboard</code></pre>
     <p>You just made this:</p>
 <pre><code>YOURNAME/               ← your folder, nobody else's
-├── venv/               ← your Python toolbox (Step 2)
+├── pihealth/           ← your Python toolbox (Step 2)
 └── pi-dashboard/       ← this project
     ├── server.py       ← the Python that runs the server (next step)
     └── static/         ← the files your server hands out
@@ -344,7 +360,7 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
     <p class="daymark">Day 2</p>
     <h2>Step 1: Load your dashboard on your phone</h2>
     <p>Your server has to be running. If you stopped it:</p>
-<pre><code>source ~/YOURNAME/venv/bin/activate
+<pre><code>source ~/YOURNAME/pihealth/bin/activate
 cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <p>Now take out your phone, make sure it is on the school network, and type your Pi's IP address and port into the browser:</p>
@@ -418,7 +434,7 @@ setInterval(refresh, 2000);                   // do it again in 2 seconds</code>
     <p>The first prints your Pi's name. The second prints how long it has been switched on. Neither of those is the computer you are sitting at. To leave:</p>
 <pre><code>exit</code></pre>
     <p>Now SSH back in and start your server without touching the Pi:</p>
-<pre><code>source ~/YOURNAME/venv/bin/activate
+<pre><code>source ~/YOURNAME/pihealth/bin/activate
 cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <p>Then open a browser on the lab computer and go to your Pi's address. You just started a server on a computer across the room and loaded its page. Plenty of people do exactly this for a living.</p>
@@ -611,7 +627,7 @@ python3 server.py</code></pre>
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
     <p>Save, exit, then run it:</p>
-<pre><code>source ~/YOURNAME/venv/bin/activate
+<pre><code>source ~/YOURNAME/pihealth/bin/activate
 cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <div class="callout check"><b>Checkpoint:</b> a dark blue gradient, four frosted cards, big numbers, and a bar under each one that fills up and turns yellow then red as the number climbs. Hover a card and it lifts.</div>
@@ -981,7 +997,7 @@ setInterval(tick, 1000);</code></pre>
     <h2>When it goes wrong</h2>
     <div class="trouble">
       <details><summary>ModuleNotFoundError: No module named 'flask'</summary>
-        <div class="fix">Look at your prompt. Does it start with <code>(YOURNAME)</code>? If not, run <code>source ~/YOURNAME/venv/bin/activate</code>. You need this in every new Terminal window.</div></details>
+        <div class="fix">Look at your prompt. Does it start with <code>(YOURNAME-pihealth)</code>? If not, run <code>source ~/YOURNAME/pihealth/bin/activate</code>. You need this in every new Terminal window.</div></details>
       <details><summary>Address already in use</summary>
         <div class="fix">Your server is already running in another Terminal window. Find it and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you cannot find it, run <code>pkill -f YOURNAME/pi-dashboard/server.py</code> and start again. Never run plain <code>pkill -f server.py</code>. It stops every student&rsquo;s server on this Pi, not just yours.</div></details>
       <details><summary>The page says Not Found.</summary>
