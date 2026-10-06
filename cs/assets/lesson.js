@@ -140,6 +140,90 @@
     if (n >= 1 && n <= panels.length && n - 1 !== idx) show(n - 1, true);
   });
 
+  /* ---------- code boxes: label bar plus a copy button ----------
+     Every <pre> in the lesson becomes a box with a label on top.
+     data-label   names it ("Type in the Terminal", "server.py")
+     data-nocopy  marks sample output or a diagram: label only, no button
+     The copy reads the text at click time, so a name typed into the
+     folder-name box is already inside the code when it is copied. */
+
+  var COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>';
+
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    try { ta.setSelectionRange(0, text.length); } catch (e) {}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function copyText(text, done, fail) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done, function () {
+        legacyCopy(text) ? done() : fail();
+      });
+    } else {
+      legacyCopy(text) ? done() : fail();
+    }
+  }
+
+  function selectAll(el) {
+    try {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    } catch (e) {}
+  }
+
+  function buildCodeBoxes() {
+    Array.prototype.forEach.call(deck.querySelectorAll('pre'), function (pre) {
+      if (pre.parentNode.classList.contains('codebox')) return;
+      var nocopy = pre.hasAttribute('data-nocopy');
+
+      var box = document.createElement('div');
+      box.className = 'codebox' + (nocopy ? ' is-output' : '');
+      var bar = document.createElement('div');
+      bar.className = 'codebar';
+      var label = document.createElement('span');
+      label.className = 'codelabel';
+      label.textContent = pre.getAttribute('data-label') || (nocopy ? 'What you should see' : 'Code');
+      bar.appendChild(label);
+
+      if (!nocopy) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'copybtn';
+        btn.setAttribute('aria-label', 'Copy this code to the clipboard');
+        btn.innerHTML = COPY_ICON + '<span class="copytxt">Copy</span>';
+        var txt = btn.querySelector('.copytxt');
+        var timer = null;
+        function flash(cls, msg) {
+          btn.className = 'copybtn ' + cls; txt.textContent = msg;
+          clearTimeout(timer);
+          timer = setTimeout(function () { btn.className = 'copybtn'; txt.textContent = 'Copy'; }, 2200);
+        }
+        btn.addEventListener('click', function () {
+          var text = pre.textContent.replace(/\s+$/, '');
+          copyText(text,
+            function () { flash('done', 'Copied'); },
+            function () { selectAll(pre); flash('failed', 'Press Ctrl+C'); });
+        });
+        bar.appendChild(btn);
+      }
+
+      pre.parentNode.insertBefore(box, pre);
+      box.appendChild(bar);
+      box.appendChild(pre);
+    });
+  }
+
+  buildCodeBoxes();
+
   /* ---------- boot ---------- */
 
   // A hash means someone linked a specific section, so honor it.

@@ -13,6 +13,7 @@
      data-widget="push"        git push simulator, shows a key leaking
      data-widget="choice"      click-to-answer question with feedback
      data-widget="myname"      folder name box, rewrites YOURNAME in every code block
+     data-widget="spot"        click the details in a photo that give someone information
      .turnin                   persistent checklist with progress
    ============================================================ */
 (function () {
@@ -52,16 +53,64 @@
     return n || 1;
   }
 
+  // Keyboard rows, used to spot a run of neighboring keys such as asdfgh or jkhgjk
+  var ROWS = ['1234567890', 'qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+
+  function keyPos(ch) {
+    for (var r = 0; r < ROWS.length; r++) {
+      var c = ROWS[r].indexOf(ch);
+      if (c !== -1) return [r, c];
+    }
+    return null;
+  }
+
+  // True when two characters are the same key or sit next to each other on the keyboard.
+  function neighborKeys(a, b) {
+    var pa = keyPos(a.toLowerCase()), pb = keyPos(b.toLowerCase());
+    if (!pa || !pb) return false;
+    return Math.abs(pa[0] - pb[0]) <= 1 && Math.abs(pa[1] - pb[1]) <= 1;
+  }
+
+  // Looks like something you could say aloud: some vowels, no wall of consonants.
+  // A random string of letters is not a word, so it must not be scored as one.
+  function wordLike(core) {
+    if (core.length < 4) return false;
+    var vowels = (core.match(/[aeiouy]/g) || []).length / core.length;
+    return vowels >= 0.25 && vowels <= 0.65 && !/[^aeiouy]{5,}/.test(core);
+  }
+
   function analyze(pw) {
     if (!pw) return { bits: 0, seconds: 0, label: 'Type something', level: 0, note: '' };
 
     var lower = pw.toLowerCase();
-    var bits = pw.length * (Math.log(poolSize(pw)) / Math.log(2));
+    var pool = Math.log(poolSize(pw)) / Math.log(2);
     var note = '';
 
+    // Cost each character by how surprising it is. A repeat of the last character
+    // is nearly free, and so is a step to a neighboring key. This replaces an older
+    // rule that capped ANY password containing three repeated letters at "instant",
+    // which rated a 150 character keyboard mash as crackable in under a second.
+    var bits = 0, repeats = 0, neighbors = 0;
+    for (var i = 0; i < pw.length; i++) {
+      if (i === 0) { bits += pool; continue; }
+      var prev = pw.charAt(i - 1), cur = pw.charAt(i);
+      if (cur === prev) { bits += 0.3; repeats++; }
+      else if (cur.toLowerCase() === prev.toLowerCase()) { bits += 1; repeats++; }
+      else if (neighborKeys(prev, cur)) { bits += 2.6; neighbors++; }
+      else bits += pool;
+    }
+    if (pw.length > 5 && (repeats + neighbors) / pw.length > 0.5) {
+      note = 'mostly repeats and neighboring keys, so only part of it counts';
+    }
+
     // Separator-joined words behave like a passphrase: count words, not characters.
-    var words = lower.split(/[^a-z]+/).filter(function (w) { return w.length > 2; });
-    if (words.length >= 3) {
+    var words = lower.split(/[^a-z]+/).filter(function (w) {
+      return w.length >= 4 && w.length <= 12 && wordLike(w);
+    });
+    var wordChars = words.join('').length;
+    var letterChars = lower.replace(/[^a-z]/g, '').length || 1;
+    // Only a passphrase if the words really are most of what was typed.
+    if (words.length >= 3 && wordChars / letterChars >= 0.7) {
       var phraseBits = words.length * (Math.log(2000) / Math.log(2));
       if (phraseBits > bits) bits = phraseBits;
       note = words.length + ' words';
@@ -78,22 +127,50 @@
     var core = deleet.replace(/[^a-z]/g, '');
 
     // One word-shaped chunk plus decorations. Capped at 14 letters so a long
-    // run-together passphrase like correcthorsebatterystaple is not punished.
-    if (words.length < 2 && core.length >= 4 && core.length <= 14) {
+    // run-together passphrase like correcthorsebatterystaple is not punished,
+    // and only when it is word-shaped, so a random 12 letter string is not
+    // mistaken for a dictionary word.
+    if (words.length < 2 && core.length >= 4 && core.length <= 14 && wordLike(core)) {
       bits = Math.min(bits, 34);
       note = 'one word plus a few extras, which cracking tools try before anything else';
     }
 
-    for (var i = 0; i < COMMON.length; i++) {
-      if (lower.indexOf(COMMON[i]) !== -1 || deleet.indexOf(COMMON[i]) !== -1) {
-        bits = Math.min(bits, 8);
-        note = 'contains a password from the leaked lists';
+    // A leaked password with a few characters stuck on the end is still that
+    // password. A leaked password buried inside a long passphrase is not.
+    for (var j = 0; j < COMMON.length; j++) {
+      var hit = lower.indexOf(COMMON[j]) !== -1 || deleet.indexOf(COMMON[j]) !== -1;
+      if (hit) {
+        var extra = pw.length - COMMON[j].length;
+        if (extra <= 6) {
+          bits = Math.min(bits, 8 + Math.max(extra, 0) * 3);
+          note = 'contains a password from the leaked lists';
+        } else if (!note) {
+          note = 'contains a password from the leaked lists, but it is a small part of a long one';
+        }
         break;
       }
     }
+
     if (/^[0-9]+$/.test(pw)) { bits = Math.min(bits, pw.length * 3.3); note = 'digits only'; }
-    if (/(.)\1{2,}/.test(pw)) { bits = Math.min(bits, 20); note = 'the same character repeated'; }
-    if (/^(abc|qwe|asd|zxc|123)/i.test(pw)) { bits = Math.min(bits, 14); note = 'starts with a keyboard run'; }
+
+    // Only call it "the same character" when that is what it is.
+    var collapsed = pw.replace(/(.)\1+/g, '$1');
+    if (pw.length > 3 && collapsed.length <= 2) {
+      bits = Math.min(bits, 12);
+      note = 'the same character repeated';
+    }
+
+    // A whole password that is just a straight walk along the keyboard.
+    var flat = lower.replace(/[^a-z0-9]/g, '');
+    var isRun = flat.length >= 4 && ROWS.some(function (row) {
+      var rev = row.split('').reverse().join('');
+      return row.indexOf(flat) !== -1 || rev.indexOf(flat) !== -1;
+    });
+    if (isRun || /^(abc|qwe|asd|zxc|123)/i.test(pw) && pw.length <= 10) {
+      bits = Math.min(bits, 14);
+      note = 'a straight run along the keyboard';
+    }
+
     bits = Math.max(bits, 1);
 
     var seconds = Math.pow(2, bits) / 2 / GUESSES_PER_SEC;
@@ -106,14 +183,21 @@
     else if (seconds < 86400) { label = 'Hours';      level = 2; }
     else if (seconds < 3.154e7)  { label = 'Days';    level = 3; }
     else if (seconds < 3.154e9)  { label = 'Years';   level = 4; }
-    else if (seconds < 3.154e11) { label = 'Centuries'; level = 5; }
+    else if (seconds < 4.35e17)  { label = 'Centuries'; level = 5; }  // universe is about 4.35e17 s old
     else { label = 'Longer than the universe has existed'; level = 5; }
+
+    // Long but mashed: strong on paper, impossible to remember. Say so.
+    if (pw.length >= 24 && level >= 4 && !/words/.test(note) &&
+        (repeats + neighbors) / pw.length > 0.5) {
+      note = 'long enough to hold, but you could never remember it. That is what a password manager is for';
+    }
 
     return { bits: bits, seconds: seconds, label: label, level: level, note: note };
   }
 
   function humanTime(s) {
     if (s < 1) return 'less than a second';
+    if (s >= 4.35e17) return 'longer than the universe has existed';
     var units = [['second', 'seconds', 1], ['minute', 'minutes', 60], ['hour', 'hours', 3600],
                  ['day', 'days', 86400], ['year', 'years', 3.154e7],
                  ['century', 'centuries', 3.154e9]];
@@ -150,7 +234,8 @@
       verdict.textContent = r.label;
       verdict.className = 'w-verdict lv' + r.level;
       detail.textContent = input.value
-        ? humanTime(r.seconds) + ' to crack' + (r.note ? ' (' + r.note + ')' : '')
+        ? (r.seconds >= 4.35e17 ? 'more time than the universe has had' : humanTime(r.seconds) + ' to crack') +
+          (r.note ? ' (' + r.note + ')' : '')
         : '';
     }
     input.addEventListener('input', update);
@@ -617,6 +702,55 @@
   }
 
   /* ============================================================
+     SPOT THE DETAILS: click what in this photo gives someone information
+     The scene is inline SVG in the page. Every [data-find] group is a clue,
+     and a clue marked .decoy is harmless on purpose, so students learn that
+     the skill is judging what matters and not flagging everything.
+     ============================================================ */
+
+  function buildSpot(host) {
+    host.classList.add('w-spot');
+    var finds = $$('[data-find]', host);
+    var real = finds.filter(function (f) { return !f.classList.contains('decoy'); }).length;
+    host.insertAdjacentHTML('afterbegin',
+      '<div class="w-head"><span class="w-tag">Try it</span>' +
+      '<span class="w-sub">Click anything in the photo that tells a stranger something about this person.</span></div>');
+    var tally = document.createElement('p'); tally.className = 'w-tally';
+    var list = document.createElement('ul'); list.className = 'w-found';
+    host.appendChild(tally); host.appendChild(list);
+    var n = 0;
+
+    function update() {
+      tally.textContent = n >= real
+        ? 'All ' + real + ' found. Now you know what to look for in your own photos.'
+        : 'Found ' + n + ' of ' + real + ' details. Keep looking.';
+      tally.classList.toggle('all', n >= real);
+    }
+
+    finds.forEach(function (el) {
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.getAttribute('data-title') || 'Detail');
+      function hit() {
+        if (el.classList.contains('found')) return;
+        el.classList.add('found');
+        var decoy = el.classList.contains('decoy');
+        if (!decoy) n++;
+        var li = document.createElement('li');
+        if (decoy) li.className = 'decoy';
+        li.innerHTML = '<b>' + esc(el.getAttribute('data-title') || '') + '.</b> ' + esc(el.getAttribute('data-why') || '');
+        list.insertBefore(li, list.firstChild);
+        update();
+      }
+      el.addEventListener('click', hit);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hit(); }
+      });
+    });
+    update();
+  }
+
+  /* ============================================================
      BOOT
      ============================================================ */
 
@@ -635,6 +769,7 @@
         else if (kind === 'bits') buildBits(host);
         else if (kind === 'cpu') buildCpu(host);
         else if (kind === 'myname') buildMyName(host);
+        else if (kind === 'spot') buildSpot(host);
       } catch (e) {
         // a broken widget must never take the lesson down
         host.innerHTML = '<p class="w-foot">This activity could not load. The lesson still works without it.</p>';

@@ -7,7 +7,7 @@
   <meta name="description" content="Turn a Raspberry Pi into a live web server showing its own CPU, memory, disk and temperature. CS elective lesson, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../../assets/lesson.css">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261006">
 </head>
 <body>
 
@@ -34,7 +34,7 @@
       <li><b>Time</b> 3 class periods</li>
       <li><b>Difficulty</b> Beginner</li>
     </ul>
-    <p class="lede">Right now the Raspberry Pi in front of you is just a small computer. By the end of today it will be a <strong>server</strong>: it will have a web address, and anyone on the school network can type that address into their phone and see a page you built. By the end of the week that page will be showing the Pi's own CPU, memory, disk and temperature, updating live, and it will look good.</p>
+    <p class="lede">Right now the Raspberry Pi in front of you is just a small computer. By the end of today it will be a <strong>server</strong>: it will have a web address, and anyone on the school network can type that address into another computer and see a page you built. By the end of the week that page will be showing the Pi's own CPU, memory, disk and temperature, updating live, and it will look good.</p>
   </header>
 
   <!-- ============ 1. learn / need ============ -->
@@ -50,9 +50,10 @@
     <h3>What you need</h3>
     <ul>
       <li>A Raspberry Pi at a monitor station, already set up and on the school network</li>
-      <li>A phone, laptop or Chromebook on the same network, for Day 2</li>
-      <li>A second computer in the lab with a terminal, for the SSH step on Day 2</li>
-      <li>No accounts. No downloads. Nothing to sign up for.</li>
+      <li>The <b>same Pi, every day</b>. Your folder is saved on that Pi, not in the cloud, so sit at the same one on Days 2 and 3</li>
+      <li>A second computer in the lab, not a Pi, on the school network, for Day 2. You will load your dashboard on it and use it for the SSH step</li>
+      <li>A sticky note and a pen</li>
+      <li>No phone. No accounts. No downloads. Nothing to sign up for.</li>
     </ul>
   </section>
 
@@ -68,16 +69,45 @@
     <div class="callout warn"><b>If something goes wrong</b>, stop and tell Mr. Krigger. A Pi that will not boot is a ten-second fix if you say so and a lost week if you do not.</div>
   </section>
 
-  <!-- ============ 3. day 1 step 1 ============ -->
+  <!-- ============ 2b. how the code boxes work ============ -->
+  <section class="slide">
+    <h2>How this lesson works</h2>
+    <p>Every grey box is something you type or paste. The bar on top of each box tells you where it goes.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>The bar says</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td><b>Type in the Terminal</b></td><td>A command. Click <b>Copy</b>, click inside the Terminal window, paste, then tap the <kbd>Enter</kbd> key.</td></tr>
+        <tr><td><b>server.py</b> or <b>static/index.html</b></td><td>The inside of a file. Open the file with nano, click <b>Copy</b>, paste into nano, then save.</td></tr>
+        <tr><td>Gold bar, dashed box, no Copy button</td><td>Look, do not paste. It is an example or what you should see.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>Three keys that work differently in the Terminal.</b> <b>Paste</b> is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>, not <kbd>Ctrl</kbd>+<kbd>V</kbd>. <kbd>Ctrl</kbd>+<kbd>C</kbd> does <b>not</b> copy, it stops whatever is running. And typing a command does nothing until you tap the <kbd>Enter</kbd> key.</div>
+    <p>If the Copy button says <b>Press Ctrl+C</b>, your browser blocked it. The code is already selected, so press <kbd>Ctrl</kbd>+<kbd>C</kbd> in the browser and carry on.</p>
+  </section>
+
+  <!-- ============ 3-start. day 1 start ============ -->
   <section class="slide">
     <p class="daymark">Day 1</p>
+    <h2>Start here</h2>
+    <div class="startcard"><span class="startbadge">Day 1 start</span>
+      <ol class="startsteps">
+        <li><b>Pick a Pi and keep it.</b> Use the same Pi on Days 2 and 3. Your work is saved on that Pi, so a different Pi will not have it.</li>
+        <li><b>Open the Terminal.</b> It is the black rectangle icon on the top bar.</li>
+        <li><b>Today:</b> write down your username, your IP address and your folder name, build your Python workspace, then run your first web server.</li>
+        <li><b>Finish line:</b> a Chromium tab that says <b>My Pi is a web server.</b></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 3. day 1 step 1 ============ -->
+  <section class="slide">
     <h2>Step 1: Find out who you are and where you are</h2>
     <p>Open the <b>Terminal</b> on the Pi. It is the black rectangle icon on the top bar.</p>
     <div class="callout note"><b>What is a Terminal?</b> A way to talk to the computer by typing instead of clicking. Same computer, same files, different door. Think of it as texting your Pi instead of tapping icons.</div>
-    <p>Type this and press Enter:</p>
-<pre><code>whoami</code></pre>
+    <p>Type this, then tap the <kbd>Enter</kbd> key. The Terminal does nothing until you do:</p>
+<pre data-label="Type in the Terminal"><code>whoami</code></pre>
     <p>That prints your username on this Pi. Write it down. You will need it on Day 2. Now type:</p>
-<pre><code>hostname -I</code></pre>
+<pre data-label="Type in the Terminal"><code>hostname -I</code></pre>
     <p>That prints your Pi's <strong>IP address</strong>, something like <code>10.0.4.71</code>. <b>Write it on a sticky note and put it on your monitor.</b> Everything on Day 2 depends on it.</p>
     <div class="callout check"><b>Checkpoint:</b> you have two things written down, your username and your Pi's IP address.</div>
   </section>
@@ -85,7 +115,8 @@
   <section class="slide">
     <h2>What an IP address is</h2>
     <p>Your network is a neighborhood and every device on it gets a house number. That is the IP address. When someone types it into a browser they are saying "take me to that house."</p>
-    <p>Your phone has one. The laptop next to you has one. Your Pi has one, and for the next three days it is the only thing standing between your project and everybody else being able to see it.</p>
+    <p>The computer next to you has one. So does every Chromebook in the school. Your Pi has one, and for the next three days it is the only thing standing between your project and everybody else being able to see it.</p>
+    <div class="callout note"><b>It can change.</b> The network sometimes hands your Pi a new house number overnight. That is why Days 2 and 3 start by checking it again.</div>
   </section>
 
   <!-- ============ 3b. claim your folder ============ -->
@@ -118,7 +149,7 @@
   <section class="slide">
     <h2>Sharing a Pi without wrecking anyone's work</h2>
     <p>See whose folders are already on this Pi:</p>
-<pre><code>ls ~</code></pre>
+<pre data-label="Type in the Terminal"><code>ls ~</code></pre>
     <p>You will see Desktop, Documents and the rest, plus one folder per student who has used this Pi. Four rules:</p>
     <ol>
       <li><b>Only work inside your own folder.</b> Every command in this lesson starts with <code>~/YOURNAME</code>. If a command does not, stop and check.</li>
@@ -132,7 +163,7 @@
   <section class="slide">
     <h2>Step 2: Set up your Python workspace</h2>
     <p>This project needs two Python add-ons that are not installed by default. They live in a little workspace of their own called <code>pihealth</code>, inside your folder. First, check whether you already built it last time:</p>
-<pre><code>ls ~/YOURNAME/pihealth</code></pre>
+<pre data-label="Type in the Terminal"><code>ls ~/YOURNAME/pihealth</code></pre>
     <div class="twrap"><table>
       <thead><tr><th>What you see</th><th>What it means</th><th>What to do</th></tr></thead>
       <tbody>
@@ -141,11 +172,11 @@
       </tbody>
     </table></div>
     <p><b>Build it.</b> Two commands, one at a time. Wait for the first to finish.</p>
-<pre><code>mkdir -p ~/YOURNAME &amp;&amp; python3 -m venv --prompt YOURNAME-pihealth ~/YOURNAME/pihealth</code></pre>
-<pre><code>~/YOURNAME/pihealth/bin/pip install flask psutil</code></pre>
+<pre data-label="Type in the Terminal"><code>mkdir -p ~/YOURNAME &amp;&amp; python3 -m venv --prompt YOURNAME-pihealth ~/YOURNAME/pihealth</code></pre>
+<pre data-label="Type in the Terminal"><code>~/YOURNAME/pihealth/bin/pip install flask psutil</code></pre>
     <p>The second one downloads for a minute and prints a lot of text. Wait for your prompt to come back.</p>
     <p><b>Open it.</b> Everyone runs this, whether you just built the workspace or you built it last time:</p>
-<pre><code>source ~/YOURNAME/pihealth/bin/activate</code></pre>
+<pre data-label="Type in the Terminal"><code>source ~/YOURNAME/pihealth/bin/activate</code></pre>
     <div class="callout check"><b>Checkpoint:</b> your prompt now starts with <code>(YOURNAME-pihealth)</code>, your own name. Someone else's name there means you opened their box. Type <code>deactivate</code> and run your own <code>source</code> line.</div>
   </section>
 
@@ -160,9 +191,9 @@
   <!-- ============ 6. day 1 step 3 ============ -->
   <section class="slide">
     <h2>Step 3: Make your project folder</h2>
-<pre><code>mkdir -p ~/YOURNAME/pi-dashboard/static &amp;&amp; cd ~/YOURNAME/pi-dashboard</code></pre>
+<pre data-label="Type in the Terminal"><code>mkdir -p ~/YOURNAME/pi-dashboard/static &amp;&amp; cd ~/YOURNAME/pi-dashboard</code></pre>
     <p>You just made this:</p>
-<pre><code>YOURNAME/               ← your folder, nobody else's
+<pre data-label="What you just made" data-nocopy><code>YOURNAME/               ← your folder, nobody else's
 ├── pihealth/           ← your Python toolbox (Step 2)
 └── pi-dashboard/       ← this project
     ├── server.py       ← the Python that runs the server (next step)
@@ -171,13 +202,51 @@
     <p>The <code>~</code> means the home folder of the account you are logged in as. Everyone on this Pi shares that account, which is exactly why your work lives one level down, in <code>~/YOURNAME</code>.</p>
   </section>
 
+  <!-- ============ 6b. meet nano ============ -->
+  <section class="slide">
+    <h2>Meet nano, the editor you will use all week</h2>
+    <p><strong>nano</strong> opens inside the Terminal. There are no menus to click. <b>Mouse clicks will not move the cursor</b>, so use the arrow keys.</p>
+    <p>The bottom of the screen lists the commands. The little <code>^</code> means the <kbd>Ctrl</kbd> key, so <code>^O</code> means <b>hold Ctrl and tap O</b>.</p>
+    <div class="nanomock" role="img" aria-label="A picture of the nano editor with a list of shortcuts along the bottom">
+      <div class="nm-top"><span>GNU nano</span><span>server.py</span><span>Modified</span></div>
+      <div class="nm-body">from flask import Flask
+
+app = Flask(__name__)<span class="nm-cursor"> </span></div>
+      <div class="nm-keys">
+        <span class="hot"><b>^O</b>Write Out (save)</span>
+        <span class="hot"><b>^X</b>Exit</span>
+        <span><b>^K</b>Cut a line</span>
+        <span><b>^U</b>Paste a line</span>
+        <span><b>^W</b>Where Is (search)</span>
+        <span><b>^G</b>Help</span>
+      </div>
+    </div>
+    <p>The two in gold are the two you need today.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Save and exit nano, one key at a time</h2>
+    <p><b>Save</b> (do this often):</p>
+    <ol>
+      <li>Hold the <kbd>Ctrl</kbd> key and tap <kbd>O</kbd>. A line appears at the bottom: <code>File Name to Write: server.py</code></li>
+      <li>Tap the <kbd>Enter</kbd> key on your keyboard. That says yes to the name. The bottom now says <code>[ Wrote 9 lines ]</code></li>
+    </ol>
+    <div class="nanomock" role="img" aria-label="nano asking for a file name to write">
+      <div class="nm-body">from flask import Flask</div>
+      <div class="nm-prompt">File Name to Write: <span class="typed">server.py</span>   &larr; now tap the Enter key</div>
+      <div class="nm-keys"><span class="hot"><b>^C</b>Cancel</span></div>
+    </div>
+    <p><b>Exit:</b> hold <kbd>Ctrl</kbd> and tap <kbd>X</kbd>. You are back at the Terminal prompt.</p>
+    <div class="callout note"><b>Pressed Ctrl+X before saving?</b> nano asks <code>Save modified buffer?</code> Tap the <kbd>Y</kbd> key for yes, then the <kbd>Enter</kbd> key. Tap <kbd>N</kbd> to throw your changes away.</div>
+    <div class="callout check"><b>Checkpoint:</b> you saw <code>[ Wrote ... lines ]</code> before you exited. No message means nothing was saved.</div>
+  </section>
+
   <!-- ============ 7. day 1 step 4 ============ -->
   <section class="slide">
     <h2>Step 4: Write the smallest web server that works</h2>
-<pre><code>nano server.py</code></pre>
-    <div class="callout note"><b>What is <code>nano</code>?</b> A text editor that lives inside the Terminal. Like Notepad with no window.</div>
-    <p>Type or paste exactly this:</p>
-<pre><code>from flask import Flask
+<pre data-label="Type in the Terminal"><code>nano server.py</code></pre>
+    <p>Type or paste exactly this. The easy way: click <b>Copy</b> above the code, click inside the nano window, then press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>.</p>
+<pre data-label="server.py"><code>from flask import Flask
 
 app = Flask(__name__)
 
@@ -186,21 +255,34 @@ def home():
     return &quot;&lt;h1&gt;My Pi is a web server.&lt;/h1&gt;&quot;
 
 app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
-    <p>Save with <kbd>Ctrl</kbd>+<kbd>O</kbd>, then Enter. Exit with <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+    <p>Save: hold <kbd>Ctrl</kbd> and tap <kbd>O</kbd>, then tap the <kbd>Enter</kbd> key. Exit: hold <kbd>Ctrl</kbd> and tap <kbd>X</kbd>.</p>
     <div class="callout warn"><b>Pasting into the Terminal is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></b>, not <kbd>Ctrl</kbd>+<kbd>V</kbd>. This trips up everyone once.</div>
   </section>
 
   <!-- ============ 8. day 1 step 5 ============ -->
   <section class="slide">
     <h2>Step 5: Run it</h2>
-<pre><code>python3 server.py</code></pre>
+<pre data-label="Type in the Terminal"><code>python3 server.py</code></pre>
     <p>The Terminal will print a few lines and then sit there looking frozen. It has not crashed, it is listening.</p>
     <p>Open <b>Chromium</b> on the Pi and go to:</p>
-<pre><code>http://localhost:5000</code></pre>
+<pre data-label="Type in the Chromium address bar"><code>http://localhost:5000</code></pre>
     <div class="callout check"><b>Checkpoint:</b> the browser says <b>My Pi is a web server.</b> That is a real server, running on a real computer, serving a real page. It took six lines.</div>
     <p><b>To stop it:</b> click the Terminal window and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Remember this. You will need it constantly.</p>
     <div class="callout note"><b>You will also see a yellow warning</b> about a "development server" and not using it in production. Ignore it. It means this server is built for learning, not for handling a million people at once, which is what you are doing.</div>
   </section>
+  <section class="slide">
+    <h2>What the Terminal should print</h2>
+    <p>When your server starts, it prints lines like these. Read them. The last <code>Running on</code> line is your Pi's IP address and port, which is the address Day 2 uses.</p>
+    <pre data-label="What you should see (your numbers will differ)" data-nocopy><code> * Serving Flask app &#x27;server&#x27;
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.4.71:5000
+Press CTRL+C to quit</code></pre>
+    <div class="callout warn"><b>Saw <code>ModuleNotFoundError</code> instead?</b> You are outside your toolbox. Your prompt is missing <code>(YOURNAME-pihealth)</code>. Run the <code>source</code> line from Step 2 again, then run this again.</div>
+  </section>
+
 
   <!-- ============ 9. mini: what a server does ============ -->
   <section class="slide">
@@ -220,10 +302,11 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
   <!-- ============ 10. day 1 step 6 ============ -->
   <section class="slide">
     <h2>Step 6: Build the real thing</h2>
-    <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>, then reopen the file:</p>
-<pre><code>nano server.py</code></pre>
-    <p>Delete everything in it (hold <kbd>Ctrl</kbd>+<kbd>K</kbd> to cut lines until the file is empty), then type or paste this:</p>
-<pre><code>from flask import Flask, jsonify, send_from_directory
+    <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>. You are replacing the whole file, so throw the old one away and open a blank one. Run these two, one at a time:</p>
+<pre data-label="Type in the Terminal"><code>rm ~/YOURNAME/pi-dashboard/server.py</code></pre>
+<pre data-label="Type in the Terminal"><code>nano ~/YOURNAME/pi-dashboard/server.py</code></pre>
+    <p>The nano screen is empty. Click <b>Copy</b> on the code below, click inside the Terminal, and paste with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>:</p>
+<pre data-label="server.py"><code>from flask import Flask, jsonify, send_from_directory
 import psutil
 import subprocess
 import os
@@ -269,16 +352,16 @@ def stats():
 
 
 app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
-    <p>Save: <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter. Exit: <kbd>Ctrl</kbd>+<kbd>X</kbd>.</p>
+    <p>Save: hold <kbd>Ctrl</kbd> and tap <kbd>O</kbd>, then tap the <kbd>Enter</kbd> key. Exit: hold <kbd>Ctrl</kbd> and tap <kbd>X</kbd>.</p>
     <div class="callout note"><b>What just happened?</b> Your server now answers three different requests. <code>/</code> hands over the file <code>static/index.html</code>. <code>/api/stats</code> hands over four numbers, freshly measured, as text. Anything else gets looked up in your <code>static</code> folder, which is how images and CSS files will work later.</div>
   </section>
 
   <!-- ============ 11. day 1 step 7 ============ -->
   <section class="slide">
     <h2>Step 7: Write the page</h2>
-<pre><code>nano static/index.html</code></pre>
-    <p>Type or paste:</p>
-<pre><code>&lt;!doctype html&gt;
+<pre data-label="Type in the Terminal"><code>nano static/index.html</code></pre>
+    <p>Same moves as before: <b>Copy</b>, click inside nano, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>.</p>
+<pre data-label="static/index.html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
   &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -309,11 +392,23 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
 
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-    <p>Save and exit, then run it:</p>
-<pre><code>python3 server.py</code></pre>
+    <p>Save and exit the same way (<kbd>Ctrl</kbd>+<kbd>O</kbd>, <kbd>Enter</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd>), then run it:</p>
+<pre data-label="Type in the Terminal"><code>python3 server.py</code></pre>
     <p>Reload <code>http://localhost:5000</code> in Chromium.</p>
     <div class="callout check"><b>Checkpoint:</b> four numbers, and they change on their own every two seconds. Open a few browser tabs and watch CPU climb. That is your Pi reporting on itself.</div>
     <div class="callout note"><b>Temperature showing <code>--</code>?</b> Some Pi models do not report it. Everything else still works. Not your fault, not a bug.</div>
+  </section>
+
+  <!-- ============ 11b. day 1 end ============ -->
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <div class="startcard"><span class="startbadge">Day 1 end</span>
+      <ol class="startsteps">
+        <li><b>Stop your server.</b> Click the Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Only one server can use port 5000, and the next class needs it.</li>
+        <li><b>Check your sticky note.</b> It should have three things on it: your <b>username</b>, your Pi's <b>IP address</b> and your <b>folder name</b>. Stick it on the monitor.</li>
+        <li><b>Remember where you sat.</b> Day 2 starts at this same Pi. The first slide of Day 2 is called <b>Start here</b>.</li>
+      </ol>
+    </div>
   </section>
 
   <!-- ============ 12. mini: the other way ============ -->
@@ -321,7 +416,7 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
     <h2>The other way to do this</h2>
     <p class="daymark">Optional</p>
     <p>Your page lives in its own file and your Python hands that file over. There is a second way worth seeing once. <b>HTML is just text</b>, and Python is very good at holding text, so you can put the entire page inside the Python file as one long string.</p>
-<pre><code>from flask import Flask, render_template_string
+<pre data-label="Optional example: server.py"><code>from flask import Flask, render_template_string
 
 app = Flask(__name__)
 
@@ -355,27 +450,61 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
     <p>We used two files because the next project is a whole website with images and a stylesheet, and that is the shape it needs. A one-file server is a real and reasonable thing to build when the page is four lines long.</p>
   </section>
 
-  <!-- ============ 13. day 2 step 1 ============ -->
+  <!-- ============ 13. day 2 start ============ -->
   <section class="slide">
     <p class="daymark">Day 2</p>
-    <h2>Step 1: Load your dashboard on your phone</h2>
-    <p>Your server has to be running. If you stopped it:</p>
-<pre><code>source ~/YOURNAME/pihealth/bin/activate
-cd ~/YOURNAME/pi-dashboard
-python3 server.py</code></pre>
-    <p>Now take out your phone, make sure it is on the school network, and type your Pi's IP address and port into the browser:</p>
-<pre><code>http://YOUR-PI-IP:5000</code></pre>
-    <p>So if your sticky note says <code>10.0.4.71</code>, you type <code>http://10.0.4.71:5000</code>.</p>
-    <div class="callout check"><b>Checkpoint:</b> your Pi's dashboard, on your phone, updating live. Nothing is on the internet. Your phone asked your Pi directly, across the room.</div>
-    <div class="callout warn"><b>Loading someone else's numbers?</b> You typed their IP. It happens. Check your sticky note.</div>
+    <h2>Start here: get back to where you stopped</h2>
+    <p>A new Terminal window knows nothing about yesterday, so every day starts the same way.</p>
+    <div class="startcard"><span class="startbadge">Day 2 start</span>
+      <ol class="startsteps">
+        <li><b>Sit at the same Pi as Day 1.</b> Open the Terminal and check your folder is here:
+<pre data-label="Type in the Terminal"><code>ls ~</code></pre>
+          <div class="callout warn"><b>Your folder name is not in the list?</b> Wrong Pi. Go back to yours. Do not rebuild.</div>
+        </li>
+        <li><b>Use a fresh Terminal window.</b> A new window has forgotten your toolbox and does not know which folder you are in. The next step fixes both.</li>
+        <li><b>Step back into your toolbox and your project.</b> Click <b>Copy</b>, paste, tap <kbd>Enter</kbd>:
+<pre data-label="Type in the Terminal"><code>source ~/YOURNAME/pihealth/bin/activate
+cd ~/YOURNAME/pi-dashboard</code></pre>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Check you are really back</h2>
+    <p>Look for these three signs before you do anything else. This takes ten seconds and saves most of the problems from last time.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Check</th><th>You should see</th><th>If not</th></tr></thead>
+      <tbody>
+        <tr><td>The start of your prompt</td><td><code>(YOURNAME-pihealth)</code></td><td>Run the <code>source</code> line again</td></tr>
+        <tr><td>Type <code>pwd</code>, tap <kbd>Enter</kbd></td><td>A path ending in <code>YOURNAME/pi-dashboard</code></td><td>Run the <code>cd</code> line again. Check the spelling</td></tr>
+        <tr><td>Type <code>ls</code>, tap <kbd>Enter</kbd></td><td><code>server.py</code> and <code>static</code></td><td>Wrong folder or wrong Pi. Run <code>ls ~</code></td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Then check your IP address.</b> It can change overnight, and Day 2 depends on it:</p>
+<pre data-label="Type in the Terminal"><code>hostname -I</code></pre>
+    <p>Different from your sticky note? Cross the old one out and write the new one.</p>
+    <p><b>Now start your server</b> and leave this window alone:</p>
+<pre data-label="Type in the Terminal"><code>python3 server.py</code></pre>
+  </section>
+
+  <!-- ============ 13b. day 2 step 1 ============ -->
+  <section class="slide">
+    <h2>Step 1: Load your dashboard on a different computer</h2>
+    <p>Your server is running. Now walk to a <b>different computer in the lab that is not a Pi</b>. The one you will use for SSH later works fine. Open its web browser, click the address bar, and type your Pi's IP address and port:</p>
+<pre data-label="Type in the other computer&#x27;s address bar. Put your Pi&#x27;s real IP in" data-nocopy><code>http://YOUR-PI-IP:5000</code></pre>
+    <p>So if your sticky note says <code>10.0.4.71</code>, you type <code>http://10.0.4.71:5000</code> and tap the <kbd>Enter</kbd> key.</p>
+    <div class="callout check"><b>Checkpoint:</b> your Pi's dashboard on the other computer, updating live. Nothing is on the internet. That computer asked your Pi directly, across the room.</div>
+    <div class="callout warn"><b>Loading someone else's numbers?</b> You typed their IP. Check your sticky note.</div>
+    <div class="callout warn"><b>Nothing loads?</b> Check three things, in order. Is the computer on the school network? Is the server still running in the Pi's Terminal? Did you type <code>:5000</code> after the IP address? Still stuck, tell Mr. Krigger.</div>
   </section>
 
   <!-- ============ 14. mini: 0.0.0.0 ============ -->
   <section class="slide">
     <h2>Why <code>0.0.0.0</code> was the important part</h2>
     <p>Look at the last line of <code>server.py</code>:</p>
-<pre><code>app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
-    <p><code>0.0.0.0</code> means <b>answer requests from anywhere on the network, not just from me</b>. If it said <code>127.0.0.1</code> instead, the page would work in Chromium on the Pi and your phone would get nothing.</p>
+<pre data-label="The last line of server.py" data-nocopy><code>app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
+    <p><code>0.0.0.0</code> means <b>answer requests from anywhere on the network, not just from me</b>. If it said <code>127.0.0.1</code> instead, the page would work in Chromium on the Pi and every other computer would get nothing.</p>
     <div class="twrap"><table>
       <thead><tr><th>Address</th><th>What it means</th><th>Works from</th></tr></thead>
       <tbody>
@@ -389,12 +518,38 @@ python3 server.py</code></pre>
   <!-- ============ 15. day 2 step 2 ============ -->
   <section class="slide">
     <h2>Step 2: Look at the raw data</h2>
-    <p>On your phone or in Chromium, go to:</p>
-<pre><code>http://YOUR-PI-IP:5000/api/stats</code></pre>
-    <p>You will see something like this, and nothing else:</p>
-<pre><code>{&quot;cpu&quot;:12.5,&quot;disk&quot;:31.2,&quot;memory&quot;:24.8,&quot;temperature&quot;:47.1}</code></pre>
-    <p>Refresh it. The numbers change.</p>
-    <div class="callout check"><b>Checkpoint:</b> you are looking at raw JSON. Screenshot this, you need it for your submission.</div>
+    <p>Stay on the other computer, in the same browser. You are going to add one thing to the end of the address.</p>
+    <ol>
+      <li>Click the address bar.</li>
+      <li>Type your Pi's address again, with <code>/api/stats</code> on the end.</li>
+      <li>Tap the <kbd>Enter</kbd> key.</li>
+    </ol>
+<pre data-label="Type in the other computer&#x27;s address bar. Put your Pi&#x27;s real IP in" data-nocopy><code>http://YOUR-PI-IP:5000/api/stats</code></pre>
+    <p>You will see one short line of text and nothing else. No colors, no cards:</p>
+<pre data-label="What you should see (your numbers will differ)" data-nocopy><code>{&quot;cpu&quot;:12.5,&quot;disk&quot;:31.2,&quot;memory&quot;:24.8,&quot;temperature&quot;:47.1}</code></pre>
+    <p>Refresh the page. The numbers change. That is your server measuring itself, fresh, every time something asks.</p>
+    <div class="callout note"><b>Seeing a table or a box that says Pretty print instead?</b> Some browsers dress the data up. Click <b>Raw</b> or <b>Raw Data</b> so it is one plain line, then take your screenshot.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2b: Take the screenshot now</h2>
+    <p>You need a screenshot of this page for your hand-in. Take it while it is on screen, so you are not hunting for it on Day 3.</p>
+    <ol>
+      <li>Take a <b>whole-screen</b> screenshot. The shortcuts for each kind of computer are on the last slides of this lesson.</li>
+      <li>Save it as <code>api-stats.png</code>.</li>
+      <li>Open it and check: can you read your Pi's IP address in the address bar <b>and</b> the line of data underneath?</li>
+    </ol>
+    <div class="shots">
+      <figure class="shot good">
+        <div class="bmock"><div class="bm-bar"><span class="bm-dots"><i></i><i></i><i></i></span><span class="bm-url">10.0.4.71:5000/api/stats</span></div><div class="bm-page json">{"cpu":12.5,"disk":31.2,"memory":24.8,"temperature":47.1}</div></div>
+        <figcaption><b>Good.</b> The address bar shows your Pi's IP and <code>/api/stats</code>, and the page is one line of data.</figcaption>
+      </figure>
+      <figure class="shot bad">
+        <div class="bmock"><div class="bm-cut">address bar cropped out</div><div class="bm-page json">{"cpu":12.5,"disk":31.2,"memory":24.8,"temperature":47.1}</div></div>
+        <figcaption><b>Not good.</b> Cropped too tight. Nothing shows where this data came from, so it proves nothing.</figcaption>
+      </figure>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> <code>api-stats.png</code> is saved, and you can read the address bar in it.</div>
   </section>
 
   <!-- ============ 16. mini: API and JSON ============ -->
@@ -404,10 +559,10 @@ python3 server.py</code></pre>
     <p>Think about ordering food. You do not walk into the kitchen. You tell a waiter what you want, the waiter goes to the kitchen, and the waiter brings back a plate. You never see how the kitchen works and you do not need to.</p>
     <p><code>/api/stats</code> is the waiter. Your web page is you. The Python function <code>stats()</code> is the kitchen.</p>
     <p><strong>JSON</strong> is what is on the plate. It is just text, arranged so a program can read it:</p>
-<pre><code>{&quot;cpu&quot;: 12.5, &quot;memory&quot;: 24.8}</code></pre>
+<pre data-label="JSON looks like this" data-nocopy><code>{&quot;cpu&quot;: 12.5, &quot;memory&quot;: 24.8}</code></pre>
     <p>A name, a colon, a value, commas between them, curly braces around the whole thing. The whole format, start to finish. Almost every app on your phone is passing JSON back and forth all day.</p>
     <p>Now look at your page again. These three lines are the whole conversation:</p>
-<pre><code>const response = await fetch(&quot;/api/stats&quot;);   // ask the waiter
+<pre data-label="From your page&#x27;s JavaScript" data-nocopy><code>const response = await fetch(&quot;/api/stats&quot;);   // ask the waiter
 const data = await response.json();           // take the plate
 setInterval(refresh, 2000);                   // do it again in 2 seconds</code></pre>
   </section>
@@ -417,11 +572,11 @@ setInterval(refresh, 2000);                   // do it again in 2 seconds</code>
     <h2>Step 3: Connect to your Pi from a different computer</h2>
     <p><strong>SSH</strong> lets you type commands on your Pi while sitting at a different machine. No monitor, no keyboard on the Pi at all.</p>
     <p>Go to one of the lab computers. Open its terminal. Type this, using <b>your</b> username and <b>your</b> Pi's IP:</p>
-<pre><code>ssh YOUR-USERNAME@YOUR-PI-IP</code></pre>
+<pre data-label="Type on the lab computer. Use your own username and IP" data-nocopy><code>ssh YOUR-USERNAME@YOUR-PI-IP</code></pre>
     <p>For example:</p>
-<pre><code>ssh krigger@10.0.4.71</code></pre>
-    <p>The first time, it will ask something like <code>Are you sure you want to continue connecting?</code> Type <b>yes</b> and press Enter. Then it asks for your Pi password.</p>
-    <div class="callout warn"><b>Nothing will appear on screen while you type the password.</b> That is deliberate, so nobody can read it over your shoulder. Type it and press Enter.</div>
+<pre data-label="Example only" data-nocopy><code>ssh krigger@10.0.4.71</code></pre>
+    <p>The first time, it will ask something like <code>Are you sure you want to continue connecting?</code> Type <b>yes</b> and tap the <kbd>Enter</kbd> key. Then it asks for your Pi password.</p>
+    <div class="callout warn"><b>Nothing will appear on screen while you type the password.</b> That is deliberate, so nobody can read it over your shoulder. Type it and tap the <kbd>Enter</kbd> key.</div>
     <div class="callout check"><b>Checkpoint:</b> your prompt changed. It now shows your Pi's name, not the lab computer's. Every command you type from here runs on the Pi.</div>
   </section>
 
@@ -429,12 +584,13 @@ setInterval(refresh, 2000);                   // do it again in 2 seconds</code>
   <section class="slide">
     <h2>Steps 4 and 5: Prove it, then start the server remotely</h2>
     <p>Still in the SSH window, run:</p>
-<pre><code>hostname</code></pre>
-<pre><code>uptime</code></pre>
+<pre data-label="Type in the SSH window"><code>hostname</code></pre>
+<pre data-label="Type in the SSH window"><code>uptime</code></pre>
     <p>The first prints your Pi's name. The second prints how long it has been switched on. Neither of those is the computer you are sitting at. To leave:</p>
-<pre><code>exit</code></pre>
+<pre data-label="Type in the SSH window"><code>exit</code></pre>
+    <div class="callout warn"><b>Stop the server on the Pi first.</b> Your server from Step 1 is still running. Go to the Pi's Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you skip this, the next command ends in <code>Address already in use</code>, because only one server can use port 5000.</div>
     <p>Now SSH back in and start your server without touching the Pi:</p>
-<pre><code>source ~/YOURNAME/pihealth/bin/activate
+<pre data-label="Type in the SSH window"><code>source ~/YOURNAME/pihealth/bin/activate
 cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <p>Then open a browser on the lab computer and go to your Pi's address. You just started a server on a computer across the room and loaded its page. Plenty of people do exactly this for a living.</p>
@@ -453,21 +609,55 @@ python3 server.py</code></pre>
     <p>This is how IT staff fix servers they will never physically see, how your school's tech department reaches every machine in the building from one desk, and how anyone who runs a game server does anything at all.</p>
   </section>
 
-  <!-- ============ 20. day 3 step 1 and 2 ============ -->
+  <!-- ============ 19b. day 2 end ============ -->
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <div class="startcard"><span class="startbadge">Day 2 end</span>
+      <ol class="startsteps">
+        <li><b>Check you have <code>api-stats.png</code>.</b> If you do not, load <code>/api/stats</code> once more and take it now.</li>
+        <li><b>Stop your server</b> with <kbd>Ctrl</kbd>+<kbd>C</kbd>, then close the SSH window by typing <code>exit</code> and tapping <kbd>Enter</kbd>.</li>
+        <li><b>Update your sticky note</b> if your IP address changed today.</li>
+        <li><b>Tomorrow:</b> same Pi, and start with the <b>Start here</b> slide for Day 3.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 19c. day 3 start ============ -->
   <section class="slide">
     <p class="daymark">Day 3</p>
+    <h2>Start here: get back to where you stopped</h2>
+    <p>Same start as Day 2. Only the page changes today.</p>
+    <div class="startcard"><span class="startbadge">Day 3 start</span>
+      <ol class="startsteps">
+        <li><b>Same Pi, fresh Terminal.</b> Your folder should be on it.</li>
+        <li><b>Step back in.</b> Click <b>Copy</b>, paste, tap <kbd>Enter</kbd>:
+<pre data-label="Type in the Terminal"><code>source ~/YOURNAME/pihealth/bin/activate
+cd ~/YOURNAME/pi-dashboard</code></pre>
+        </li>
+        <li><b>Check the three signs.</b> Prompt starts with <code>(YOURNAME-pihealth)</code>. <code>pwd</code> ends in <code>YOURNAME/pi-dashboard</code>. <code>ls</code> shows <code>server.py</code> and <code>static</code>.</li>
+        <li><b>Prove yesterday's work runs.</b> Start it, open <code>http://localhost:5000</code> in Chromium, see four numbers, then <kbd>Ctrl</kbd>+<kbd>C</kbd>:
+<pre data-label="Type in the Terminal"><code>python3 server.py</code></pre>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ 20. day 3 step 1 and 2 ============ -->
+  <section class="slide">
     <h2>Step 1: Start the page over</h2>
     <p>Nothing about the Python changes today. The server already works. You are only replacing the page it hands out. Real web work usually goes this way, with the thing underneath staying put while the thing people see gets redesigned.</p>
-    <p>Stop your server with <kbd>Ctrl</kbd>+<kbd>C</kbd>. Then:</p>
-<pre><code>rm ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
-<pre><code>nano ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
+    <p>Make sure your server is stopped (<kbd>Ctrl</kbd>+<kbd>C</kbd>). First keep a copy of yesterday's page, just in case. Then throw the old one away and open a blank one:</p>
+<pre data-label="Type in the Terminal"><code>cp ~/YOURNAME/pi-dashboard/static/index.html ~/YOURNAME/pi-dashboard/static/index-day2.html</code></pre>
+<pre data-label="Type in the Terminal"><code>rm ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
+<pre data-label="Type in the Terminal"><code>nano ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
     <p>You now have an empty file. Nothing to select, nothing to accidentally delete half of.</p>
   </section>
 
   <!-- ============ 21. day 3 the new page ============ -->
   <section class="slide">
     <h2>Step 2: Paste the new page</h2>
-<pre><code>&lt;!doctype html&gt;
+    <p>Click <b>Copy</b> to grab the whole page, click inside the empty nano window, and press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>. Then save and exit (<kbd>Ctrl</kbd>+<kbd>O</kbd>, tap <kbd>Enter</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd>).</p>
+<pre data-label="static/index.html (the new page)"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -476,7 +666,7 @@ python3 server.py</code></pre>
 &lt;style&gt;
   /* =====================================================================
      THEME BLOCK. Everything you need to restyle this whole page lives
-     between these two lines. Change a value, save, restart, refresh.
+     between these two lines. Change a value, save, refresh.
      ===================================================================== */
   :root {
     --bg-top:    #0f2027;
@@ -626,8 +816,8 @@ python3 server.py</code></pre>
 
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-    <p>Save, exit, then run it:</p>
-<pre><code>source ~/YOURNAME/pihealth/bin/activate
+    <p>Save and exit (<kbd>Ctrl</kbd>+<kbd>O</kbd>, tap <kbd>Enter</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd>), then run it:</p>
+<pre data-label="Type in the Terminal"><code>source ~/YOURNAME/pihealth/bin/activate
 cd ~/YOURNAME/pi-dashboard
 python3 server.py</code></pre>
     <div class="callout check"><b>Checkpoint:</b> a dark blue gradient, four frosted cards, big numbers, and a bar under each one that fills up and turns yellow then red as the number climbs. Hover a card and it lifts.</div>
@@ -638,33 +828,95 @@ python3 server.py</code></pre>
   <section class="slide">
     <h2>The three new things you just used</h2>
     <p><b>Gradient.</b> Instead of one flat color, a smooth blend between two:</p>
-<pre><code>background: linear-gradient(135deg, #0f2027, #2c5364);</code></pre>
+<pre data-label="Example from your CSS" data-nocopy><code>background: linear-gradient(135deg, #0f2027, #2c5364);</code></pre>
     <p><code>135deg</code> is the angle. The two <code>#</code> codes are <strong>hex colors</strong>, six characters that mix red, green and blue.</p>
     <p><b>Grid.</b> Four cards that rearrange themselves depending on screen width:</p>
-<pre><code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));</code></pre>
+<pre data-label="Example from your CSS" data-nocopy><code>grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));</code></pre>
     <p>This says "make as many columns as fit, each at least 220px wide." Drag your browser window narrower and watch four columns become two and then one. Nobody wrote a rule for phones. That one line did it. This is called <strong>responsive design</strong>.</p>
     <p><b>Classes as switches.</b> The color change is not JavaScript drawing anything. The CSS already knows what <code>.hot</code> looks like. JavaScript just adds and removes the label:</p>
-<pre><code>box.classList.add(&quot;hot&quot;);</code></pre>
+<pre data-label="Example from your JavaScript" data-nocopy><code>box.classList.add(&quot;hot&quot;);</code></pre>
     <p>That split matters. CSS handles how things look, JavaScript handles when, and keeping the two apart is what lets a big site stay workable once there are thousands of lines of it.</p>
   </section>
 
   <!-- ============ 23. make it yours, the loop ============ -->
   <section class="slide">
     <h2>Step 3: Make it yours</h2>
-    <p>Here is the loop you will repeat for the rest of the period:</p>
+    <p>Now the page is yours to change. A good way to work, so you never lose a dashboard that works:</p>
+    <div class="callout note"><b>Your plan for the period.</b> Level 1 takes five minutes. Then pick one Level 2 theme pack. Then choose <b>any two</b> Level 3 upgrades. You do not need to do them all.</div>
+    <h3>Use two Terminal windows</h3>
+    <div class="twrap"><table>
+      <thead><tr><th>Window</th><th>Its job</th></tr></thead>
+      <tbody>
+        <tr><td><b>Terminal 1</b></td><td>Runs your server. Start it, then <b>leave it alone</b>. Do not close it and do not type in it.</td></tr>
+        <tr><td><b>Terminal 2</b></td><td>Opens nano so you can edit the page. Click the black rectangle icon again to get a second window. It does not need your toolbox.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Start Terminal 1 now with <code>python3 server.py</code> if it is not already running.</p>
+  </section>
+
+  <section class="slide">
+    <h2>The loop: change, save, refresh</h2>
     <ol>
-      <li><kbd>Ctrl</kbd>+<kbd>C</kbd> in the Terminal to stop the server</li>
-      <li><code>nano ~/YOURNAME/pi-dashboard/static/index.html</code></li>
-      <li>Change something, <kbd>Ctrl</kbd>+<kbd>O</kbd>, Enter, <kbd>Ctrl</kbd>+<kbd>X</kbd></li>
-      <li><code>python3 ~/YOURNAME/pi-dashboard/server.py</code></li>
-      <li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> in the browser</li>
+      <li><b>Terminal 2:</b> open the page. The <code>-l</code> shows line numbers down the side.</li>
+<pre data-label="Type in the Terminal"><code>nano -l ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
+      <li><b>Change one thing.</b> Arrow keys move the cursor. One change at a time, so you know what did what.</li>
+      <li><b>Save and exit:</b> <kbd>Ctrl</kbd>+<kbd>O</kbd>, tap <kbd>Enter</kbd>, <kbd>Ctrl</kbd>+<kbd>X</kbd></li>
+      <li><b>Browser:</b> press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> to reload without the old copy.</li>
     </ol>
-    <p>You cannot break anything here that retyping will not fix. Change one thing at a time so you know what did what.</p>
+    <div class="callout note"><b>You do not restart the server for page changes.</b> Your server hands out the file fresh every time something asks. The only time you restart is when you change <code>server.py</code>: click Terminal 1, press <kbd>Ctrl</kbd>+<kbd>C</kbd>, run <code>python3 server.py</code> again.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Your undo button</h2>
+    <p>Before each big change, save a copy that works. If it goes wrong, put the copy back. You cannot lose your dashboard this way.</p>
+<pre data-label="Save a working copy"><code>cp ~/YOURNAME/pi-dashboard/static/index.html ~/YOURNAME/pi-dashboard/static/index-works.html</code></pre>
+<pre data-label="Put the working copy back (undo)"><code>cp ~/YOURNAME/pi-dashboard/static/index-works.html ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
+  </section>
+
+  <!-- ============ 23b. map of your page ============ -->
+  <section class="slide">
+    <h2>The map of your page</h2>
+    <p>Your page is one file with four zones. Every change in Step 3 happens in one of them, so this is the map. The line numbers are about right. They drift as you add things, which is why the next slide teaches you to search instead of counting.</p>
+    <div class="twrap"><table class="findtable">
+      <thead><tr><th>About line</th><th>What is there</th><th>You edit it for</th></tr></thead>
+      <tbody>
+        <tr><td>12 to 25</td><td><b>Zone 1: the theme block.</b> The <code>:root { ... }</code> lines with all the colors</td><td>Level 1, Level 2, and the <code>--font</code> line</td></tr>
+        <tr><td>26 to 82</td><td><b>Zone 2: the rest of the CSS.</b> How cards, bars and text look</td><td>Mostly leave alone</td></tr>
+        <tr><td>83</td><td><code>&lt;/style&gt;</code>, the end of the CSS</td><td>New Level 3 CSS goes on the line <b>above</b> this one</td></tr>
+        <tr><td>87 to 116</td><td><b>Zone 3: the HTML.</b> The title, then the four cards</td><td>Clock, the big card, a fifth card</td></tr>
+        <tr><td>118 to 156</td><td><b>Zone 4: the JavaScript.</b> <code>const CARDS</code> first, then <code>refresh()</code></td><td>Warning levels, the last-updated stamp, the clock</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Why new CSS goes at the bottom.</b> When two rules style the same thing, the one written later wins. Put your new rules last and they beat the old ones. Nothing has to be deleted.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Find things fast in nano</h2>
+    <p>Scrolling for a line is slow. nano can jump straight to it.</p>
+    <ol>
+      <li>Hold <kbd>Ctrl</kbd> and tap <kbd>W</kbd>. The bottom says <code>Search:</code></li>
+      <li>Type the word from the table, then tap the <kbd>Enter</kbd> key. The cursor jumps there.</li>
+      <li>Wrong one? <kbd>Ctrl</kbd>+<kbd>W</kbd> then <kbd>Enter</kbd> jumps to the next match.</li>
+    </ol>
+    <div class="twrap"><table>
+      <thead><tr><th>To get to</th><th>Search for</th></tr></thead>
+      <tbody>
+        <tr><td>The colors and the corner roundness</td><td><code>--bg-top</code> or <code>--round</code></td></tr>
+        <tr><td>The font</td><td><code>--font</code></td></tr>
+        <tr><td>The end of the CSS</td><td><code>&lt;/style&gt;</code></td></tr>
+        <tr><td>The title at the top of the page</td><td><code>&lt;h1&gt;</code></td></tr>
+        <tr><td>The start of the JavaScript</td><td><code>&lt;script&gt;</code></td></tr>
+        <tr><td>The warning levels</td><td><code>CARDS</code></td></tr>
+        <tr><td>The end of the JavaScript</td><td><code>&lt;/script&gt;</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout flag"><b>To put a new line above one you found:</b> tap the <kbd>Home</kbd> key (goes to the start of the line), paste, then tap <kbd>Enter</kbd> so the old line drops down. To put one below: tap <kbd>End</kbd>, tap <kbd>Enter</kbd>, paste. The cursor is where the text lands, so check where it is before you paste.</div>
   </section>
 
   <!-- ============ 24. level 1 theme block ============ -->
   <section class="slide">
     <h2>Level 1: The theme block</h2>
+    <div class="callout flag"><b>Where this goes:</b> Zone 1, about lines 12 to 25. In nano press <kbd>Ctrl</kbd>+<kbd>W</kbd>, type <code>--bg-top</code>, tap <kbd>Enter</kbd>. You land on the first line of the theme block.</div>
     <p>Look at the top of your CSS. Everything between the two long comment lines is the theme. Change a value there and it changes everywhere on the page at once, because every rule below reads from it instead of having its own copy of the color.</p>
     <div class="twrap"><table>
       <thead><tr><th>Variable</th><th>What it controls</th></tr></thead>
@@ -681,16 +933,22 @@ python3 server.py</code></pre>
       </tbody>
     </table></div>
     <p>Try this first, so you can see how far one variable reaches:</p>
-<pre><code>--round: 0px;</code></pre>
-    <p>Save, restart, refresh. Every card went square. You changed one number.</p>
+<pre data-label="Try changing this line"><code>--round: 0px;</code></pre>
+    <p>Save, then refresh the browser. Every card went square. You changed one number.</p>
   </section>
 
   <!-- ============ 25. theme packs 1 ============ -->
   <section class="slide">
-    <h2>Level 2: Theme packs</h2>
-    <p>Each of these replaces your whole <code>:root</code> block. Copy one in, restart, look at it. Then take the one you like best and start changing its numbers.</p>
+    <h2>Level 2: How to swap in a theme pack</h2>
+    <p>Each pack replaces your whole <code>:root</code> block. Copy one in, refresh, look at it. Then take the one you like best and start changing its numbers.</p>
+    <div class="callout flag"><b>How to swap one in.</b> Press <kbd>Ctrl</kbd>+<kbd>W</kbd>, type <code>:root</code>, tap <kbd>Enter</kbd>. The cursor is now on the <code>:root {</code> line. Tap <kbd>Ctrl</kbd>+<kbd>K</kbd> <b>14 times</b>, once per line, until the whole block is gone and the two comment lines are still above and below the gap. Then click <b>Copy</b> on a pack and press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Theme packs: Terminal and Midnight</h2>
+        
     <p><b>Terminal.</b> Sharp corners, monospace, the look of a machine that does not care about your feelings.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Terminal"><code>  :root {
     --bg-top:    #000000;
     --bg-bottom: #0a1a0a;
     --text:      #d1fae5;
@@ -705,7 +963,7 @@ python3 server.py</code></pre>
     --font:      &quot;Courier New&quot;, monospace;
   }</code></pre>
     <p><b>Midnight.</b> Purple, soft, easy on the eyes in a dark room.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Midnight"><code>  :root {
     --bg-top:    #16162e;
     --bg-bottom: #4a1f6b;
     --text:      #f3e8ff;
@@ -725,7 +983,7 @@ python3 server.py</code></pre>
   <section class="slide">
     <h2>Theme packs, continued</h2>
     <p><b>Volcano.</b> For a Pi that runs hot and wants you to know it.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Volcano"><code>  :root {
     --bg-top:    #1c0a08;
     --bg-bottom: #57180f;
     --text:      #fff7ed;
@@ -740,7 +998,7 @@ python3 server.py</code></pre>
     --font:      system-ui, sans-serif;
   }</code></pre>
     <p><b>Sea Glass.</b> Teal and calm. This one looks the most like something a company would ship.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Sea Glass"><code>  :root {
     --bg-top:    #042f2e;
     --bg-bottom: #115e59;
     --text:      #ecfeff;
@@ -760,7 +1018,7 @@ python3 server.py</code></pre>
   <section class="slide">
     <h2>Theme packs, last two</h2>
     <p><b>Slate.</b> Grey, quiet, professional. The boring one, and boring is sometimes correct.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Slate"><code>  :root {
     --bg-top:    #1e293b;
     --bg-bottom: #334155;
     --text:      #f1f5f9;
@@ -775,7 +1033,7 @@ python3 server.py</code></pre>
     --font:      system-ui, sans-serif;
   }</code></pre>
     <p><b>Paper.</b> A light theme. Look closely at this one: the text went dark, the cards went white, and the transparent values all flipped. Nothing outside the theme block changed.</p>
-<pre><code>  :root {
+<pre data-label="Theme pack: Paper"><code>  :root {
     --bg-top:    #f8fafc;
     --bg-bottom: #dbe3ec;
     --text:      #0f172a;
@@ -801,14 +1059,20 @@ python3 server.py</code></pre>
 
   <!-- ============ 29. level 3: typeface + moving bg ============ -->
   <section class="slide">
-    <h2>Level 3: A real typeface, and a background that moves</h2>
+    <h2>Level 3: A real typeface</h2>
+    <div class="callout flag"><b>Where this goes, two edits:</b> (1) the font link goes in the head, on the line above <code>&lt;style&gt;</code>. Search <code>&lt;style&gt;</code>, tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>. (2) The <code>--font</code> line is already in your theme block. Search <code>--font</code> and change it.</div>
     <p>Free fonts from <a href="https://fonts.google.com/">Google Fonts</a>. Pick one, then add <b>one line</b> in your <code>&lt;head&gt;</code>, above <code>&lt;style&gt;</code>:</p>
-<pre><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;display=swap&quot;&gt;</code></pre>
+<pre data-label="HTML. Goes inside the head, above the style line"><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;display=swap&quot;&gt;</code></pre>
     <p>And point the theme at it:</p>
-<pre><code>--font: &quot;Space Grotesk&quot;, system-ui, sans-serif;</code></pre>
+<pre data-label="CSS. Change this one line in your theme block"><code>--font: &quot;Space Grotesk&quot;, system-ui, sans-serif;</code></pre>
     <p>Swap the font name for any from the site, with <code>+</code> instead of spaces. Keep <code>system-ui, sans-serif</code> on the end. It is the backup, covering the two seconds before the font arrives, or forever if the Wi-Fi is down.</p>
-    <p>Now a background that moves. Add this at the bottom of your CSS, above <code>&lt;/style&gt;</code>:</p>
-<pre><code>@keyframes drift {
+  </section>
+
+  <section class="slide">
+    <h2>Level 3: A background that moves</h2>
+    <div class="callout flag"><b>Where this goes:</b> CSS, at the very bottom. Search <code>&lt;/style&gt;</code>, tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>.</div>
+    <p>Now a background that moves:</p>
+<pre data-label="CSS. Goes at the very bottom, above the closing style line"><code>@keyframes drift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
@@ -824,14 +1088,20 @@ body {
 
   <!-- ============ 30. level 3: glow + pulse ============ -->
   <section class="slide">
-    <h2>Level 3: Glowing numbers and a pulsing alarm</h2>
+    <h2>Level 3: Glowing numbers</h2>
+    <div class="callout flag"><b>Where this goes:</b> CSS, at the very bottom, above <code>&lt;/style&gt;</code>. Search <code>&lt;/style&gt;</code>, tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>. Your page already has a <code>.value</code> rule. Leave it alone. A second one at the bottom adds to it.</div>
     <p>Make the numbers glow:</p>
-<pre><code>.value {
+<pre data-label="CSS. Goes at the very bottom, above the closing style line"><code>.value {
   text-shadow: 0 0 18px currentColor;
 }</code></pre>
     <p><code>currentColor</code> means "whatever color this text already is." So the green numbers glow green, and the moment a card goes red the glow goes red too. One line, and it follows your thresholds for free.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Level 3: A pulsing alarm</h2>
+    <div class="callout flag"><b>Where this goes:</b> CSS again, at the very bottom, above <code>&lt;/style&gt;</code>.</div>
     <p>Make a hot card pulse:</p>
-<pre><code>@keyframes alarm {
+<pre data-label="CSS. Goes at the very bottom, above the closing style line"><code>@keyframes alarm {
   0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.55); }
   50%      { box-shadow: 0 0 0 14px rgba(248, 113, 113, 0); }
 }
@@ -842,48 +1112,74 @@ body {
     <p>A ring pushes outward from the card and fades. It only runs on cards your JavaScript has marked <code>hot</code>, so most of the time you will never see it. Good alarms are quiet. Open six browser tabs to drive the CPU up and watch it fire.</p>
   </section>
 
-  <!-- ============ 31. level 3: clock + stamp ============ -->
+  <!-- ============ 31. level 3: clock ============ -->
   <section class="slide">
-    <h2>Level 3: A clock, and when the data last arrived</h2>
-    <p>In your HTML, right under the <code>&lt;h1&gt;</code>:</p>
-<pre><code>&lt;p class=&quot;sub&quot;&gt;Live from my Pi &amp;middot; &lt;span id=&quot;clock&quot;&gt;--:--:--&lt;/span&gt;&lt;/p&gt;</code></pre>
-    <p>And at the bottom of your <code>&lt;script&gt;</code>:</p>
-<pre><code>function tick() {
+    <h2>Level 3: A clock</h2>
+    <div class="callout flag"><b>Two edits, two zones.</b> One line of HTML under the title, and one function in the JavaScript.</div>
+    <p><b>Edit 1, HTML.</b> Search <code>&lt;h1&gt;</code>. Tap <kbd>End</kbd>, tap <kbd>Enter</kbd>, paste:</p>
+<pre data-label="HTML. Goes right under the h1 line"><code>&lt;p class=&quot;sub&quot;&gt;Live from my Pi &amp;middot; &lt;span id=&quot;clock&quot;&gt;--:--:--&lt;/span&gt;&lt;/p&gt;</code></pre>
+    <p><b>Edit 2, JavaScript.</b> Search <code>&lt;/script&gt;</code>. Tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>:</p>
+<pre data-label="JavaScript. Goes at the bottom of the script, above the closing script line"><code>function tick() {
   document.getElementById(&quot;clock&quot;).textContent =
     new Date().toLocaleTimeString();
 }
 tick();
 setInterval(tick, 1000);</code></pre>
-    <p>Notice this clock is the <b>browser's</b> time, not the Pi's. It never asks the server anything. If you want the Pi's own time, that is a new key in <code>/api/stats</code>, which is the Stretch.</p>
-    <p>Now show when the data last arrived. Add a line under the grid:</p>
-<pre><code>&lt;p class=&quot;sub&quot; id=&quot;stamp&quot;&gt;Waiting for the first reading.&lt;/p&gt;</code></pre>
-    <p>Then add one line inside <code>refresh()</code>, after the <code>for</code> loop closes:</p>
-<pre><code>document.getElementById(&quot;stamp&quot;).textContent =
-  &quot;Last updated &quot; + new Date().toLocaleTimeString();</code></pre>
-    <p>Now you can tell the difference between "everything is fine" and "the server died three minutes ago and these numbers are stale." Every monitoring tool worth using has this, and it is one line.</p>
+    <p>This clock is the <b>browser's</b> time, not the Pi's. It never asks the server anything.</p>
   </section>
 
-  <!-- ============ 32. level 3: layout + photo ============ -->
+  <!-- ============ 31b. level 3: stamp ============ -->
   <section class="slide">
-    <h2>Level 3: One big card, and a photo behind everything</h2>
-    <p>Give the page a main character instead of four things shouting equally:</p>
-<pre><code>.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  max-width: 960px;
-}
+    <h2>Level 3: When the data last arrived</h2>
+    <div class="callout flag"><b>Two edits.</b> This slide is edit 1, a line of HTML under the cards. Edit 2 is on the next slide.</div>
+    <p><b>Edit 1, HTML.</b> Search <code>&lt;script&gt;</code>. Tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>. It lands just under the cards:</p>
+<pre data-label="HTML. Goes just under the cards, above the script line"><code>&lt;p class=&quot;sub&quot; id=&quot;stamp&quot;&gt;Waiting for the first reading.&lt;/p&gt;</code></pre>
+  </section>
 
-#card-cpu {
+  <section class="slide">
+    <h2>Level 3: The stamp, edit 2</h2>
+    <div class="callout flag"><b>Where this goes:</b> inside <code>refresh()</code>, in the JavaScript.</div>
+    <p><b>Edit 2, JavaScript.</b> This one goes <b>inside</b> <code>refresh()</code>, after the <code>for</code> loop closes. Here is the end of <code>refresh()</code> so you can find the spot:</p>
+<pre data-label="Find the spot: the end of refresh()" data-nocopy><code>      } else if (reading &gt;= card.warn) {
+        box.classList.add(&quot;warn&quot;);
+      }
+    }                          <span class="dim">&lt;- this closes the for loop</span>
+    <span class="hl">&lt;- paste the two stamp lines here</span>
+  }                            <span class="dim">&lt;- this closes refresh()</span></code></pre>
+    <p>Click at the end of the <code>}</code> that closes the for loop, tap <kbd>Enter</kbd>, paste:</p>
+<pre data-label="JavaScript. Goes inside refresh(), after the for loop"><code>document.getElementById(&quot;stamp&quot;).textContent =
+  &quot;Last updated &quot; + new Date().toLocaleTimeString();</code></pre>
+    <p>Now you can tell "everything is fine" from "the server died three minutes ago." Every monitoring tool has this.</p>
+  </section>
+
+  <!-- ============ 32. level 3: big card ============ -->
+  <section class="slide">
+    <h2>Level 3: One big card</h2>
+    <div class="callout flag"><b>Where this goes:</b> CSS, at the very bottom. Search <code>&lt;/style&gt;</code>, tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>. Your <code>.grid</code> rule is already in the page, so you only add these two.</div>
+    <p>Give the page a main character instead of four things shouting equally:</p>
+<pre data-label="CSS. Goes at the very bottom, above the closing style line"><code>#card-cpu {
   grid-column: span 2;
 }
 
 #card-cpu .value {
   font-size: 72px;
 }</code></pre>
-    <p>CPU now takes two columns and a much bigger number. Put the big card on whichever stat you actually care about.</p>
-    <p>Now a photo. Put an image in your <code>static</code> folder, then:</p>
-<pre><code>body {
+    <p>CPU now takes two columns and a much bigger number. Want a different card to be the big one? Change <code>cpu</code> to <code>memory</code>, <code>disk</code> or <code>temperature</code> in both places.</p>
+  </section>
+
+  <!-- ============ 32b. level 3: photo ============ -->
+  <section class="slide">
+    <h2>Level 3: A photo behind everything</h2>
+    <div class="callout flag"><b>Two parts:</b> get a photo into your <code>static</code> folder, then add CSS. Part 2 is on the next slide.</div>
+    <p><b>Part 1, get the photo.</b> Find one at <a href="https://unsplash.com/">unsplash.com</a>. In Chromium, right-click the photo and choose <b>Save image as</b>. Browse to <b>Home</b>, then your folder, then <b>pi-dashboard</b>, then <b>static</b>. Name it exactly <code>pi-background.jpg</code> and save. Check it landed:</p>
+<pre data-label="Type in the Terminal"><code>ls ~/YOURNAME/pi-dashboard/static</code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Level 3: The photo, part 2</h2>
+    <div class="callout flag"><b>Where this goes:</b> CSS, at the very bottom, above <code>&lt;/style&gt;</code>.</div>
+    <p><b>Part 2, the CSS.</b> Search <code>&lt;/style&gt;</code>, tap <kbd>Home</kbd>, paste, tap <kbd>Enter</kbd>:</p>
+<pre data-label="CSS. Goes at the very bottom, above the closing style line"><code>body {
   background-image:
     linear-gradient(135deg, rgba(15, 32, 39, 0.85), rgba(44, 83, 100, 0.85)),
     url(&quot;/pi-background.jpg&quot;);
@@ -891,16 +1187,17 @@ setInterval(tick, 1000);</code></pre>
   background-position: center;
   background-attachment: fixed;
 }</code></pre>
-    <p>Two backgrounds stacked: your gradient on top, at 85% opacity, and the photo under it. Without that gradient layer the photo eats your text. Free photos at <a href="https://unsplash.com/">unsplash.com</a>.</p>
+    <p>Two backgrounds stacked: your gradient on top, at 85% opacity, and the photo under it. Without that gradient layer the photo eats your text.</p>
     <div class="callout warn"><b>Filename rule.</b> <code>/pi-background.jpg</code> has to match the real file exactly, lowercase and all. Your server hands out anything in <code>static</code>, so the path starts with a single <code>/</code>.</div>
   </section>
 
   <!-- ============ 33. level 3: thresholds ============ -->
   <section class="slide">
     <h2>Level 3: Your own warning levels</h2>
+    <div class="callout flag"><b>Where this goes:</b> Zone 4, the JavaScript. Press <kbd>Ctrl</kbd>+<kbd>W</kbd>, type <code>CARDS</code>, tap <kbd>Enter</kbd>.</div>
     <p>In the <code>CARDS</code> list at the top of your JavaScript:</p>
-<pre><code>{ key: &quot;cpu&quot;, max: 100, warn: 50, hot: 80 },</code></pre>
-    <p>Set <code>warn</code> to <code>5</code> and restart. The card sits in yellow permanently, forever, no matter what the Pi is doing.</p>
+<pre data-label="Find this line in the script, in the CARDS list" data-nocopy><code>{ key: &quot;cpu&quot;, max: 100, warn: 50, hot: 80 },</code></pre>
+    <p>Set <code>warn</code> to <code>5</code>, save, and refresh. The card sits in yellow permanently, forever, no matter what the Pi is doing.</p>
     <p>An alarm that is always on is worse than no alarm, because people stop looking at it. Real engineers argue about these two numbers for hours. Pick yours on purpose and be ready to say why in your reflection.</p>
   </section>
 
@@ -922,19 +1219,57 @@ setInterval(tick, 1000);</code></pre>
     <div class="tiers">
       <div class="tier base">
         <h4>Base &middot; everyone</h4>
-        <p>A working server on your Pi, serving your own dashboard, loading on a device that is not the Pi, with at least <b>two visible changes that are yours</b>. You can explain what <code>/api/stats</code> sends back and who asks for it.</p>
+        <p>A working server on your Pi, serving your own dashboard, loading on a computer that is not the Pi, with at least <b>two visible changes that are yours</b>. You can explain what <code>/api/stats</code> sends back and who asks for it.</p>
       </div>
       <div class="tier stretch">
         <h4>Stretch &middot; required for high school</h4>
-        <p><b>Add a fifth stat, wired all the way through.</b> Not a new color. A new number that does not exist yet, travelling from the Pi's hardware to the screen. Three edits, one in each layer.</p>
+        <p><b>Add a fifth stat, wired all the way through.</b> Not a new color. A new number that does not exist yet, travelling from the Pi's hardware to the screen. Three edits, one in each layer: Python, HTML, JavaScript.</p>
       </div>
     </div>
-    <p><b>1. Python.</b> In <code>server.py</code>, add a line inside the <code>jsonify({...})</code> block. Uptime in minutes looks like this, and needs <code>import time</code> at the top:</p>
-<pre><code>&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</code></pre>
-    <p>Restart and check <code>/api/stats</code>. <b>If your new name is not in that JSON, stop and fix it before touching the HTML.</b></p>
-    <p><b>2. HTML.</b> Copy one of the four card blocks, paste it at the end of the grid, change all three ids.</p>
-    <p><b>3. JavaScript.</b> Add one line to the <code>CARDS</code> list with a sensible <code>max</code>, <code>warn</code> and <code>hot</code>.</p>
-    <div class="callout note"><b>Uptime is the worked example.</b> Open the <a href="https://psutil.readthedocs.io/">psutil documentation</a> and pick something else: how many processes are running, how many bytes have crossed the network, how many CPU cores are working.</div>
+    <div class="callout note"><b>Uptime is the worked example.</b> Open the <a href="https://psutil.readthedocs.io/">psutil documentation</a> and pick something else if you want: how many processes are running, how many bytes have crossed the network, how many CPU cores are working. The three edits are the same for any stat.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Stretch edit 1: Python</h2>
+    <div class="callout flag"><b>Where this goes:</b> <code>server.py</code>, not the page. Open it in Terminal 2 with <code>nano -l ~/YOURNAME/pi-dashboard/server.py</code>.</div>
+    <p><b>1.</b> At the top, add one line under <code>import os</code>. Search <code>import os</code>, tap <kbd>End</kbd>, tap <kbd>Enter</kbd>, paste:</p>
+<pre data-label="server.py. Goes at the top, under import os"><code>import time</code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Stretch edit 1, continued: the jsonify block</h2>
+    <div class="callout flag"><b>Where this goes:</b> <code>server.py</code>, still open in Terminal 2.</div>
+    <p><b>2.</b> In the <code>jsonify</code> block, the old last line needs a <b>comma</b> added, and your new line goes under it with <b>no comma</b>:</p>
+<pre data-label="Find the spot: the jsonify block" data-nocopy><code>        &quot;disk&quot;: psutil.disk_usage(&quot;/&quot;).percent,
+        &quot;temperature&quot;: temperature_c()<span class="hl">,</span>
+        <span class="hl">&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</span>
+    })</code></pre>
+<pre data-label="Copy the new line. It goes inside the jsonify block"><code>&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</code></pre>
+    <p><b>3.</b> <code>server.py</code> changed, so this one <b>does</b> need a restart. In Terminal 1 press <kbd>Ctrl</kbd>+<kbd>C</kbd>, then run <code>python3 server.py</code>. Reload <code>/api/stats</code> on the other computer.</p>
+    <div class="callout warn"><b>If your new name is not in that JSON, stop and fix it before touching the HTML.</b> A <code>SyntaxError</code> in Terminal 1 almost always means a missing comma after <code>temperature_c()</code>.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Stretch edit 2: HTML</h2>
+    <p><b>2. HTML.</b> Add a fifth card. Search <code>bar-temperature</code>, tap the <kbd>Down</kbd> arrow once (that is the line closing the temperature card), tap <kbd>End</kbd>, tap <kbd>Enter</kbd>, paste:</p>
+<pre data-label="HTML. Goes after the temperature card, before the grid closes"><code>  &lt;div class=&quot;card&quot; id=&quot;card-uptime&quot;&gt;
+    &lt;h2&gt;⏱️ Uptime&lt;/h2&gt;
+    &lt;div&gt;&lt;span class=&quot;value&quot; id=&quot;uptime&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;unit&quot;&gt;min&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;bar&quot;&gt;&lt;div class=&quot;fill&quot; id=&quot;bar-uptime&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;</code></pre>
+    <p>Making a different stat? Change <code>uptime</code> to your stat's name in all three ids, and change the <code>min</code> unit.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Stretch edit 3: JavaScript</h2>
+    <div class="callout flag"><b>Where this goes:</b> the <code>CARDS</code> list in your page, in the JavaScript. Search <code>CARDS</code>.</div>
+    <p><b>3. JavaScript.</b> Search <code>CARDS</code>. The old last line needs a <b>comma</b>, and the new line goes under it with <b>no comma</b>:</p>
+<pre data-label="Find the spot: the CARDS list" data-nocopy><code>    { key: &quot;disk&quot;,        max: 100, warn: 70, hot: 90 },
+    { key: &quot;temperature&quot;, max: 90,  warn: 60, hot: 75 }<span class="hl">,</span>
+    <span class="hl">{ key: &quot;uptime&quot;, max: 1440, warn: 720, hot: 1200 </span>}
+  ];</code></pre>
+    <p><code>max</code> is where the bar is full. Uptime is in minutes, so 1440 is a full day. <b>Your new <code>key</code> has to match the name you used in <code>server.py</code> exactly.</b></p>
+    <div class="callout check"><b>Checkpoint:</b> a fifth card on the other computer's screen, with a real number in it. Save the file, refresh, and it appears.</div>
   </section>
 
   <!-- ============ 35. hand in ============ -->
@@ -942,8 +1277,8 @@ setInterval(tick, 1000);</code></pre>
     <h2>What you hand in</h2>
     <ul class="turnin">
       <li>Your two files, <code>server.py</code> and <code>static/index.html</code></li>
-      <li>A screenshot of your dashboard on a device that is not the Pi, address bar showing your Pi's IP</li>
-      <li>A screenshot of <code>/api/stats</code> showing the raw JSON</li>
+      <li><code>dashboard.png</code>: your finished dashboard on a computer that is not the Pi, with your Pi's IP in the address bar</li>
+      <li><code>api-stats.png</code>: the raw data from <code>/api/stats</code>, with your Pi's IP and <code>/api/stats</code> in the address bar</li>
       <li>A reflection, 4 to 6 sentences, answering all three questions below</li>
     </ul>
     <p>The reflection has to answer: what does <code>/api/stats</code> send back and what asks for it, how often does the page ask and which line decides that, and what did you change and what was the hardest part.</p>
@@ -953,15 +1288,41 @@ setInterval(tick, 1000);</code></pre>
 
   <!-- ============ 36. capture ============ -->
   <section class="slide">
-    <h2>How to capture and hand it in</h2>
-    <p><b>Screenshots.</b> On the Pi, press <kbd>Print Screen</kbd>. It either drops a file into your home folder or opens a small capture window. If nothing happens, open <b>Menu &rarr; Accessories &rarr; Screenshot</b>. On iPhone it is Side button and Volume Up. On Android it is Power and Volume Down. On a Mac it is <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>, and on Windows <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</p>
-    <div class="callout warn"><b>Make sure the address bar is in the shot.</b> Two of your screenshots have to prove <i>where</i> the page was loaded from. Cropped too tight to see the IP, it proves nothing. Capture the whole browser window.</div>
-    <p><b>Finding your files.</b> They are where you made them:</p>
-<pre><code>~/YOURNAME/pi-dashboard/server.py
+    <h2>Taking the two screenshots</h2>
+    <p>Both screenshots are taken on the <b>other computer</b>, not on the Pi, because the address bar has to show your Pi's IP.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>File name</th><th>Address bar shows</th><th>Page shows</th><th>Take it</th></tr></thead>
+      <tbody>
+        <tr><td><code>api-stats.png</code></td><td><code>YOUR-PI-IP:5000/api/stats</code></td><td>One line of data</td><td>Day 2, as soon as it works</td></tr>
+        <tr><td><code>dashboard.png</code></td><td><code>YOUR-PI-IP:5000</code></td><td>Your finished dashboard</td><td>End of Day 3, after your changes</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Capture the whole screen, not a piece of it.</b> A whole-screen capture always has the address bar in it. Cropping is how screenshots end up proving nothing.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Computer</th><th>Whole-screen shortcut</th><th>It saves to</th></tr></thead>
+      <tbody>
+        <tr><td>Windows</td><td><kbd>Windows</kbd> + <kbd>Print Screen</kbd></td><td>Pictures, then Screenshots</td></tr>
+        <tr><td>Mac</td><td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd></td><td>The Desktop</td></tr>
+        <tr><td>Chromebook</td><td><kbd>Ctrl</kbd> + the <b>Show windows</b> key (a rectangle with two lines, top row)</td><td>Downloads</td></tr>
+        <tr><td>Raspberry Pi</td><td><kbd>Print Screen</kbd>. If nothing happens: Menu &rarr; Accessories &rarr; Screenshot</td><td>Your home folder, or a small capture window opens</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>Rename it</b> to <code>dashboard.png</code> or <code>api-stats.png</code>, then open it and check you can read the address bar.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Finding your files and handing them in</h2>
+    <p><b>Your two files</b> are where you made them, on the Pi:</p>
+<pre data-label="Where your files are" data-nocopy><code>~/YOURNAME/pi-dashboard/server.py
 ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
     <p>If you cannot find them, this prints exactly where they are:</p>
-<pre><code>ls ~/YOURNAME/pi-dashboard ~/YOURNAME/pi-dashboard/static</code></pre>
-    <p><b>Getting them uploaded.</b> The short path is to submit from the Pi itself: open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; YOURNAME &rarr; pi-dashboard. For a phone screenshot, email it to yourself or log in to Schoology on the phone and upload from the camera roll. If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</p>
+<pre data-label="Type in the Terminal"><code>ls ~/YOURNAME/pi-dashboard ~/YOURNAME/pi-dashboard/static</code></pre>
+    <p><b>Upload from the computer the file is on.</b></p>
+    <ul>
+      <li><code>server.py</code> and <code>index.html</code> are on the Pi. Open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; YOURNAME &rarr; pi-dashboard. <code>index.html</code> is inside the <code>static</code> folder.</li>
+      <li>The two screenshots are on the other computer. Log in to Schoology there and upload them from there.</li>
+      <li>If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</li>
+    </ul>
   </section>
 
   <!-- ============ 37. vocabulary ============ -->
@@ -970,6 +1331,9 @@ setInterval(tick, 1000);</code></pre>
     <div class="twrap"><table>
       <thead><tr><th>Term</th><th>What it means</th></tr></thead>
       <tbody>
+        <tr><td><b>Terminal</b></td><td>A window where you type commands instead of clicking. Same computer, different door</td></tr>
+        <tr><td><b>Prompt</b></td><td>The text at the start of a Terminal line, waiting for you. Yours should start with <code>(YOURNAME-pihealth)</code></td></tr>
+        <tr><td><b>nano</b></td><td>A text editor that runs inside the Terminal. Save with <kbd>Ctrl</kbd>+<kbd>O</kbd>, exit with <kbd>Ctrl</kbd>+<kbd>X</kbd></td></tr>
         <tr><td><b>Server</b></td><td>A computer whose job is to wait for requests and send back responses</td></tr>
         <tr><td><b>Request</b></td><td>A device asking a server for something</td></tr>
         <tr><td><b>Response</b></td><td>What the server sends back</td></tr>
@@ -1002,18 +1366,38 @@ setInterval(tick, 1000);</code></pre>
         <div class="fix">Your server is already running in another Terminal window. Find it and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you cannot find it, run <code>pkill -f YOURNAME/pi-dashboard/server.py</code> and start again. Never run plain <code>pkill -f server.py</code>. It stops every student&rsquo;s server on this Pi, not just yours.</div></details>
       <details><summary>The page says Not Found.</summary>
         <div class="fix">Run <code>ls ~/YOURNAME/pi-dashboard/static</code>. If <code>index.html</code> is not in that list, you saved it in the wrong folder.</div></details>
-      <details><summary>My phone cannot load it.</summary>
-        <div class="fix">Three things, in order. Is the phone on the school network? Is the server still running on the Pi? Did you type <code>:5000</code> after the IP address?</div></details>
+      <details><summary>The other computer cannot load my dashboard.</summary>
+        <div class="fix">Three things, in order. Is that computer on the school network? Is the server still running in the Pi's Terminal? Did you type <code>:5000</code> after the IP address? Check <code>hostname -I</code> on the Pi too. The IP can change overnight.</div></details>
       <details><summary>It loads someone else's dashboard.</summary>
         <div class="fix">You typed their IP. Run <code>hostname -I</code> on your Pi again and fix your sticky note.</div></details>
       <details><summary>Temperature shows two dashes.</summary>
         <div class="fix">Some Pi models do not report it. Everything else works. Leave it.</div></details>
       <details><summary>I changed the page and nothing happened.</summary>
-        <div class="fix">Stop the server with <kbd>Ctrl</kbd>+<kbd>C</kbd>, start it again, then hard refresh with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>.</div></details>
+        <div class="fix">Did you save? nano shows <code>[ Wrote ... lines ]</code> when it saves. Then hard refresh with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>. If you changed <code>server.py</code>, that one needs a restart: <kbd>Ctrl</kbd>+<kbd>C</kbd> in the server's Terminal, then <code>python3 server.py</code>.</div></details>
       <details><summary>Nothing appears when I type my password.</summary>
-        <div class="fix">That is deliberate. The terminal hides password characters so nobody can read them over your shoulder. Type it and press Enter.</div></details>
+        <div class="fix">That is deliberate. The terminal hides password characters so nobody can read them over your shoulder. Type it and tap the <kbd>Enter</kbd> key.</div></details>
       <details><summary>I pasted into nano and it came out mangled.</summary>
         <div class="fix">Paste in the Terminal is <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>. If the file is a mess, delete it and start the file over. It is faster than repairing it.</div></details>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong, continued</h2>
+    <div class="trouble">
+      <details><summary>My prompt does not start with (YOURNAME-pihealth).</summary>
+        <div class="fix">You are outside your toolbox. Run <code>source ~/YOURNAME/pihealth/bin/activate</code>. A new Terminal window always starts outside it.</div></details>
+      <details><summary>No such file or directory.</summary>
+        <div class="fix">Either a spelling slip in the folder name, or you are at a different Pi than yesterday. Run <code>ls ~</code> and look for your folder name. Not there? Find your Pi. Do not rebuild.</div></details>
+      <details><summary>nano says File Name to Write and I do not know what to do.</summary>
+        <div class="fix">Tap the <kbd>Enter</kbd> key. That is it. The name is already filled in, and Enter says yes to it.</div></details>
+      <details><summary>I pressed Ctrl+X and nano asks Save modified buffer?</summary>
+        <div class="fix">That means you had unsaved changes. Tap the <kbd>Y</kbd> key to save them, then the <kbd>Enter</kbd> key. Tap <kbd>N</kbd> if you want to throw them away.</div></details>
+      <details><summary>Ctrl+C did not copy my text.</summary>
+        <div class="fix">In the Terminal, <kbd>Ctrl</kbd>+<kbd>C</kbd> stops a running program. It does not copy. Use the <b>Copy</b> button above the code box, and paste with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd>.</div></details>
+      <details><summary>The Terminal looks frozen after python3 server.py.</summary>
+        <div class="fix">It is not frozen, it is listening. That window is now your server. Open a second Terminal window for anything else.</div></details>
+      <details><summary>My dashboard stopped updating.</summary>
+        <div class="fix">The server stopped. Look at the Terminal where you started it. If you see your prompt again, run <code>python3 server.py</code> again.</div></details>
       <details><summary>I broke it so badly I want to start over.</summary>
         <div class="fix"><code>rm ~/YOURNAME/pi-dashboard/server.py</code> and redo Step 6. This is a normal thing that normal programmers do.</div></details>
     </div>
@@ -1025,7 +1409,7 @@ setInterval(tick, 1000);</code></pre>
     <h2>Setting up a Pi from a blank card</h2>
     <p><b>Skip this unless Mr. Krigger tells you to do it.</b> The Pis in the lab are already set up, and Day 1 assumes yours boots to a desktop. This appendix is here for the times it does not: a brand new Pi, a card that got wiped, or a class doing the whole build from scratch.</p>
     <p>There are two walkthroughs below because the lab runs two versions of Raspberry Pi OS. Find out which one you need before you start. If the Pi still boots, open a Terminal and run:</p>
-<pre><code>cat /etc/os-release</code></pre>
+<pre data-label="Type in the Terminal"><code>cat /etc/os-release</code></pre>
     <p>Look at the <code>VERSION_CODENAME</code> line. It says either <code>bookworm</code> or <code>trixie</code>. If the card is blank and there is nothing to boot, use the Bookworm walkthrough unless you were told otherwise.</p>
   </section>
 
@@ -1069,12 +1453,12 @@ setInterval(tick, 1000);</code></pre>
   <section class="slide">
     <h2>A6 and A7: Update it, then confirm</h2>
     <p><b>A6.</b> Open the Terminal and run:</p>
-<pre><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
-<pre><code>sudo reboot</code></pre>
+<pre data-label="Type in the Terminal"><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
+<pre data-label="Type in the Terminal"><code>sudo reboot</code></pre>
     <p>The first command can take fifteen minutes on a fresh card, longer if a whole class is doing it at once. <code>sudo</code> means run as administrator, <code>apt update</code> checks what new versions exist, <code>full-upgrade -y</code> installs them without asking you to confirm each one, and <code>reboot</code> restarts so the updates take effect.</p>
     <p><b>A7.</b> Confirm it is ready for Day 1:</p>
-<pre><code>whoami</code></pre>
-<pre><code>hostname -I</code></pre>
+<pre data-label="Type in the Terminal"><code>whoami</code></pre>
+<pre data-label="Type in the Terminal"><code>hostname -I</code></pre>
     <p>The first prints the username you chose in Imager. The second prints an IP address. If either comes back empty or wrong, fix it now rather than in the middle of Day 1.</p>
   </section>
 
@@ -1085,8 +1469,8 @@ setInterval(tick, 1000);</code></pre>
     <p><b>B1. Everything in A1 through A4 is the same.</b> Same Imager, same three questions, same customisation screen, same Write button. <b>One difference:</b> at Choose OS, Trixie is the default now, so it is the plain Raspberry Pi OS (64-bit) entry at the top. You do not need to go into "other".</p>
     <p><b>B2.</b> First boot is the same as A5. The desktop looks different from Bookworm, redrawn, so the icons and wallpaper will not match what the student next to you is looking at. Nothing about this project changes because of it.</p>
     <p><b>B3.</b> Update, identical to A6:</p>
-<pre><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
-<pre><code>sudo reboot</code></pre>
+<pre data-label="Type in the Terminal"><code>sudo apt update &amp;&amp; sudo apt full-upgrade -y</code></pre>
+<pre data-label="Type in the Terminal"><code>sudo reboot</code></pre>
     <p><b>B4.</b> Confirm, identical to A7. Run <code>whoami</code> and <code>hostname -I</code> and write both down.</p>
   </section>
 
@@ -1130,7 +1514,7 @@ setInterval(tick, 1000);</code></pre>
   <p><a href="../../../cs.html">All Computer Science lessons</a></p>
 </footer>
 
-<script src="../../assets/lesson.js"></script>
-<script src="../../assets/lesson-widgets.js?v=20260924"></script>
+<script src="../../assets/lesson.js?v=20261006"></script>
+<script src="../../assets/lesson-widgets.js?v=20261006"></script>
 </body>
 </html>

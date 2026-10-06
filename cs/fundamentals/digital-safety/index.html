@@ -7,7 +7,7 @@
   <meta name="description" content="Lock down your own accounts, then learn how programmers keep secrets out of their code. CS elective lesson, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../../assets/lesson.css">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261006">
 </head>
 <body>
 
@@ -50,7 +50,8 @@
     <h3>What you need</h3>
     <ul>
       <li>A computer with a web browser</li>
-      <li>One account you actually control and can change settings on. A personal account is fine and is usually easier than a school one.</li>
+      <li><b>No phone in class.</b> Two parts of this lesson work best with your own phone and accounts, so you do them at home. Each one also has an in-class option, so nobody is stuck.</li>
+      <li>For the home parts: one account you actually control and can change settings on. A personal account is fine and is usually easier than a school one.</li>
       <li>Only for the optional Day 2 bonus: <a href="https://code.visualstudio.com/">VS Code</a>. It is on the lab machines. No VS Code at home? Skip the bonus. Nothing else in this lesson needs it.</li>
     </ul>
   </section>
@@ -59,7 +60,14 @@
   <section class="slide">
     <p class="daymark">Day 1</p>
     <h2>Lock down your accounts</h2>
-    <p class="goal"><strong>Goal:</strong> by the end of today you have three passphrases you can actually remember, two-factor authentication switched on somewhere real, and the ability to look at a message and say why it is fake.</p>
+    <div class="startcard"><span class="startbadge">Day 1 start</span>
+      <ol class="startsteps">
+        <li><b>Nothing to set up.</b> You only need this page. Do not log in to anything in class.</li>
+        <li><b>Work down the page in order.</b> Each step ends with a green <b>Checkpoint</b>. Do not skip ahead until you can tick it.</li>
+        <li><b>Never type a real password</b> into any tool on this page. Type something similar.</li>
+      </ol>
+    </div>
+    <p class="goal"><strong>Goal:</strong> by the end of today you have three passphrases you can actually remember, a plan for where to keep the rest, two-factor authentication switched on somewhere real (at home, or the in-class version), and the ability to look at a message and say why it is fake.</p>
   </section>
 
   <!-- ============ 3. step 1 ============ -->
@@ -84,7 +92,7 @@
     <h2>Test one yourself</h2>
     <div class="callout warn"><b>Never type a password you actually use, here or anywhere else.</b> Type something similar. This page sends nothing anywhere, but that is a promise you cannot verify on someone else's site, so build the habit now.</div>
     <div data-widget="strength" id="pwmeter"></div>
-    <p>Try <code>password1</code>, then your pet's name and a year, then a whole sentence. There is a well known public version of this at <a href="https://www.security.org/how-secure-is-my-password/">security.org</a>, worth bookmarking for the day you set up something that matters. Same warning applies there.</p>
+    <p>Try <code>password1</code>, then your pet's name and a year, then a whole sentence. Then mash your keyboard for forty characters. It holds up, and you will never remember it. Keep that thought. There is a well known public version of this at <a href="https://www.security.org/how-secure-is-my-password/">security.org</a>, worth bookmarking for the day you set up something that matters. Same warning applies there.</p>
     <div class="callout check"><b>Checkpoint:</b> you have made it say <b>Instant</b> and you have made it say <b>Centuries</b>.</div>
   </section>
 
@@ -115,10 +123,44 @@
     <p>Four random words give you enough dials that no computer on Earth gets through in your lifetime, or your grandchildren's. A long phrase you can actually remember beats a short scramble you end up writing on a sticky note under your keyboard, which is where roughly half of all strong passwords go to die.</p>
   </section>
 
+  <!-- ============ 5b. where do you keep them ============ -->
+  <section class="slide">
+    <h2>Where do you keep all of these?</h2>
+    <p>Three strong passphrases is easy. Forty accounts is not. Nobody can memorize forty, so people reuse one password everywhere. Then one leaked website opens every account at once, because attackers try each stolen password on every other site. That has a name, <strong>credential stuffing</strong>, and it is why reuse is the worst habit on this table.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Where</th><th>Verdict</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>In your head, for 2 or 3 accounts</td><td>Good</td><td>Your email and your password manager. The ones that unlock everything else</td></tr>
+        <tr><td>A password manager</td><td>Best for the rest</td><td>One strong passphrase unlocks a vault that makes and remembers a different password for every site</td></tr>
+        <tr><td>Paper, in a drawer at home</td><td>Fine</td><td>Not on your monitor. A burglar is a much smaller risk than a hacker</td></tr>
+        <tr><td>A note on your phone called &ldquo;passwords&rdquo;</td><td>Bad</td><td>Anyone who gets into that account or that phone gets everything, in plain text</td></tr>
+        <tr><td>The same password everywhere</td><td>Worst</td><td>One leak, every account</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>On a school or lab computer, never save a password.</b> When the browser offers, click <b>Never</b> or the X. It is not your computer, and the next person who sits down can use whatever it saved. Log out when you finish.</div>
+  </section>
+
+  <!-- ============ 5c. password managers ============ -->
+  <section class="slide">
+    <h2>What a password manager actually does</h2>
+    <div class="vault" role="img" aria-label="A picture of a password manager with three saved sites and one fake site it refuses to fill">
+      <div class="v-head"><span><b>My vault</b>, unlocked with one master passphrase</span><span>3 saved</span></div>
+      <div class="v-row"><span class="v-site">paypal.com</span><span class="v-pw">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span></div>
+      <div class="v-row"><span class="v-site">school-email</span><span class="v-pw">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span></div>
+      <div class="v-row fake"><span class="v-site">paypa1.com (a fake)</span><span class="v-pw">no match, so it will not fill anything in</span></div>
+    </div>
+    <ul>
+      <li><b>It makes the passwords.</b> Long, random, different on every site. You never see most of them and you never need to.</li>
+      <li><b>It only fills the real site.</b> A fake site with a number one in the name does not match anything saved, so nothing fills in. That is your phishing alarm, for free.</li>
+      <li><b>One passphrase to guard.</b> The master passphrase is the one you must never forget, and never reuse. Turn on two-factor for the manager itself.</li>
+    </ul>
+    <div class="callout flag"><b>Not required, not graded, and not for school computers.</b> If you want one, set it up at home with a parent or guardian. The easy start needs nothing new: the password manager already built into Chrome, Edge, Safari or Firefox, or Apple Passwords. <b>Bitwarden</b> is a free dedicated one. Check the age rule before you sign up for anything. Bitwarden and Google accounts both require you to be 13 or older (checked October 2026).</div>
+  </section>
+
   <!-- ============ 6. step 3 ============ -->
   <section class="slide">
     <h2>Step 3: Make a stolen password useless</h2>
-    <p>Two-factor means logging in takes two things: something you <strong>know</strong> (your passphrase) and something you <strong>have</strong> (your phone). Someone who steals your password still cannot get in.</p>
+    <p>Two-factor means logging in takes two things: something you <strong>know</strong> (your passphrase) and something you <strong>have</strong> (your phone, or an app, or a key). Someone who steals your password still cannot get in.</p>
     <div class="twrap"><table>
       <thead><tr><th>Method</th><th>Security</th><th>How it works</th></tr></thead>
       <tbody>
@@ -129,8 +171,52 @@
       </tbody>
     </table></div>
     <p>Text codes are the weakest of the four because of SIM swapping, which you will read about in a moment. They are still far better than nothing.</p>
-    <p>Turn it on somewhere that matters. Email first if you can, because password resets for everything else land there. Open the account's security settings, find two-factor authentication (the name changes by site), turn it on, and screenshot the confirmation with anything private blurred.</p>
-    <div class="callout check"><b>Checkpoint:</b> a screenshot showing two-factor authentication is on.</div>
+    <p>Turn it on somewhere that matters. Email first if you can, because password resets for everything else land there.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3b: Turn it on, at home</h2>
+    <div class="callout flag"><b>Phones stay away in class.</b> Turning on two-factor needs your own phone and your own account, so do the real thing at home tonight. Short on time or no phone at home? The next slide has an in-class version.</div>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>At home &middot; the real thing</h4>
+        <ol>
+          <li>Open your email account's security settings.</li>
+          <li>Find two-factor authentication. The name changes by site, so look for &ldquo;2-step verification&rdquo; or &ldquo;two-factor&rdquo;.</li>
+          <li>Turn it on.</li>
+          <li>Screenshot the confirmation with anything private blurred.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="callout check"><b>Checkpoint:</b> a screenshot showing two-factor is on, private details blurred.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3c: The in-class version</h2>
+    <p>No phone needed. If you did the home version, you can skip this and keep going. Tap an answer to see why.</p>
+    <div data-widget="choice">
+          <p><b>A stranger has your password. What stops them getting in?</b></p>
+          <div class="w-opts">
+            <button type="button" data-opt="">A longer password</button>
+            <button type="button" data-opt="correct">Two-factor authentication</button>
+            <button type="button" data-opt="">Changing your username</button>
+          </div>
+          <div class="w-why" hidden><b>Two-factor.</b> A stolen password is only the first of two things they need. The second one is on your phone, an app, or a key in your pocket, and they do not have it.</div>
+        </div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3c: Question 2</h2>
+    <div data-widget="choice">
+          <p><b>Which of these is the weakest way to get a code?</b></p>
+          <div class="w-opts">
+            <button type="button" data-opt="correct">A text message</button>
+            <button type="button" data-opt="">An authenticator app</button>
+            <button type="button" data-opt="">A hardware key</button>
+          </div>
+          <div class="w-why" hidden><b>A text message.</b> Someone can take over your phone number with a SIM swap, and then the codes come to them. It is still far better than no second factor at all.</div>
+        </div>
+    <div class="callout check"><b>Checkpoint:</b> both questions answered.</div>
   </section>
 
   <!-- ============ 7. step 4a ============ -->
@@ -198,7 +284,7 @@
     <p>A progress check, not the hand-in. The full submission list is at the end of the lesson.</p>
     <ul class="turnin">
       <li>Three passphrases, with the crack time the meter gave each one</li>
-      <li>Screenshot of two-factor authentication turned on, private details blurred</li>
+      <li>Two-factor: a screenshot from home with private details blurred, or both in-class questions answered</li>
       <li>All eight inbox messages judged, and your score screenshotted</li>
     </ul>
   </section>
@@ -207,6 +293,12 @@
   <section class="slide">
     <p class="daymark">Day 2</p>
     <h2>Protect your data and your code</h2>
+    <div class="startcard"><span class="startbadge">Day 2 start</span>
+      <ol class="startsteps">
+        <li><b>Nothing to set up for the main lesson.</b> Photos, voices and the secrets rule are all on this page.</li>
+        <li><b>The VS Code part is a bonus.</b> Only open VS Code if you want it. If you already made <code>secret-test</code> last time, use <b>File &rarr; Open Recent</b> to get back to it.</li>
+      </ol>
+    </div>
     <p class="goal"><strong>Goal:</strong> by the end of today you know what you are giving away without meaning to, and you know where a password belongs in a project you are going to share.</p>
   </section>
 
@@ -224,9 +316,80 @@
         <tr><td>Location, live</td><td>Know when your house is empty</td></tr>
       </tbody>
     </table></div>
-    <p>Look at the last five photos on your phone without opening anything private. Check the backgrounds for a house number, a street sign, a school logo, a license plate, a package label, or a screen with a name on it.</p>
+    <p>Check the background of a photo for a house number, a street sign, a school logo, a license plate, a package label, or a screen with a name on it. You can practice two ways. <b>In class,</b> use the photo on the next slide. <b>At home,</b> look through the last five photos you posted or sent, without opening anything private.</p>
     <p>The rules that follow are short. Keep profiles private. Post the vacation photos after you get home. Check the background before you post. Ask whether you would be fine with a stranger, a teacher, and an employer all seeing it.</p>
-    <div class="callout check"><b>Checkpoint:</b> you found at least one identifying detail in the background of a photo, yours or a classmate's.</div>
+    <div class="callout check"><b>Checkpoint:</b> you found at least one identifying detail in the background of a photo, the class photo or one of your own.</div>
+  </section>
+
+  <!-- ============ 11b. spot the details ============ -->
+  <section class="slide">
+    <h2>Step 1b: Spot the details</h2>
+    <p>Jordan posted this photo today with the caption &ldquo;new hoodie!&rdquo; Click everything in it that tells a stranger something about Jordan. Not everything counts.</p>
+    <div data-widget="spot">
+      <svg viewBox="0 0 800 450" role="img" aria-label="A photo of a student standing in front of a house, with a car and a street sign">
+        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa3dd"/><stop offset="1" stop-color="#bfe0f5"/></linearGradient></defs>
+        <rect x="0" y="0" width="800" height="300" fill="url(#sky)"/>
+        <rect x="0" y="295" width="800" height="155" fill="#3a6b45"/>
+        <rect x="0" y="372" width="800" height="78" fill="#3b3b44"/>
+        <rect x="40" y="412" width="60" height="5" fill="#d8d8d8"/><rect x="180" y="412" width="60" height="5" fill="#d8d8d8"/><rect x="320" y="412" width="60" height="5" fill="#d8d8d8"/><rect x="460" y="412" width="60" height="5" fill="#d8d8d8"/>
+        <!-- house -->
+        <polygon points="20,128 190,40 360,128" fill="#a5553c"/>
+        <rect x="40" y="125" width="300" height="190" fill="#e8d9b8"/>
+        <rect x="170" y="205" width="55" height="110" fill="#6b4a2f"/><circle cx="216" cy="262" r="3" fill="#d9b44a"/>
+        <rect x="62" y="170" width="64" height="56" fill="#9ec9e8" stroke="#fff" stroke-width="3"/>
+        <rect x="246" y="160" width="86" height="72" fill="#cfe7f7" stroke="#fff" stroke-width="3"/>
+        <rect x="256" y="172" width="66" height="42" rx="3" fill="#10151f"/>
+        <text x="289" y="188" font-size="7.5" fill="#9fe7ff" text-anchor="middle" font-family="monospace">Welcome, Jordan</text>
+        <text x="289" y="200" font-size="5.2" fill="#9fe7ff" text-anchor="middle" font-family="monospace">jordanb.2010@mail.com</text>
+        <rect x="262" y="216" width="54" height="4" fill="#555"/>
+        <!-- palm (decoy) -->
+        <rect x="772" y="170" width="9" height="140" fill="#7a5a3a"/>
+        <ellipse cx="776" cy="160" rx="34" ry="14" fill="#2e8b57"/><ellipse cx="760" cy="172" rx="26" ry="10" fill="#2e8b57"/><ellipse cx="792" cy="172" rx="22" ry="10" fill="#2e8b57"/>
+        <!-- street sign -->
+        <rect x="612" y="150" width="7" height="200" fill="#888"/>
+        <rect x="560" y="118" width="110" height="34" rx="3" fill="#1d7a46" stroke="#fff" stroke-width="2"/>
+        <text x="615" y="141" font-size="16" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">MANGO LN</text>
+        <!-- car -->
+        <rect x="548" y="318" width="200" height="44" rx="10" fill="#b3262d"/>
+        <polygon points="580,318 608,284 702,284 730,318" fill="#b3262d"/>
+        <polygon points="592,316 612,291 650,291 650,316" fill="#9fd0ee"/><polygon points="660,316 660,291 696,291 716,316" fill="#9fd0ee"/>
+        <circle cx="592" cy="364" r="15" fill="#111"/><circle cx="592" cy="364" r="6" fill="#999"/>
+        <circle cx="710" cy="364" r="15" fill="#111"/><circle cx="710" cy="364" r="6" fill="#999"/>
+        <rect x="640" y="334" width="52" height="17" rx="2" fill="#f5f5f5" stroke="#333" stroke-width="1"/>
+        <text x="666" y="347" font-size="11" font-weight="700" fill="#222" text-anchor="middle" font-family="monospace">VI 4821</text>
+        <!-- package -->
+        <rect x="346" y="272" width="76" height="44" fill="#c9a26b"/><rect x="346" y="272" width="76" height="6" fill="#b08850"/>
+        <rect x="353" y="282" width="62" height="28" fill="#fff"/>
+        <text x="384" y="293" font-size="6.5" font-weight="700" fill="#222" text-anchor="middle" font-family="monospace">J. BAPTISTE</text>
+        <text x="384" y="303" font-size="6.5" fill="#222" text-anchor="middle" font-family="monospace">27 MANGO LN</text>
+        <!-- house number -->
+        <rect x="136" y="204" width="26" height="26" rx="3" fill="#2b2b2b"/>
+        <text x="149" y="223" font-size="15" font-weight="700" fill="#ffd966" text-anchor="middle" font-family="sans-serif">27</text>
+        <!-- student -->
+        <rect x="458" y="300" width="12" height="60" fill="#2b3a55"/><rect x="474" y="300" width="12" height="60" fill="#2b3a55"/>
+        <rect x="446" y="360" width="26" height="8" rx="3" fill="#eee"/><rect x="472" y="360" width="26" height="8" rx="3" fill="#eee"/>
+        <rect x="440" y="214" width="64" height="92" rx="14" fill="#1d4ed8"/>
+        <rect x="424" y="222" width="16" height="64" rx="8" fill="#1d4ed8"/><rect x="504" y="222" width="16" height="64" rx="8" fill="#1d4ed8"/>
+        <circle cx="472" cy="188" r="26" fill="#c68b5e"/>
+        <path d="M446 184 Q472 150 498 184 Q486 170 472 170 Q458 170 446 184Z" fill="#2a1b12"/>
+        <text x="472" y="254" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">WESTSIDE</text>
+        <text x="472" y="267" font-size="10" font-weight="700" fill="#ffd966" text-anchor="middle" font-family="sans-serif">TRACK</text>
+        <!-- location chip -->
+        <rect x="12" y="12" width="230" height="30" rx="15" fill="rgba(0,0,0,0.62)"/>
+        <path d="M30 18 a7 7 0 0 1 7 7 c0 5 -7 12 -7 12 s-7 -7 -7 -12 a7 7 0 0 1 7 -7z" fill="#ff5a5f"/><circle cx="30" cy="25" r="2.6" fill="#fff"/>
+        <text x="46" y="32" font-size="13" fill="#fff" font-family="sans-serif">Live location: at home, just now</text>
+
+        <!-- clickable clues -->
+        <g data-find data-title="The live location tag" data-why="It tells everyone where Jordan is right now, and the sign says Jordan is at home. Anyone watching knows when the house is empty too." aria-label="Location tag"><rect class="ring" x="8" y="8" width="238" height="38" rx="19"/></g>
+        <g data-find data-title="The house number" data-why="27 plus the street sign is a full street address. Strangers can find the house."><rect class="ring" x="132" y="200" width="34" height="34" rx="4"/></g>
+        <g data-find data-title="The street sign" data-why="Mango Ln narrows Jordan down to one street. With the house number, it is an address."><rect class="ring" x="556" y="114" width="118" height="42" rx="4"/></g>
+        <g data-find data-title="The license plate" data-why="A plate leads to an owner, and to a family. Blur plates before you post."><rect class="ring" x="636" y="330" width="60" height="25" rx="3"/></g>
+        <g data-find data-title="The school name on the hoodie" data-why="Now a stranger knows which school, which team, and roughly when and where to find Jordan."><rect class="ring" x="438" y="238" width="68" height="38" rx="6"/></g>
+        <g data-find data-title="The package label" data-why="A real name and a full address, readable, on the porch. Packages are the most common label to leak."><rect class="ring" x="342" y="268" width="84" height="52" rx="3"/></g>
+        <g data-find data-title="The screen in the window" data-why="A first name, an email address, and a birth year. That is enough for a convincing phishing message or a password reset attempt."><rect class="ring" x="244" y="158" width="90" height="76" rx="4"/></g>
+        <g data-find class="decoy" data-title="The palm tree" data-why="Fine. It is a tree, and half the island has one. Knowing what to ignore matters too, or you will blur everything and post nothing."><rect class="ring" x="738" y="132" width="58" height="182" rx="6"/></g>
+      </svg>
+    </div>
   </section>
 
   <!-- ============ 12. day 2 step 2 ============ -->
@@ -243,7 +406,7 @@
     <h2>Step 3: What actually counts as a secret</h2>
     <p>A <strong>secret</strong> is any value that proves who you are to a computer. A password. An <strong>API key</strong>. A Wi-Fi password. A database login. A token an app uses to talk to a service.</p>
     <p>Here is the problem, and it is the reason this sits in a Computer Science class instead of a health class.</p>
-<pre><code># BAD. Never do this.
+<pre data-label="Never do this" data-nocopy><code># BAD. Never do this.
 api_key = "sk-a83ff20c9d4e1b77c5"
 
 response = ask_the_ai(api_key, "explain recursion")</code></pre>
@@ -260,13 +423,13 @@ response = ask_the_ai(api_key, "explain recursion")</code></pre>
       <div class="tier base">
         <h4>Base &middot; everyone</h4>
         <p class="filename">app.py</p>
-<pre><code>import os
+<pre data-label="app.py"><code>import os
 from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("API_KEY")</code></pre>
         <p class="filename">.env</p>
-<pre><code>API_KEY=sk-a83ff20c9d4e1b77c5</code></pre>
+<pre data-label=".env"><code>API_KEY=sk-a83ff20c9d4e1b77c5</code></pre>
       </div>
       <div class="tier stretch">
         <h4>So which one is safe to post?</h4>
@@ -308,13 +471,13 @@ api_key = os.getenv("API_KEY")</code></pre>
   <!-- ============ 15c. stretch, part 3: the three files ============ -->
   <section class="slide">
     <h2>Step B: Make three files</h2>
-    <p>For each one, hover the sidebar and click the <b>New File</b> icon, then type the name exactly, including the dot at the front where there is one.</p>
+    <p>For each one, hover the sidebar and click the <b>New File</b> icon, then type the name exactly, including the dot at the front where there is one. Then click <b>Copy</b> on the box below, click inside the file, and paste.</p>
     <p class="filename">.env  &nbsp;&nbsp;(the secret. Note the dot.)</p>
-<pre><code>API_KEY=not-a-real-key-12345</code></pre>
+<pre data-label=".env"><code>API_KEY=not-a-real-key-12345</code></pre>
     <p class="filename">.gitignore  &nbsp;&nbsp;(the part everyone forgets. Also a dot.)</p>
-<pre><code>.env</code></pre>
+<pre data-label=".gitignore"><code>.env</code></pre>
     <p class="filename">read_secret.py  &nbsp;&nbsp;(the code. No dot at the front.)</p>
-<pre><code>import os
+<pre data-label="read_secret.py"><code>import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -327,8 +490,8 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
     <h2>Step C: Open the terminal</h2>
     <p>In VS Code, go to <b>Terminal &rarr; New Terminal</b>. A panel opens at the bottom.</p>
     <p>It already starts inside your <code>secret-test</code> folder, which is the reason we are doing it this way. You never have to learn how to navigate folders from a command line today.</p>
-    <p>Check Python is there. Type this and press Enter:</p>
-<pre><code>python3 --version</code></pre>
+    <p>Check Python is there. Click <b>Copy</b>, click inside the terminal, paste (<kbd>Ctrl</kbd>+<kbd>V</kbd>, or <kbd>Cmd</kbd>+<kbd>V</kbd> on a Mac), then tap the <kbd>Enter</kbd> key:</p>
+<pre data-label="Type in the VS Code terminal"><code>python3 --version</code></pre>
     <p>You want something like <code>Python 3.12.1</code>. Any 3 is fine.</p>
     <div class="callout warn"><b>If it says command not found</b>, try <code>python --version</code> instead, and use <code>python</code> in place of <code>python3</code> for the rest of this. If neither works, put your hand up.</div>
     <div class="callout check"><b>Checkpoint:</b> the terminal printed a Python version number.</div>
@@ -338,9 +501,9 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
   <section class="slide">
     <h2>Step D: Install the one library you need</h2>
     <p>Your code says <code>from dotenv import load_dotenv</code>, which is you borrowing somebody else's code. It has to be on this machine first.</p>
-<pre><code>pip3 install python-dotenv</code></pre>
+<pre data-label="Type in the VS Code terminal"><code>pip3 install python-dotenv</code></pre>
     <p>You will see several lines scroll past. The one you want at the end is:</p>
-<pre><code>Successfully installed python-dotenv-1.x.x</code></pre>
+<pre data-label="What you should see" data-nocopy><code>Successfully installed python-dotenv-1.x.x</code></pre>
     <div class="callout note"><b>Already satisfied</b> instead means somebody installed it on this machine before you. That counts. Carry on.</div>
     <div class="callout warn"><b>If pip3 is not found</b>, try <code>pip install python-dotenv</code>, then <code>python3 -m pip install python-dotenv</code>. One of the three works.</div>
     <div class="callout check"><b>Checkpoint:</b> the terminal said Successfully installed, or already satisfied.</div>
@@ -349,9 +512,9 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
   <!-- ============ 15f. stretch, part 6: run it ============ -->
   <section class="slide">
     <h2>Step E: Run it</h2>
-<pre><code>python3 read_secret.py</code></pre>
+<pre data-label="Type in the VS Code terminal"><code>python3 read_secret.py</code></pre>
     <p>What you are looking for:</p>
-<pre><code>Loaded key: not-a-real-key-12345</code></pre>
+<pre data-label="What you should see" data-nocopy><code>Loaded key: not-a-real-key-12345</code></pre>
     <p>Now look back at <code>read_secret.py</code>. The key is printed on your screen, and the key is <b>nowhere in that file</b>. That is the entire point, and you just built it.</p>
     <div class="callout check"><b>Checkpoint:</b> your terminal printed the key. Screenshot the terminal, and screenshot your <code>.gitignore</code>. Those two are your optional bonus hand-in.</div>
   </section>
@@ -366,7 +529,7 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
         <tr><td><code>Loaded key: None</code></td><td>The file is not being found or read. Usually the name is <code>.env.txt</code>, or there are spaces around the <code>=</code>. It must read <code>API_KEY=value</code> exactly.</td></tr>
         <tr><td><code>ModuleNotFoundError: No module named 'dotenv'</code></td><td>Step D did not finish. Run the install again and read the last line.</td></tr>
         <tr><td><code>can't open file</code></td><td>The terminal is not in your folder, or the filename is spelled differently. Check the sidebar for the exact name.</td></tr>
-        <tr><td>Nothing happens at all</td><td>You probably did not press Enter, or the file was never saved. Look for a white dot on the tab.</td></tr>
+        <tr><td>Nothing happens at all</td><td>You probably did not tap the <kbd>Enter</kbd> key, or the file was never saved. Look for a white dot on the tab.</td></tr>
       </tbody>
     </table></div>
     <div class="callout note"><b>Getting an error is not failing.</b> Reading the last line of an error and acting on it is the actual skill. You will do this for the rest of your life in this subject.</div>
@@ -420,7 +583,7 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
     <p>The whole list. Every item comes out of an activity you already did. <b>Optional bonus, HS and MS:</b> your terminal screenshot and <code>.gitignore</code> from the Day 2 VS Code part. Skipping it costs you nothing.</p>
     <ul class="turnin">
       <li><b>Three passphrases</b> with the crack time the meter gave each one. From Step 2. Never submit a password you actually use.</li>
-      <li><b>Screenshot of two-factor turned on</b>, private details blurred. From Step 3.</li>
+      <li><b>Two-factor proof</b>: a screenshot of it turned on, private details blurred, from home. If you cannot do that, your answers to the two in-class questions instead. From Step 3b or 3c.</li>
       <li><b>Screenshot of your inbox score</b>, plus one sentence on each message you got wrong and what gave it away. From Step 4.</li>
       <li><b>The secrets answer</b>: which file is safe to post and why. From Day 2 Step 4.</li>
       <li><b>Reflection</b>, 3 to 5 sentences: what is the biggest security mistake you have been making, and what are you changing?</li>
@@ -503,7 +666,7 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
   <p><a href="../../../cs.html">All Computer Science lessons</a></p>
 </footer>
 
-<script src="../../assets/lesson.js"></script>
-<script src="../../assets/lesson-widgets.js"></script>
+<script src="../../assets/lesson.js?v=20261006"></script>
+<script src="../../assets/lesson-widgets.js?v=20261006"></script>
 </body>
 </html>
