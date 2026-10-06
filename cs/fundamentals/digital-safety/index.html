@@ -101,7 +101,7 @@
     <h2>Step 2: Build a passphrase</h2>
     <p>Length beats cleverness. Every character you add multiplies the work, and multiplying gets out of hand fast, which is the one time that works in your favor.</p>
     <div class="twrap"><table>
-      <thead><tr><th>Length</th><th>Time to crack by brute force</th></tr></thead>
+      <thead><tr><th>Random characters</th><th>Time to crack by brute force</th></tr></thead>
       <tbody>
         <tr><td>6 characters</td><td>seconds</td></tr>
         <tr><td>8 characters</td><td>hours</td></tr>
@@ -109,8 +109,8 @@
         <tr><td>16+ characters</td><td>effectively impossible</td></tr>
       </tbody>
     </table></div>
-    <p>Four or five unrelated words does it. Unrelated is the load-bearing word here, because <code>saint-croix-high-school</code> is four words and still weak. Anyone who knows you would guess it.</p>
-    <div data-widget="passphrase" data-target="pwmeter"></div>
+    <p>Six random words does it. Attackers who know you used words guess whole words, not letters, so each word counts as one guess from a big list. Four words falls in hours. Five takes years. Six takes centuries. Random is the load-bearing word here, because <code>saint-croix-high-school</code> is four words and still weak. Anyone who knows you would guess it.</p>
+    <div data-widget="passphrase" data-target="pwmeter" data-count="6" data-wordlist="../../assets/eff_large_wordlist.txt"></div>
     <p><b>Do this:</b> generate three, test each in the meter above, and write down the crack time. Those three go in your submission.</p>
     <div class="callout check"><b>Checkpoint:</b> three passphrases written down, each showing centuries or longer.</div>
   </section>
@@ -120,7 +120,7 @@
     <h2>Why length beats symbols</h2>
     <p>Schools and websites spent twenty years demanding a capital, a number, and a symbol. What they got was <code>Password1!</code>, roughly two hundred million times. Everyone follows the rule the same lazy way, so attackers just try the lazy way first.</p>
     <p>Picture a combination lock. Symbols give you more numbers on each dial. Length gives you more dials. Adding a dial multiplies everything that came before it, which is why length wins and it is not close.</p>
-    <p>Four random words give you enough dials that no computer on Earth gets through in your lifetime, or your grandchildren's. A long phrase you can actually remember beats a short scramble you end up writing on a sticky note under your keyboard, which is where roughly half of all strong passwords go to die.</p>
+    <p>Six random words give you enough dials that no computer on Earth gets through in your lifetime, or your grandchildren's. A long phrase you can actually remember beats a short scramble you end up writing on a sticky note under your keyboard, which is where roughly half of all strong passwords go to die.</p>
   </section>
 
   <!-- ============ 5b. where do you keep them ============ -->
@@ -647,7 +647,7 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
       <details><summary>I do not want to screenshot my real account.</summary>
         <div class="fix">Blur everything except the confirmation that two-factor is on. That is all that is being checked.</div></details>
       <details><summary>The checker says my passphrase is weak.</summary>
-        <div class="fix">Your words are related to each other, or to you, or to something on your desk right now. The meter can tell. Pick words that have no business being in the same sentence.</div></details>
+        <div class="fix">Your words are related to each other, or to you, or to something on your desk right now. The meter cannot tell, but anyone who knows you can. Use the generator, or pick words that have no business being in the same sentence.</div></details>
       <details><summary>pip install python-dotenv says pip is not found.</summary>
         <div class="fix">Try <code>pip3 install python-dotenv</code>, or <code>python3 -m pip install python-dotenv</code>.</div></details>
       <details><summary>My script prints "Loaded key: None".</summary>
@@ -667,6 +667,6 @@ print("Loaded key:", os.getenv("API_KEY"))</code></pre>
 </footer>
 
 <script src="../../assets/lesson.js?v=20261006"></script>
-<script src="../../assets/lesson-widgets.js?v=20261006"></script>
+<script src="../../assets/lesson-widgets.js?v=20261007"></script>
 </body>
 </html>

@@ -104,16 +104,31 @@
     }
 
     // Separator-joined words behave like a passphrase: count words, not characters.
-    var words = lower.split(/[^a-z]+/).filter(function (w) {
-      return w.length >= 4 && w.length <= 12 && wordLike(w);
+    // Words are the pieces between real separators: spaces, hyphens, dots, underscores.
+    var words = lower.split(/[\s\-_.,+]+/).map(function (t) { return t.replace(/[^a-z]/g, ''); }).filter(function (w) {
+      return (w.length >= 2 && w.length <= 3 && /[aeiouy]/.test(w)) ||
+             (w.length >= 4 && w.length <= 12 && wordLike(w));
     });
     var wordChars = words.join('').length;
     var letterChars = lower.replace(/[^a-z]/g, '').length || 1;
     // Only a passphrase if the words really are most of what was typed.
-    if (words.length >= 3 && wordChars / letterChars >= 0.7) {
-      var phraseBits = words.length * (Math.log(2000) / Math.log(2));
-      if (phraseBits > bits) bits = phraseBits;
-      note = words.length + ' words';
+    // Attackers who see words guess whole words, not letters. Score each word as
+    // one pick from the 7,776-word EFF list, the standard list for passphrases.
+    // Four words land at hours, five at years, six at centuries.
+    if (words.length >= 2 && wordChars / letterChars >= 0.7) {
+      var phraseBits = words.length * (Math.log(7776) / Math.log(2));
+      if (phraseBits < bits) bits = phraseBits;
+      note = words.length + ' words, each counted as one guess from a list of 7,776 words';
+    }
+
+    // Words run together with no gaps (correcthorsebatterystaple) are still words.
+    // If a long all-letter string reads like words, estimate one word per 6 letters.
+    if (words.length < 2 && /^[a-z]+$/.test(lower) && lower.length >= 15 && wordLike(lower)) {
+      var runBits = Math.round(lower.length / 6) * (Math.log(7776) / Math.log(2));
+      if (runBits < bits) {
+        bits = runBits;
+        note = 'about ' + Math.round(lower.length / 6) + ' words run together, and attackers guess whole words';
+      }
     }
 
     // Real attackers do not brute force. They run wordlists through substitution
@@ -218,7 +233,7 @@
       '<span class="w-sub">Runs in this page. Nothing you type is sent anywhere.</span></div>' +
       '<label class="w-label" for="' + host.id + '-in">Type a password to test</label>' +
       '<input class="w-input" id="' + host.id + '-in" type="text" autocomplete="off" ' +
-        'spellcheck="false" placeholder="try: password1  then: mango-bicycle-cloud">' +
+        'spellcheck="false" placeholder="try: password1, then six random words">' +
       '<div class="w-meter"><span class="w-fill"></span></div>' +
       '<div class="w-readout"><b class="w-verdict">Type something</b>' +
       '<span class="w-detail"></span></div>' +
@@ -265,20 +280,51 @@
     return out;
   }
 
+  // The big list is the EFF large wordlist (7,776 words), CC BY 3.0 US,
+  // https://www.eff.org/dice . It is fetched only by pages that use the generator.
+  // If it cannot load, the built-in WORDS list is used and the widget says so,
+  // because a phrase from 250 words is much weaker than the meter assumes.
+  function pickFrom(list, n) {
+    var out = [], used = {};
+    var rand = function (max) {
+      if (window.crypto && window.crypto.getRandomValues) {
+        var a = new Uint32Array(1); window.crypto.getRandomValues(a);
+        return a[0] % max;
+      }
+      return Math.floor(Math.random() * max);
+    };
+    while (out.length < n) {
+      var w = list[rand(list.length)];
+      if (!used[w]) { used[w] = 1; out.push(w); }
+    }
+    return out;
+  }
+
   function buildPassphrase(host) {
     var target = host.getAttribute('data-target');
+    var count = parseInt(host.getAttribute('data-count'), 10) || 6;
+    var src = host.getAttribute('data-wordlist');
+    var list = WORDS, big = false;
     host.innerHTML =
       '<div class="w-head"><span class="w-tag">Try it</span>' +
-      '<span class="w-sub">Four unrelated words, picked at random.</span></div>' +
+      '<span class="w-sub"></span></div>' +
       '<div class="w-phrase" aria-live="polite">click generate</div>' +
       '<div class="w-row">' +
         '<button class="w-btn" type="button" data-act="gen">Generate</button>' +
         (target ? '<button class="w-btn ghost" type="button" data-act="test">Test it above</button>' : '') +
       '</div>' +
-      '<p class="w-foot">Unrelated is the point. Words about you or about each other are guessable.</p>';
+      '<p class="w-foot"></p>';
 
-    var out = $('.w-phrase', host);
-    function gen() { out.textContent = pick(4).join('-'); }
+    var out = $('.w-phrase', host), sub = $('.w-sub', host), foot = $('.w-foot', host);
+    function label() {
+      var n = ['zero','one','two','three','four','five','six','seven','eight'][count] || String(count);
+      sub.textContent = n.charAt(0).toUpperCase() + n.slice(1) + ' unrelated words, picked at random from ' +
+        list.length.toLocaleString() + '.';
+      foot.innerHTML = big
+        ? 'Unrelated is the point. Words about you or about each other are guessable. Word list: <a href="https://www.eff.org/dice" target="_blank" rel="noopener noreferrer">EFF</a>, CC BY 3.0.'
+        : 'Using the small backup list, so these phrases are weaker than the meter says. Unrelated is the point. Words about you or about each other are guessable.';
+    }
+    function gen() { out.textContent = pickFrom(list, count).join('-'); }
     host.addEventListener('click', function (e) {
       var act = e.target.getAttribute('data-act');
       if (act === 'gen') gen();
@@ -287,7 +333,16 @@
         if (t && t.__setValue) { t.__setValue(out.textContent); t.scrollIntoView({ block: 'center' }); }
       }
     });
-    gen();
+    label(); gen();
+
+    if (src && window.fetch) {
+      fetch(src).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (txt) {
+        var words = txt.split(/\r?\n/).map(function (line) {
+          var parts = line.trim().split(/\s+/); return parts[parts.length - 1] || '';
+        }).filter(function (w) { return /^[a-z]{3,}$/.test(w); });
+        if (words.length >= 5000) { list = words; big = true; label(); gen(); }
+      }).catch(function () {});
+    }
   }
 
   /* ============================================================
