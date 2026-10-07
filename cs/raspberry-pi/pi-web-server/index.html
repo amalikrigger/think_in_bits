@@ -399,12 +399,71 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
     <div class="callout note"><b>Temperature showing <code>--</code>?</b> Some Pi models do not report it. Everything else still works. Not your fault, not a bug.</div>
   </section>
 
+  <!-- ============ 11a. meet thonny ============ -->
+  <section class="slide">
+    <h2>Meet Thonny, a second editor</h2>
+    <p>nano lives inside the Terminal. <b>Thonny</b> is a Python editor with windows and buttons, and it is already on your Pi. It colors your code, runs your program with one click, and shows errors in red with the line number. Many programmers learn Python in it first.</p>
+    <p>Today you learn it. On Day 3 you will use it for the Python edit.</p>
+    <ol>
+      <li><b>Stop your server.</b> Click the Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Thonny will run its own copy, and two servers cannot share port 5000.</li>
+      <li><b>Open Thonny:</b> Menu &rarr; Programming &rarr; Thonny.</li>
+      <li><b>Open your server file.</b> Click <b>File</b>, then <b>Open</b>. Click <b>Home</b>, then <b>YOURNAME</b>, then <b>pi-dashboard</b>, then <b>server.py</b>, then <b>Open</b>.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> the code from Step 6 is on screen with colored words. Under it is a window called <b>Shell</b>. If you cannot see the Shell, click <b>View</b> and tick <b>Shell</b>.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Point Thonny at your toolbox</h2>
+    <p>Thonny starts with its own Python, and that Python does not have Flask. It is the same problem as <code>ModuleNotFoundError</code> in the Terminal: you are outside your toolbox. Tell Thonny to use the one you built.</p>
+    <ol>
+      <li>Click <b>Tools</b>, then <b>Options</b>, then the <b>Interpreter</b> tab.</li>
+      <li>Choose <b>Alternative Python 3 interpreter or virtual environment</b>.</li>
+      <li>In the box, type this path. Thonny does not understand <code>~</code>, so write out your username. It is on your sticky note.</li>
+    </ol>
+<pre data-label="Thonny, Options, Interpreter box. Change USERNAME and YOURNAME"><code>/home/USERNAME/YOURNAME/pihealth/bin/python3</code></pre>
+    <ol start="4">
+      <li>Click <b>OK</b>. The Shell restarts.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> the first line in the Shell shows a Python version and a path in brackets, and the path has <code>pihealth</code> in it. If it still shows another path, go back to step 2.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Run your server from Thonny</h2>
+    <p>Click the green <b>Run</b> button on the toolbar. The Shell prints the same <code>Running on</code> lines the Terminal did. Open <code>http://localhost:5000</code> in Chromium.</p>
+    <p>To stop it, click the red <b>Stop</b> button. Thonny's Stop does what <kbd>Ctrl</kbd>+<kbd>C</kbd> did.</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>Terminal and nano</th><th>Thonny</th></tr></thead>
+      <tbody>
+        <tr><td>Start the server</td><td><code>python3 server.py</code></td><td>Green Run button</td></tr>
+        <tr><td>Stop the server</td><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Red Stop button</td></tr>
+        <tr><td>Save</td><td><kbd>Ctrl</kbd>+<kbd>O</kbd>, <kbd>Enter</kbd></td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td></tr>
+        <tr><td>Paste</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td></tr>
+        <tr><td>Find</td><td><kbd>Ctrl</kbd>+<kbd>W</kbd></td><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout check"><b>Checkpoint:</b> your dashboard loads at <code>http://localhost:5000</code> while the server runs from Thonny, and stops loading after you click Stop.</div>
+    <div class="callout warn"><b>One server at a time.</b> If Run says <code>Address already in use</code>, your server is still running in the Terminal. Stop it there first.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Break it on purpose</h2>
+    <p>Programmers spend a lot of time reading errors, and Thonny makes them easy to read. Break your file once while nothing depends on it.</p>
+    <ol>
+      <li>Scroll to the last line, <code>app.run(host="0.0.0.0", port=5000)</code>. Delete the final <code>)</code>.</li>
+      <li>Click <b>Run</b>.</li>
+      <li>Read the red text in the Shell. It names the kind of error and the line number. Click the line link to jump to it.</li>
+      <li>Type the <code>)</code> back, then click <b>Run</b> again.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> you saw a red <code>SyntaxError</code>, fixed it, and the server ran again. Click <b>Stop</b> when you are done.</div>
+    <div class="callout note"><b>Which editor do I use?</b> Either one works for <code>server.py</code>. Thonny can open <code>index.html</code> too, but it will not color it, so the page stays in nano.</div>
+  </section>
+
   <!-- ============ 11b. day 1 end ============ -->
   <section class="slide">
     <h2>Before you leave today</h2>
     <div class="startcard"><span class="startbadge">Day 1 end</span>
       <ol class="startsteps">
-        <li><b>Stop your server.</b> Click the Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Only one server can use port 5000, and the next class needs it.</li>
+        <li><b>Stop your server.</b> Click the Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. If you ran it from Thonny, click the red Stop button instead. Only one server can use port 5000, and the next class needs it.</li>
         <li><b>Check your sticky note.</b> It should have three things on it: your <b>username</b>, your Pi's <b>IP address</b> and your <b>folder name</b>. Stick it on the monitor.</li>
         <li><b>Remember where you sat.</b> Day 2 starts at this same Pi. Open the <b>Day 2</b> tab and begin with <b>Start here</b>.</li>
       </ol>
@@ -1231,7 +1290,8 @@ setInterval(tick, 1000);</code></pre>
 
   <section class="slide">
     <h2>Stretch edit 1: Python</h2>
-    <div class="callout flag"><b>Where this goes:</b> <code>server.py</code>, not the page. Open it in Terminal 2 with <code>nano -l ~/YOURNAME/pi-dashboard/server.py</code>.</div>
+    <div class="callout flag"><b>Where this goes:</b> <code>server.py</code>, not the page. Open it in Terminal 2 with <code>nano -l ~/YOURNAME/pi-dashboard/server.py</code>, or in Thonny (below).</div>
+    <div class="callout note"><b>Thonny works well for this edit.</b> Open it, click <b>File</b>, <b>Open</b>, and pick <code>server.py</code> in your <code>pi-dashboard</code> folder. Search with <kbd>Ctrl</kbd>+<kbd>F</kbd> instead of <kbd>Ctrl</kbd>+<kbd>W</kbd>, and paste with <kbd>Ctrl</kbd>+<kbd>V</kbd>. A missing comma shows up as a red <code>SyntaxError</code> with a line number when you click <b>Run</b>. Not set up yet? The Interpreter step is on Day 1.</div>
     <p><b>1.</b> At the top, add one line under <code>import os</code>. Search <code>import os</code>, tap <kbd>End</kbd>, tap <kbd>Enter</kbd>, paste:</p>
 <pre data-label="server.py. Goes at the top, under import os"><code>import time</code></pre>
   </section>
@@ -1245,7 +1305,7 @@ setInterval(tick, 1000);</code></pre>
         <span class="hl">&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</span>
     })</code></pre>
 <pre data-label="Copy the new line. It goes inside the jsonify block"><code>&quot;uptime&quot;: round((time.time() - psutil.boot_time()) / 60)</code></pre>
-    <p><b>3.</b> <code>server.py</code> changed, so this one <b>does</b> need a restart. In Terminal 1 press <kbd>Ctrl</kbd>+<kbd>C</kbd>, then run <code>python3 server.py</code>. Reload <code>/api/stats</code> on the other computer.</p>
+    <p><b>3.</b> <code>server.py</code> changed, so this one <b>does</b> need a restart. In Terminal 1 press <kbd>Ctrl</kbd>+<kbd>C</kbd>, then run <code>python3 server.py</code>. In Thonny, click the red <b>Stop</b> button, then the green <b>Run</b> button. Reload <code>/api/stats</code> on the other computer.</p>
     <div class="callout warn"><b>If your new name is not in that JSON, stop and fix it before touching the HTML.</b> A <code>SyntaxError</code> in Terminal 1 almost always means a missing comma after <code>temperature_c()</code>.</div>
   </section>
 
@@ -1311,18 +1371,65 @@ setInterval(tick, 1000);</code></pre>
   </section>
 
   <section class="slide">
-    <h2>Finding your files and handing them in</h2>
+    <h2>Getting your files to Schoology: pick a route</h2>
     <p><b>Your two files</b> are where you made them, on the Pi:</p>
 <pre data-label="Where your files are" data-nocopy><code>~/YOURNAME/pi-dashboard/server.py
 ~/YOURNAME/pi-dashboard/static/index.html</code></pre>
-    <p>If you cannot find them, this prints exactly where they are:</p>
-<pre data-label="Type in the Terminal"><code>ls ~/YOURNAME/pi-dashboard ~/YOURNAME/pi-dashboard/static</code></pre>
-    <p><b>Upload from the computer the file is on.</b></p>
-    <ul>
-      <li><code>server.py</code> and <code>index.html</code> are on the Pi. Open Chromium on the Pi, log in to Schoology, and pick the files from Home &rarr; YOURNAME &rarr; pi-dashboard. <code>index.html</code> is inside the <code>static</code> folder.</li>
-      <li>The two screenshots are on the other computer. Log in to Schoology there and upload them from there.</li>
-      <li>If the Pi will not cooperate, copy the folder to a jump drive and submit from a lab computer.</li>
-    </ul>
+    <p>Your screenshots are on the other computer. The files have to get from the Pi to Schoology somehow. There are three ways. Try Route 1 first.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Route</th><th>What happens</th><th>Logins</th></tr></thead>
+      <tbody>
+        <tr><td><b>1. Schoology on the Pi</b></td><td>Log in to Schoology on the Pi and upload the two files from there.</td><td>Two: the Pi, then the other computer for the screenshots</td></tr>
+        <tr><td><b>2. Email yourself</b></td><td>Email the two files to yourself from the Pi, then open that email on another computer.</td><td>Email on the Pi, then Schoology on the other computer</td></tr>
+        <tr><td><b>3. Download from the Pi</b></td><td>Your Pi shares your folder for a minute. You save the files on the other computer.</td><td>One: Schoology on the other computer</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><b>Upload, never Create.</b> In Schoology, choose <b>Submit Assignment</b>, then <b>Upload</b>. Create only takes typed text.</div>
+    <p>Last resort: copy the <code>pi-dashboard</code> folder to a jump drive and submit from a lab computer.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Route 1: Schoology on the Pi</h2>
+    <ol>
+      <li>Open <b>Chromium</b> on the Pi and press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>. That opens a <b>Private window</b> (Chromium calls it Incognito). It forgets your login when you close it.</li>
+      <li>Log in to Schoology. If Chromium offers to save the password, click <b>Never</b>. Do not tick any box that says remember me.</li>
+      <li>Open the assignment, click <b>Submit Assignment</b>, then <b>Upload</b>.</li>
+      <li>Pick <code>server.py</code> from <b>Home</b> &rarr; <b>YOURNAME</b> &rarr; <b>pi-dashboard</b>. Upload <code>index.html</code> from the <code>static</code> folder inside it.</li>
+      <li>Check both names are in the list, then submit.</li>
+    </ol>
+    <div class="callout warn"><b>Before you walk away:</b> click your name at the top right of Schoology and choose <b>Log out</b>. Then close the Private window with the X. The next student uses this Pi.</div>
+    <p>Then log in on the other computer and upload the two screenshots there.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Route 2: Email yourself</h2>
+    <ol>
+      <li>On the Pi, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> in Chromium for a <b>Private window</b>.</li>
+      <li>Log in to your email. If Chromium offers to save the password, click <b>Never</b>.</li>
+      <li>Write a new message to <b>yourself</b>. Click the paperclip and attach <code>server.py</code> from <code>pi-dashboard</code>, then attach <code>index.html</code> from the <code>static</code> folder inside it.</li>
+      <li>Send it. Wait until your email says the message was sent.</li>
+      <li><b>Log out of your email, then close the Private window.</b> Do this before you do anything else.</li>
+      <li>On the other computer, open the email, download both files, and upload them to Schoology along with your screenshots.</li>
+    </ol>
+    <div class="callout warn"><b>Never leave your email open on a shared Pi.</b> Anyone who sits down next could read it. If a file is refused, use Route 1 or Route 3.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Route 3: Download from the Pi</h2>
+    <p>Your Pi can hand out your files the same way it hands out your dashboard. Nothing to log in to on the Pi.</p>
+    <p><b>On the Pi,</b> in the Terminal:</p>
+<pre data-label="Type in the Terminal"><code>cd ~/YOURNAME/pi-dashboard &amp;&amp; python3 -m http.server 8001</code></pre>
+    <p>It prints a line like this, then sits there listening:</p>
+<pre data-label="What you should see" data-nocopy><code>Serving HTTP on 0.0.0.0 port 8001 (http://0.0.0.0:8001/) ...</code></pre>
+    <p><b>On the other computer,</b> go to this address with your Pi's IP:</p>
+<pre data-label="Type in the address bar of the other computer"><code>http://YOUR-PI-IP:8001</code></pre>
+    <ol>
+      <li>You see a list with <code>server.py</code> and <code>static/</code>.</li>
+      <li>Right-click <code>server.py</code> and choose <b>Save link as</b>.</li>
+      <li>Click <code>static/</code>, then right-click <code>index.html</code> and choose <b>Save link as</b>.</li>
+    </ol>
+    <div class="callout warn"><b>Now stop it.</b> Click the Terminal on the Pi and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. While it runs, anyone on the school network can read that folder. We use port 8001 because your dashboard owns 5000.</div>
+    <p>Upload the files and your screenshots to Schoology from the other computer. One login covers everything.</p>
   </section>
 
   <!-- ============ 37. vocabulary ============ -->
@@ -1398,6 +1505,14 @@ setInterval(tick, 1000);</code></pre>
         <div class="fix">It is not frozen, it is listening. That window is now your server. Open a second Terminal window for anything else.</div></details>
       <details><summary>My dashboard stopped updating.</summary>
         <div class="fix">The server stopped. Look at the Terminal where you started it. If you see your prompt again, run <code>python3 server.py</code> again.</div></details>
+      <details><summary>Thonny says No module named 'flask'.</summary>
+        <div class="fix">Thonny is using its own Python, not your toolbox. Click <b>Tools</b>, <b>Options</b>, <b>Interpreter</b>, choose <b>Alternative Python 3 interpreter or virtual environment</b>, and enter <code>/home/USERNAME/YOURNAME/pihealth/bin/python3</code> with your own username and folder name. Click <b>OK</b>.</div></details>
+      <details><summary>Thonny says Address already in use.</summary>
+        <div class="fix">Another copy of your server is running, either in a Terminal window or in another Thonny window. Stop that one with <kbd>Ctrl</kbd>+<kbd>C</kbd> or the red Stop button, then click Run again.</div></details>
+      <details><summary>I cannot see the Shell in Thonny.</summary>
+        <div class="fix">Click <b>View</b> in the menu bar and tick <b>Shell</b>. The Shell is where Thonny prints <code>Running on</code> and your errors.</div></details>
+      <details><summary>My email will not take a file, or says it was blocked.</summary>
+        <div class="fix">Some email systems refuse certain file types. Use Route 1 or Route 3 in the <b>Turn in</b> tab instead.</div></details>
       <details><summary>I broke it so badly I want to start over.</summary>
         <div class="fix"><code>rm ~/YOURNAME/pi-dashboard/server.py</code> and redo Step 6. This is a normal thing that normal programmers do.</div></details>
     </div>
