@@ -7,7 +7,7 @@
   <meta name="description" content="Turn a Raspberry Pi into a live web server showing its own CPU, memory, disk and temperature. CS elective lesson, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../../assets/lesson.css?v=20261006">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261007">
 </head>
 <body>
 
@@ -86,7 +86,7 @@
   </section>
 
   <!-- ============ 3-start. day 1 start ============ -->
-  <section class="slide">
+  <section class="slide" data-tab="Day 1">
     <p class="daymark">Day 1</p>
     <h2>Start here</h2>
     <div class="startcard"><span class="startbadge">Day 1 start</span>
@@ -406,7 +406,7 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
       <ol class="startsteps">
         <li><b>Stop your server.</b> Click the Terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>. Only one server can use port 5000, and the next class needs it.</li>
         <li><b>Check your sticky note.</b> It should have three things on it: your <b>username</b>, your Pi's <b>IP address</b> and your <b>folder name</b>. Stick it on the monitor.</li>
-        <li><b>Remember where you sat.</b> Day 2 starts at this same Pi. The first slide of Day 2 is called <b>Start here</b>.</li>
+        <li><b>Remember where you sat.</b> Day 2 starts at this same Pi. Open the <b>Day 2</b> tab and begin with <b>Start here</b>.</li>
       </ol>
     </div>
   </section>
@@ -451,7 +451,7 @@ app.run(host=&quot;0.0.0.0&quot;, port=5000)</code></pre>
   </section>
 
   <!-- ============ 13. day 2 start ============ -->
-  <section class="slide">
+  <section class="slide" data-tab="Day 2">
     <p class="daymark">Day 2</p>
     <h2>Start here: get back to where you stopped</h2>
     <p>A new Terminal window knows nothing about yesterday, so every day starts the same way.</p>
@@ -535,7 +535,7 @@ cd ~/YOURNAME/pi-dashboard</code></pre>
     <h2>Step 2b: Take the screenshot now</h2>
     <p>You need a screenshot of this page for your hand-in. Take it while it is on screen, so you are not hunting for it on Day 3.</p>
     <ol>
-      <li>Take a <b>whole-screen</b> screenshot. The shortcuts for each kind of computer are on the last slides of this lesson.</li>
+      <li>Take a <b>whole-screen</b> screenshot. The shortcuts for each kind of computer are in the <b>Turn in</b> tab.</li>
       <li>Save it as <code>api-stats.png</code>.</li>
       <li>Open it and check: can you read your Pi's IP address in the address bar <b>and</b> the line of data underneath?</li>
     </ol>
@@ -617,13 +617,13 @@ python3 server.py</code></pre>
         <li><b>Check you have <code>api-stats.png</code>.</b> If you do not, load <code>/api/stats</code> once more and take it now.</li>
         <li><b>Stop your server</b> with <kbd>Ctrl</kbd>+<kbd>C</kbd>, then close the SSH window by typing <code>exit</code> and tapping <kbd>Enter</kbd>.</li>
         <li><b>Update your sticky note</b> if your IP address changed today.</li>
-        <li><b>Tomorrow:</b> same Pi, and start with the <b>Start here</b> slide for Day 3.</li>
+        <li><b>Tomorrow:</b> same Pi. Open the <b>Day 3</b> tab and begin with <b>Start here</b>.</li>
       </ol>
     </div>
   </section>
 
   <!-- ============ 19c. day 3 start ============ -->
-  <section class="slide">
+  <section class="slide" data-tab="Day 3">
     <p class="daymark">Day 3</p>
     <h2>Start here: get back to where you stopped</h2>
     <p>Same start as Day 2. Only the page changes today.</p>
@@ -1273,8 +1273,8 @@ setInterval(tick, 1000);</code></pre>
   </section>
 
   <!-- ============ 35. hand in ============ -->
-  <section class="slide">
-    <h2>What you hand in</h2>
+  <section class="slide" data-tab="Turn in">
+    <h2>What you turn in</h2>
     <ul class="turnin">
       <li>Your two files, <code>server.py</code> and <code>static/index.html</code></li>
       <li><code>dashboard.png</code>: your finished dashboard on a computer that is not the Pi, with your Pi's IP in the address bar</li>
@@ -1326,7 +1326,7 @@ setInterval(tick, 1000);</code></pre>
   </section>
 
   <!-- ============ 37. vocabulary ============ -->
-  <section class="slide">
+  <section class="slide" data-tab="Help">
     <h2>Words worth knowing</h2>
     <div class="twrap"><table>
       <thead><tr><th>Term</th><th>What it means</th></tr></thead>
@@ -1404,7 +1404,7 @@ setInterval(tick, 1000);</code></pre>
   </section>
 
   <!-- ============ 39. appendix intro ============ -->
-  <section class="slide">
+  <section class="slide" data-tab="Pi setup">
     <p class="daymark">Appendix</p>
     <h2>Setting up a Pi from a blank card</h2>
     <p><b>Skip this unless Mr. Krigger tells you to do it.</b> The Pis in the lab are already set up, and Day 1 assumes yours boots to a desktop. This appendix is here for the times it does not: a brand new Pi, a card that got wiped, or a class doing the whole build from scratch.</p>
@@ -1514,7 +1514,7 @@ setInterval(tick, 1000);</code></pre>
   <p><a href="../../../cs.html">All Computer Science lessons</a></p>
 </footer>
 
-<script src="../../assets/lesson.js?v=20261006"></script>
-<script src="../../assets/lesson-widgets.js?v=20261006"></script>
+<script src="../../assets/lesson.js?v=20261007"></script>
+<script src="../../assets/lesson-widgets.js?v=20261007"></script>
 </body>
 </html>

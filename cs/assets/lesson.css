@@ -798,3 +798,53 @@ pre .ok { color: var(--ok); }
 body.present .w-spot svg { max-height: 44vh; width: auto; max-width: 100%; margin: 0 auto; }
 body.present .w-spot .w-found { max-height: 20vh; overflow-y: auto; }
 body.present .w-spot .w-found li { padding: .6vh 1vw; font-size: clamp(11px, 1.15vw, 15px); }
+
+/* ============================================================
+   DAY TABS (Read mode). Opt-in with data-tab on a panel.
+   Added 2026-10-06: students scrolled past whole days to find theirs.
+   ============================================================ */
+
+.tabbar {
+  position: sticky; top: 12px; z-index: 25;
+  display: flex; gap: 3px; overflow-x: auto; scrollbar-width: none;
+  width: fit-content; max-width: min(var(--measure), calc(100% - 32px));
+  margin: 72px auto 0; padding: 4px;
+  background: rgba(20,20,26,0.95); border: 1px solid var(--hairline-strong);
+  border-radius: 50px; box-shadow: var(--shadow-card);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.tabbar::-webkit-scrollbar { display: none; }
+.tabbar button {
+  flex: 0 0 auto; border: 0; background: transparent; color: var(--text-2);
+  font-size: 13.5px; font-weight: 600; white-space: nowrap;
+  padding: 8px 16px; border-radius: 50px; cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.tabbar button:hover { color: var(--text); background: var(--surface-lift); }
+.tabbar button.on { background: var(--accent); color: #05222a; }
+@media (max-width: 1100px) { .tabbar { top: 58px; } }
+@media (max-width: 560px) { .tabbar { top: 56px; margin-top: 62px; } .tabbar button { padding: 8px 13px; font-size: 13px; } }
+
+.deck.tabbed .lesson-head { padding-top: 28px; }
+body:not(.present) .tab-off { display: none !important; }
+body:not(.present) .deck.tabbed .slide.tab-first { border-top: 0; }
+
+.tabnext {
+  max-width: var(--measure); margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between;
+  padding: 26px 22px 12px; border-top: 1px solid var(--hairline);
+}
+.tabnext button {
+  font-size: 14.5px; font-weight: 600; cursor: pointer;
+  padding: 11px 20px; border-radius: 50px;
+  color: var(--text-2); background: var(--surface); border: 1px solid var(--hairline-strong);
+}
+.tabnext button:hover { color: var(--text); border-color: var(--accent-line); }
+.tabnext .next { margin-left: auto; color: #05222a; background: var(--accent); border-color: var(--accent); }
+.tabnext .next:hover { color: #05222a; filter: brightness(1.08); }
+
+body.present .tabbar, body.present .tabnext { display: none; }
+@media print {
+  .tabbar, .tabnext { display: none !important; }
+  .tab-off { display: block !important; }
+}

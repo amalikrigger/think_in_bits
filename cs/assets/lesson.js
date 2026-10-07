@@ -40,8 +40,11 @@
     if (presentBtn) presentBtn.setAttribute('aria-pressed', String(presenting));
 
     if (presenting) {
+      // start the projector on the tab the reader was looking at
+      if (groups.length && activeTab >= 0 && tabOf(idx) !== activeTab) idx = groups[activeTab].start;
       show(idx, true);
     } else {
+      if (groups.length) selectTab(tabOf(idx), { hash: !opts.silent });
       // clear present-only state, then park the reader on the panel they were on
       panels.forEach(function (p) { p.classList.remove('active'); });
       if (!opts.silent && idx > 0 && panels[idx]) {
@@ -52,6 +55,92 @@
 
     try { localStorage.setItem(STORE, presenting ? 'present' : 'read'); } catch (e) {}
   }
+
+  /* ---------- day tabs, Read mode only ----------
+     Opt-in per lesson: a panel with data-tab="Day 2" starts a new tab. Panels
+     before the first one form the "Start" tab (or the deck's data-first-tab).
+     Read mode shows one tab at a time with a sticky tab bar and a Next button
+     at the bottom. Present mode ignores tabs and pages through every panel. */
+
+  var groups = [];
+  var activeTab = -1;
+  var tabbar = null, tabnext = null;
+  var TAB_STORE = 'tib-tab-' + location.pathname;
+
+  function slugify(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+
+  function buildTabs() {
+    if (!deck.querySelector('[data-tab]')) return;
+    var cur = { label: deck.getAttribute('data-first-tab') || 'Start', start: 0 };
+    panels.forEach(function (p, i) {
+      var t = p.getAttribute('data-tab');
+      if (!t) return;
+      if (i === 0) { cur.label = t; return; }
+      cur.end = i - 1; groups.push(cur);
+      cur = { label: t, start: i };
+    });
+    cur.end = panels.length - 1; groups.push(cur);
+    if (groups.length < 2) { groups = []; return; }
+    groups.forEach(function (g) { g.slug = slugify(g.label); });
+
+    deck.classList.add('tabbed');
+    tabbar = document.createElement('nav');
+    tabbar.className = 'tabbar';
+    tabbar.setAttribute('aria-label', 'Lesson sections');
+    groups.forEach(function (g, gi) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = g.label;
+      b.addEventListener('click', function () { selectTab(gi, { scroll: true, hash: true }); });
+      tabbar.appendChild(b);
+    });
+    deck.insertBefore(tabbar, deck.firstChild);
+
+    tabnext = document.createElement('nav');
+    tabnext.className = 'tabnext';
+    tabnext.setAttribute('aria-label', 'Previous and next section');
+    deck.appendChild(tabnext);
+  }
+
+  function tabOf(i) {
+    for (var g = 0; g < groups.length; g++) if (i >= groups[g].start && i <= groups[g].end) return g;
+    return 0;
+  }
+
+  function navButton(gi, cls, text) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = text;
+    b.addEventListener('click', function () { selectTab(gi, { scroll: true, hash: true }); });
+    return b;
+  }
+
+  function selectTab(gi, opts) {
+    if (!groups.length) return;
+    opts = opts || {};
+    gi = Math.max(0, Math.min(gi, groups.length - 1));
+    activeTab = gi;
+    var g = groups[gi];
+    panels.forEach(function (p, i) {
+      p.classList.toggle('tab-off', i < g.start || i > g.end);
+      p.classList.toggle('tab-first', i === g.start);
+    });
+    Array.prototype.forEach.call(tabbar.children, function (b, i) {
+      b.classList.toggle('on', i === gi);
+      if (i === gi) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    var on = tabbar.children[gi];
+    if (on) tabbar.scrollLeft = Math.max(0, on.offsetLeft - 24);
+
+    tabnext.innerHTML = '';
+    if (gi > 0) tabnext.appendChild(navButton(gi - 1, 'prev', '← ' + groups[gi - 1].label));
+    if (gi < groups.length - 1) tabnext.appendChild(navButton(gi + 1, 'next', 'Next: ' + groups[gi + 1].label + ' →'));
+
+    try { localStorage.setItem(TAB_STORE, g.slug); } catch (e) {}
+    if (opts.hash) { try { history.replaceState(null, '', '#t-' + g.slug); } catch (e) {} }
+    if (opts.scroll) window.scrollTo(0, 0);
+  }
+
+  buildTabs();
 
   /* ---------- present-mode paging ---------- */
 
@@ -227,8 +316,27 @@
   /* ---------- boot ---------- */
 
   // A hash means someone linked a specific section, so honor it.
-  var startAt = parseInt((location.hash || '').replace('#', ''), 10);
+  var hash = (location.hash || '').replace('#', '');
+  var startAt = parseInt(hash, 10);
   if (startAt >= 1 && startAt <= panels.length) idx = startAt - 1;
+
+  // Tabs: a #t-day-2 link wins, then a numbered link, then the last tab this
+  // browser had open, then the first tab.
+  if (groups.length) {
+    var want = -1, stored = null;
+    if (hash.indexOf('t-') === 0) {
+      groups.forEach(function (g, gi) { if (g.slug === hash.slice(2)) want = gi; });
+      if (want >= 0) idx = groups[want].start;
+    }
+    if (want < 0 && startAt >= 1 && startAt <= panels.length) want = tabOf(idx);
+    if (want < 0) {
+      try { stored = localStorage.getItem(TAB_STORE); } catch (e) {}
+      groups.forEach(function (g, gi) { if (g.slug === stored) want = gi; });
+      if (want >= 0) idx = groups[want].start;
+    }
+    if (want < 0) want = 0;
+    activeTab = want;
+  }
 
   var saved = null;
   try { saved = localStorage.getItem(STORE); } catch (e) {}
