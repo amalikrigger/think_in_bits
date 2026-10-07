@@ -381,11 +381,24 @@ set chassis (all) LED color to (red) and effect to (solid)</code></pre>
   </section>
 
   <section class="slide">
+    <h2>Bonus task: Rainbow</h2>
+    <p>Figure 8 done early, or just want a victory lap? Make the robot cycle through colors like a rainbow. <b>This one is not graded.</b> It is a bonus task you can do for the fun of it, and for the pleasure of showing Mr. Krigger.</p>
+    <div class="callout note"><b>The job:</b> the robot's light changes through <b>at least 4 colors in a row</b>, one after another, in an order you choose. You pick the colors. Red, orange, yellow, green, blue, purple is a classic. Nobody is stopping you from doing something stranger.</div>
+    <ul>
+      <li>You already know the pieces: the LED block and the <code>wait</code> block. Set a color, wait, set the next one.</li>
+      <li>Too fast to see? Make the waits longer. Too slow to feel like a rainbow? Make them shorter.</li>
+      <li>Want a harder version? Put it <b>inside your Figure 8</b>, so the robot changes color as it drives.</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> four or more colors, in order, and you can see each one.</div>
+  </section>
+
+  <section class="slide">
     <h2>Before you leave today</h2>
     <p>A progress check, not the hand-in. The full list is in the <b>Turn in</b> tab.</p>
     <ul class="turnin">
       <li>The Figure 8 works: around both tables, touching neither, ending on the X</li>
       <li>You took a screenshot of your Figure 8 program</li>
+      <li>Optional: your Rainbow, shown to Mr. Krigger</li>
       <li>Robot powered off and back on the charging station</li>
     </ul>
     <div class="callout note"><b>This is also a competition event.</b> The Figure 8 is the autonomous division of the <b>Figure 8 Grand Prix</b>, the other Open Event in the RoboMaster Competition.</div>
@@ -485,6 +498,8 @@ set chassis (all) LED color to (red) and effect to (solid)</code></pre>
         <div class="fix">Errors pile up over a long route, and the last side holds all of them. Fix the first place the robot goes wrong, then work toward the end.</div></details>
       <details><summary>The LED does not change color.</summary>
         <div class="fix">Make sure the LED block is set to the chassis you are looking at, with the effect set to solid. A color block placed after a long drive will not light up until the drive is done.</div></details>
+      <details><summary>My rainbow flashes by too fast to see.</summary>
+        <div class="fix">Make the <code>wait</code> block between colors longer. One second per color is easy to see. A tenth of a second is a blur.</div></details>
       <details><summary>It never reacts to a number card.</summary>
         <div class="fix">Three suspects. Did the program enable marker identification first? Is the card within the distance you set, which is at most 3 meters? Is the room bright enough that the camera can see the card clearly? Fix them in that order.</div></details>
       <details><summary>It reacts to the wrong number.</summary>
