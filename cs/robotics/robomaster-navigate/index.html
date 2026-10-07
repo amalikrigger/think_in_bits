@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RoboMaster: Navigate the Room - Think In Bits</title>
+  <meta name="description" content="Program a RoboMaster S1 to drive a loop around the room, light up by the number card you show it, and draw a figure 8 around two tables. CS elective lesson, grades 7 to 12.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261007">
+</head>
+<body>
+
+<a class="tib-back" href="../../../cs.html">&larr; Computer Science</a>
+
+<div class="modebar" role="group" aria-label="View mode">
+  <button id="readBtn" type="button" aria-pressed="true">Read</button>
+  <button id="presentBtn" type="button" aria-pressed="false">Present</button>
+</div>
+
+<div class="progress" id="progress"></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> move &nbsp;<kbd>F</kbd> fullscreen &nbsp;<kbd>Esc</kbd> read</div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ 0. title ============ -->
+  <header class="lesson-head">
+    <p class="eyebrow">Robotics &middot; Lesson 1</p>
+    <h1>RoboMaster: Navigate the Room</h1>
+    <p class="promise">Make a robot drive a loop, read a card, and draw a figure 8 with nobody touching the controls</p>
+    <ul class="meta">
+      <li><b>Grades</b> 7 to 12</li>
+      <li><b>Time</b> 3 class periods</li>
+      <li><b>Difficulty</b> Beginner</li>
+    </ul>
+    <p class="lede">A parade starts and ends in the same place, and a robot can do that too, if you tell it exactly how. Over three days you will program a <strong>RoboMaster S1</strong> to loop the whole room and stop on the spot where it began, change its lights to match whichever number card you hold up, and drive a figure 8 around two tables. You write every instruction. The robot follows every one of them, including the wrong ones, with total confidence.</p>
+  </header>
+
+  <!-- ============ 1. learn / need ============ -->
+  <section class="slide">
+    <h2>What you'll learn</h2>
+    <ul>
+      <li>How to <strong>program</strong> a robot to move by distance, time, and angle instead of steering it</li>
+      <li>How to <strong>plan, test, and fix</strong> a route, changing one thing at a time</li>
+      <li>How a robot uses its camera to <strong>read a vision marker</strong> and react to it</li>
+      <li>Why a robot that does exactly what you said is not always doing what you meant</li>
+    </ul>
+    <h3>What you need</h3>
+    <ul>
+      <li>A <strong>RoboMaster S1</strong>, charged, and a school iPad with the RoboMaster app. Mr. Krigger has both ready.</li>
+      <li>Open floor, tape on the floor for the start spot, and two tables for Day 3</li>
+      <li>The number cards (1 to 5) from the robot kit</li>
+      <li>Paper and a pencil for sketching your route</li>
+    </ul>
+    <div class="callout note"><b>You never sign in to anything.</b> The robots are already activated on Mr. Krigger's account. Do not create a DJI account and do not type a password into the app.</div>
+  </section>
+
+  <!-- ============ 2. safety ============ -->
+  <section class="slide">
+    <h2>Safety rules, read before you start</h2>
+    <p>These are non-negotiable. Breaking them on purpose means you lose access to the robots and earn a 0 for the day.</p>
+    <ul>
+      <li><b>Say "clear" before you press Run.</b> Check that no feet, bags, or hands are near the robot, then say it out loud and wait for your crew to answer.</li>
+      <li><b>One person holds the Stop button</b> every time the robot runs. Autonomous does not mean unsupervised.</li>
+      <li><b>The robot lives on the floor.</b> Never run it on a table, a chair, or near stairs. Never carry it while the wheels are spinning.</li>
+      <li><b>Leave the blaster alone.</b> This lesson never fires it. Do not fire it anyway to see what happens.</li>
+      <li><b>Batteries charge at the charging station</b> and nowhere else.</li>
+      <li><b>Report damage, a burn smell, or an injury right away.</b> You will not be in trouble for reporting something. These are the only RoboMasters this class has.</li>
+    </ul>
+  </section>
+
+  <!-- ============ 3. crew + plan ============ -->
+  <section class="slide">
+    <h2>Your crew and the plan</h2>
+    <p>You work in your competition crew, three or four people sharing one robot. <b>Pass the iPad around.</b> Every person writes and runs part of every program, because every person turns in their own code.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Day</th><th>Mission</th><th>You finish with</th></tr></thead>
+      <tbody>
+        <tr><td><b>Day 1</b></td><td>The Circle: loop the room and come back</td><td>A robot that starts in one light color, drives around the room, and stops on the start spot in a different color</td></tr>
+        <tr><td><b>Day 2</b></td><td>Number Lights: show a card, change the color</td><td>Numbers 1 to 5 each turn the robot a different color</td></tr>
+        <tr><td><b>Day 3</b></td><td>The Figure 8: around two tables</td><td>A figure 8 that touches neither table and ends back on the start spot</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>What is fixed:</b> the three missions, the safety rules, and what you turn in. <b>What moves:</b> how you build each one. There is never just one right program. If the Circle takes you into Day 2, finish it first. Day 2 is built so you can.</div>
+  </section>
+
+  <!-- ============ DAY 1 ============ -->
+  <section class="slide" data-tab="Day 1">
+    <p class="daymark">Day 1</p>
+    <h2>The Circle</h2>
+    <div class="startcard"><span class="startbadge">Day 1 start</span>
+      <ol class="startsteps">
+        <li><b>Pick up your crew's robot and iPad</b> from Mr. Krigger. Do not turn the robot on yet.</li>
+        <li><b>Say the safety rules out loud</b> as a crew, then pick who holds the Stop button first.</li>
+        <li><b>Find the tape X</b> on the floor. That is the start spot for every crew.</li>
+      </ol>
+    </div>
+    <p class="goal"><strong>Goal:</strong> by the end of today your robot has started in one light color, driven a full loop around the room, and stopped back on the X in a different color.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: Wake it up and drive it</h2>
+    <ol>
+      <li>Press the button on the battery to power on the robot.</li>
+      <li>Open the <b>RoboMaster app</b> on the iPad and connect to the robot's own Wi-Fi network. It shows up in the iPad's Wi-Fi settings, and it is not the school network.</li>
+      <li>You should see the robot's camera on the screen.</li>
+      <li>Drive it with the on-screen joysticks. Forward, backward, turn, and then push sideways. That one is different.</li>
+    </ol>
+    <div class="callout note"><b>Why does it go sideways?</b> The wheels are <b>mecanum wheels</b>, which have small rollers set at an angle. Spin the four wheels in the right pattern and the robot slides in any direction without turning. A shopping cart cannot do that.</div>
+    <div class="callout check"><b>Checkpoint:</b> you can see through the robot's camera and you have driven it forward, back, around, and sideways.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Open the code editor</h2>
+    <ol>
+      <li>In the app, go to <b>Lab</b>, then create a new <b>Scratch</b> program. Scratch is code you build by snapping blocks together.</li>
+      <li>Find the <b>Chassis</b> blocks. The chassis is the body that moves.</li>
+      <li>Find the <b>LED</b> blocks. We will use these in a minute.</li>
+    </ol>
+    <p>These are the blocks you will use most. The exact wording is how DJI's app writes them.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Block</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>set chassis to translate at (0)&deg; for (1) m</code></td><td>Drives a set distance in the direction of the angle. 0&deg; is forward. Longest allowed is 5 m.</td></tr>
+        <tr><td><code>set chassis to translate at (0)&deg; for (1) s</code></td><td>Same, but for an amount of time instead of a distance</td></tr>
+        <tr><td><code>set chassis to rotate (right) at (0)&deg;</code></td><td>Turns by that many degrees. Pick left or right in the block.</td></tr>
+        <tr><td><code>set chassis translation speed to (0.5) m/s</code></td><td>Sets how fast it drives. Start slow.</td></tr>
+        <tr><td><code>set chassis (all) LED color to (green) and effect to (solid)</code></td><td>Lights the robot in a color you choose</td></tr>
+        <tr><td><code>wait (1) s</code></td><td>Pauses the program</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Find out how it behaves</h2>
+    <p>Before you plan a route, learn your robot. Build each test, run it, and write down what you saw. Mark the floor with tape so you can measure.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Test</th><th>Question it answers</th></tr></thead>
+      <tbody>
+        <tr><td>Translate at 0&deg; for 1 m</td><td>Did it go one meter? Measure it. Run it three times. Does it land in the same place?</td></tr>
+        <tr><td>Rotate right 90&deg;</td><td>Is it a right angle? Which way does a right turn go?</td></tr>
+        <tr><td>Translate at 90&deg; for 1 m</td><td>Which way does 90&deg; send it, left or right? Try &minus;90&deg; too.</td></tr>
+        <tr><td>Translate at 0&deg; for 2 s</td><td>How far does two seconds take you? Is that the same as a distance block would give?</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Several ways to do everything.</b> You can move by distance or by time. You can turn the whole robot, or slide it sideways without turning. You can drive an angled line with a single translate block. Nobody on this page is telling you which is best. Try more than one and keep the one that works for you.</div>
+    <div class="callout check"><b>Checkpoint:</b> you know which way 90&deg; goes, how far a 1 m block really drives, and what a right turn does.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: The Circle mission</h2>
+    <p>Here is the job. Your program must:</p>
+    <ol>
+      <li><b>Start</b> with the robot sitting on the tape X, with its LED set to a color you pick.</li>
+      <li><b>Drive a complete loop around the room</b>, around the furniture and the open floor Mr. Krigger marks out. The route is your design.</li>
+      <li><b>Stop on the X.</b> As close as you can get.</li>
+      <li><b>End in a different color</b> than you started. Set the LED to the new color as the last thing the program does.</li>
+      <li>Run on its own. Nobody touches the joysticks.</li>
+    </ol>
+    <div class="callout warn"><b>Before any code:</b> walk the route yourself. Count your steps between the turns, and sketch a map on paper with the distance of each side and which way you turn. Programming a robot is giving directions to someone who follows them exactly. If you say 3 meters and the real answer is 4, it stops short and does not complain.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 5: Build it a piece at a time</h2>
+    <ol>
+      <li>Start the program by setting the starting color.</li>
+      <li>Add the first side of the route. <b>Run it.</b> Where did the robot end up?</li>
+      <li>Add the first turn. <b>Run it again from the X.</b> Did it turn where you wanted?</li>
+      <li>Add the next side and repeat. Do not build the whole loop and then test it. You will not know where it went wrong.</li>
+      <li>Last block: set the finish color.</li>
+    </ol>
+    <p>A translate block drives at most 5 meters, so a long wall needs two blocks back to back. Here is the shape of a program for a rectangular room. Your numbers will be different, because your room is not a perfect rectangle.</p>
+    <pre data-nocopy data-label="Example shape of a program. Build it from blocks in the app. Do not copy these numbers."><code>set chassis (all) LED color to (green) and effect to (solid)
+set chassis translation speed to (0.5) m/s
+set chassis to translate at (0)° for (3) m
+set chassis to rotate (right) at (90)°
+set chassis to translate at (0)° for (4) m
+set chassis to rotate (right) at (90)°
+... more sides, until you are back at the X ...
+set chassis (all) LED color to (red) and effect to (solid)</code></pre>
+  </section>
+
+  <section class="slide">
+    <h2>Step 6: It missed. Now fix it.</h2>
+    <p>Your first run will not be perfect. That is normal. Every run tells you something, so use it.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>What happened</th><th>Try this</th></tr></thead>
+      <tbody>
+        <tr><td>It turned too far</td><td>Lower the angle a little, like 87&deg; instead of 90&deg;</td></tr>
+        <tr><td>It did not turn enough</td><td>Raise the angle a little</td></tr>
+        <tr><td>It stopped short of the corner</td><td>Make that side a bit longer</td></tr>
+        <tr><td>It drives past the corner</td><td>Make that side a bit shorter</td></tr>
+        <tr><td>It drifts to one side on a straight run</td><td>Slow it down, or add a small correction turn after the straight part</td></tr>
+        <tr><td>It ends near the X but not on it</td><td>Adjust the last side. This is the hardest one, because every earlier error is in it.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Change one thing, then run it again.</b> If you change five things and it gets better, you will not know which one did it. If you want to test whether a short <code>wait</code> block between a move and a turn helps, test that and nothing else, and keep it only if it does.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Check yourself: what do you fix first?</h2>
+    <div data-widget="choice">
+      <p><b>Your robot finishes the loop but stops about 40 cm past the X. The corners all look fine. What do you try first?</b></p>
+      <div class="w-opts">
+        <button type="button" data-opt="">Change all the turn angles to 85&deg;</button>
+        <button type="button" data-opt="correct">Shorten the last side a little and run it again</button>
+        <button type="button" data-opt="">Delete the program and start over</button>
+        <button type="button" data-opt="">Double the speed so it stops faster</button>
+      </div>
+      <div class="w-why" hidden><b>Shorten the last side.</b> The corners are fine, so the extra distance is in a straight run, and the last side is where every earlier error piles up. Change that one thing, run it, and measure again. Starting over throws away the parts that already work.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Mini lesson: why a robot drifts</h2>
+    <p>Your robot has no map. It cannot see the room and decide where the wall is. It knows what you told it and roughly how far its wheels have turned, and that is all.</p>
+    <p>Wheels slip a little on a smooth floor and grip a little on a rough one. Each move is off by a small amount. The next move starts from that wrong spot and adds its own small error, so the errors <b>pile up</b>. That is why the last side of a long loop is the hardest to get right, and why your robot lands closer to the X when the route is shorter. Navigating by counting how far you have gone, with no map, is called <strong>dead reckoning</strong>. Sailors did it for centuries before anyone had GPS.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full list is in the <b>Turn in</b> tab.</p>
+    <ul class="turnin">
+      <li>The Circle works: starts in one color, loops the room, stops on the X in a different color</li>
+      <li>You took a screenshot of your finished Circle program</li>
+      <li>The robot is powered off and back on the charging station, with the iPad</li>
+    </ul>
+    <div class="callout note"><b>This is also a competition event.</b> The Circle is <b>Precision Return</b>, one of the Open Events your crew can enter in the RoboMaster Competition. A better run now means a better entry later.</div>
+  </section>
+
+  <!-- ============ DAY 2 ============ -->
+  <section class="slide" data-tab="Day 2">
+    <p class="daymark">Day 2</p>
+    <h2>Number Lights</h2>
+    <div class="startcard"><span class="startbadge">Day 2 start</span>
+      <ol class="startsteps">
+        <li><b>Finish the Circle first</b> if it is not done. Number Lights is a separate program, so you can come back to the Circle after.</li>
+        <li><b>Collect your robot, iPad, and the number cards 1 to 5.</b> Say the safety rules again. Someone new holds the Stop button.</li>
+        <li><b>Start a new Scratch program.</b> Do not build this one on top of the Circle.</li>
+      </ol>
+    </div>
+    <p class="goal"><strong>Goal:</strong> by the end of today you can hold up a number card from 1 to 5 and the robot lights up a different color for each one.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: A robot that can read</h2>
+    <p>The RoboMaster has a camera and it can recognize <strong>vision markers</strong>: printed cards with a symbol on them. Number cards are one kind. Show it a card and it knows which one you showed it, with no joystick and no one telling it. The robot is not reading the word. It is matching a pattern, the same way a store scanner matches a barcode.</p>
+    <div class="callout warn"><b>It is switched off by default.</b> The robot will not look for markers until your program tells it to. If you build everything else correctly and nothing happens, this is the first suspect.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Turn on marker detection</h2>
+    <p>Build the first piece. You are looking for these blocks:</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Block</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>(enable) (vision marker) identification</code></td><td>Turns on the robot's marker recognition. Put this first in your program.</td></tr>
+        <tr><td><code>set vision marker identification distance to (1) m</code></td><td>How far away the robot looks. It works between 0.5 and 3 meters. One meter is a good start.</td></tr>
+        <tr><td><code>when ___ identified</code></td><td>An <b>event</b> block. The blocks inside it run when the robot sees that marker. Open the dropdown and choose a number marker.</td></tr>
+      </tbody>
+    </table></div>
+    <p>Build one <code>when</code> event for the number 1, and inside it set the chassis LED to a color. Run the program and hold up the 1 card about a meter in front of the camera.</p>
+    <div class="callout check"><b>Checkpoint:</b> you hold up the 1 and the robot's LED changes color. If it does not, check the Troubleshooting under the Help tab.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: All five numbers</h2>
+    <p>Now do the rest. Numbers 1 through 5 each get their own color. <b>You pick the colors.</b> They only have to be five different ones, so that you can tell them apart from across the room.</p>
+    <div class="twrap"><table>
+      <thead><tr><th>Show this card</th><th>The robot turns this color</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Your choice</td></tr>
+        <tr><td>2</td><td>Your choice</td></tr>
+        <tr><td>3</td><td>Your choice</td></tr>
+        <tr><td>4</td><td>Your choice</td></tr>
+        <tr><td>5</td><td>Your choice</td></tr>
+      </tbody>
+    </table></div>
+    <p>Test each one by itself, and then flip through all five quickly. Does the robot keep up? Does the color change when you switch cards, and not before?</p>
+    <div class="callout check"><b>Checkpoint:</b> five cards, five different colors, every time.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 4: Make it hard to fool</h2>
+    <p>Real sensors fail in boring ways. Find your robot's limits before someone else does.</p>
+    <ul>
+      <li><b>Distance.</b> Back away until it stops recognizing the card. How far is that? Does it match the distance you set?</li>
+      <li><b>Light.</b> Tilt the card toward a window, then into your own shadow. What happens?</li>
+      <li><b>Angle.</b> Hold the card a little crooked. How crooked can it be?</li>
+      <li><b>Speed.</b> Hold the card still for a second. A card waved past may never register.</li>
+    </ul>
+    <div data-widget="choice">
+      <p><b>Your five blocks are all right, but the robot never reacts to any card. What did you most likely forget?</b></p>
+      <div class="w-opts">
+        <button type="button" data-opt="">A wait block at the end</button>
+        <button type="button" data-opt="correct">The block that enables marker identification</button>
+        <button type="button" data-opt="">A faster speed</button>
+        <button type="button" data-opt="">A sixth color</button>
+      </div>
+      <div class="w-why" hidden><b>Enable marker identification.</b> Detection is off until the program turns it on. The cleverest event blocks in the world do nothing if the camera is not looking for anything.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Mini lesson: how a robot sees</h2>
+    <p>A camera gives the robot a picture, which to a computer is a grid of tiny colored dots. Looking for a marker means searching that grid for a pattern the robot already knows. When it finds one, it tells your program, and your program decides what to do. That is the same path a self-checkout scanner, a license plate reader, and a phone's face unlock all follow. It is also why a dim room or a crooked card can fool it: the pattern in the picture stops matching the pattern in its memory.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full list is in the <b>Turn in</b> tab.</p>
+    <ul class="turnin">
+      <li>Cards 1 to 5 each turn the robot a different color</li>
+      <li>You took a screenshot of your Number Lights program</li>
+      <li>You know how far away, and in what light, your robot recognizes a card</li>
+      <li>Robot powered off and back on the charging station</li>
+    </ul>
+  </section>
+
+  <!-- ============ DAY 3 ============ -->
+  <section class="slide" data-tab="Day 3">
+    <p class="daymark">Day 3</p>
+    <h2>The Figure 8</h2>
+    <div class="startcard"><span class="startbadge">Day 3 start</span>
+      <ol class="startsteps">
+        <li><b>Mr. Krigger has set two tables on the floor.</b> Do not move them. Everyone runs the same course.</li>
+        <li><b>Collect your robot and iPad.</b> Say the safety rules. Someone new holds the Stop button.</li>
+        <li><b>Open your Circle program.</b> You have already built half of what you need.</li>
+      </ol>
+    </div>
+    <p class="goal"><strong>Goal:</strong> by the end of today your robot drives a figure 8 around the two tables, touches neither one, and ends back on the start spot.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: The mission</h2>
+    <p>A figure 8 is two loops joined at a crossing. The robot goes around one table one way, passes back through the middle, and goes around the other table the opposite way.</p>
+    <svg viewBox="0 0 640 280" role="img" aria-label="Top view of two tables side by side with a figure 8 path looping around both and crossing in the middle at the start spot" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto 1rem;">
+      <rect x="170" y="105" width="90" height="70" rx="6" fill="#2a2a2a" stroke="#7d7d7d" stroke-width="2"/>
+      <rect x="380" y="105" width="90" height="70" rx="6" fill="#2a2a2a" stroke="#7d7d7d" stroke-width="2"/>
+      <text x="215" y="145" fill="#b0b0b0" font-size="16" text-anchor="middle" font-family="sans-serif">table</text>
+      <text x="425" y="145" fill="#b0b0b0" font-size="16" text-anchor="middle" font-family="sans-serif">table</text>
+      <path d="M320 140 C 280 50 130 50 130 140 C 130 230 280 230 320 140 C 360 50 510 50 510 140 C 510 230 360 230 320 140" fill="none" stroke="#00e5ff" stroke-width="4" stroke-linejoin="round"/>
+      <polygon points="212,69 226,62 226,76" fill="#00e5ff" transform="rotate(8 212 69)"/>
+      <circle cx="320" cy="140" r="9" fill="#ffc857"/>
+      <text x="320" y="170" fill="#ffc857" font-size="16" text-anchor="middle" font-family="sans-serif" font-weight="700">X</text>
+    </svg>
+    <ul>
+      <li>Start on the X, in the middle between the tables</li>
+      <li>Loop the first table, cross back through the middle, loop the second table the other way</li>
+      <li>Finish on the X, and touch neither table</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Why this is harder</h2>
+    <p>In the Circle, every turn went the same direction. Here the robot turns one way on the first loop and the other way on the second. It also passes through the same spot twice, so any drift on loop one ruins the crossing and then loop two. Mistakes pile up in both directions at once.</p>
+    <div class="callout warn"><b>Plan before you code.</b> Sketch the figure 8 on paper. Mark where the robot turns, which way, and how far each side is. Then walk the robot's path yourself, heel to toe.</div>
+    <p><b>Build it in four pieces</b> and run each one before you add the next: loop one, the crossing, loop two, the finish. Your Circle program already knows how to loop. That is your starting point. You will change the turn directions for the second loop.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 3: Build and tune it</h2>
+    <ol>
+      <li>Build loop one. Run it from the X. Does it clear the first table?</li>
+      <li>Add the crossing. Run it. Is the robot lined up for the second loop?</li>
+      <li>Add loop two with the opposite turns. Run it.</li>
+      <li>Adjust until it finishes on the X without touching a table.</li>
+    </ol>
+    <div class="callout note"><b>Same rule as Day 1: change one thing, then run it again.</b> If it drifts into a table, find the first piece where it went wrong and fix that piece. Do not fix the last piece first. It only looks wrong because the earlier errors are in it.</div>
+    <div data-widget="choice">
+      <p><b>Your robot clears the first table, then clips the second one on its way around. Where do you look first?</b></p>
+      <div class="w-opts">
+        <button type="button" data-opt="">The very last block of the program</button>
+        <button type="button" data-opt="correct">The crossing, where it lines up for the second loop</button>
+        <button type="button" data-opt="">The LED colors</button>
+        <button type="button" data-opt="">The first block of loop one</button>
+      </div>
+      <div class="w-why" hidden><b>The crossing.</b> Loop one worked, so the trouble starts between loops. A small error at the crossing sends the robot at the second table at the wrong angle, and the rest of loop two inherits it. Find the first place it goes wrong, not the last.</div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. The full list is in the <b>Turn in</b> tab.</p>
+    <ul class="turnin">
+      <li>The Figure 8 works: around both tables, touching neither, ending on the X</li>
+      <li>You took a screenshot of your Figure 8 program</li>
+      <li>Robot powered off and back on the charging station</li>
+    </ul>
+    <div class="callout note"><b>This is also a competition event.</b> The Figure 8 is the autonomous division of the <b>Figure 8 Grand Prix</b>, the other Open Event in the RoboMaster Competition.</div>
+  </section>
+
+  <!-- ============ TURN IN ============ -->
+  <section class="slide" data-tab="Turn in">
+    <h2>Base and Stretch</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>Base &middot; everyone</h4>
+        <p>All three missions working. <b>The Circle:</b> starts in one color, loops the room, stops on the X in a different color. <b>Number Lights:</b> cards 1 to 5 each give a different color. <b>The Figure 8:</b> around both tables, touching neither, ending on the X. Your own code for each, and a reflection.</p>
+      </div>
+      <div class="tier stretch">
+        <h4>Stretch &middot; required for HS, bonus for MS</h4>
+        <p>Pick <b>two</b>. <b>Reverse Circle:</b> make the Circle run the other way around the room by changing as little as you can, and say what you changed. <b>Number moves:</b> card 5 also makes the robot spin once, as well as changing the color. <b>Card chooses the course:</b> show a 1 before the Figure 8 to loop the left table first, or a 2 to loop the right table first, and the robot decides on its own.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2>What you turn in</h2>
+    <p>Everything on this list comes out of something you already built. Your own work, from your own turn on the iPad.</p>
+    <ul class="turnin">
+      <li><b>The Circle code.</b> A screenshot of your whole Scratch program. Show every block.</li>
+      <li><b>The Number Lights code.</b> A screenshot of the whole program.</li>
+      <li><b>The Figure 8 code.</b> A screenshot of the whole program.</li>
+      <li><b>If you did a Stretch:</b> a screenshot of that code, and a sentence saying which one it is</li>
+      <li><b>Reflection</b>, 3 to 5 sentences: which mission was hardest, what you changed to fix it, and what you would do differently if you started again</li>
+    </ul>
+    <div class="callout note"><b>Tick the boxes as you go.</b> This page remembers them on your own device. The next screen shows exactly how to hand it in.</div>
+  </section>
+
+  <section class="slide">
+    <p class="daymark">Handing it in</p>
+    <h2>Two things to hand in, not one</h2>
+    <div class="tiers">
+      <div class="tier base">
+        <h4>1 &middot; The assignment</h4>
+        <p>Your code screenshots and your reflection go here, as file uploads.</p>
+        <ol>
+          <li>Open <b>RoboMaster: Navigate the Room</b> in Schoology</li>
+          <li>Click <b>Submit Assignment</b></li>
+          <li>Click <b>Upload</b></li>
+          <li>Select all your files at once, then <b>Submit</b></li>
+        </ol>
+        <div class="callout warn"><b>Do not click "Create".</b> Create is for typing text and will not let you attach a screenshot. Upload is the one you want. This is the most common way work gets lost.</div>
+      </div>
+      <div class="tier stretch">
+        <h4>2 &middot; The exit ticket</h4>
+        <p>A separate item in Schoology, taken in class. It is a short quiz on this lesson, and it is graded on its own.</p>
+        <p>You can do the assignment and the exit ticket in either order, but both have to be done.</p>
+      </div>
+    </div>
+    <div class="callout note"><b>Name your files so they make sense.</b> <code>figure8_code.png</code> tells Mr. Krigger what he is opening. A file called <code>IMG_4417.png</code> does not.</div>
+  </section>
+
+  <section class="slide">
+    <h2>What comes next</h2>
+    <p>You just built two of the entries for the <b>RoboMaster Competition</b>. The Circle is <b>Precision Return</b>. The Figure 8 is the <b>Figure 8 Grand Prix</b>, autonomous division. Every crew has to enter at least one autonomous event, and these two are guaranteed to be on the board.</p>
+    <p>So keep your programs. A crew that tunes its Circle again before the competition lands closer to the X, and the Number Lights work is the start of a robot that reacts to what it sees. Next up is <a href="../robomaster-competition/">RoboMaster Competition: Design the Game</a>, where your crew designs an event of its own.</p>
+  </section>
+
+  <!-- ============ HELP ============ -->
+  <section class="slide" data-tab="Help">
+    <h2>Vocabulary</h2>
+    <div class="twrap"><table>
+      <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td><b>Autonomous</b></td><td>The robot runs on its program with nobody touching the controls</td></tr>
+        <tr><td><b>Chassis</b></td><td>The body of the robot that moves, wheels included</td></tr>
+        <tr><td><b>Mecanum wheels</b></td><td>Wheels with angled rollers that let the robot slide sideways and diagonally</td></tr>
+        <tr><td><b>Scratch</b></td><td>Code you build by snapping blocks together instead of typing it</td></tr>
+        <tr><td><b>Translate</b></td><td>Move in a straight line, in any direction, without turning</td></tr>
+        <tr><td><b>Rotate</b></td><td>Turn in place</td></tr>
+        <tr><td><b>Dead reckoning</b></td><td>Working out where you are by counting how far you have gone, with no map or GPS</td></tr>
+        <tr><td><b>Vision marker</b></td><td>A printed card with a symbol or number on it that the robot's camera recognizes</td></tr>
+        <tr><td><b>Event block</b></td><td>A block that waits for something to happen, like seeing a card, and then runs the blocks inside it</td></tr>
+        <tr><td><b>Debugging</b></td><td>Finding and fixing what is wrong with your program</td></tr>
+        <tr><td><b>Iteration</b></td><td>Test, change one thing, test again, until it works</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="slide">
+    <h2>When it goes wrong</h2>
+    <div class="trouble">
+      <details><summary>The app will not connect to the robot.</summary>
+        <div class="fix">Check that the robot is powered on and that the iPad is on the robot's own Wi-Fi network, not the school network. If it still will not connect, ask Mr. Krigger before you try anything else. The robots are activated on his account.</div></details>
+      <details><summary>My program runs but the robot barely moves.</summary>
+        <div class="fix">Check the distance and the speed. A tiny distance like 0.5 m is about one big step. A route around a room needs several meters.</div></details>
+      <details><summary>It turns too far or not far enough.</summary>
+        <div class="fix">Floors change how a turn comes out. Adjust the angle a few degrees at a time and run it again. Change nothing else.</div></details>
+      <details><summary>It turned left when I wanted right.</summary>
+        <div class="fix">Check the left or right choice in the rotate block. For sideways movement, run the 90&deg; test from Day 1 Step 3 to see which side it sends you to.</div></details>
+      <details><summary>It does not end on the X.</summary>
+        <div class="fix">Errors pile up over a long route, and the last side holds all of them. Fix the first place the robot goes wrong, then work toward the end.</div></details>
+      <details><summary>The LED does not change color.</summary>
+        <div class="fix">Make sure the LED block is set to the chassis you are looking at, with the effect set to solid. A color block placed after a long drive will not light up until the drive is done.</div></details>
+      <details><summary>It never reacts to a number card.</summary>
+        <div class="fix">Three suspects. Did the program enable marker identification first? Is the card within the distance you set, which is at most 3 meters? Is the room bright enough that the camera can see the card clearly? Fix them in that order.</div></details>
+      <details><summary>It reacts to the wrong number.</summary>
+        <div class="fix">Open each <code>when</code> block and check which marker is chosen in its dropdown. It is easy to build two blocks for the same number.</div></details>
+      <details><summary>It hit a table.</summary>
+        <div class="fix">Press Stop, tell Mr. Krigger if anything is scratched, and move it back to the X. Then find the first piece of the program where the robot went off course. That is the piece to fix.</div></details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="lesson-foot">
+  <p>Computer Science elective &middot; Good Hope Country Day School &middot; Mr. Krigger</p>
+  <p><a href="../../../cs.html">All Computer Science lessons</a></p>
+</footer>
+
+<script src="../../assets/lesson.js?v=20261007"></script>
+<script src="../../assets/lesson-widgets.js?v=20261007"></script>
+</body>
+</html>
