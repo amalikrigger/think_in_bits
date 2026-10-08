@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Two Moves at Once</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures: original dashed gray, optional middle step dashed amber, final curve solid cyan, numbered axes */
+    svg.tf { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; }
+    .slide:not(.duo) svg.tf { max-width: 360px; }
+    .six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; }
+    .six .cell, .strip .cell { background: var(--card, #1a1a1a); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 0.6vh 0.9vw; display: flex; flex-direction: column; gap: 0.35vh; min-width: 0; }
+    .six svg.tf { max-width: 190px; } .strip svg.tf { max-width: 185px; }
+    .six .cell .math.small, .strip .cell .math.small { padding: 0.5vh 0.8vw; }
+    .six .cell p, .strip .cell p { margin: 0; }
+    .strip { display: flex; gap: 1.2vw; align-items: stretch; }
+    .strip .rows { flex: 2 1 0; display: flex; flex-direction: column; gap: 0.8vh; min-width: 0; }
+    .strip .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2vw; }
+    .strip .fin { flex: 1 1 0; justify-content: center; }
+    .strip .fin svg.tf { max-width: 260px; }
+    .rowlab { margin: 0 0 0.4vh; font-family: var(--mono); font-size: clamp(11px, 1.2vw, 14px); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.35vw, 16px); color: var(--text-2, #b0b0b0); display: block; }
+    svg.tf { cursor: zoom-in; }
+    #tfZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #tfZoom.on { display: flex; }
+    #tfZoom svg { width: min(92vw, 118vh); height: auto; max-width: none; }
+    #tfZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .key .sw { display: inline-block; width: 34px; margin-right: 8px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.before { border-top-style: dashed; border-color: #b0b0b0; }
+    .key .sw.after { border-color: #00e5ff; }
+    .key .sw.other { border-top-style: dotted; border-color: #ffc46b; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; }
+    .three .cell { background: var(--card, #1a1a1a); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 0.6vh 0.9vw; display: flex; flex-direction: column; gap: 0.35vh; min-width: 0; }
+    .three .cell p { margin: 0; }
+    .three .cell .math.small { padding: 0.5vh 0.8vw; }
+    .three svg.tf { max-width: 190px; }
+    .strip .cell svg.tf { max-width: 150px; } .six .cell svg.tf { max-width: 170px; }
+    @media (max-width: 800px) { .three { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .six { grid-template-columns: 1fr; } .strip, .strip .two { display: block; } }
+  </style>
+</head>
+<body data-deck-name="1.2 · Session 5" data-help-note="Click any graph to enlarge it. In the Order Lab, pick an order, set a and q, predict where the two dots go, then tap Show.">
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 5 of 5</p>
+  <h1>Two Moves at Once</h1>
+  <p class="muted">Most exam questions combine two transformations. Sometimes the order does not matter, and sometimes it changes the answer. Cambridge expects you to say which, and to say the order.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now: the six moves, from memory</span><span class="t">5 min</span></div>
+    <div class="row"><span>Reading the notation, and the six moves on a graph</span><span class="t">7 min</span></div>
+    <div class="row"><span>Two moves: different directions, then the same direction</span><span class="t">14 min</span></div>
+    <div class="row"><span>Reading an equation, both routes, and your turn at the board</span><span class="t">14 min</span></div>
+    <div class="row"><span>The Order Lab, then a real 5-mark question from June 2024</span><span class="t">15 min</span></div>
+    <div class="row"><span>Spot the mistake, practice, exit ticket</span><span class="t">flex</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min · from last class</p>
+  <h2>Say what each of these does to the graph of \(y = f(x)\). Tap to check.</h2>
+  <div class="card">
+    <div class="math">\(f(x) + 3\) &nbsp;·&nbsp; \(f(x - 2)\) &nbsp;·&nbsp; \(4f(x)\) &nbsp;·&nbsp; \(f(3x)\) &nbsp;·&nbsp; \(-f(x)\) &nbsp;·&nbsp; \(f(-x)\)</div>
+    <p class="small" style="margin:0">For each one, write the type, the size, and the direction or axis.</p>
+  </div>
+  <div class="check" tabindex="0">
+    <div class="math">Write all six, then check.</div>
+    <div class="ans">
+      <div class="math small">\(f(x) + 3\) &nbsp;→&nbsp; translation by \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\) &nbsp;·&nbsp; \(f(x - 2)\) &nbsp;→&nbsp; translation by \(\begin{pmatrix} 2 \\ 0 \end{pmatrix}\)</div>
+      <div class="math small">\(4f(x)\) &nbsp;→&nbsp; stretch in the \(y\)-direction, factor 4 &nbsp;·&nbsp; \(f(3x)\) &nbsp;→&nbsp; stretch in the \(x\)-direction, factor \(\tfrac{1}{3}\)</div>
+      <div class="math small">\(-f(x)\) &nbsp;→&nbsp; reflection in the \(x\)-axis &nbsp;·&nbsp; \(f(-x)\) &nbsp;→&nbsp; reflection in the \(y\)-axis</div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- 3 · reading the notation -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 1 of 10 · reading the notation</p>
+  <h2>Three words, one column vector, and how to read the graphs.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">The column vector</p>
+        <div class="math small">\(\begin{pmatrix} 3 \\ -2 \end{pmatrix}\)  &nbsp;means&nbsp; right 3, down 2</div>
+        <div class="math small frag"><span class="lbl">top number is across (the \(x\)-direction):</span>&nbsp; positive is right, negative is left</div>
+        <div class="math small frag"><span class="lbl">bottom number is up (the \(y\)-direction):</span>&nbsp; positive is up, negative is down</div>
+        <div class="math small frag"><span class="lbl">so these three read:</span>&nbsp; \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\) up 3 &nbsp;·&nbsp; \(\begin{pmatrix} -2 \\ 0 \end{pmatrix}\) left 2 &nbsp;·&nbsp; \(\begin{pmatrix} 4 \\ -1 \end{pmatrix}\) right 4, down 1</div>
+        <p class="small frag">It is not a fraction and there is no line between the numbers. Across first, then up.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(y = x^2\) translated by \(\begin{pmatrix} 3 \\ -2 \end{pmatrix}\)</p>
+        <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="sh32" data-x="-3,6" data-y="-4,9" data-stepx="1" data-stepy="2" data-mv="0,0>3,-2" data-poly="0,0;3,0;3,-2" data-ann="0.4,0.9,across 3;3.2,-1.3,down 2" aria-label="The parabola y equals x squared and the same parabola moved right 3 and down 2"></svg>
+        <p class="small">The lowest point moves across 3, then down 2, from \((0, 0)\) to \((3, -2)\). Every other point moves the same way.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cols frag" style="margin-top:0.4vh">
+    <div><div class="card"><p class="eyebrow">Translation</p><p class="small">Slides the whole graph. No turning, no resizing. Described by a column vector.</p></div></div>
+    <div><div class="card"><p class="eyebrow">Stretch</p><p class="small">Pulls the graph away from an axis. The scale factor says how many times as far, and you must say which direction.</p></div></div>
+    <div><div class="card"><p class="eyebrow">Reflection</p><p class="small">Mirrors the graph in a line. You must name the line, the axis that stays fixed.</p></div></div>
+  </div>
+  <p class="key"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move</p>
+</section>
+
+<!-- 3 · the six moves on a graph -->
+<section class="slide duo">
+  <p class="eyebrow">Check · the six moves on a graph</p>
+  <h2>The six moves, before and after, on one graph.</h2>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move</p>
+  <p class="rowlab">Outside the bracket acts on \(y\). Hollow dots start, filled dots land.</p>
+  <div class="six">
+      <div class="cell">
+        <p class="eyebrow">Translation</p>
+        <div class="math small">\(f(x) + 3\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cubU" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>1,3;0,1.5>0,4.5" aria-label="The cubic f and the same cubic moved up 3"></svg>
+        <p class="small">Up 3, by \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\).</p>
+      </div>
+      <div class="cell">
+        <p class="eyebrow">Stretch</p>
+        <div class="math small">\(4f(x)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cub4" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>1,0;0,1.5>0,6" aria-label="The cubic f and the same cubic stretched by 4 in the y direction"></svg>
+        <p class="small">\(y\)-direction, factor 4. Root stays put.</p>
+      </div>
+      <div class="cell">
+        <p class="eyebrow">Reflection</p>
+        <div class="math small">\(-f(x)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cubN" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>1,0;0,1.5>0,-1.5" aria-label="The cubic f and its reflection in the x axis"></svg>
+        <p class="small">In the \(x\)-axis. Root stays put.</p>
+      </div>
+  </div>
+  <p class="rowlab">Inside the bracket acts on \(x\), backwards.</p>
+  <div class="six">
+      <div class="cell">
+        <p class="eyebrow">Translation</p>
+        <div class="math small">\(f(x - 2)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cubR" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>3,0;0,1.5>2,1.5" aria-label="The cubic f and the same cubic moved right 2"></svg>
+        <p class="small">Right 2, by \(\begin{pmatrix} 2 \\ 0 \end{pmatrix}\).</p>
+      </div>
+      <div class="cell">
+        <p class="eyebrow">Stretch</p>
+        <div class="math small">\(f(3x)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cubX" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>0.33,0;0,1.5>0,1.5" aria-label="The cubic f and the same cubic squeezed sideways to one third"></svg>
+        <p class="small">\(x\)-direction, factor \(\tfrac{1}{3}\). \(y\)-intercept stays put.</p>
+      </div>
+      <div class="cell">
+        <p class="eyebrow">Reflection</p>
+        <div class="math small">\(f(-x)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="cub" data-b="cubY" data-x="-5,5" data-y="-10,10" data-stepx="5" data-stepy="5" data-mv="1,0>-1,0;0,1.5>0,1.5" aria-label="The cubic f and its reflection in the y axis"></svg>
+        <p class="small">In the \(y\)-axis. \(y\)-intercept stays put.</p>
+      </div>
+  </div>
+</section>
+
+<!-- 4 · different directions -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 2 of 10 · different directions</p>
+  <h2>Different directions: the order does not matter.</h2>
+  <div class="math small">\(y = x^2\), stretch in the \(y\)-direction, factor 2, and translate by \(\begin{pmatrix} 3 \\ 0 \end{pmatrix}\). &nbsp;<span class="muted">Predict first: does the order change the final graph?</span></div>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move</p>
+  <div class="strip">
+    <div class="rows">
+      <div>
+        <p class="rowlab">Stretch first, then translate</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Stretch</p>
+          <div class="math small">\(x^2 \to 2x^2\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="s2" data-x="-2,6" data-y="-2,18" data-stepx="2" data-stepy="4" data-mv="2,4>2,8" aria-label="The parabola y equals x squared and the same parabola stretched by 2 in the y direction"></svg>
+          <p class="small">\(y\)-direction, factor 2: \((2, 4) \to (2, 8)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Translate</p>
+          <div class="math small">\(2x^2 \to 2(x - 3)^2\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="s2" data-b="s2t" data-x="-2,6" data-y="-2,18" data-stepx="2" data-stepy="4" data-mv="2,8>5,8" aria-label="The stretched parabola and the same parabola moved right 3"></svg>
+          <p class="small">By \(\begin{pmatrix} 3 \\ 0 \end{pmatrix}\), right 3: \((2, 8) \to (5, 8)\)</p>
+        </div>
+        </div>
+      </div>
+      <div class="frag">
+        <p class="rowlab">Translate first, then stretch</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Translate</p>
+          <div class="math small">\(x^2 \to (x - 3)^2\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="tr" data-x="-2,6" data-y="-2,18" data-stepx="2" data-stepy="4" data-mv="2,4>5,4" aria-label="The parabola y equals x squared and the same parabola moved right 3"></svg>
+          <p class="small">By \(\begin{pmatrix} 3 \\ 0 \end{pmatrix}\), right 3: \((2, 4) \to (5, 4)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Stretch</p>
+          <div class="math small">\((x - 3)^2 \to 2(x - 3)^2\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="tr" data-b="s2t" data-x="-2,6" data-y="-2,18" data-stepx="2" data-stepy="4" data-mv="5,4>5,8" aria-label="The translated parabola and the same parabola stretched by 2 in the y direction"></svg>
+          <p class="small">\(y\)-direction, factor 2: \((5, 4) \to (5, 8)\)</p>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="cell fin frag">
+      <p class="eyebrow">Same final graph</p>
+      <div class="math small result">\(y = 2(x - 3)^2\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="s2t" data-x="-2,6" data-y="-2,18" data-stepx="2" data-stepy="4" data-mv="2,4>5,8" aria-label="The parabola y equals x squared and the final curve y equals 2 times x minus 3 squared"></svg>
+      <p class="small">Both orders end at \((5, 8)\). One move acts on \(y\), the other on \(x\), so they never get in each other's way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · same direction -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 3 of 10 · same direction</p>
+  <h2>Same direction: the order changes the graph.</h2>
+  <div class="math small">\(y = x^2\): stretch in the \(y\)-direction, factor 2, and translate by \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\). &nbsp;<span class="muted">Does the order matter now?</span></div>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move &nbsp;&nbsp; <span class="sw other"></span>Dotted amber: other order</p>
+  <div class="strip">
+    <div class="rows">
+      <div>
+        <p class="rowlab">Stretch first, then translate up 3</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Stretch</p>
+          <div class="math small">\(x^2 \to 2x^2\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="s2" data-x="-3,3" data-y="-2,14" data-stepx="1" data-stepy="4" data-mv="1,1>1,2" aria-label="x squared and 2 x squared"></svg>
+          <p class="small">\(y\)-direction, factor 2: \((1, 1) \to (1, 2)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Translate</p>
+          <div class="math small">\(2x^2 \to 2x^2 + 3\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="s2" data-b="s2u3" data-x="-3,3" data-y="-2,14" data-stepx="1" data-stepy="4" data-mv="1,2>1,5" aria-label="2 x squared and 2 x squared plus 3"></svg>
+          <p class="small">by \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\), up 3: \((1, 2) \to (1, 5)\)</p>
+        </div>
+        </div>
+      </div>
+      <div class="frag">
+        <p class="rowlab">Translate up 3 first, then stretch</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Translate</p>
+          <div class="math small">\(x^2 \to x^2 + 3\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="sqU3" data-x="-3,3" data-y="-2,14" data-stepx="1" data-stepy="4" data-mv="1,1>1,4" aria-label="x squared and x squared plus 3"></svg>
+          <p class="small">by \(\begin{pmatrix} 0 \\ 3 \end{pmatrix}\), up 3: \((1, 1) \to (1, 4)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Stretch</p>
+          <div class="math small">\(x^2 + 3 \to 2(x^2 + 3) = 2x^2 + 6\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="sqU3" data-b="s2u6" data-x="-3,3" data-y="-2,14" data-stepx="1" data-stepy="4" data-mv="1,4>1,8" aria-label="x squared plus 3 and 2 x squared plus 6"></svg>
+          <p class="small">\(y\)-direction, factor 2: \((1, 4) \to (1, 8)\)</p>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="cell fin frag">
+      <p class="eyebrow">Two different final graphs</p>
+      <div class="math small">\(2x^2 + 3\) and \(2x^2 + 6\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="s2u3" data-x="-3,3" data-y="-2,14" data-stepx="1" data-stepy="4" data-mv="1,1>1,5" data-m="s2u6" data-mv2="1,1>1,8" aria-label="x squared, 2 x squared plus 3 in cyan, and 2 x squared plus 6 in amber"></svg>
+      <p class="small">Cyan: stretch first, crosses the \(y\)-axis at 3. Amber: translate first, crosses at 6. A stretch multiplies everything already there, including an earlier shift.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · reflection + translation -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 10 · same direction, again</p>
+  <h2>A reflection and a translation up also depend on order.</h2>
+  <div class="math small">\(y = \sqrt{x}\): reflect in the \(x\)-axis, and translate by \(\begin{pmatrix} 0 \\ 5 \end{pmatrix}\). &nbsp;<span class="muted">Follow \((4, 2)\).</span></div>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move &nbsp;&nbsp; <span class="sw other"></span>Dotted amber: other order</p>
+  <div class="strip">
+    <div class="rows">
+      <div>
+        <p class="rowlab">Reflect first, then translate up 5</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Reflect</p>
+          <div class="math small">\(\sqrt{x} \to -\sqrt{x}\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="rt" data-b="rtN" data-x="-1,9" data-y="-9,9" data-stepx="2" data-stepy="3" data-mv="4,2>4,-2" aria-label="root x and minus root x"></svg>
+          <p class="small">in the \(x\)-axis: \((4, 2) \to (4, -2)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Translate</p>
+          <div class="math small">\(-\sqrt{x} \to 5 - \sqrt{x}\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="rtN" data-b="rt1" data-x="-1,9" data-y="-9,9" data-stepx="2" data-stepy="3" data-mv="4,-2>4,3" aria-label="minus root x and 5 minus root x"></svg>
+          <p class="small">by \(\begin{pmatrix} 0 \\ 5 \end{pmatrix}\), up 5: \((4, -2) \to (4, 3)\)</p>
+        </div>
+        </div>
+      </div>
+      <div class="frag">
+        <p class="rowlab">Translate up 5 first, then reflect</p>
+        <div class="two">
+        <div class="cell">
+          <p class="eyebrow">Move 1 · Translate</p>
+          <div class="math small">\(\sqrt{x} \to \sqrt{x} + 5\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="rt" data-b="rtU" data-x="-1,9" data-y="-9,9" data-stepx="2" data-stepy="3" data-mv="4,2>4,7" aria-label="root x and root x plus 5"></svg>
+          <p class="small">by \(\begin{pmatrix} 0 \\ 5 \end{pmatrix}\), up 5: \((4, 2) \to (4, 7)\)</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">Move 2 · Reflect</p>
+          <div class="math small">\(\sqrt{x} + 5 \to -(\sqrt{x} + 5) = -\sqrt{x} - 5\)</div>
+          <svg class="tf" viewBox="0 0 300 210" data-a="rtU" data-b="rt2" data-x="-1,9" data-y="-9,9" data-stepx="2" data-stepy="3" data-mv="4,7>4,-7" aria-label="root x plus 5 and minus root x minus 5"></svg>
+          <p class="small">in the \(x\)-axis: \((4, 7) \to (4, -7)\)</p>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="cell fin frag">
+      <p class="eyebrow">Two different final graphs</p>
+      <div class="math small">\(5 - \sqrt{x}\) and \(-\sqrt{x} - 5\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="rt" data-b="rt1" data-x="-1,9" data-y="-9,9" data-stepx="2" data-stepy="3" data-mv="4,2>4,3" data-m="rt2" data-mv2="4,2>4,-7" aria-label="root x, 5 minus root x in cyan, and minus root x minus 5 in amber"></svg>
+      <p class="small">Cyan: reflect first, ends above the axis. Amber: translate first, ends below it. The flip reverses the earlier shift.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · reading the equation -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 10 · reading an equation</p>
+  <h2>An equation is a recipe. Read it in the order you would work it out.</h2>
+  <div class="math small">\(y = 3(x + 2)^2 - 5\) &nbsp;<span class="muted">is built from \(y = x^2\). What did we do to \(x^2\), and in what order?</span></div>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move</p>
+  <div class="three">
+    <div class="cell">
+      <p class="eyebrow">Start</p>
+      <div class="math small">\(y = x^2\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="sq" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="0,0>0,0" aria-label="x squared"></svg>
+      <p class="small">Lowest point at \((0, 0)\).</p>
+    </div>
+    <div class="cell frag">
+      <p class="eyebrow">Step 1 · Stretch</p>
+      <div class="math small">\(x^2 \to 3x^2\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="s3" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="0,0>0,0" aria-label="x squared and 3 x squared"></svg>
+      <p class="small">\(y\)-direction, factor 3. The lowest point stays at \((0, 0)\).</p>
+    </div>
+    <div class="cell frag">
+      <p class="eyebrow">Step 2 · Translate</p>
+      <div class="math small">\(3x^2 \to 3(x + 2)^2 - 5\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="s3" data-b="j3" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="0,0>-2,-5" aria-label="3 x squared and 3 times x plus 2 squared minus 5"></svg>
+      <p class="small">By \(\begin{pmatrix} -2 \\ -5 \end{pmatrix}\). The lowest point goes to \((-2, -5)\).</p>
+    </div>
+  </div>
+  <div class="card frag">
+    <p class="eyebrow">How to read it</p>
+    <p class="small"><b>The 3 multiplies the bracket</b>, so it is the stretch: \(y\)-direction, factor 3. &nbsp;<b>The \(+2\) is inside the bracket</b>, and \(x + 2 = x - (-2)\), so it moves the graph left 2. &nbsp;<b>The \(-5\) is added last</b>, so it moves the graph down 5.</p>
+    <div class="math small result">A stretch in the \(y\)-direction, factor 3, followed by a translation by \(\begin{pmatrix} -2 \\ -5 \end{pmatrix}\).</div>
+  </div>
+</section>
+
+<!-- 9 · the other route -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 6 of 10 · the other route</p>
+  <h2>Cambridge accepts either order, as long as you state the order and your numbers match it.</h2>
+  <div class="math small">The same graph, \(y = 3(x + 2)^2 - 5\), built the other way: translate first, then stretch.</div>
+  <p class="key" style="margin:0"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move</p>
+  <div class="three">
+    <div class="cell">
+      <p class="eyebrow">Step 1 · Translate</p>
+      <div class="math small">\(x^2 \to (x + 2)^2 - \tfrac{5}{3}\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="jt" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="0,0>-2,-1.67" aria-label="x squared and x plus 2 squared minus five thirds"></svg>
+      <p class="small">By \(\begin{pmatrix} -2 \\ -\frac{5}{3} \end{pmatrix}\). The lowest point goes to \((-2, -\tfrac{5}{3})\).</p>
+    </div>
+    <div class="cell frag">
+      <p class="eyebrow">Step 2 · Stretch</p>
+      <div class="math small">\((x + 2)^2 - \tfrac{5}{3} \to 3(x + 2)^2 - 5\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="jt" data-b="j3" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="-2,-1.67>-2,-5" aria-label="x plus 2 squared minus five thirds and 3 times x plus 2 squared minus 5"></svg>
+      <p class="small">\(y\)-direction, factor 3. The \(-\tfrac{5}{3}\) is tripled to \(-5\).</p>
+    </div>
+    <div class="cell frag">
+      <p class="eyebrow">Same final graph</p>
+      <div class="math small result">\(y = 3(x + 2)^2 - 5\)</div>
+      <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="j3" data-x="-5,3" data-y="-7,14" data-stepx="1" data-stepy="7" data-mv="0,0>-2,-5" aria-label="x squared and 3 times x plus 2 squared minus 5"></svg>
+      <p class="small">Same graph as the last slide, different recipe.</p>
+    </div>
+  </div>
+  <div class="cols frag" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Why \(-\tfrac{5}{3}\) and not \(-5\)</p>
+        <p class="small">The stretch comes second, so it triples whatever shift came first. We need the shift to end at \(-5\). So we start with \(-5 \div 3 = -\tfrac{5}{3}\).</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">What you can write</p>
+        <p class="small"><b>Route 1:</b> a stretch in the \(y\)-direction, factor 3, then a translation by \(\begin{pmatrix} -2 \\ -5 \end{pmatrix}\). &nbsp;<b>Route 2:</b> a translation by \(\begin{pmatrix} -2 \\ -\frac{5}{3} \end{pmatrix}\), then a stretch in the \(y\)-direction, factor 3. The June 2024 mark scheme for the question on slide 12 lists both routes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · at the board -->
+<section class="slide duo">
+  <p class="eyebrow">At the board · 6 min</p>
+  <h2>Your turn. Describe it fully, in order.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p style="margin:0">\(y = \dfrac{1}{x}\) becomes \(y = \dfrac{2}{x - 1} + 3\). Describe fully a sequence of transformations, making clear the order. <span class="marks">[4]</span></p>
+        <p class="small" style="margin:0">Find the multiplier, read the bracket, read the number added last. The dotted lines are the asymptotes: where did each one move to?</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="rec" data-b="recF" data-x="-3,5" data-y="-6,12" data-stepx="1" data-stepy="3" data-mv="1,1>2,5" data-lines="v:0:g;h:0:g;v:1:c;h:3:c" aria-label="The curve y equals 1 over x, and the curve y equals 2 over x minus 1 plus 3, with their asymptotes"></svg>
+        <p class="small">Asymptotes \(x = 0\) and \(y = 0\) move to \(x = 1\) and \(y = 3\). The point \((1, 1)\) goes to \((2, 5)\).</p>
+      </div>
+    </div>
+  </div>
+  <div class="check" tabindex="0">
+    <div class="math small">Tap to check once you have written the sequence.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">the 2 multiplies, so it is the stretch:</span>&nbsp; \(\dfrac{1}{x} \to \dfrac{2}{x}\) &nbsp;·&nbsp; <span class="lbl">\(x - 1\) is in the bracket, so right 1; the 3 is added last, so up 3:</span>&nbsp; \(\dfrac{2}{x} \to \dfrac{2}{x - 1} + 3\)</div>
+      <div class="math small result">A stretch in the \(y\)-direction, factor 2, followed by a translation by \(\begin{pmatrix} 1 \\ 3 \end{pmatrix}\).</div>
+      <div class="math small"><span class="lbl">other route:</span>&nbsp; a translation by \(\begin{pmatrix} 1 \\ \frac{3}{2} \end{pmatrix}\) first, then a stretch in the \(y\)-direction, factor 2</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · order lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 7 of 10 · the Lab</p>
+  <h2>Predict where the dots land. Then try \(q = 0\) or \(a = 1\).</h2>
+  <div class="lab">
+    <svg class="fig" id="ol-svg" viewBox="0 0 440 440" aria-label="A cubic graph, with a y-stretch and an upward translation applied in either order, and two marked points"></svg>
+    <div class="panel">
+      <div class="picks" id="ol-picks">
+        <button type="button" data-i="0" aria-pressed="true">Stretch, then translate</button>
+        <button type="button" data-i="1" aria-pressed="false">Translate, then stretch</button>
+      </div>
+      <label for="ol-a" id="ol-alab">Stretch a</label>
+      <input type="range" id="ol-a" min="1" max="3" step="0.5" value="2">
+      <label for="ol-q" id="ol-qlab">Up q</label>
+      <input type="range" id="ol-q" min="-4" max="4" step="1" value="3">
+      <div class="read" id="ol-read"></div>
+      <button type="button" class="toggle" id="ol-show" aria-pressed="false">Show the new curve</button>
+      <button type="button" class="toggle" id="ol-other" aria-pressed="false">Also show the other order</button>
+      <div class="verdict ok" id="ol-verdict"></div>
+    </div>
+  </div>
+  <p class="key"><span class="sw before"></span>Dashed gray: before the move &nbsp;&nbsp; <span class="sw after"></span>Solid cyan: after the move &nbsp;&nbsp; <span class="sw other"></span>Dotted amber: other order &nbsp;&nbsp; Hollow dots: \((1, 0)\), \((0, 1.5)\)</p>
+</section>
+
+<!-- 8 · June 2024 Q2 -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 8 of 10 · June 2024 · Paper 12 · <span class="lit">Q2</span></p>
+  <h2>\(y = x^2\) becomes \(y = 4(x - 3)^2 + 8\). Describe fully a sequence of transformations, making clear the order. <span class="marks">[5]</span></h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <div class="math small frag"><span class="lbl">1 · read the target, multiply before add:</span>&nbsp; \(y = 4\cdot(x - 3)^2 + 8\)</div>
+        <div class="math small frag"><span class="lbl">2 · stretch first, the 4:</span>&nbsp; \(x^2 \to 4x^2\)</div>
+        <div class="math small frag"><span class="lbl">3 · then translate by \(\begin{pmatrix} 3 \\ 8 \end{pmatrix}\):</span>&nbsp; \(4x^2 \to 4(x - 3)^2 + 8\)</div>
+        <div class="math result frag">A stretch in the \(y\)-direction, factor 4, followed by a translation by \(\begin{pmatrix} 3 \\ 8 \end{pmatrix}\).</div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-m="s4" data-b="j24" data-x="-2,8" data-y="-4,28" data-stepx="2" data-stepy="4" data-mv="0,0>3,8" aria-label="The parabola y equals x squared, the stretched parabola y equals 4 x squared in amber, and the final curve y equals 4 times x minus 3 squared plus 8"></svg>
+        <p class="small">Gray dashed: the start. Amber: after the stretch. Cyan: the final curve.</p>
+        <p class="small frag"><b>The other valid route:</b> translate by \(\begin{pmatrix} 3 \\ 2 \end{pmatrix}\) first, giving \((x - 3)^2 + 2\). Then stretch in the \(y\)-direction, factor 4, giving \(4(x - 3)^2 + 8\). The shift is 2, not 8, because the stretch afterwards multiplies it by 4.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · mark scheme -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 9 of 10 · where the 5 marks come from</p>
+  <h2>Five separate facts, and the order is one of them.</h2>
+  <div class="agenda">
+    <div class="row"><span><b>B1</b> &nbsp;a stretch, factor 4, in the \(y\)-direction</span><span class="t">1 mark</span></div>
+    <div class="row"><span><b>B2</b> &nbsp;a translation with 3 in the \(x\)-direction and 8 in the \(y\)-direction (B1 if one of those three facts is missing)</span><span class="t">2 marks</span></div>
+    <div class="row"><span><b>M1</b> &nbsp;two translations, one in each direction, and one stretch, with nothing extra</span><span class="t">1 mark</span></div>
+    <div class="row"><span><b>A1</b> &nbsp;the order is correct and clear: the stretch comes before the vertical translation</span><span class="t">1 mark</span></div>
+  </div>
+  <div class="card">
+    <p class="eyebrow">What Cambridge says about answers like this</p>
+    <p class="small" style="margin:0">The June 2024 report gave full marks to answers as short as one sentence, and stresses correct terminology and that "the required order is clear". Two sentences is plenty. You do not need a diagram.</p>
+  </div>
+</section>
+
+<!-- 10 · spot the mistake -->
+<section class="slide">
+  <p class="eyebrow">Spot the mistake · 4 min</p>
+  <h2>Target: \(y = x^2 \to y = 4(x - 3)^2 + 8\). Three answers. What is wrong with each? Tap to check.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">A.&nbsp; "A translation by \(\begin{pmatrix} 3 \\ 8 \end{pmatrix}\), then a stretch in the \(y\)-direction, factor 4."</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">follow it through:</span>&nbsp; \(x^2 \to (x - 3)^2 + 8 \to 4(x - 3)^2 + 32\)</div>
+          <div class="math small result">Wrong order. The 8 got multiplied by 4, so it gives +32, and the target has +8.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">B.&nbsp; "A stretch of factor 4 and a translation by \(\begin{pmatrix} 3 \\ 8 \end{pmatrix}\)."</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">what is missing:</span>&nbsp; which direction is the stretch in, and which comes first?</div>
+          <div class="math small result">No direction and no order. It loses the stretch mark and the order mark.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">C.&nbsp; "A stretch in the \(y\)-direction, factor 4, then a translation by \(\begin{pmatrix} -3 \\ 8 \end{pmatrix}\)."</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">check the sign:</span>&nbsp; \(\begin{pmatrix} -3 \\ 8 \end{pmatrix}\) gives \(4(x + 3)^2 + 8\)</div>
+          <div class="math small result">Sign error. \((x - 3)\) means right 3, so the vector has +3.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · practice together -->
+<section class="slide">
+  <p class="eyebrow">Practice · together · 6 min</p>
+  <h2>Describe fully, in order. Tap to check.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">1.&nbsp; \(y = x^2\) becomes \(y = 3(x + 2)^2 - 5\).</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">multiply, then add:</span>&nbsp; \(3 \cdot (x + 2)^2 - 5\)</div>
+          <div class="math small result">A stretch in the \(y\)-direction, factor 3, then a translation by \(\begin{pmatrix} -2 \\ -5 \end{pmatrix}\).</div>
+          <div class="math small"><span class="lbl">other route:</span>&nbsp; translate by \(\begin{pmatrix} -2 \\ -\frac{5}{3} \end{pmatrix}\) first, then stretch, \(y\)-direction, factor 3</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">2.&nbsp; \(y = x^2\) becomes \(y = 5 - x^2\).</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">rewrite it so the flip is visible:</span>&nbsp; \(y = -x^2 + 5\)</div>
+          <div class="math small result">A reflection in the \(x\)-axis, then a translation by \(\begin{pmatrix} 0 \\ 5 \end{pmatrix}\).</div>
+          <div class="math small"><span class="lbl">other route:</span>&nbsp; translate by \(\begin{pmatrix} 0 \\ -5 \end{pmatrix}\) first, then reflect in the \(x\)-axis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · practice own -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · on your own · 8 min</p>
+  <h2>Now go from the description to the equation.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">3.&nbsp; \(y = x^3\) is stretched in the \(y\)-direction, factor 2, then translated by \(\begin{pmatrix} -1 \\ 0 \end{pmatrix}\). Write the new equation. Would the other order change it?</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">stretch, then \(x\) becomes \(x + 1\):</span>&nbsp; \(x^3 \to 2x^3 \to 2(x + 1)^3\)</div>
+          <div class="math small result">\(y = 2(x + 1)^3\). No, the moves are in different directions.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">4.&nbsp; \(y = x^3\) is translated by \(\begin{pmatrix} 0 \\ 1 \end{pmatrix}\), then stretched in the \(y\)-direction, factor 2. Write the new equation. What if the order were reversed?</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">add 1, then double everything:</span>&nbsp; \(x^3 \to x^3 + 1 \to 2(x^3 + 1)\)</div>
+          <div class="math small result">\(y = 2x^3 + 2\). Reversed: \(y = 2x^3 + 1\). Different graphs.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">5.&nbsp; \(y = x^2 - 4x\) passes through \((4, 0)\). It is stretched in the \(y\)-direction, factor 3, and translated by \(\begin{pmatrix} 0 \\ -2 \end{pmatrix}\). Where does \((4, 0)\) go with the stretch first? With the translation first?</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">stretch first:</span>&nbsp; \((4, 0) \to (4, 0) \to (4, -2)\), equation \(3x^2 - 12x - 2\)</div>
+          <div class="math small"><span class="lbl">translation first:</span>&nbsp; \((4, 0) \to (4, -2) \to (4, -6)\), equation \(3x^2 - 12x - 6\)</div>
+          <div class="math small result">\((4, -2)\) or \((4, -6)\), depending on the order.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · recap -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 10 of 10 · recap</p>
+  <h2>Three things to carry out of here.</h2>
+  <p class="frag"><b>Order matters only when both moves act on the same variable.</b> A \(y\)-stretch with an \(x\)-translation: no. A \(y\)-stretch with a \(y\)-translation, or a flip with a \(y\)-translation: yes, because the second move acts on the shift made by the first.</p>
+  <p class="frag"><b>Read \(y = af(x - p) + q\) as stretch first, then translate by \(\begin{pmatrix} p \\ q \end{pmatrix}\).</b> Built the other way round, the vertical shift becomes \(\dfrac{q}{a}\).</p>
+  <p class="frag"><b>A full description has four parts.</b> The type, the size, the direction or axis, and the order. Write the word "then".</p>
+</section>
+
+<!-- 14 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min</p>
+  <h2>Schoology, Paper 1 → 1.2 Functions.</h2>
+  <p>Do the working on paper first. Check the due time on the assessment page.</p>
+  <div class="math result">Press Submit before you close the tab. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 15 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework · and where to practice more</p>
+  <h2>Before next class.</h2>
+  <ul>
+    <li>Redo any practice question you did not get to. For each one, write the order down and test the other order to see whether it changes the answer.</li>
+    <li class="frag">Take any two moves from last class and describe them both ways: first one first, then the other first. Say which pairs give the same graph.</li>
+  </ul>
+  <p class="frag"><a class="toolchip" href="../transformation-explorer/" target="_blank" rel="noopener">Transformation Explorer: set a, b, c and d, and read the description Cambridge marks</a></p>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script>
+/* ---------- static figures: original dashed gray, optional middle step amber, final solid cyan ---------- */
+(function () {
+  'use strict';
+  var M = '−';
+  var FN = {
+    sq:  function (x) { return x * x; },
+    s2u3: function (x) { return 2 * x * x + 3; },
+    s2u6: function (x) { return 2 * x * x + 6; },
+    rt:  function (x) { return Math.sqrt(x); },
+    rt1: function (x) { return 5 - Math.sqrt(x); },
+    rt2: function (x) { return -Math.sqrt(x) - 5; },
+    s4:  function (x) { return 4 * x * x; },
+    j24: function (x) { return 4 * (x - 3) * (x - 3) + 8; },
+    sh32: function (x) { return (x - 3) * (x - 3) - 2; },
+    sqU3: function (x) { return x * x + 3; },
+    rtN: function (x) { return -Math.sqrt(x); },
+    rtU: function (x) { return Math.sqrt(x) + 5; },
+    s3:  function (x) { return 3 * x * x; },
+    j3:  function (x) { return 3 * (x + 2) * (x + 2) - 5; },
+    jt:  function (x) { return (x + 2) * (x + 2) - 5 / 3; },
+    rec: function (x) { return 1 / x; },
+    recF: function (x) { return 2 / (x - 1) + 3; },
+    s2:  function (x) { return 2 * x * x; },
+    s2t: function (x) { return 2 * (x - 3) * (x - 3); },
+    tr:  function (x) { return (x - 3) * (x - 3); },
+    cub: function (x) { return (x + 2) * (x - 1) * (x - 3) / 4; },
+    cubU: function (x) { return (x + 2) * (x - 1) * (x - 3) / 4 + 3; },
+    cub4: function (x) { return (x + 2) * (x - 1) * (x - 3); },
+    cubN: function (x) { return -(x + 2) * (x - 1) * (x - 3) / 4; },
+    cubR: function (x) { var u = x - 2; return (u + 2) * (u - 1) * (u - 3) / 4; },
+    cubX: function (x) { var u = 3 * x; return (u + 2) * (u - 1) * (u - 3) / 4; },
+    cubY: function (x) { var u = -x; return (u + 2) * (u - 1) * (u - 3) / 4; }
+  };
+  var clipN = 0;
+  [].slice.call(document.querySelectorAll('svg.tf')).forEach(function (svg) {
+    var W = 300, H = 210, P = 26;
+    var xr = svg.getAttribute('data-x').split(',').map(Number), yr = svg.getAttribute('data-y').split(',').map(Number);
+    var step = +svg.getAttribute('data-step') || 2;
+    var stx = +svg.getAttribute('data-stepx') || step, sty = +svg.getAttribute('data-stepy') || step;
+    var A = FN[svg.getAttribute('data-a')], B = FN[svg.getAttribute('data-b')], Mid = svg.getAttribute('data-m') ? FN[svg.getAttribute('data-m')] : null;
+    function px(v) { return P + (v - xr[0]) / (xr[1] - xr[0]) * (W - 2 * P); }
+    function py(v) { return H - P - (v - yr[0]) / (yr[1] - yr[0]) * (H - 2 * P); }
+    function lab(v) { return v < 0 ? M + (-v) : String(v); }
+    var v, id = 'tfclip' + (++clipN), s = '<defs><clipPath id="' + id + '"><rect x="' + P + '" y="' + P + '" width="' + (W - 2 * P) + '" height="' + (H - 2 * P) + '"/></clipPath></defs>';
+    for (v = Math.ceil(xr[0]); v <= xr[1]; v++) s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.06)"/>';
+    for (v = Math.ceil(yr[0]); v <= yr[1]; v++) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.06)"/>';
+    s += '<line x1="' + px(xr[0]) + '" y1="' + py(0) + '" x2="' + px(xr[1]) + '" y2="' + py(0) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    s += '<line x1="' + px(0) + '" y1="' + py(yr[0]) + '" x2="' + px(0) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    for (v = Math.ceil(xr[0] / stx) * stx; v <= xr[1]; v += stx) if (v !== 0) s += '<text x="' + px(v) + '" y="' + (py(0) + 13) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
+    for (v = Math.ceil(yr[0] / sty) * sty; v <= yr[1]; v += sty) if (v !== 0) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + 3.5) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    function curve(F, stroke, extra) {
+      var d = '', pen = false, i, n = 200;
+      for (i = 0; i <= n; i++) {
+        var x = xr[0] + (xr[1] - xr[0]) * i / n, y = F(x);
+        if (!isFinite(y) || y < yr[0] - (yr[1] - yr[0]) || y > yr[1] + (yr[1] - yr[0])) { pen = false; continue; }
+        d += (pen ? 'L' : 'M') + px(x).toFixed(1) + ' ' + py(y).toFixed(1); pen = true;
+      }
+      return '<path d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="2.6" clip-path="url(#' + id + ')" ' + (extra || '') + '/>';
+    }
+    s += curve(A, '#b0b0b0', 'stroke-dasharray="6 5"');
+    if (Mid) s += curve(Mid, '#ffc46b', 'stroke-dasharray="2 4"');
+    s += curve(B, '#00e5ff');
+    (svg.getAttribute('data-mv') || '').split(';').forEach(function (m) {
+      if (!m) return;
+      var p = m.split('>'), a = p[0].split(',').map(Number), b = p[1].split(',').map(Number);
+      if (a[0] !== b[0] || a[1] !== b[1]) s += '<line x1="' + px(a[0]) + '" y1="' + py(a[1]) + '" x2="' + px(b[0]) + '" y2="' + py(b[1]) + '" stroke="#ffc46b" stroke-width="1.4" stroke-dasharray="3 3"/>';
+      s += '<circle cx="' + px(a[0]) + '" cy="' + py(a[1]) + '" r="4" fill="#0f0f0f" stroke="#b0b0b0" stroke-width="1.6"/>';
+      s += '<circle cx="' + px(b[0]) + '" cy="' + py(b[1]) + '" r="4.5" fill="#00e5ff"/>';
+    });
+    (svg.getAttribute('data-lines') || '').split(';').forEach(function (l) {
+      if (!l) return;
+      var q = l.split(':'), v = +q[1], col = q[2] === 'g' ? '#b0b0b0' : '#00e5ff';
+      if (q[0] === 'v') s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="' + col + '" stroke-width="1.2" stroke-dasharray="2 4"/>';
+      else s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="' + col + '" stroke-width="1.2" stroke-dasharray="2 4"/>';
+    });
+    if (svg.getAttribute('data-poly')) {
+      var pts = svg.getAttribute('data-poly').split(';').map(function (t) { var c = t.split(',').map(Number); return px(c[0]).toFixed(1) + ',' + py(c[1]).toFixed(1); }).join(' ');
+      s += '<polyline points="' + pts + '" fill="none" stroke="#ffc46b" stroke-width="2" stroke-dasharray="4 3"/>';
+    }
+    (svg.getAttribute('data-ann') || '').split(';').forEach(function (t) {
+      if (!t) return;
+      var c = t.split(',');
+      s += '<text x="' + px(+c[0]) + '" y="' + py(+c[1]) + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#ffc46b">' + c[2] + '</text>';
+    });
+    (svg.getAttribute('data-mv2') || '').split(';').forEach(function (m) {
+      if (!m) return;
+      var p = m.split('>'), a = p[0].split(',').map(Number), b = p[1].split(',').map(Number);
+      s += '<line x1="' + px(a[0]) + '" y1="' + py(a[1]) + '" x2="' + px(b[0]) + '" y2="' + py(b[1]) + '" stroke="#ffc46b" stroke-width="1.4" stroke-dasharray="3 3"/>';
+      s += '<circle cx="' + px(b[0]) + '" cy="' + py(b[1]) + '" r="4.5" fill="#ffc46b"/>';
+    });
+    s += '<text x="' + (W - P + 2) + '" y="' + (py(0) - 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">x</text>';
+    s += '<text x="' + (px(0) + 5) + '" y="' + (P - 8) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">y</text>';
+    svg.innerHTML = s;
+  });
+})();
+
+
+/* ---------- click any graph to enlarge it; click or Esc to close ---------- */
+(function () {
+  'use strict';
+  var box = document.createElement('div');
+  box.id = 'tfZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.tf')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img'); svg.setAttribute('title', 'Click to enlarge');
+    function open() {
+      var c = svg.cloneNode(true);
+      c.removeAttribute('tabindex');
+      box.innerHTML = ''; box.appendChild(c);
+      var p = document.createElement('p'); p.textContent = (svg.getAttribute('aria-label') || '') + '  (click or press Esc to close)'; box.appendChild(p);
+      box.classList.add('on');
+    }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+
+/* ---------- Order Lab: stretch a and shift q, in either order; predict before you look ----------
+   f(x) = (x + 2)(x - 1)(x - 3)/4. Tracked dots: the root (1, 0) and the y-intercept (0, 1.5).
+   Stretch first: a f(x) + q.  Translate first: a (f(x) + q). Every readout uses a real minus sign. */
+(function () {
+  'use strict';
+  var svg = document.getElementById('ol-svg');
+  if (!svg) return;
+  var sa = document.getElementById('ol-a'), sq = document.getElementById('ol-q'), read = document.getElementById('ol-read'),
+      verdict = document.getElementById('ol-verdict'), showBtn = document.getElementById('ol-show'), otherBtn = document.getElementById('ol-other'),
+      alab = document.getElementById('ol-alab'), qlab = document.getElementById('ol-qlab');
+  var picks = [].slice.call(document.querySelectorAll('#ol-picks button'));
+  var M = '−';
+  function fmt(v) { var r = Math.round(v * 100) / 100; var s = Math.abs(r).toFixed(2).replace(/\.?0+$/, ''); return (r < 0 ? M : '') + s; }
+  function F(x) { return (x + 2) * (x - 1) * (x - 3) / 4; }
+  function G(o, a, q) { return o === 0 ? function (x) { return a * F(x) + q; } : function (x) { return a * (F(x) + q); }; }
+  function PP(o, a, q) { return o === 0 ? [[1, q], [0, 1.5 * a + q]] : [[1, a * q], [0, a * (1.5 + q)]]; }
+  function EQ(o, a, q) {
+    var t = (q < 0 ? M : '+') + ' ' + fmt(Math.abs(q));
+    return o === 0 ? fmt(a) + 'f(x) ' + t : fmt(a) + '(f(x) ' + t + ')';
+  }
+  var NAMES = ['Stretch, then translate', 'Translate, then stretch'];
+  var order = 0, showNew = false, showOther = false;
+  var LO = -8, HI = 8, S = 440, P0 = 26;
+  function px(v) { return P0 + (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function py(v) { return S - P0 - (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function path(fn) {
+    var d = '', pen = false, x, y;
+    for (x = LO; x <= HI + 0.001; x += 0.05) {
+      y = fn(x);
+      if (!isFinite(y) || Math.abs(y) > 14) { pen = false; continue; }
+      d += (pen ? 'L' : 'M') + px(x).toFixed(1) + ' ' + py(y).toFixed(1); pen = true;
+    }
+    return d;
+  }
+  function draw() {
+    var a = parseFloat(sa.value), q = parseFloat(sq.value), s = '', v;
+    for (v = LO; v <= HI; v++) {
+      var ax = v === 0;
+      s += '<line x1="' + px(v) + '" y1="' + py(LO) + '" x2="' + px(v) + '" y2="' + py(HI) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(v) + '" x2="' + px(HI) + '" y2="' + py(v) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      if (v % 2 === 0 && v !== 0) {
+        var t = v < 0 ? M + (-v) : String(v);
+        s += '<text x="' + px(v) + '" y="' + (py(0) + 16) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="middle">' + t + '</text>';
+        s += '<text x="' + (px(0) - 6) + '" y="' + (py(v) + 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="end">' + t + '</text>';
+      }
+    }
+    s += '<path d="' + path(F) + '" fill="none" stroke="#b0b0b0" stroke-width="2.6" stroke-dasharray="7 6"/>';
+    s += '<circle cx="' + px(1) + '" cy="' + py(0) + '" r="6.5" fill="#0f0f0f" stroke="#ffffff" stroke-width="2"/>';
+    s += '<circle cx="' + px(0) + '" cy="' + py(1.5) + '" r="6.5" fill="#0f0f0f" stroke="#ffffff" stroke-width="2"/>';
+    var P1 = PP(order, a, q), r = 1 - order, P2 = PP(r, a, q);
+    if (showNew) {
+      if (showOther) {
+        s += '<path d="' + path(G(r, a, q)) + '" fill="none" stroke="#ffc46b" stroke-width="2.8" stroke-dasharray="5 5"/>';
+        s += '<circle cx="' + px(P2[0][0]) + '" cy="' + py(P2[0][1]) + '" r="6" fill="#ffc46b"/>';
+        s += '<circle cx="' + px(P2[1][0]) + '" cy="' + py(P2[1][1]) + '" r="6" fill="#ffc46b"/>';
+      }
+      s += '<path d="' + path(G(order, a, q)) + '" fill="none" stroke="#00e5ff" stroke-width="3.2"/>';
+      s += '<circle cx="' + px(P1[0][0]) + '" cy="' + py(P1[0][1]) + '" r="7" fill="#00e5ff"/>';
+      s += '<circle cx="' + px(P1[1][0]) + '" cy="' + py(P1[1][1]) + '" r="7" fill="#00e5ff"/>';
+    }
+    svg.innerHTML = s;
+    alab.textContent = 'Stretch a = ' + fmt(a);
+    qlab.textContent = 'Up q = ' + fmt(q);
+    var h = '<span class="lw">' + NAMES[order] + '</span><br><span class="lw">new equation</span> &nbsp;<b>y = ' + EQ(order, a, q) + '</b>';
+    if (showNew) {
+      h += '<br><span class="lw">root (1, 0)</span> &nbsp;→&nbsp; <span style="color:#00e5ff">(' + fmt(P1[0][0]) + ', ' + fmt(P1[0][1]) + ')</span>'
+        + '<br><span class="lw">y-intercept (0, 1.5)</span> &nbsp;→&nbsp; <span style="color:#00e5ff">(' + fmt(P1[1][0]) + ', ' + fmt(P1[1][1]) + ')</span>';
+      if (showOther) {
+        h += '<br><span class="lw">other order</span> &nbsp;<span style="color:#ffc46b">y = ' + EQ(r, a, q) + '</span>'
+          + '<br><span class="lw">y-intercept</span> &nbsp;→&nbsp; <span style="color:#ffc46b">(' + fmt(P2[1][0]) + ', ' + fmt(P2[1][1]) + ')</span>';
+      }
+    } else {
+      h += '<br><span class="lw">Predict first: where does each hollow dot go?</span>';
+    }
+    read.innerHTML = h;
+    if (showNew) {
+      var same = Math.abs(P1[0][1] - P2[0][1]) < 1e-9 && Math.abs(P1[1][1] - P2[1][1]) < 1e-9;
+      verdict.style.display = '';
+      verdict.className = 'verdict ' + (same ? 'ok' : 'no');
+      verdict.textContent = same ? 'Both orders give the same graph with these values of a and q.' : 'The two orders give different graphs. The stretch multiplies the shift when it comes second.';
+    } else { verdict.style.display = 'none'; }
+  }
+  picks.forEach(function (b) {
+    b.addEventListener('click', function () {
+      order = +b.getAttribute('data-i');
+      showNew = false; showBtn.setAttribute('aria-pressed', 'false'); showBtn.textContent = 'Show the new curve';
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () {
+    showNew = !showNew;
+    showBtn.setAttribute('aria-pressed', showNew ? 'true' : 'false');
+    showBtn.textContent = showNew ? 'Hide the new curve' : 'Show the new curve';
+    draw();
+  });
+  otherBtn.addEventListener('click', function () {
+    showOther = !showOther;
+    otherBtn.setAttribute('aria-pressed', showOther ? 'true' : 'false');
+    otherBtn.textContent = showOther ? 'Hide the other order' : 'Also show the other order';
+    draw();
+  });
+  sa.addEventListener('input', draw); sq.addEventListener('input', draw);
+  draw();
+})();
+</script>
+
+</body>
+</html>

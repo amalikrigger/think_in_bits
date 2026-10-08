@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformation Explorer</title>
+  <meta name="description" content="Move, stretch and reflect a graph, watch every point travel, and read the exact words Cambridge marks. A second tab shows when doing two moves in a different order changes the answer.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the decks and www.thinkinbits.site. Single
+   committed dark theme: a tool opened on the projector must
+   look identical every time, whatever the laptop's OS theme is.
+   ============================================================ */
+:root {
+  --ground:       #0a0a0a;
+  --ground-far:   #1a1a2e;
+  --surface:      #1a1a1a;
+  --surface-lift: #2a2a2a;
+
+  --accent:       #00e5ff;
+  --accent-deep:  #0099cc;
+  --accent-wash:  rgba(0,229,255,0.10);
+  --accent-line:  rgba(0,229,255,0.30);
+  --accent-fill:  rgba(0,229,255,0.16);
+
+  --text:         #ffffff;
+  --text-2:       #b0b0b0;
+
+  --hairline:     rgba(255,255,255,0.07);
+  --grid:         rgba(255,255,255,0.06);
+  --axis:         rgba(255,255,255,0.85);
+
+  --ok:           #4fe08a;
+  --ok-wash:      rgba(79,224,138,0.14);
+  --warn:         #ff6b6b;
+  --warn-wash:    rgba(255,107,107,0.14);
+
+  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  padding: clamp(16px, 4vw, 40px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+
+h1 {
+  font-size: clamp(28px, 4.6vw, 46px);
+  font-weight: 700; line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0; color: var(--text); text-wrap: balance;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0;
+  }
+}
+.eyebrow {
+  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); margin: 0 0 6px;
+}
+.lede { font-size: clamp(15px, 1.9vw, 19px); color: var(--text-2); max-width: 62ch; margin: 12px 0 0; }
+p { margin: 0; }
+.small { font-size: clamp(13px, 1.55vw, 16px); color: var(--text-2); }
+.small b { color: var(--text); }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 8px; margin: 26px 0 18px; flex-wrap: wrap; }
+.tab {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 17px); font-weight: 500;
+  color: var(--text-2); background: var(--surface); cursor: pointer;
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 11px 22px; min-height: 46px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.tab:hover { border-color: var(--accent-line); color: var(--text); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tab[aria-selected="true"] {
+  background: var(--accent-wash); border-color: var(--accent); color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+.tabpanel[hidden] { display: none !important; }
+[hidden] { display: none !important; }
+
+/* ---------- cards ---------- */
+.card {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); padding: clamp(18px, 2.6vw, 28px);
+  box-shadow: var(--shadow-card);
+}
+.card + .card { margin-top: 18px; }
+
+/* ---------- the instrument ---------- */
+.instrument {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.1fr) minmax(280px, 0.9fr);
+  gap: 20px;
+}
+@media (max-width: 820px) { .instrument { grid-template-columns: 1fr; } }
+
+.screen, .panel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+.screen { padding: 16px; }
+.screen svg { display: block; width: 100%; height: auto; }
+.panel { padding: 20px 22px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.legend i { display: inline-block; width: 26px; height: 0; vertical-align: middle; margin-right: 6px; }
+.legend .old { border-top: 2px dashed var(--text-2); }
+.legend .new { border-top: 3px solid var(--accent); }
+
+.readout { display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--hairline); }
+.readout .eq { font-family: var(--mono); font-size: clamp(15px, 1.7vw, 18px); font-variant-numeric: tabular-nums; color: var(--text); overflow-wrap: anywhere; }
+.readout .eq.also { font-size: 13.5px; color: var(--text-2); }
+.lbl {
+  display: block; margin-bottom: 3px;
+  font-family: var(--font); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+}
+
+.group { display: flex; flex-direction: column; gap: 9px; }
+.btnrow { display: flex; gap: 7px; flex-wrap: wrap; }
+.btnrow button {
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  padding: 9px 15px; border-radius: 50px; min-height: 40px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-lift); color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.btnrow button:hover { border-color: var(--accent-line); }
+.btnrow button.active { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+.btnrow button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.sliders { display: flex; flex-direction: column; gap: 14px; }
+.slider-row label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-2); }
+.slider-row .val { font-family: var(--mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+/* ---------- buttons ---------- */
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+button.btn {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 16px); font-weight: 600;
+  cursor: pointer; color: var(--ground); background: var(--accent);
+  border: 1px solid var(--accent); border-radius: 50px;
+  padding: 10px 22px; min-height: 44px;
+  box-shadow: var(--shadow-glow);
+  transition: transform .15s ease, filter .15s ease;
+}
+button.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+button.btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+button.btn.ghost { background: var(--surface-lift); color: var(--text); border-color: var(--hairline); box-shadow: none; }
+button.btn.ghost:hover { border-color: var(--accent-line); }
+button.btn.ghost[aria-pressed="true"] { background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+
+/* ---------- the Cambridge description ---------- */
+.steps { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.steps li { display: flex; gap: 12px; align-items: center; font-size: clamp(14px, 1.65vw, 17px); color: var(--text); }
+.steps li.none { color: var(--text-2); }
+.steps .n {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent);
+}
+.steps b { color: var(--accent); font-weight: 600; }
+.hint { font-size: 13px; color: var(--text-2); }
+.hint b { color: var(--text); }
+.masked { font-family: var(--mono); font-size: 14px; color: var(--text-2); border: 1px dashed var(--accent-line); border-radius: 14px; padding: 12px 14px; }
+
+/* a column vector, drawn with CSS so the tool needs no math library */
+.vec {
+  display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle;
+  position: relative; padding: 1px 0.55em; margin: 0 0.15em;
+  font-family: var(--mono); font-size: 0.92em; line-height: 1.12; font-variant-numeric: tabular-nums;
+}
+.vec::before, .vec::after { content: ''; position: absolute; top: 0; bottom: 0; width: 0.32em; border: 2px solid currentColor; }
+.vec::before { left: 0; border-right: none; border-radius: 0.55em 0 0 0.55em; }
+.vec::after { right: 0; border-left: none; border-radius: 0 0.55em 0.55em 0; }
+
+/* ---------- where the points went ---------- */
+.pts { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+.pts th, .pts td { border-bottom: 1px solid var(--hairline); padding: 6px 4px; text-align: left; font-weight: 500; }
+.pts th { color: var(--text-2); font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+.pts td.to { color: var(--accent); }
+.pts td.off { color: var(--text-2); }
+.pts .tag { color: var(--text-2); font-size: 11.5px; }
+.rule { font-family: var(--mono); font-size: 14px; color: var(--text); background: var(--surface-lift); border: 1px solid var(--hairline); border-radius: 12px; padding: 8px 12px; overflow-wrap: anywhere; }
+
+/* ---------- order tab ---------- */
+.pickers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 820px) { .pickers { grid-template-columns: 1fr; } }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+@media (max-width: 700px) { .pair { grid-template-columns: 1fr; } }
+.pair .screen { display: flex; flex-direction: column; gap: 12px; }
+.pair h2 { font-size: clamp(15px, 1.8vw, 18px); font-weight: 600; margin: 0; }
+.pair h2 span { color: var(--accent); }
+.result {
+  font-family: var(--mono); font-size: clamp(15px, 1.8vw, 18px); font-weight: 700; font-variant-numeric: tabular-nums;
+  color: var(--accent); background: var(--accent-wash); border: 1px solid var(--accent-line);
+  border-radius: 14px; padding: 10px 14px; box-shadow: var(--shadow-glow); overflow-wrap: anywhere;
+}
+.trail { font-family: var(--mono); font-size: 13px; color: var(--text-2); line-height: 1.8; }
+.trail b { color: var(--text); font-weight: 500; white-space: nowrap; }
+.movehelp { font-size: 12.5px; color: var(--text-2); min-height: 1.5em; }
+
+.verdict {
+  margin-top: 18px; border-radius: 16px; padding: 16px 20px;
+  border: 1px solid var(--hairline); background: var(--surface-lift);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.verdict.same { border-color: var(--ok); background: var(--ok-wash); }
+.verdict.diff { border-color: var(--warn); background: var(--warn-wash); }
+.verdict .head { font-weight: 700; font-size: clamp(16px, 2vw, 20px); }
+.verdict.same .head { color: var(--ok); }
+.verdict.diff .head { color: var(--warn); }
+.verdict .why { font-size: clamp(13.5px, 1.6vw, 16px); color: var(--text); }
+
+/* ---------- notes and links ---------- */
+.note { margin-top: 18px; border: 1px dashed var(--accent-line); border-radius: var(--radius); padding: 16px 20px; color: var(--text-2); font-size: clamp(13.5px, 1.55vw, 15.5px); display: flex; flex-direction: column; gap: 8px; }
+.note b { color: var(--text); }
+.backlinks { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
+.chip {
+  display: inline-block; font-size: clamp(13px, 1.5vw, 16px); font-weight: 500;
+  color: var(--accent); background: var(--accent-wash);
+  border: 1px solid var(--accent-line); border-radius: 50px;
+  padding: 10px 20px; text-decoration: none;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+.chip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  button.btn, .tab, .btnrow button, .chip { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">9709 Pure 1 &middot; 1.2 Functions &middot; Sessions 4 and 5</p>
+  <h1>Transformation Explorer</h1>
+  <p class="lede">Every change to a graph is a translation, a stretch or a reflection. <b>Explore</b> lets you set all four numbers in y = a&thinsp;f(b(x + c)) + d, watch each marked point travel, and read the description the way Cambridge marks it. <b>Order matters</b> does two moves in both orders so you can see when the answer changes.</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-explore" role="tab" aria-selected="true" aria-controls="panel-explore" type="button">Explore</button>
+    <button class="tab" id="tab-order" role="tab" aria-selected="false" aria-controls="panel-order" type="button">Order matters</button>
+  </div>
+
+<!-- ============ EXPLORE ============ -->
+  <section class="tabpanel" id="panel-explore" role="tabpanel" aria-labelledby="tab-explore">
+    <div class="instrument">
+      <div class="screen">
+        <svg id="plot" viewBox="0 0 600 600" role="img" aria-label="The original curve dashed and the transformed curve solid, with marked points on each"></svg>
+        <div class="legend"><span><i class="old"></i>y = f(x)</span><span><i class="new"></i>the new curve</span><span>hollow dot &rarr; filled dot</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="group">
+          <span class="lbl">Start from</span>
+          <div class="btnrow" id="baseButtons"></div>
+          <span class="hint" id="baseName"></span>
+        </div>
+
+        <div class="readout">
+          <div class="eq"><span class="lbl">New equation</span><span id="eqLine"></span></div>
+          <div class="eq also" id="alsoLine"></div>
+        </div>
+
+        <div class="sliders">
+          <div class="slider-row">
+            <label for="sa"><span>a &middot; multiplies the outside</span><span class="val" id="va"></span></label>
+            <input type="range" id="sa" min="0" max="7" step="1" value="5">
+          </div>
+          <div class="slider-row">
+            <label for="sb"><span>b &middot; multiplies x inside</span><span class="val" id="vb"></span></label>
+            <input type="range" id="sb" min="0" max="5" step="1" value="4">
+          </div>
+          <div class="slider-row">
+            <label for="sc"><span>c &middot; added to x inside</span><span class="val" id="vc"></span></label>
+            <input type="range" id="sc" min="-4" max="4" step="1" value="0">
+          </div>
+          <div class="slider-row">
+            <label for="sd"><span>d &middot; added outside</span><span class="val" id="vd"></span></label>
+            <input type="range" id="sd" min="-5" max="5" step="1" value="0">
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn ghost" id="predictBtn" type="button" aria-pressed="false">Predict first: off</button>
+          <button class="btn ghost" id="randomBtn" type="button">Give me one</button>
+          <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+          <button class="btn" id="showBtn" type="button" hidden>Show the answer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <p class="eyebrow" style="margin-bottom:12px">Describe it fully</p>
+      <div id="descBox">
+        <ol class="steps" id="steps"></ol>
+        <p class="hint" id="orderHint" style="margin-top:12px"></p>
+        <p class="hint" id="altHint" style="margin-top:8px"></p>
+      </div>
+      <div class="masked" id="descMask" hidden>Say the description out loud first: the type, the size, and the direction or axis. Then tap Show the answer.</div>
+    </div>
+
+    <div class="card">
+      <p class="eyebrow" style="margin-bottom:12px">Where the marked points went</p>
+      <div class="rule" id="ruleLine"></div>
+      <table class="pts" id="ptsTable" style="margin-top:12px"></table>
+      <p class="hint" id="ptsHint" style="margin-top:10px"></p>
+    </div>
+  </section>
+
+<!-- ============ ORDER MATTERS ============ -->
+  <section class="tabpanel" id="panel-order" role="tabpanel" aria-labelledby="tab-order" hidden>
+    <div class="card">
+      <p class="small" style="margin-bottom:18px">Pick two moves. The left graph does <b>A, then B</b>. The right graph does <b>B, then A</b>. Before you look at the verdict, decide whether the two final curves will match.</p>
+      <div class="pickers">
+        <div class="group">
+          <span class="lbl">Start from</span>
+          <div class="btnrow" id="oBase"></div>
+          <span class="hint" id="oBaseName"></span>
+        </div>
+        <div class="group">
+          <span class="lbl">Move A</span>
+          <div class="btnrow" id="oA"></div>
+          <span class="movehelp" id="oAhelp"></span>
+        </div>
+        <div class="group">
+          <span class="lbl">Move B</span>
+          <div class="btnrow" id="oB"></div>
+          <span class="movehelp" id="oBhelp"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pair">
+      <div class="screen">
+        <h2><span>A</span>, then <span>B</span></h2>
+        <svg id="plotAB" viewBox="0 0 600 600" role="img" aria-label="The curve after move A and then move B"></svg>
+        <div class="result" id="eqAB"></div>
+        <div class="trail" id="trailAB"></div>
+      </div>
+      <div class="screen">
+        <h2><span>B</span>, then <span>A</span></h2>
+        <svg id="plotBA" viewBox="0 0 600 600" role="img" aria-label="The curve after move B and then move A"></svg>
+        <div class="result" id="eqBA"></div>
+        <div class="trail" id="trailBA"></div>
+      </div>
+    </div>
+    <div class="legend"><span><i class="old"></i>y = f(x)</span><span><i class="new" style="opacity:.4"></i>after the first move</span><span><i class="new"></i>after both</span></div>
+
+    <div class="verdict" id="oVerdict">
+      <div class="head" id="oHead"></div>
+      <div class="why" id="oWhy"></div>
+    </div>
+
+    <div class="note">
+      <p><b>The rule underneath.</b> A move outside the bracket acts on y. A move inside acts on x. Moves that act on different letters never interfere, so their order is free. Two translations just add, and two stretches or reflections just multiply, so those pairs are free too.</p>
+      <p><b>Where the order bites.</b> A translation and a stretch or reflection that act on the <b>same</b> letter. Whichever comes second also acts on the first one's result. In an exam, a sequence is marked in the order you write it.</p>
+    </div>
+  </section>
+
+  <div class="backlinks">
+    <a class="chip" href="../session-04-transformations/">Back to the lesson</a>
+    <a class="chip" href="../../../math.html">All math</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* ---------------- tabs ---------------- */
+  var tabs = [$('tab-explore'), $('tab-order')];
+  var panels = [$('panel-explore'), $('panel-order')];
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o, j) {
+        o.setAttribute('aria-selected', i === j ? 'true' : 'false');
+        panels[j].hidden = i !== j;
+      });
+    });
+  });
+
+  /* ---------------- number formatting: real minus signs, never hyphens ---------------- */
+  function m(s) { return String(s).replace(/-/g, '−'); }
+  function num(n) {
+    n = Math.round(n * 1e6) / 1e6;
+    if (Object.is(n, -0) || Math.abs(n) < 1e-9) n = 0;
+    if (Number.isInteger(n)) return m(n);
+    if (Math.abs(n * 4 - Math.round(n * 4)) < 1e-9) return m(String(n));
+    var ds = [3, 6, 9, 12];
+    for (var i = 0; i < ds.length; i++) {
+      var k = n * ds[i];
+      if (Math.abs(k - Math.round(k)) < 1e-9) return m(Math.round(k) + '/' + ds[i]);
+    }
+    return m(n.toFixed(2));
+  }
+  /* a multiplier written in front of something: 1 is invisible, -1 is a bare minus */
+  function coef(v) {
+    if (v === 1) return '';
+    if (v === -1) return '−';
+    if (v === 0.5) return '½';
+    if (v === -0.5) return '−½';
+    return num(v);
+  }
+  function coefVal(v) { return v === 0.5 ? '\u00bd' : (v === -0.5 ? '\u2212\u00bd' : num(v)); }
+  function factor(v) { return v === 0.5 ? '½' : num(v); }
+  function plus(v) { return v > 0 ? ' + ' + num(v) : (v < 0 ? ' − ' + num(-v) : ''); }
+  function pt(x, y) { return '(' + num(x) + ', ' + num(y) + ')'; }
+  function vec(x, y) { return '<span class="vec" role="img" aria-label="column vector ' + num(x) + ', ' + num(y) + '"><span aria-hidden="true">' + num(x) + '</span><span aria-hidden="true">' + num(y) + '</span></span>'; }
+
+  /* ---------------- the starting curves ---------------- */
+  var BASES = {
+    sq:    { chip: 'x²', name: 'f(x) = x²', f: function (u) { return u * u; },
+             pts: [['vertex', 0, 0], ['', 1, 1], ['', 2, 4]] },
+    cube:  { chip: 'x³', name: 'f(x) = x³', f: function (u) { return u * u * u; },
+             pts: [['', -1, -1], ['', 0, 0], ['', 1, 1]] },
+    root:  { chip: '√x', name: 'f(x) = √x, which starts at x = 0', f: Math.sqrt, dom: function (u) { return u >= 0; }, edge: 0,
+             pts: [['start', 0, 0], ['', 1, 1], ['', 4, 2]] },
+    recip: { chip: '1/x', name: 'f(x) = 1/x, with asymptotes x = 0 and y = 0', f: function (u) { return 1 / u; }, dom: function (u) { return u !== 0; }, pole: true,
+             pts: [['', -1, -1], ['', 1, 1], ['', 2, 0.5]] },
+    cubic: { chip: 'a cubic', name: 'f(x) = ¼(x + 2)(x − 1)(x − 3), the Lab curve', f: function (u) { return (u + 2) * (u - 1) * (u - 3) / 4; },
+             pts: [['root', -2, 0], ['root', 1, 0], ['root', 3, 0], ['y-intercept', 0, 1.5]] }
+  };
+
+  /* A curve is always y = p f(qx + r) + s. The Explore sliders give p = a, q = b, r = bc, s = d. */
+  function yAt(T, base, x) {
+    var u = T.q * x + T.r;
+    if (base.dom && !base.dom(u)) return null;
+    var y = T.p * base.f(u) + T.s;
+    return isFinite(y) ? y : null;
+  }
+  function imageOf(T, x0, y0) { return [(x0 - T.r) / T.q, T.p * y0 + T.s]; }
+
+  /* ---------------- a numbered plot, shared by both tabs ---------------- */
+  function Plot(svg, R) {
+    var W = 600;
+    function X(x) { return (x + R) / (2 * R) * W; }
+    function Y(y) { return W - (y + R) / (2 * R) * W; }
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      (parent || svg).appendChild(e);
+      return e;
+    }
+    var id = 'clip' + svg.id;
+    var defs = el('defs', {});
+    var cp = el('clipPath', { id: id }, defs);
+    el('rect', { x: 0, y: 0, width: W, height: W }, cp);
+    el('rect', { x: 0, y: 0, width: W, height: W, rx: 14, fill: '#0f0f0f' });
+    var grid = el('g', {});
+    for (var i = -R; i <= R; i++) {
+      var axis = i === 0;
+      el('line', { x1: X(i), y1: 0, x2: X(i), y2: W, stroke: axis ? 'var(--axis)' : 'var(--grid)', 'stroke-width': axis ? 2 : 1 }, grid);
+      el('line', { x1: 0, y1: Y(i), x2: W, y2: Y(i), stroke: axis ? 'var(--axis)' : 'var(--grid)', 'stroke-width': axis ? 2 : 1 }, grid);
+      if (i !== 0 && i % 2 === 0 && Math.abs(i) < R) {
+        var tx = el('text', { x: X(i), y: Y(0) + 19, 'text-anchor': 'middle', 'font-size': 14, fill: 'var(--text-2)', 'font-family': 'JetBrains Mono, monospace' }, grid);
+        tx.textContent = m(i);
+        var ty = el('text', { x: X(0) - 8, y: Y(i) + 5, 'text-anchor': 'end', 'font-size': 14, fill: 'var(--text-2)', 'font-family': 'JetBrains Mono, monospace' }, grid);
+        ty.textContent = m(i);
+      }
+    }
+    var lx = el('text', { x: W - 14, y: Y(0) - 10, 'text-anchor': 'end', 'font-size': 17, 'font-style': 'italic', fill: 'var(--text)', 'font-family': 'Poppins, sans-serif' }, grid); lx.textContent = 'x';
+    var ly = el('text', { x: X(0) + 12, y: 22, 'font-size': 17, 'font-style': 'italic', fill: 'var(--text)', 'font-family': 'Poppins, sans-serif' }, grid); ly.textContent = 'y';
+    var layer = el('g', { 'clip-path': 'url(#' + id + ')' });
+
+    function clear() { while (layer.firstChild) layer.removeChild(layer.firstChild); }
+
+    /* sample the curve across the screen and break it wherever it leaves the domain or crosses a pole */
+    function curve(T, base, style) {
+      var N = 1400, lo = -R - 0.5, hi = R + 0.5, segs = [], cur = [], prevU = null;
+      function edgePoint() {
+        var x = (base.edge - T.r) / T.q;
+        return [x, T.p * base.f(base.edge) + T.s];
+      }
+      for (var k = 0; k <= N; k++) {
+        var x = lo + (hi - lo) * k / N, u = T.q * x + T.r, y = yAt(T, base, x);
+        var poleCross = base.pole && prevU !== null && (prevU * u <= 0);
+        if (y === null || Math.abs(y) > 60 || poleCross) {
+          if (cur.length) {
+            if (y === null && base.edge !== undefined && !poleCross) cur.push(edgePoint());
+            segs.push(cur);
+          }
+          cur = [];
+          if (poleCross && y !== null && Math.abs(y) <= 60) cur.push([x, y]);
+        } else {
+          if (!cur.length && k > 0 && base.edge !== undefined && prevU !== null && base.dom && !base.dom(prevU)) cur.push(edgePoint());
+          cur.push([x, y]);
+        }
+        prevU = u;
+      }
+      if (cur.length) segs.push(cur);
+      segs.forEach(function (s) {
+        if (s.length < 2) return;
+        var d = 'M ' + s.map(function (p) { return X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1); }).join(' L ');
+        var a = { d: d, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+        for (var key in style) a[key] = style[key];
+        el('path', a, layer);
+      });
+    }
+    function dot(x, y, filled, r) {
+      return el('circle', { cx: X(x), cy: Y(y), r: r || 7, fill: filled ? 'var(--accent)' : '#0f0f0f', stroke: filled ? 'var(--accent)' : 'var(--text-2)', 'stroke-width': 2.5 }, layer);
+    }
+    function link(x1, y1, x2, y2) {
+      el('line', { x1: X(x1), y1: Y(y1), x2: X(x2), y2: Y(y2), stroke: 'var(--accent-line)', 'stroke-width': 2, 'stroke-dasharray': '4 5' }, layer);
+    }
+    function vline(x, style) { el('line', { x1: X(x), y1: 0, x2: X(x), y2: W, stroke: style.stroke, 'stroke-width': 1.5, 'stroke-dasharray': '8 7', opacity: style.opacity || 1 }, layer); }
+    function hline(y, style) { el('line', { x1: 0, y1: Y(y), x2: W, y2: Y(y), stroke: style.stroke, 'stroke-width': 1.5, 'stroke-dasharray': '8 7', opacity: style.opacity || 1 }, layer); }
+    function inView(x, y) { return Math.abs(x) <= R && Math.abs(y) <= R; }
+    return { clear: clear, curve: curve, dot: dot, link: link, vline: vline, hline: hline, inView: inView };
+  }
+
+  var OLD = { stroke: 'var(--text-2)', 'stroke-width': 2.5, 'stroke-dasharray': '9 7', opacity: 0.85 };
+  var NEW = { stroke: 'var(--accent)', 'stroke-width': 3.5 };
+  var MID = { stroke: 'var(--accent)', 'stroke-width': 2.5, opacity: 0.4, 'stroke-dasharray': '3 6' };
+  var ID = { p: 1, q: 1, r: 0, s: 0 };
+
+  function chipRow(host, items, onPick, current) {
+    host.innerHTML = '';
+    items.forEach(function (it) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = it.label; b.dataset.k = it.k;
+      if (it.k === current) b.classList.add('active');
+      b.addEventListener('click', function () {
+        host.querySelectorAll('button').forEach(function (o) { o.classList.toggle('active', o === b); });
+        onPick(it.k);
+      });
+      host.appendChild(b);
+    });
+  }
+
+  /* ======================= EXPLORE ======================= */
+  var A_LIST = [-3, -2, -1, -0.5, 0.5, 1, 2, 3];
+  var B_LIST = [-2, -1, -0.5, 0.5, 1, 2];
+  var plot = Plot($('plot'), 8);
+  var S = { base: 'sq', predict: false, quiz: false, shown: false };
+  var sa = $('sa'), sb = $('sb'), sc = $('sc'), sd = $('sd');
+
+  function vals() {
+    return { a: A_LIST[+sa.value], b: B_LIST[+sb.value], c: +sc.value, d: +sd.value };
+  }
+  function inner(b, c) {
+    var bs = coef(b);
+    if (c === 0) return bs + 'x';
+    var xc = 'x' + plus(c);
+    if (b === 1) return xc;
+    return bs + '(' + xc + ')';
+  }
+  function describe(v) {
+    var out = [];
+    if (Math.abs(v.a) !== 1) out.push('Stretch in the <b>y-direction</b>, scale factor <b>' + factor(Math.abs(v.a)) + '</b>');
+    if (v.a < 0) out.push('<b>Reflection</b> in the <b>x-axis</b>');
+    if (Math.abs(v.b) !== 1) out.push('Stretch in the <b>x-direction</b>, scale factor <b>' + factor(1 / Math.abs(v.b)) + '</b>');
+    if (v.b < 0) out.push('<b>Reflection</b> in the <b>y-axis</b>');
+    if (v.c !== 0 || v.d !== 0) out.push('<b>Translation</b> by ' + vec(-v.c, v.d));
+    return out;
+  }
+  function hidden() { return (S.predict || S.quiz) && !S.shown; }
+
+  function renderExplore() {
+    var v = vals(), base = BASES[S.base];
+    var T = { p: v.a, q: v.b, r: v.b * v.c, s: v.d };
+    $('va').textContent = coefVal(v.a); $('vb').textContent = coefVal(v.b);
+    $('vc').textContent = num(v.c); $('vd').textContent = num(v.d);
+    $('baseName').textContent = base.name;
+
+    $('eqLine').textContent = 'y = ' + coef(v.a) + 'f(' + inner(v.b, v.c) + ')' + plus(v.d);
+    var bc = v.b * v.c;
+    $('alsoLine').textContent = (v.b !== 1 && v.c !== 0 && Number.isInteger(bc))
+      ? 'the same as y = ' + coef(v.a) + 'f(' + coef(v.b) + 'x' + plus(bc) + ')' + plus(v.d)
+      : '';
+
+    var hide = hidden();
+    $('showBtn').hidden = !hide;
+
+    /* the graph */
+    plot.clear();
+    if (base.pole) { plot.vline(0, { stroke: 'var(--text-2)', opacity: 0.5 }); plot.hline(0, { stroke: 'var(--text-2)', opacity: 0.5 }); }
+    plot.curve(ID, base, OLD);
+    if (!hide) {
+      if (base.pole) { plot.vline(-T.r / T.q, { stroke: 'var(--accent)', opacity: 0.55 }); plot.hline(T.s, { stroke: 'var(--accent)', opacity: 0.55 }); }
+      plot.curve(T, base, NEW);
+      base.pts.forEach(function (p) {
+        var im = imageOf(T, p[1], p[2]);
+        if (plot.inView(p[1], p[2]) && plot.inView(im[0], im[1])) plot.link(p[1], p[2], im[0], im[1]);
+      });
+    }
+    base.pts.forEach(function (p) { if (plot.inView(p[1], p[2])) plot.dot(p[1], p[2], false); });
+    if (!hide) base.pts.forEach(function (p) {
+      var im = imageOf(T, p[1], p[2]);
+      if (plot.inView(im[0], im[1])) plot.dot(im[0], im[1], true);
+    });
+
+    /* the description */
+    $('descBox').hidden = hide; $('descMask').hidden = !hide;
+    var steps = describe(v);
+    $('steps').innerHTML = steps.length
+      ? steps.map(function (s, i) { return '<li><span class="n">' + (i + 1) + '</span><span>' + s + '</span></li>'; }).join('')
+      : '<li class="none"><span class="n">0</span><span>No change yet. Move a slider.</span></li>';
+    var anyScale = Math.abs(v.a) !== 1 || v.a < 0 || Math.abs(v.b) !== 1 || v.b < 0;
+    var anyShift = v.c !== 0 || v.d !== 0;
+    $('orderHint').innerHTML = steps.length > 1
+      ? '<b>Written in this order</b>, stretches and reflections first, the translation reads straight off the equation: the number inside the bracket with its sign flipped, then the number added outside.'
+      : (steps.length === 1 ? '<b>One move, so one description.</b> Name the type, the size, and the direction or axis. Missing any one of those three costs a mark.' : '');
+    var alt = [-bc, v.d / v.a];
+    $('altHint').innerHTML = (anyScale && anyShift && (Math.abs(alt[0] + v.c) > 1e-9 || Math.abs(alt[1] - v.d) > 1e-9))
+      ? '<b>Translating first instead?</b> Then the vector has to be ' + vec(alt[0], alt[1]) + ', because the stretches and reflections that come after it act on the shift too.'
+      : '';
+
+    /* the points */
+    var xr = coef(1 / v.b) + 'x' + plus(-v.c), yr = coef(v.a) + 'y' + plus(v.d);
+    $('ruleLine').textContent = hide ? '(x, y) → ( ?, ? )' : '(x, y) → (' + xr + ', ' + yr + ')';
+    var rows = '<tr><th>starting point</th><th>goes to</th></tr>';
+    var offCount = 0;
+    base.pts.forEach(function (p) {
+      var im = imageOf(T, p[1], p[2]);
+      var off = !plot.inView(im[0], im[1]);
+      if (off) offCount++;
+      rows += '<tr><td>' + pt(p[1], p[2]) + (p[0] ? ' <span class="tag">' + p[0] + '</span>' : '') + '</td>' +
+        (hide ? '<td class="off">?</td>' : '<td class="' + (off ? 'off' : 'to') + '">' + pt(im[0], im[1]) + (off ? ' <span class="tag">off the grid</span>' : '') + '</td>') + '</tr>';
+    });
+    if (base.pole) rows += '<tr><td>asymptotes x = 0, y = 0</td>' + (hide ? '<td class="off">?</td>' : '<td class="to">x = ' + num(-T.r / T.q) + ', y = ' + num(T.s) + '</td>') + '</tr>';
+    $('ptsTable').innerHTML = rows;
+    $('ptsHint').innerHTML = hide ? '' :
+      (Math.abs(v.b) === 1 && v.c === 0 ? 'Every x stayed where it was: only the outside changed, so only the y-values moved. ' : '') +
+      (v.a === 1 && v.d === 0 ? 'Every y stayed where it was: only the inside changed, so only the x-values moved. ' : '') +
+      (offCount ? 'Points marked off the grid still exist; the window is just too small to show them.' : '');
+  }
+
+  chipRow($('baseButtons'), Object.keys(BASES).map(function (k) { return { k: k, label: BASES[k].chip }; }), function (k) { S.base = k; renderExplore(); }, S.base);
+  [sa, sb, sc, sd].forEach(function (s) { s.addEventListener('input', function () { S.quiz = false; S.shown = false; renderExplore(); }); });
+  $('predictBtn').addEventListener('click', function () {
+    S.predict = !S.predict; S.shown = false;
+    this.setAttribute('aria-pressed', S.predict ? 'true' : 'false');
+    this.textContent = 'Predict first: ' + (S.predict ? 'on' : 'off');
+    renderExplore();
+  });
+  $('showBtn').addEventListener('click', function () { S.shown = true; renderExplore(); });
+  $('resetBtn').addEventListener('click', function () { sa.value = 5; sb.value = 4; sc.value = 0; sd.value = 0; S.quiz = false; S.shown = false; renderExplore(); });
+  $('randomBtn').addEventListener('click', function () {
+    /* one or two moves, never "no change", and the answer stays hidden until Show */
+    function pick(n) { return Math.floor(Math.random() * n); }
+    do {
+      sa.value = 5; sb.value = 4; sc.value = 0; sd.value = 0;
+      var kinds = [0, 1, 2, 3].sort(function () { return Math.random() - 0.5; }).slice(0, 1 + pick(2));
+      kinds.forEach(function (k) {
+        if (k === 0) sa.value = [0, 1, 2, 3, 4, 6, 7][pick(7)];
+        if (k === 1) sb.value = [0, 1, 2, 3, 5][pick(5)];
+        if (k === 2) sc.value = [-4, -3, -2, -1, 1, 2, 3, 4][pick(8)];
+        if (k === 3) sd.value = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5][pick(10)];
+      });
+    } while (describe(vals()).length === 0);
+    S.quiz = true; S.shown = false; renderExplore();
+  });
+  renderExplore();
+
+  /* ======================= ORDER MATTERS ======================= */
+  /* each move rewrites y = p f(qx + r) + s, and says where a single point goes */
+  var MOVES = [
+    { k: 'up2',  label: 'f(x) + 2', on: 'y', kind: 't', say: 'translation by (0, 2): add 2 outside',
+      T: function (t) { return { p: t.p, q: t.q, r: t.r, s: t.s + 2 }; }, P: function (x, y) { return [x, y + 2]; } },
+    { k: 'dn3',  label: 'f(x) − 3', on: 'y', kind: 't', say: 'translation by (0, −3): subtract 3 outside',
+      T: function (t) { return { p: t.p, q: t.q, r: t.r, s: t.s - 3 }; }, P: function (x, y) { return [x, y - 3]; } },
+    { k: 'l2',   label: 'f(x + 2)', on: 'x', kind: 't', say: 'translation by (−2, 0): every x becomes x + 2',
+      T: function (t) { return { p: t.p, q: t.q, r: t.r + 2 * t.q, s: t.s }; }, P: function (x, y) { return [x - 2, y]; } },
+    { k: 'r3',   label: 'f(x − 3)', on: 'x', kind: 't', say: 'translation by (3, 0): every x becomes x − 3',
+      T: function (t) { return { p: t.p, q: t.q, r: t.r - 3 * t.q, s: t.s }; }, P: function (x, y) { return [x + 3, y]; } },
+    { k: 'ys3',  label: '3f(x)', on: 'y', kind: 'm', say: 'stretch in the y-direction, scale factor 3: multiply outside by 3',
+      T: function (t) { return { p: 3 * t.p, q: t.q, r: t.r, s: 3 * t.s }; }, P: function (x, y) { return [x, 3 * y]; } },
+    { k: 'xs2',  label: 'f(2x)', on: 'x', kind: 'm', say: 'stretch in the x-direction, scale factor ½: every x becomes 2x',
+      T: function (t) { return { p: t.p, q: 2 * t.q, r: t.r, s: t.s }; }, P: function (x, y) { return [x / 2, y]; } },
+    { k: 'rx',   label: '−f(x)', on: 'y', kind: 'm', say: 'reflection in the x-axis: negate the outside',
+      T: function (t) { return { p: -t.p, q: t.q, r: t.r, s: -t.s }; }, P: function (x, y) { return [x, -y]; } },
+    { k: 'ry',   label: 'f(−x)', on: 'x', kind: 'm', say: 'reflection in the y-axis: every x becomes −x',
+      T: function (t) { return { p: t.p, q: -t.q, r: t.r, s: t.s }; }, P: function (x, y) { return [-x, y]; } }
+  ];
+  var O_BASES = {
+    sq:    { base: BASES.sq, track: [1, 1] },
+    cubic: { base: BASES.cubic, track: [-1, 2] },
+    root:  { base: BASES.root, track: [4, 2] }
+  };
+  var O = { base: 'sq', A: 'up2', B: 'ys3' };
+  var pAB = Plot($('plotAB'), 8), pBA = Plot($('plotBA'), 8);
+  function mv(k) { return MOVES.filter(function (x) { return x.k === k; })[0]; }
+  function eqOf(t) {
+    var q = t.q === 1 ? 'x' : (t.q === -1 ? '−x' : num(t.q) + 'x');
+    return 'y = ' + coef(t.p) + 'f(' + q + plus(t.r) + ')' + plus(t.s);
+  }
+  function drawOrder(P, first, second, trailId, eqId) {
+    var ob = O_BASES[O.base], base = ob.base;
+    var t1 = first.T(ID), t2 = second.T(t1);
+    var p0 = ob.track, p1 = first.P(p0[0], p0[1]), p2 = second.P(p1[0], p1[1]);
+    P.clear();
+    P.curve(ID, base, OLD);
+    P.curve(t1, base, MID);
+    P.curve(t2, base, NEW);
+    if (P.inView(p0[0], p0[1]) && P.inView(p1[0], p1[1])) P.link(p0[0], p0[1], p1[0], p1[1]);
+    if (P.inView(p1[0], p1[1]) && P.inView(p2[0], p2[1])) P.link(p1[0], p1[1], p2[0], p2[1]);
+    if (P.inView(p0[0], p0[1])) P.dot(p0[0], p0[1], false);
+    if (P.inView(p1[0], p1[1])) P.dot(p1[0], p1[1], false, 5).setAttribute('stroke', 'var(--accent-line)');
+    if (P.inView(p2[0], p2[1])) P.dot(p2[0], p2[1], true);
+    $(eqId).textContent = eqOf(t2);
+    $(trailId).innerHTML = 'follow one point: <b>' + pt(p0[0], p0[1]) + '</b> → ' + first.label + ' → <b>' + pt(p1[0], p1[1]) + '</b> → ' + second.label + ' → <b>' + pt(p2[0], p2[1]) + '</b>';
+    return t2;
+  }
+  function sameCurve(t, u, base) {
+    for (var i = 0; i <= 200; i++) {
+      var x = -8 + 16 * i / 200, a = yAt(t, base, x), b = yAt(u, base, x);
+      if ((a === null) !== (b === null)) return false;
+      if (a !== null && Math.abs(a - b) > 1e-6) return false;
+    }
+    return true;
+  }
+  function renderOrder() {
+    var A = mv(O.A), B = mv(O.B), base = O_BASES[O.base].base;
+    $('oBaseName').textContent = base.name.replace(', the Lab curve', '');
+    $('oAhelp').textContent = A.say; $('oBhelp').textContent = B.say;
+    var tAB = drawOrder(pAB, A, B, 'trailAB', 'eqAB');
+    var tBA = drawOrder(pBA, B, A, 'trailBA', 'eqBA');
+    var same = sameCurve(tAB, tBA, base);
+    var box = $('oVerdict');
+    box.className = 'verdict ' + (same ? 'same' : 'diff');
+    $('oHead').textContent = same ? 'Same curve either way.' : 'Different curves. The order changed the answer.';
+    var why;
+    if (A.k === B.k) why = 'It is the same move twice, so there is nothing to swap.';
+    else if (A.on !== B.on) why = 'One move acts on ' + A.on + ' and the other acts on ' + B.on + '. Moves on different letters never interfere, so the order is free.';
+    else if (A.kind === 't' && B.kind === 't') why = 'Two translations in the same direction just add up, so the order is free.';
+    else if (A.kind === 'm' && B.kind === 'm') why = 'Two stretches or reflections in the same direction just multiply, so the order is free.';
+    else if (A.on === 'y') why = 'Both moves act on y, outside the bracket. When the stretch or reflection comes second, it acts on the translation as well: compare the numbers added at the end of the two equations.';
+    else why = 'Both moves act on x, inside the bracket. When the stretch or reflection comes second, it acts on the shift as well: compare the numbers inside the two brackets. The followed point lands in a different place too.';
+    if (same && A.k !== B.k && A.on === B.on && A.kind !== B.kind) why = 'For this particular curve the two orders happen to meet, but in general they do not. Try another starting curve.';
+    $('oWhy').textContent = why;
+  }
+  chipRow($('oBase'), Object.keys(O_BASES).map(function (k) { return { k: k, label: O_BASES[k].base.chip }; }), function (k) { O.base = k; renderOrder(); }, O.base);
+  chipRow($('oA'), MOVES, function (k) { O.A = k; renderOrder(); }, O.A);
+  chipRow($('oB'), MOVES, function (k) { O.B = k; renderOrder(); }, O.B);
+  renderOrder();
+
+  /* test hooks */
+  window.__tx = {
+    set: function (o) { if (o.base) document.querySelector('#baseButtons [data-k="' + o.base + '"]').click();
+      if (o.a !== undefined) sa.value = A_LIST.indexOf(o.a); if (o.b !== undefined) sb.value = B_LIST.indexOf(o.b);
+      if (o.c !== undefined) sc.value = o.c; if (o.d !== undefined) sd.value = o.d; S.quiz = false; S.shown = false; renderExplore(); },
+    order: function (base, a, b) { document.querySelector('#oBase [data-k="' + base + '"]').click();
+      document.querySelector('#oA [data-k="' + a + '"]').click(); document.querySelector('#oB [data-k="' + b + '"]').click(); }
+  };
+})();
+</script>
+</body>
+</html>

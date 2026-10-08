@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Moving and Reshaping Graphs</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures on the move slides: one numbered graph per card, original dashed, new curve solid */
+    svg.tf { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; }
+    .slide:not(.duo) svg.tf { max-width: 360px; }
+  </style>
+</head>
+<body data-deck-name="1.2 · Session 4" data-help-note="In the Transformation Lab, pick a move, drag the slider, and predict before you tap Show.">
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.2 Functions · Session 4 of 5</p>
+  <h1>Moving and Reshaping Graphs</h1>
+  <p class="muted">Every change you can make to a graph is a translation, a stretch or a reflection. Each one has a rule for what it does to the equation, and Cambridge marks the words you use to describe it.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now: a real Specimen question</span><span class="t">5 min</span></div>
+    <div class="row"><span>Up, down, left, right: translations</span><span class="t">12 min</span></div>
+    <div class="row"><span>Stretching a graph, two directions</span><span class="t">10 min</span></div>
+    <div class="row"><span>Reflections, and which axis is the mirror</span><span class="t">5 min</span></div>
+    <div class="row"><span>The Transformation Lab</span><span class="t">8 min</span></div>
+    <div class="row"><span>How Cambridge wants it described, practice, exit ticket</span><span class="t">15 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min · Specimen Paper 1, <span class="lit">Q5(a)</span></p>
+  <h2>Have a go before we have a rule. Tap to check.</h2>
+  <div class="card">
+    <p style="margin:0">The curve \(y = x^2 + 3x + 4\) is translated by \(\begin{pmatrix} 2 \\ 0 \end{pmatrix}\). Find and simplify the equation of the translated curve. <span class="marks">[2]</span></p>
+    <p class="small" style="margin:0"><b>Reading the vector:</b> top number is across (+ right, − left), bottom number is up (+ up, − down). So this one means right 2, up 0.</p>
+  </div>
+  <div class="check" tabindex="0">
+    <div class="math">Write the new equation, then simplify.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">every \(x\) in the equation becomes \((x - 2)\):</span>&nbsp; \(y = (x - 2)^2 + 3(x - 2) + 4\)</div>
+      <div class="math small"><span class="lbl">expand each bracket:</span>&nbsp; \(y = x^2 - 4x + 4 + 3x - 6 + 4\)</div>
+      <div class="math small result">\(y = x^2 - x + 2\)</div>
+    </div>
+  </div>
+  <p class="small muted">Mark scheme: M1 for replacing \(x\) with \((x - 2)\), A1 for the simplified equation. Moving the curve <em>right</em> 2 put a <em>minus</em> 2 in the bracket. By the end of slide 5 you will know why.</p>
+</section>
+
+<!-- 3 · the frame -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 1 of 9 · two places</p>
+  <h2>There are two places to change a function: outside the bracket and inside it.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Outside the bracket</p>
+        <p class="small">Something added, multiplied or negated <b>after</b> \(f\) has produced its output. It changes the output, the \(y\) value.</p>
+        <div class="math small">\(f(x) + 3\) &nbsp;·&nbsp; \(3f(x)\) &nbsp;·&nbsp; \(-f(x)\)</div>
+        <p class="small">It does what you expect.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">Inside the bracket</p>
+        <p class="small">Something done to \(x\) <b>before</b> \(f\) sees it. It changes the input, the \(x\) value.</p>
+        <div class="math small">\(f(x + 3)\) &nbsp;·&nbsp; \(f(3x)\) &nbsp;·&nbsp; \(f(-x)\)</div>
+        <p class="small">It does the opposite of what you expect. Slides 5 and 7 show why.</p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">Every one of the six moves today sits in one of those two places. Work out where the change is and you already know which direction it acts in.</p>
+</section>
+
+<!-- 4 · vertical translation -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 2 of 9 · outside the bracket</p>
+  <h2>Adding to \(f(x)\) lifts every point.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Take \(f(x) = x^2\) and add 3 to every output</p>
+        <div class="math small frag"><span class="lbl">the point with \(x = 1\):</span>&nbsp; \(f(1) = 1\) &nbsp;→&nbsp; \(f(1) + 3 = 4\), so \((1, 1)\) moves to \((1, 4)\)</div>
+        <div class="math small frag"><span class="lbl">the point with \(x = 2\):</span>&nbsp; \(f(2) = 4\) &nbsp;→&nbsp; \(f(2) + 3 = 7\), so \((2, 4)\) moves to \((2, 7)\)</div>
+        <p class="small frag">The inputs did not change, so every \(x\)-value stays put. Every output grew by 3, so every point rises 3.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="sq3" data-x="-4,4" data-y="-2,12" data-step="2" data-mv="1,1>1,4;-1,1>-1,4;2,4>2,7" aria-label="The parabola y equals x squared and the same parabola shifted up 3"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">\(y = f(x) + a\) is a translation by \(\begin{pmatrix} 0 \\ a \end{pmatrix}\): across 0, up \(a\). Here \(a = 3\), so up 3. A negative \(a\) moves it down.</div>
+</section>
+
+<!-- 5 · horizontal translation -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 3 of 9 · inside the bracket</p>
+  <h2>Adding inside the bracket slides the graph sideways, and the direction feels backwards.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(f(x) = x^2\), and a new function \(g(x) = f(x - 3) = (x - 3)^2\)</p>
+        <div class="math small frag"><span class="lbl">1 · the old lowest point:</span>&nbsp; \(f(0) = 0\), so the input 0 did the job, at \((0, 0)\)</div>
+        <div class="math small frag"><span class="lbl">2 · when does \(g\) reach 0?</span>&nbsp; \((x - 3)^2 = 0\) &nbsp;→&nbsp; \(x - 3 = 0\) &nbsp;→&nbsp; \(x = 3\)</div>
+        <div class="math small frag"><span class="lbl">3 · so the lowest point is now at:</span>&nbsp; \((3, 0)\), which is <b>right</b> 3</div>
+        <p class="small frag">Ask "what input does the job the old input used to do?" To make \(x - 3\) equal 0, \(x\) has to be 3, so everything shifted right.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="sq" data-b="sqr3" data-x="-3,7" data-y="-2,10" data-step="2" data-mv="0,0>3,0;1,1>4,1" aria-label="The parabola y equals x squared and the same parabola shifted right 3"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">\(y = f(x + a)\) is a translation by \(\begin{pmatrix} -a \\ 0 \end{pmatrix}\). &nbsp;\(f(x - 3)\) goes right 3. &nbsp;\(f(x + 3)\) goes left 3.</div>
+  <p class="frag small">Back to the Do Now: the vector said right 2, so every \(x\) became \((x - 2)\). Same rule.</p>
+</section>
+
+<!-- 6 · vertical stretch -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 9 · outside the bracket</p>
+  <h2>Multiplying \(f(x)\) stretches the graph up and down. The roots stay where they are.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(f(x) = x^2 - 4\), and \(3f(x) = 3x^2 - 12\)</p>
+        <div class="math small frag"><span class="lbl">a point at height 5 (where \(x = 3\)):</span>&nbsp; \(f(3) = 5\) &nbsp;→&nbsp; \(3f(3) = 15\)</div>
+        <div class="math small frag"><span class="lbl">the lowest point (where \(x = 0\)):</span>&nbsp; \(f(0) = -4\) &nbsp;→&nbsp; \(3f(0) = -12\)</div>
+        <div class="math small frag"><span class="lbl">a root (where \(x = 2\)):</span>&nbsp; \(f(2) = 0\) &nbsp;→&nbsp; \(3f(2) = 3 \times 0 = 0\)</div>
+        <p class="small frag">Heights are multiplied by 3. A height of 0 times 3 is still 0, so the points on the \(x\)-axis do not move.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="t" data-b="t3" data-x="-4,4" data-y="-13,16" data-step="4" data-mv="3,5>3,15;0,-4>0,-12;2,0>2,0" aria-label="The parabola y equals x squared minus 4 and the same parabola stretched by 3 in the y direction"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">\(y = af(x)\) is a stretch in the \(y\)-direction, scale factor \(a\). The \(x\)-intercepts do not move.</div>
+  <p class="frag small">A check for any sketch you draw: if you stretched in the \(y\)-direction and your roots moved, something is wrong.</p>
+</section>
+
+<!-- 7 · horizontal stretch -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 9 · inside the bracket</p>
+  <h2>Multiplying \(x\) inside the bracket squeezes the graph sideways, by the reciprocal.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">Same \(f(x) = x^2 - 4\), now \(f(2x) = (2x)^2 - 4 = 4x^2 - 4\)</p>
+        <div class="math small frag"><span class="lbl">roots of \(f(x)\):</span>&nbsp; \(x^2 - 4 = 0\) &nbsp;→&nbsp; \(x = \pm 2\)</div>
+        <div class="math small frag"><span class="lbl">roots of \(f(2x)\):</span>&nbsp; \(4x^2 - 4 = 0\) &nbsp;→&nbsp; \(x = \pm 1\)</div>
+        <div class="math small frag"><span class="lbl">why:</span>&nbsp; \(f(2x)\) is zero when \(2x = \pm 2\), so \(x = \pm 1\). Half as far from the \(y\)-axis.</div>
+        <p class="small frag">The graph got narrower. The scale factor is \(\tfrac{1}{2}\), the reciprocal of the 2 in the bracket. The \(y\)-intercept stays at \(-4\).</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="tf" viewBox="0 0 300 210" data-a="t" data-b="t2" data-x="-4,4" data-y="-6,12" data-step="2" data-mv="2,0>1,0;-2,0>-1,0" aria-label="The parabola y equals x squared minus 4 and the same parabola squeezed by a factor of one half in the x direction"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="math result frag">\(y = f(ax)\) is a stretch in the \(x\)-direction, scale factor \(\dfrac{1}{a}\). So \(f(\tfrac{x}{2})\) spreads out to scale factor 2.</div>
+  <p class="frag small">Inside the bracket, the \(x\)-direction always does the opposite of what you expect. That is the same backwards feeling as the translation.</p>
+</section>
+
+<!-- 8 · what stays put -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 6 of 9 · what stays put</p>
+  <h2>Which points stay put is how you tell the two stretches apart.</h2>
+  <div class="math">\(f(x) = x^2 - 4\) &nbsp;<span class="small muted">roots at \(\pm 2\), \(y\)-intercept \(-4\)</span></div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(3f(x)\) · stretch in the \(y\)-direction</p>
+        <div class="math small">\(3x^2 - 12\)</div>
+        <p class="small"><b>Roots:</b> still \(\pm 2\). <b>Stay put.</b></p>
+        <p class="small"><b>\(y\)-intercept:</b> \(-4\) became \(-12\). <b>Moves.</b></p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(f(2x)\) · stretch in the \(x\)-direction</p>
+        <div class="math small">\(4x^2 - 4\)</div>
+        <p class="small"><b>\(y\)-intercept:</b> still \(-4\). <b>Stays put.</b></p>
+        <p class="small"><b>Roots:</b> \(\pm 2\) became \(\pm 1\). <b>Move.</b></p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">A stretch keeps fixed the axis it stretches away from. A \(y\)-stretch pulls points away from the \(x\)-axis, so the \(x\)-axis points stay. An \(x\)-stretch pulls points away from the \(y\)-axis, so the \(y\)-axis point stays. When you are handed two graphs and asked what happened, check which intercepts moved.</p>
+</section>
+
+<!-- 9 · reflections -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 7 of 9 · minus signs</p>
+  <h2>A minus flips the graph over one of the axes. The axis you name is the mirror.</h2>
+  <div class="math">\(f(x) = x^2 + 2x\) &nbsp;<span class="small muted">the point \((1, 3)\) is on it, since \(1 + 2 = 3\)</span></div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(-f(x)\) · outside the bracket</p>
+        <div class="math small"><span class="lbl">the output flips sign:</span>&nbsp; \(-f(1) = -3\), so \((1, 3) \to (1, -3)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="r" data-b="rx" data-x="-4,4" data-y="-9,9" data-step="4" data-mv="1,3>1,-3" aria-label="The parabola y equals x squared plus 2x and its reflection in the x axis"></svg>
+        <p class="small"><b>Reflection in the \(x\)-axis.</b> The roots stay put.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <p class="eyebrow">\(f(-x)\) · inside the bracket</p>
+        <div class="math small"><span class="lbl">the input flips sign:</span>&nbsp; \(f(-x) = x^2 - 2x\), and at \(x = -1\) it gives 3, so \((1, 3) \to (-1, 3)\)</div>
+        <svg class="tf" viewBox="0 0 300 210" data-a="r" data-b="ry" data-x="-4,4" data-y="-3,9" data-step="2" data-mv="1,3>-1,3" aria-label="The parabola y equals x squared plus 2x and its reflection in the y axis"></svg>
+        <p class="small"><b>Reflection in the \(y\)-axis.</b> The \(y\)-intercept stays put.</p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">Name the line that stays fixed: the mirror. A strong script in Cambridge's own examples named the wrong axis on a stretch and lost a mark twice. Slide 11 shows what they wrote.</p>
+</section>
+
+<!-- 10 · lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 8 of 9 · the Lab</p>
+  <h2>Predict where the dots land. Then check.</h2>
+  <div class="lab">
+    <svg class="fig" id="tl-svg" viewBox="0 0 440 440" aria-label="A cubic graph, a transformed copy, and two marked points"></svg>
+    <div class="panel">
+      <div class="picks" id="tl-picks">
+        <button type="button" data-i="0" aria-pressed="true">\(f(x) + a\)</button>
+        <button type="button" data-i="1" aria-pressed="false">\(f(x + a)\)</button>
+        <button type="button" data-i="2" aria-pressed="false">\(a\,f(x)\)</button>
+        <button type="button" data-i="3" aria-pressed="false">\(f(ax)\)</button>
+        <button type="button" data-i="4" aria-pressed="false">\(-f(x)\)</button>
+        <button type="button" data-i="5" aria-pressed="false">\(f(-x)\)</button>
+      </div>
+      <label for="tl-a" id="tl-alab">Choose a</label>
+      <input type="range" id="tl-a" min="-4" max="4" step="1" value="2">
+      <div class="read" id="tl-read"></div>
+      <button type="button" class="toggle" id="tl-show" aria-pressed="false">Show the new curve</button>
+      <div class="verdict ok" id="tl-verdict"></div>
+    </div>
+  </div>
+  <p class="frag small">Gray dashed: the original \(y = f(x)\). The two hollow dots are a root, \((1, 0)\), and the \(y\)-intercept, \((0, 1.5)\). Say where each dot will go before you tap Show. Then try \(f(ax)\) with \(a = 2\) and check the root really moved to \(\tfrac{1}{2}\).</p>
+</section>
+
+<!-- 11 · exam language -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · Specimen Paper 1, <span class="lit">Q5(b)</span></p>
+  <h2>\(y = f(x)\) is transformed to \(y = 3f(-x)\). Describe fully the two single transformations combined. <span class="marks">[3]</span></h2>
+  <div class="math frag small"><span class="lbl">1 · the \(-x\) is inside the bracket, so it acts on \(x\):</span>&nbsp; \(x\) flips, so the mirror is the \(y\)-axis</div>
+  <div class="math frag result">A reflection in the \(y\)-axis.</div>
+  <div class="math frag small"><span class="lbl">2 · the 3 is outside the bracket, so it acts on \(y\):</span>&nbsp; every height is multiplied by 3</div>
+  <div class="math frag result">A stretch in the \(y\)-direction, scale factor 3.</div>
+  <p class="frag small">Three marks, three separate facts: the reflection, the \(y\)-direction, and the factor 3. Leave one out and you lose that mark.</p>
+  <div class="cols frag" style="margin-top:0.4vh">
+    <div>
+      <div class="card">
+        <p class="eyebrow">What Cambridge's own examples say</p>
+        <p class="quote">"Correct descriptions use the words 'stretch' and 'translation' and best practice uses column vectors to describe translations." <span class="small">Example Candidate Response, Paper 1</span></p>
+      </div>
+    </div>
+    <div>
+      <div class="card warnbox">
+        <p class="eyebrow">Where marks go</p>
+        <p class="small">A strong script (9 out of 11) used correct terminology but referred to the wrong axis. It lost 1 of 2 marks in each of two parts. A weaker script gave no direction for the stretch and scored 0 for it. "Move up" or "shift left" earn nothing.</p>
+      </div>
+    </div>
+  </div>
+  <p class="frag small">The June 2024 report asks for the same three things: <b>the type</b>, <b>the size</b> (a column vector or a factor), <b>and the direction or axis</b>.</p>
+</section>
+
+<!-- 12 · practice together -->
+<section class="slide">
+  <p class="eyebrow">Practice · together · 6 min</p>
+  <h2>Three different shapes. Tap to check.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">1.&nbsp; The curve \(y = \dfrac{1}{x}\) is translated 4 units down. Write the new equation.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">subtract 4 from every output:</span></div>
+          <div class="math small result">\(y = \dfrac{1}{x} - 4\), a translation by \(\begin{pmatrix} 0 \\ -4 \end{pmatrix}\)</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">2.&nbsp; The curve \(y = \sqrt{x}\) is translated by \(\begin{pmatrix} -3 \\ 0 \end{pmatrix}\). Write the new equation.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">left 3 means every \(x\) becomes \(x + 3\):</span></div>
+          <div class="math small result">\(y = \sqrt{x + 3}\)</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">3.&nbsp; The curve \(y = x^2 - 4x\) crosses the \(x\)-axis at \((0, 0)\) and \((4, 0)\). It is stretched in the \(y\)-direction, scale factor 3. Write the new equation. Where does it cross the \(x\)-axis?</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">multiply the whole output by 3:</span>&nbsp; \(y = 3(x^2 - 4x) = 3x^2 - 12x\)</div>
+          <div class="math small result">Still \((0, 0)\) and \((4, 0)\): a \(y\)-stretch does not move roots.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · practice on your own -->
+<section class="slide">
+  <p class="eyebrow">Practice · on your own · 5 min</p>
+  <h2>Now the inside-the-bracket moves. Tap to check when you're done.</h2>
+  <div class="cols">
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">4.&nbsp; The line \(y = 6 - 2x\) is stretched in the \(x\)-direction, scale factor 2. Write the new equation. Where does it cross the \(x\)-axis now?</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">scale factor 2 in \(x\) means \(x\) becomes \(\tfrac{x}{2}\):</span>&nbsp; \(y = 6 - 2\left(\dfrac{x}{2}\right)\)</div>
+          <div class="math small result">\(y = 6 - x\). The \(x\)-intercept moved from 3 to 6. The \(y\)-intercept stays at 6.</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">5.&nbsp; The curve \(y = x^3 + 2x^2\) is reflected in the \(y\)-axis. Write the new equation.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">replace \(x\) with \(-x\):</span>&nbsp; \(y = (-x)^3 + 2(-x)^2\)</div>
+          <div class="math small result">\(y = -x^3 + 2x^2\)</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="check" tabindex="0">
+        <div class="math small">6.&nbsp; The curve \(y = 2x^2 - x\) becomes \(y = 2x^2 + x\). Describe the single transformation fully.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">only the \(x\) changed sign, so the change is inside the bracket:</span></div>
+          <div class="math small result">A reflection in the \(y\)-axis.</div>
+          <div class="math small"><span class="lbl">check: an \(x\)-axis reflection would give:</span>&nbsp; \(-(2x^2 - x) = -2x^2 + x\)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="small muted">Q4 is a straight line on purpose: stretches move intercepts, and a line makes the intercepts easy to see.</p>
+</section>
+
+<!-- 14 · recap -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 9 of 9 · recap</p>
+  <h2>Three things to carry out of here.</h2>
+  <p class="frag"><b>Outside the bracket acts on \(y\), as you expect. Inside acts on \(x\), backwards.</b> \(f(x) + a\) goes up \(a\), \(f(x + a)\) goes left \(a\). \(af(x)\) stretches by \(a\), \(f(ax)\) by \(\tfrac{1}{a}\). \(-f(x)\) mirrors in the \(x\)-axis, \(f(-x)\) in the \(y\)-axis.</p>
+  <p class="frag"><b>Check what stayed put.</b> A \(y\)-stretch keeps the roots. An \(x\)-stretch keeps the \(y\)-intercept. A reflection keeps the points on its own mirror.</p>
+  <p class="frag"><b>Describe with three facts.</b> The type (translation, stretch or reflection), the size (a column vector or a scale factor), and the direction or axis. No "up" or "left".</p>
+</section>
+
+<!-- 15 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min</p>
+  <h2>Schoology, Paper 1 → 1.2 Functions.</h2>
+  <p>Four questions. The last one asks for your working, so write it out. It is open now and due tomorrow, Tuesday, at 11:59pm. You get two attempts, and the higher score counts.</p>
+  <div class="math result">Press Submit before you close the tab. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 16 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework · and where to practice more</p>
+  <h2>Before next class.</h2>
+  <ul>
+    <li>Redo any practice question you did not get to, and check it against what stayed put.</li>
+    <li class="frag"><b>Khan Academy:</b> the transformation lessons in your plan (lessons 12 to 14) cover translations, reflections and stretches.</li>
+  </ul>
+  <p class="frag"><a class="toolchip" href="../transformation-explorer/" target="_blank" rel="noopener">Transformation Explorer: set a, b, c and d, and read the description Cambridge marks</a></p>
+  <p class="frag small muted">Next session: two moves at once. When both act on \(y\), the order changes the answer.</p>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script>
+/* ---------- static figures: original dashed, new solid, points move along a thin line ---------- */
+(function () {
+  'use strict';
+  var M = '−';
+  var FN = {
+    sq:  function (x) { return x * x; },
+    sq3: function (x) { return x * x + 3; },
+    sqr3: function (x) { return (x - 3) * (x - 3); },
+    t:   function (x) { return x * x - 4; },
+    t3:  function (x) { return 3 * x * x - 12; },
+    t2:  function (x) { return 4 * x * x - 4; },
+    r:   function (x) { return x * x + 2 * x; },
+    rx:  function (x) { return -(x * x) - 2 * x; },
+    ry:  function (x) { return x * x - 2 * x; }
+  };
+  var clipN = 0;
+  function lab(v) { return v < 0 ? M + (-v) : String(v); }
+  [].slice.call(document.querySelectorAll('svg.tf')).forEach(function (svg) {
+    var W = 300, H = 210, P = 26;
+    var xr = svg.getAttribute('data-x').split(',').map(Number), yr = svg.getAttribute('data-y').split(',').map(Number);
+    var step = +svg.getAttribute('data-step') || 2, A = FN[svg.getAttribute('data-a')], B = FN[svg.getAttribute('data-b')];
+    function px(v) { return P + (v - xr[0]) / (xr[1] - xr[0]) * (W - 2 * P); }
+    function py(v) { return H - P - (v - yr[0]) / (yr[1] - yr[0]) * (H - 2 * P); }
+    var v, id = 'tfclip' + (++clipN), s = '<defs><clipPath id="' + id + '"><rect x="' + P + '" y="' + P + '" width="' + (W - 2 * P) + '" height="' + (H - 2 * P) + '"/></clipPath></defs>';
+    for (v = Math.ceil(xr[0]); v <= xr[1]; v++) s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.06)"/>';
+    for (v = Math.ceil(yr[0]); v <= yr[1]; v++) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.06)"/>';
+    s += '<line x1="' + px(xr[0]) + '" y1="' + py(0) + '" x2="' + px(xr[1]) + '" y2="' + py(0) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    s += '<line x1="' + px(0) + '" y1="' + py(yr[0]) + '" x2="' + px(0) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    for (v = Math.ceil(xr[0] / step) * step; v <= xr[1]; v += step) if (v !== 0) s += '<text x="' + px(v) + '" y="' + (py(0) + 13) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
+    for (v = Math.ceil(yr[0] / step) * step; v <= yr[1]; v += step) if (v !== 0) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + 3.5) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    function curve(F, stroke, extra) {
+      var d = '', i, n = 200;
+      for (i = 0; i <= n; i++) { var x = xr[0] + (xr[1] - xr[0]) * i / n; d += (i ? 'L' : 'M') + px(x).toFixed(1) + ' ' + py(F(x)).toFixed(1); }
+      return '<path d="' + d + '" fill="none" stroke="' + stroke + '" stroke-width="2.6" clip-path="url(#' + id + ')" ' + (extra || '') + '/>';
+    }
+    s += curve(A, '#b0b0b0', 'stroke-dasharray="6 5"') + curve(B, '#00e5ff');
+    (svg.getAttribute('data-mv') || '').split(';').forEach(function (m) {
+      if (!m) return;
+      var p = m.split('>'), a = p[0].split(',').map(Number), b = p[1].split(',').map(Number);
+      if (a[0] !== b[0] || a[1] !== b[1]) s += '<line x1="' + px(a[0]) + '" y1="' + py(a[1]) + '" x2="' + px(b[0]) + '" y2="' + py(b[1]) + '" stroke="#ffc46b" stroke-width="1.4" stroke-dasharray="3 3"/>';
+      s += '<circle cx="' + px(a[0]) + '" cy="' + py(a[1]) + '" r="4" fill="#0f0f0f" stroke="#b0b0b0" stroke-width="1.6"/>';
+      s += '<circle cx="' + px(b[0]) + '" cy="' + py(b[1]) + '" r="4.5" fill="#00e5ff"/>';
+    });
+    s += '<text x="' + (W - P + 2) + '" y="' + (py(0) - 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">x</text>';
+    s += '<text x="' + (px(0) + 5) + '" y="' + (P - 8) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">y</text>';
+    svg.innerHTML = s;
+  });
+})();
+
+/* ---------- Transformation Lab: one move at a time, predict before you look ----------
+   Base function f(x) = (x + 2)(x - 1)(x - 3)/4: asymmetric, so a reflection in the y-axis
+   and a reflection in the x-axis look different. Two tracked dots: the root (1, 0)
+   and the y-intercept (0, 1.5). Every readout uses a real minus sign. */
+(function () {
+  'use strict';
+  var svg = document.getElementById('tl-svg');
+  if (!svg) return;
+  var slider = document.getElementById('tl-a'), read = document.getElementById('tl-read'),
+      verdict = document.getElementById('tl-verdict'), showBtn = document.getElementById('tl-show'),
+      alab = document.getElementById('tl-alab');
+  var picks = [].slice.call(document.querySelectorAll('#tl-picks button'));
+  var M = '−';
+  function fmt(v) { var r = Math.round(v * 100) / 100; var s = Math.abs(r).toFixed(2).replace(/\.?0+$/, ''); return (r < 0 ? M : '') + s; }
+  function F(x) { return (x + 2) * (x - 1) * (x - 3) / 4; }
+  function sgn(a, s) { return (a < 0 ? M : '+') + ' ' + fmt(Math.abs(a)) + s; }
+  var MODES = [
+    { min: -4, max: 4, step: 1, def: 2,
+      g: function (a) { return function (x) { return F(x) + a; }; },
+      P: function (a) { return [1, a]; }, Q: function (a) { return [0, 1.5 + a]; },
+      eq: function (a) { return 'f(x) ' + (a < 0 ? M : '+') + ' ' + fmt(Math.abs(a)); },
+      say: function (a) { return a === 0 ? 'No change.' : 'Translation by (0, ' + fmt(a) + '). Outside the bracket, so it acts on y.'; } },
+    { min: -4, max: 4, step: 1, def: 2,
+      g: function (a) { return function (x) { return F(x + a); }; },
+      P: function (a) { return [1 - a, 0]; }, Q: function (a) { return [-a, 1.5]; },
+      eq: function (a) { return 'f(x ' + (a < 0 ? M : '+') + ' ' + fmt(Math.abs(a)) + ')'; },
+      say: function (a) { return a === 0 ? 'No change.' : 'Translation by (' + fmt(-a) + ', 0). Inside the bracket, so it goes the opposite way.'; } },
+    { min: 0.5, max: 3, step: 0.5, def: 2,
+      g: function (a) { return function (x) { return a * F(x); }; },
+      P: function () { return [1, 0]; }, Q: function (a) { return [0, 1.5 * a]; },
+      eq: function (a) { return fmt(a) + 'f(x)'; },
+      say: function (a) { return 'Stretch in the y-direction, scale factor ' + fmt(a) + '. The root stays put.'; } },
+    { min: 0.5, max: 3, step: 0.5, def: 2,
+      g: function (a) { return function (x) { return F(a * x); }; },
+      P: function (a) { return [1 / a, 0]; }, Q: function () { return [0, 1.5]; },
+      eq: function (a) { return 'f(' + fmt(a) + 'x)'; },
+      say: function (a) { return 'Stretch in the x-direction, scale factor 1/' + fmt(a) + ' = ' + fmt(1 / a) + '. The y-intercept stays put.'; } },
+    { g: function () { return function (x) { return -F(x); }; },
+      P: function () { return [1, 0]; }, Q: function () { return [0, -1.5]; },
+      eq: function () { return M + 'f(x)'; }, say: function () { return 'Reflection in the x-axis. The root stays put.'; } },
+    { g: function () { return function (x) { return F(-x); }; },
+      P: function () { return [-1, 0]; }, Q: function () { return [0, 1.5]; },
+      eq: function () { return 'f(' + M + 'x)'; }, say: function () { return 'Reflection in the y-axis. The y-intercept stays put.'; } }
+  ];
+  var mi = 0, showNew = false;
+  var LO = -8, HI = 8, S = 440, P0 = 26;
+  function px(v) { return P0 + (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function py(v) { return S - P0 - (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function path(fn) {
+    var d = '', pen = false, x, y;
+    for (x = LO; x <= HI + 0.001; x += 0.05) {
+      y = fn(x);
+      if (!isFinite(y) || Math.abs(y) > 12) { pen = false; continue; }
+      d += (pen ? 'L' : 'M') + px(x).toFixed(1) + ' ' + py(y).toFixed(1); pen = true;
+    }
+    return d;
+  }
+  function draw() {
+    var m = MODES[mi], has = m.min !== undefined, a = has ? parseFloat(slider.value) : 0, s = '', v;
+    for (v = LO; v <= HI; v++) {
+      var ax = v === 0;
+      s += '<line x1="' + px(v) + '" y1="' + py(LO) + '" x2="' + px(v) + '" y2="' + py(HI) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(v) + '" x2="' + px(HI) + '" y2="' + py(v) + '" stroke="' + (ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)') + '" stroke-width="' + (ax ? 1.6 : 1) + '"/>';
+      if (v % 2 === 0 && v !== 0) {
+        var t = v < 0 ? M + (-v) : String(v);
+        s += '<text x="' + px(v) + '" y="' + (py(0) + 16) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="middle">' + t + '</text>';
+        s += '<text x="' + (px(0) - 6) + '" y="' + (py(v) + 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="end">' + t + '</text>';
+      }
+    }
+    s += '<path d="' + path(F) + '" fill="none" stroke="#b0b0b0" stroke-width="2.6" stroke-dasharray="7 6"/>';
+    s += '<circle cx="' + px(1) + '" cy="' + py(0) + '" r="6.5" fill="#0f0f0f" stroke="#ffffff" stroke-width="2"/>';
+    s += '<circle cx="' + px(0) + '" cy="' + py(1.5) + '" r="6.5" fill="#0f0f0f" stroke="#ffffff" stroke-width="2"/>';
+    var Pp = m.P(a), Qp = m.Q(a);
+    if (showNew) {
+      s += '<path d="' + path(m.g(a)) + '" fill="none" stroke="#00e5ff" stroke-width="3.2"/>';
+      s += '<circle cx="' + px(Pp[0]) + '" cy="' + py(Pp[1]) + '" r="7" fill="#00e5ff"/>';
+      s += '<circle cx="' + px(Qp[0]) + '" cy="' + py(Qp[1]) + '" r="7" fill="#ffc46b"/>';
+    }
+    svg.innerHTML = s;
+    slider.style.visibility = has ? 'visible' : 'hidden'; alab.style.visibility = has ? 'visible' : 'hidden';
+    alab.textContent = has ? 'Choose a = ' + fmt(a) : '';
+    var h = '<span class="lw">new equation</span> &nbsp;<b>y = ' + m.eq(a) + '</b>';
+    if (showNew) {
+      h += '<br><span class="lw">root (1, 0)</span> &nbsp;→&nbsp; <span style="color:#00e5ff">(' + fmt(Pp[0]) + ', ' + fmt(Pp[1]) + ')</span>'
+        + '<br><span class="lw">y-intercept (0, 1.5)</span> &nbsp;→&nbsp; <span style="color:#ffc46b">(' + fmt(Qp[0]) + ', ' + fmt(Qp[1]) + ')</span>';
+    }
+    read.innerHTML = h;
+    if (showNew) { verdict.style.display = ''; verdict.className = 'verdict ok'; verdict.textContent = m.say(a); }
+    else { verdict.style.display = 'none'; read.innerHTML += '<br><span class="lw">Predict first: where does each hollow dot go?</span>'; }
+  }
+  picks.forEach(function (b) {
+    b.addEventListener('click', function () {
+      mi = +b.getAttribute('data-i');
+      var m = MODES[mi];
+      if (m.min !== undefined) { slider.min = m.min; slider.max = m.max; slider.step = m.step; slider.value = m.def; }
+      showNew = false; showBtn.setAttribute('aria-pressed', 'false'); showBtn.textContent = 'Show the new curve';
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () {
+    showNew = !showNew;
+    showBtn.setAttribute('aria-pressed', showNew ? 'true' : 'false');
+    showBtn.textContent = showNew ? 'Hide the new curve' : 'Show the new curve';
+    draw();
+  });
+  slider.addEventListener('input', draw);
+  draw();
+})();
+</script>
+
+</body>
+</html>
