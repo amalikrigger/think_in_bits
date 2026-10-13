@@ -29,7 +29,7 @@
     @media (max-width: 800px) { .three { grid-template-columns: 1fr; } }
   </style>
 </head>
-<body data-deck-name="1.3 · Session 1" data-help-note="Click any graph to enlarge it. Tap a practice question to check your answer.">
+<body data-deck-name="1.3 · Session 1" data-help-note="Click any graph to enlarge it. In the Bisector Lab, move A and B, pick a method, predict whether the line will be the perpendicular bisector, then tap Show. Tap a practice question to check your answer.">
 
 <!-- 1 · title -->
 <section class="slide active">
@@ -40,15 +40,15 @@
     <div class="row"><span>Do Now: gradient, midpoint and length</span><span class="t">5 min</span></div>
     <div class="row"><span>Three measurements and three forms of a line</span><span class="t">10 min</span></div>
     <div class="row"><span>Parallel and perpendicular lines, and where two lines meet</span><span class="t">8 min</span></div>
-    <div class="row"><span>The perpendicular bisector, and a 4-mark finish from June 2024</span><span class="t">12 min</span></div>
-    <div class="row"><span>Practice together, then on your own</span><span class="t">20 min</span></div>
-    <div class="row"><span>Exit ticket</span><span class="t">5 min</span></div>
+    <div class="row"><span>The perpendicular bisector, the Bisector Lab, and a 4-mark finish from June 2024</span><span class="t">14 min</span></div>
+    <div class="row"><span>Spot the mistake, practice together, then on your own</span><span class="t">13 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
   </div>
 </section>
 
 <!-- 2 · do now -->
 <section class="slide">
-  <p class="eyebrow">Do Now · 5 min</p>
+  <p class="eyebrow">Do Now · 5 min · no notes, no calculator</p>
   <h2>\(A(1, 2)\) and \(B(5, 10)\). Find the gradient of \(AB\), the midpoint of \(AB\), and the length of \(AB\).</h2>
   <p>Give the length in exact form. Sketch the two points first.</p>
   <div class="check" tabindex="0">
@@ -64,7 +64,7 @@
 
 <!-- 3 · three measurements -->
 <section class="slide duo">
-  <p class="eyebrow">Three measurements</p>
+  <p class="eyebrow">Direct instruction · 1 of 9 · three measurements</p>
   <h2>Gradient, midpoint and length, from two points \((x_1, y_1)\) and \((x_2, y_2)\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -93,7 +93,7 @@
 
 <!-- 4 · three forms -->
 <section class="slide duo">
-  <p class="eyebrow">The equation of a line</p>
+  <p class="eyebrow">Direct instruction · 2 of 9 · the equation of a line</p>
   <h2>One line, three ways to write it. Work in the first, convert at the end.</h2>
   <div class="math small">The line through \((-2, 4)\) with gradient \(\tfrac{5}{3}\).</div>
   <div class="cols" style="margin-top:0.4vh">
@@ -126,7 +126,7 @@
 
 <!-- 5 · parallel and perpendicular, and the trap -->
 <section class="slide duo">
-  <p class="eyebrow">Parallel and perpendicular</p>
+  <p class="eyebrow">Direct instruction · 3 of 9 · parallel and perpendicular</p>
   <h2>Parallel lines share a gradient. Perpendicular gradients multiply to \(-1\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -150,7 +150,7 @@
 
 <!-- 6 · intersection -->
 <section class="slide duo">
-  <p class="eyebrow">Where two lines meet</p>
+  <p class="eyebrow">Direct instruction · 4 of 9 · where two lines meet</p>
   <h2>The point where two lines cross satisfies both equations, so solve them simultaneously.</h2>
   <div class="math small">Find where \(x + 2y = 4\) and \(3x - y = 19\) meet.</div>
   <div class="cols" style="margin-top:0.4vh">
@@ -174,7 +174,7 @@
 
 <!-- 7 · perpendicular bisector -->
 <section class="slide duo">
-  <p class="eyebrow">The perpendicular bisector</p>
+  <p class="eyebrow">Direct instruction · 5 of 9 · the perpendicular bisector</p>
   <h2>The perpendicular bisector of \(AB\) cuts \(AB\) in half, at a right angle.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -192,9 +192,36 @@
   </div>
 </section>
 
+<!-- 8 · bisector lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 6 of 9 · the Bisector Lab</p>
+  <h2>Pick a method, predict, then show the line. Only one method always works.</h2>
+  <div class="lab">
+    <svg class="fig" id="bl-svg" viewBox="0 0 440 440" aria-label="Points A and B on a grid, the line AB, its midpoint, and a line built by the chosen method"></svg>
+    <div class="panel">
+      <div class="picks" id="bl-picks">
+        <button type="button" data-i="0" aria-pressed="true">Midpoint, flip and change sign</button>
+        <button type="button" data-i="1" aria-pressed="false">Midpoint, gradient of AB</button>
+        <button type="button" data-i="2" aria-pressed="false">Midpoint, flip only</button>
+        <button type="button" data-i="3" aria-pressed="false">Through A, flip and change sign</button>
+      </div>
+      <label for="bl-ax" id="bl-alab">A</label>
+      <input type="range" id="bl-ax" min="-6" max="6" step="1" value="-3">
+      <input type="range" id="bl-ay" min="-6" max="6" step="1" value="-2" aria-label="y-coordinate of A">
+      <label for="bl-bx" id="bl-blab">B</label>
+      <input type="range" id="bl-bx" min="-6" max="6" step="1" value="5">
+      <input type="range" id="bl-by" min="-6" max="6" step="1" value="2" aria-label="y-coordinate of B">
+      <div class="read" id="bl-read"></div>
+      <button type="button" class="toggle" id="bl-show" aria-pressed="false">Show the line</button>
+      <div class="verdict ok" id="bl-verdict"></div>
+    </div>
+  </div>
+  <p class="key"><span class="sw chord"></span>line \(AB\) &nbsp;&nbsp; <span class="sw ans"></span>the line your method builds &nbsp;&nbsp; Amber dot: a point on that line, used to test \(PA = PB\)</p>
+</section>
+
 <!-- 8 · worked example: the question and the picture -->
 <section class="slide duo">
-  <p class="eyebrow">June 2024 · Paper 12 · Q10(b)</p>
+  <p class="eyebrow">Direct instruction · 7 of 9 · June 2024 · Paper 12 · <span class="lit">Q10(b)</span></p>
   <h2>The curve is \(y = (5 - 2x)^{\frac{3}{2}} + 5\). Find the perpendicular bisector of \(AB\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -215,7 +242,7 @@
 
 <!-- 9 · worked example: the solution with marks -->
 <section class="slide duo">
-  <p class="eyebrow">June 2024 · Paper 12 · Q10(b) · the last 4 marks</p>
+  <p class="eyebrow">Direct instruction · 8 of 9 · <span class="lit">Q10(b)</span> · where the last 4 marks come from</p>
   <h2>Each line of working below earns one mark.</h2>
   <div class="agenda">
     <div class="row frag"><span><b>M1*</b> &nbsp;gradient of \(AB\): \(m_1 = \dfrac{32 - 6}{-2 - 2} = \dfrac{26}{-4} = -\dfrac{13}{2}\), &nbsp;so the perpendicular gradient is \(-\dfrac{1}{m_1} = \dfrac{2}{13}\)</span><span class="t">1 mark</span></div>
@@ -230,9 +257,40 @@
   </div>
 </section>
 
+<!-- spot the mistake -->
+<section class="slide">
+  <p class="eyebrow">Spot the mistake · 3 min</p>
+  <h2>Same June 2024 question, three answers. What is wrong with each? Tap to check.</h2>
+  <div class="math small">\(A(-2, 32)\), \(B(2, 6)\), and the gradient of the curve at \(B\) is \(-3\). Find the perpendicular bisector of \(AB\) as \(ax + by + c = 0\).</div>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">A.&nbsp; "The gradient at \(B\) is \(-3\), so the bisector has gradient \(\tfrac{1}{3}\). &nbsp;\(y - 19 = \tfrac{1}{3}x\), so \(x - 3y + 57 = 0\)."</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">which line is \(-3\) the gradient of?</span>&nbsp; the tangent at \(B\). The line \(AB\) is a different line.</div>
+        <div class="math small result">Wrong gradient. The bisector is perpendicular to \(AB\), whose gradient is \(-\tfrac{13}{2}\), so it needs \(\tfrac{2}{13}\).</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">B.&nbsp; "Gradient \(AB = -\tfrac{13}{2}\), so the bisector has gradient \(\tfrac{2}{13}\). &nbsp;\(y - 32 = \tfrac{2}{13}(x + 2)\), so \(2x - 13y + 420 = 0\)."</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">test the midpoint \((0, 19)\):</span>&nbsp; \(2(0) - 13(19) + 420 = 173\), so the midpoint is not on this line</div>
+        <div class="math small result">Wrong point. The line goes through \(A\). A bisector has to go through the midpoint.</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">C.&nbsp; "Gradient \(\tfrac{2}{13}\) through the midpoint \((0, 19)\), so \(y = \tfrac{2}{13}x + 19\)."</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">right line, but read the question:</span>&nbsp; it asks for \(ax + by + c = 0\) with integers</div>
+        <div class="math small result">Wrong form. It loses the A1. Multiply by 13 and move everything to one side: \(2x - 13y + 247 = 0\).</div>
+      </div>
+    </div>
+  </div>
+  <p class="small">These are the three mistakes the June 2024 examiner report describes for this question.</p>
+</section>
+
 <!-- 10 · guided practice -->
 <section class="slide duo">
-  <p class="eyebrow">Practice · together · 10 min</p>
+  <p class="eyebrow">Practice · together · 6 min</p>
   <h2>Sketch first. Give every equation as \(ax + by + c = 0\) with integers. Tap to check.</h2>
   <div class="three">
     <div class="check" tabindex="0">
@@ -268,7 +326,7 @@
 
 <!-- 11 · independent practice -->
 <section class="slide duo">
-  <p class="eyebrow">Practice · on your own · 10 min</p>
+  <p class="eyebrow">Practice · on your own · 4 min, finish at home</p>
   <h2>Your turn. Tap to check when you have a final answer.</h2>
   <div class="three">
     <div class="check" tabindex="0">
@@ -306,7 +364,7 @@
 
 <!-- 12 · recap -->
 <section class="slide">
-  <p class="eyebrow">Recap</p>
+  <p class="eyebrow">Direct instruction · 9 of 9 · recap</p>
   <h2>Four things to carry out of here.</h2>
   <p class="frag"><b>Gradient, midpoint and length are not in the formula booklet.</b> Know them, sketch first, and leave lengths as simplified surds.</p>
   <p class="frag"><b>Work in \(y - y_1 = m(x - x_1)\), and convert at the end.</b> "Integers" means clear every fraction and finish with "= 0".</p>
@@ -414,6 +472,109 @@
     svg.addEventListener('click', open);
     svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
   });
+})();
+/* ---------- Bisector Lab: build a line by one of four methods and test it with PA = PB ----------
+   Method 0 is the perpendicular bisector. Methods 1-3 are the documented mistakes: AB's own gradient,
+   flipping without changing sign, and going through A instead of the midpoint. Every readout uses U+2212. */
+(function () {
+  'use strict';
+  var svg = document.getElementById('bl-svg'); if (!svg) return;
+  var M = '−';
+  var ids = ['ax', 'ay', 'bx', 'by'], inp = {};
+  ids.forEach(function (k) { inp[k] = document.getElementById('bl-' + k); });
+  var read = document.getElementById('bl-read'), verdict = document.getElementById('bl-verdict'), showBtn = document.getElementById('bl-show'),
+      alab = document.getElementById('bl-alab'), blab = document.getElementById('bl-blab');
+  var picks = [].slice.call(document.querySelectorAll('#bl-picks button'));
+  var NAMES = ['Midpoint, flip and change sign', 'Midpoint, gradient of AB', 'Midpoint, flip only', 'Through A, flip and change sign'];
+  var method = 0, show = false, LO = -8, HI = 8, S = 440, P0 = 26;
+  function px(v) { return P0 + (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function py(v) { return S - P0 - (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  function num(v) { var r = Math.round(v * 1000) / 1000; var t = Math.abs(r).toFixed(3).replace(/\.?0+$/, ''); return (r < 0 ? M : '') + t; }
+  function frac(n, d) { if (d === 0) return 'undefined (vertical)'; if (d < 0) { n = -n; d = -d; } var g = gcd(n, d); n /= g; d /= g; return (n < 0 ? M : '') + Math.abs(n) + (d === 1 ? '' : '/' + d); }
+  function pt(x, y) { return '(' + num(x) + ', ' + num(y) + ')'; }
+  function eq(x0, y0, u, v) {
+    /* line through (x0, y0) with direction (u, v): v x - u y + (u y0 - v x0) = 0, doubled to clear halves */
+    var a = 2 * v, b = -2 * u, c = 2 * (u * y0 - v * x0);
+    var g = gcd(gcd(a, b), c); a /= g; b /= g; c /= g;
+    if (a < 0 || (a === 0 && b < 0)) { a = -a; b = -b; c = -c; }
+    function term(k, sym, first) { if (k === 0) return ''; var sgn = k < 0 ? M : '+'; var mag = Math.abs(k); var body = (mag === 1 && sym ? '' : mag) + sym;
+      return first ? (k < 0 ? M : '') + body : ' ' + sgn + ' ' + body; }
+    var out = term(a, 'x', true); out += term(b, 'y', out === ''); out += term(c, '', out === '');
+    return out + ' = 0';
+  }
+  function draw() {
+    var ax = +inp.ax.value, ay = +inp.ay.value, bx = +inp.bx.value, by = +inp.by.value;
+    alab.textContent = 'A = ' + pt(ax, ay) + '   (top slider x, bottom slider y)'; blab.textContent = 'B = ' + pt(bx, by) + '   (top slider x, bottom slider y)';
+    var s = '', v;
+    for (v = LO; v <= HI; v++) {
+      var axl = v === 0, col = axl ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)', w = axl ? 1.6 : 1;
+      s += '<line x1="' + px(v) + '" y1="' + py(LO) + '" x2="' + px(v) + '" y2="' + py(HI) + '" stroke="' + col + '" stroke-width="' + w + '"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(v) + '" x2="' + px(HI) + '" y2="' + py(v) + '" stroke="' + col + '" stroke-width="' + w + '"/>';
+      if (v % 2 === 0 && v !== 0) {
+        var t = v < 0 ? M + (-v) : String(v);
+        s += '<text x="' + px(v) + '" y="' + (py(0) + 16) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="middle">' + t + '</text>';
+        s += '<text x="' + (px(0) - 6) + '" y="' + (py(v) + 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0" text-anchor="end">' + t + '</text>';
+      }
+    }
+    var same = ax === bx && ay === by;
+    var dx = bx - ax, dy = by - ay, mx = (ax + bx) / 2, my = (ay + by) / 2;
+    if (!same) s += '<line x1="' + px(ax) + '" y1="' + py(ay) + '" x2="' + px(bx) + '" y2="' + py(by) + '" stroke="#ffffff" stroke-width="2.4"/>';
+    var h = '';
+    if (same) {
+      h = '<span class="lw">A and B are the same point. Move one of them.</span>';
+      verdict.style.display = 'none'; read.innerHTML = h;
+    } else {
+      var x0 = method === 3 ? ax : mx, y0 = method === 3 ? ay : my, u, w2;
+      if (method === 1) { u = dx; w2 = dy; } else if (method === 2) { u = dy; w2 = dx; } else { u = -dy; w2 = dx; }
+      var gAB = frac(dy, dx), gUsed = frac(w2, u);
+      h = '<span class="lw">gradient of AB</span> &nbsp;<b>' + gAB + '</b>'
+        + '<br><span class="lw">midpoint of AB</span> &nbsp;<b>' + pt(mx, my) + '</b>';
+      if (show) {
+        var L = Math.hypot(u, w2), k = 40 / L;
+        s += '<line x1="' + px(x0 - u * k) + '" y1="' + py(y0 - w2 * k) + '" x2="' + px(x0 + u * k) + '" y2="' + py(y0 + w2 * k) + '" stroke="' + (method === 0 ? '#00e5ff' : '#ff6b6b') + '" stroke-width="3" clip-path="url(#bl-clip)"/>';
+        /* test point P on the drawn line, 3 units from where it was anchored */
+        var t3 = 3 / L, Px = x0 + u * t3, Py = y0 + w2 * t3, PA = Math.hypot(Px - ax, Py - ay), PB = Math.hypot(Px - bx, Py - by);
+        s += '<line x1="' + px(Px) + '" y1="' + py(Py) + '" x2="' + px(ax) + '" y2="' + py(ay) + '" stroke="#ffc46b" stroke-width="1.3" stroke-dasharray="3 3"/>';
+        s += '<line x1="' + px(Px) + '" y1="' + py(Py) + '" x2="' + px(bx) + '" y2="' + py(by) + '" stroke="#ffc46b" stroke-width="1.3" stroke-dasharray="3 3"/>';
+        s += '<circle cx="' + px(Px) + '" cy="' + py(Py) + '" r="5.5" fill="#ffc46b"/>';
+        s += '<text x="' + (px(Px) + 8) + '" y="' + (py(Py) - 8) + '" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#ffc46b">P</text>';
+        h += '<br><span class="lw">gradient used</span> &nbsp;<b>' + gUsed + '</b>'
+          + '<br><span class="lw">line</span> &nbsp;<b>' + eq(x0, y0, u, w2) + '</b>'
+          + '<br><span class="lw">PA</span> ' + num(Math.round(PA * 100) / 100) + ' &nbsp; <span class="lw">PB</span> ' + num(Math.round(PB * 100) / 100);
+        var ok = Math.abs(PA - PB) < 1e-9;
+        verdict.style.display = '';
+        verdict.className = 'verdict ' + (ok ? 'ok' : 'no');
+        verdict.textContent = ok ? 'PA = PB, and it stays equal anywhere on this line. This is the perpendicular bisector.'
+          : (method === 1 ? 'PA and PB differ. This line runs along AB instead of across it.'
+          : method === 2 ? 'PA and PB differ. Flipping without changing the sign gives the wrong direction.'
+          : 'PA and PB differ. The right direction, but a bisector has to pass through the midpoint.');
+        verdict.textContent = verdict.textContent.replace(/-/g, M);
+      } else {
+        h += '<br><span class="lw">' + NAMES[method] + '. Predict first: will every point on this line be the same distance from A and B?</span>';
+        verdict.style.display = 'none';
+      }
+      read.innerHTML = h;
+    }
+    s += '<circle cx="' + px(mx) + '" cy="' + py(my) + '" r="5" fill="#00e5ff"/>';
+    s += '<circle cx="' + px(ax) + '" cy="' + py(ay) + '" r="6.5" fill="#ffffff"/><text x="' + (px(ax) - 16) + '" y="' + (py(ay) - 8) + '" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#ffffff">A</text>';
+    s += '<circle cx="' + px(bx) + '" cy="' + py(by) + '" r="6.5" fill="#ffffff"/><text x="' + (px(bx) + 9) + '" y="' + (py(by) - 8) + '" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#ffffff">B</text>';
+    svg.innerHTML = '<defs><clipPath id="bl-clip"><rect x="' + P0 + '" y="' + P0 + '" width="' + (S - 2 * P0) + '" height="' + (S - 2 * P0) + '"/></clipPath></defs>' + s;
+  }
+  picks.forEach(function (b) {
+    b.addEventListener('click', function () {
+      method = +b.getAttribute('data-i'); show = false;
+      showBtn.setAttribute('aria-pressed', 'false'); showBtn.textContent = 'Show the line';
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () {
+    show = !show; showBtn.setAttribute('aria-pressed', show ? 'true' : 'false');
+    showBtn.textContent = show ? 'Hide the line' : 'Show the line'; draw();
+  });
+  ids.forEach(function (k) { inp[k].addEventListener('input', draw); });
+  draw();
 })();
 </script>
 
