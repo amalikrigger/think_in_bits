@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Straight Lines</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures: numbered axes; curve dashed gray, chord AB white, tangent dotted amber, answer line solid cyan */
+    svg.cg { width: 100%; max-width: 340px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 330px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.curve { border-top-style: dashed; border-color: #b0b0b0; }
+    .key .sw.chord { border-color: #ffffff; }
+    .key .sw.tan { border-top-style: dotted; border-color: #ffc46b; }
+    .key .sw.ans { border-color: #00e5ff; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; align-items: stretch; }
+    .three > .card { min-width: 0; }
+    .three .check .math.small { padding: 0.55vh 0.8vw; }
+    .ph { color: #ffc46b; font-family: var(--mono); }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: min(92vw, 120vh); height: auto; max-width: none; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    @media (max-width: 800px) { .three { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-deck-name="1.3 · Session 1" data-help-note="Click any graph to enlarge it. Tap a practice question to check your answer.">
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 1 of 4</p>
+  <h1>Straight Lines</h1>
+  <p class="muted">You have met most of this before. Today is about doing it the way Cambridge marks it: exact answers, the right form of the equation, and the right gradient for the right line.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now: gradient, midpoint and length</span><span class="t">5 min</span></div>
+    <div class="row"><span>Three measurements and three forms of a line</span><span class="t">10 min</span></div>
+    <div class="row"><span>Parallel and perpendicular lines, and where two lines meet</span><span class="t">8 min</span></div>
+    <div class="row"><span>The perpendicular bisector, and a 4-mark finish from June 2024</span><span class="t">12 min</span></div>
+    <div class="row"><span>Practice together, then on your own</span><span class="t">20 min</span></div>
+    <div class="row"><span>Exit ticket</span><span class="t">5 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min</p>
+  <h2>\(A(1, 2)\) and \(B(5, 10)\). Find the gradient of \(AB\), the midpoint of \(AB\), and the length of \(AB\).</h2>
+  <p>Give the length in exact form. Sketch the two points first.</p>
+  <div class="check" tabindex="0">
+    <div class="math">Write all three, then tap to check.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">gradient:</span>&nbsp; \(\dfrac{10 - 2}{5 - 1} = \dfrac{8}{4} = 2\)</div>
+      <div class="math small"><span class="lbl">midpoint:</span>&nbsp; \(\left(\dfrac{1 + 5}{2}, \dfrac{2 + 10}{2}\right) = (3, 6)\)</div>
+      <div class="math small"><span class="lbl">length:</span>&nbsp; \(\sqrt{(5 - 1)^2 + (10 - 2)^2} = \sqrt{16 + 64} = \sqrt{80} = \sqrt{16}\sqrt{5} = 4\sqrt{5}\)</div>
+      <div class="math small result">Gradient \(2\), midpoint \((3, 6)\), length \(4\sqrt{5}\). A decimal like 8.94 is not exact.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · three measurements -->
+<section class="slide duo">
+  <p class="eyebrow">Three measurements</p>
+  <h2>Gradient, midpoint and length, from two points \((x_1, y_1)\) and \((x_2, y_2)\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Gradient</p>
+      <div class="math">\(m = \dfrac{y_2 - y_1}{x_2 - x_1}\)</div>
+      <p class="small">Change in \(y\) divided by change in \(x\). Subtract in the same order on top and bottom.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Midpoint</p>
+      <div class="math">\(\left(\dfrac{x_1 + x_2}{2}, \dfrac{y_1 + y_2}{2}\right)\)</div>
+      <p class="small">The average of the two \(x\)-coordinates, and the average of the two \(y\)-coordinates.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Length (distance)</p>
+      <div class="math">\(\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)</div>
+      <p class="small">Pythagoras on the across and up distances. Leave it as a surd unless the question asks for a decimal.</p>
+    </div></div>
+  </div>
+  <div class="card frag">
+    <p class="eyebrow">Two habits that save marks</p>
+    <p class="small"><b>Sketch first, every time.</b> A rough sketch tells you whether a gradient should be positive or negative, and catches a sign slip before it costs you.</p>
+    <p class="small"><b>None of these three formulas is in the formula booklet (MF19).</b> You need them from memory.</p>
+    <p class="small"><b>Simplify the surd.</b> Look for a square factor: \(\sqrt{80} = \sqrt{16 \times 5} = 4\sqrt{5}\).</p>
+  </div>
+</section>
+
+<!-- 4 · three forms -->
+<section class="slide duo">
+  <p class="eyebrow">The equation of a line</p>
+  <h2>One line, three ways to write it. Work in the first, convert at the end.</h2>
+  <div class="math small">The line through \((-2, 4)\) with gradient \(\tfrac{5}{3}\).</div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">1 · Point and gradient</p>
+      <div class="math small">\(y - y_1 = m(x - x_1)\)</div>
+      <div class="math small frag">\(y - 4 = \tfrac{5}{3}(x + 2)\)</div>
+      <p class="small">Use this when you know a point and the gradient. It is the form Cambridge's own model answers start from.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">2 · Gradient and intercept</p>
+      <div class="math small">\(y = mx + c\)</div>
+      <div class="math small frag"><span class="lbl">expand:</span>&nbsp; \(y - 4 = \tfrac{5}{3}x + \tfrac{10}{3}\)</div>
+      <div class="math small frag"><span class="lbl">add 4:</span>&nbsp; \(y = \tfrac{5}{3}x + \tfrac{22}{3}\)</div>
+      <p class="small">Use this to read off the gradient \(m\) and where the line crosses the \(y\)-axis, \(c\).</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">3 · \(ax + by + c = 0\)</p>
+      <div class="math small frag"><span class="lbl">form 1, times 3:</span><br>\(3y - 12 = 5x + 10\)</div>
+      <div class="math small frag"><span class="lbl">all on one side:</span><br>\(0 = 5x - 3y + 22\)</div>
+      <div class="math small result frag">\(5x - 3y + 22 = 0\)</div>
+    </div></div>
+  </div>
+  <div class="card frag">
+    <p class="eyebrow">Read the question for the form</p>
+    <p class="small">When a question says "in the form \(ax + by + c = 0\), where \(a\), \(b\) and \(c\) are integers", multiply through to clear every fraction, and make sure the equation ends in "= 0". On a June 2024 question, about half of the students who found the right line lost the last mark because the answer was not in the form asked for.</p>
+    <p class="small"><b>Check it:</b> put \((-2, 4)\) into the answer. \(5(-2) - 3(4) + 22 = -10 - 12 + 22 = 0\). It works.</p>
+  </div>
+</section>
+
+<!-- 5 · parallel and perpendicular, and the trap -->
+<section class="slide duo">
+  <p class="eyebrow">Parallel and perpendicular</p>
+  <h2>Parallel lines share a gradient. Perpendicular gradients multiply to \(-1\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <div class="math small"><span class="lbl">parallel:</span>&nbsp; \(m_1 = m_2\)</div>
+      <div class="math small"><span class="lbl">perpendicular:</span>&nbsp; \(m_1 m_2 = -1\), &nbsp;so&nbsp; \(m_2 = -\dfrac{1}{m_1}\)</div>
+      <div class="math small frag"><span class="lbl">flip it and change the sign:</span>&nbsp; \(\tfrac{4}{7} \to -\tfrac{7}{4}\). &nbsp;Check: \(\tfrac{4}{7} \times \left(-\tfrac{7}{4}\right) = -1\)</div>
+      <p class="small frag"><b>A line given as \(ax + by + c = 0\): rearrange to \(y = mx + c\) first.</b></p>
+      <div class="math small frag">\(4x + 5y - 20 = 0 \;\Rightarrow\; 5y = -4x + 20 \;\Rightarrow\; y = -\tfrac{4}{5}x + 4\)</div>
+      <div class="math small frag">gradient \(-\tfrac{4}{5}\), &nbsp;parallel gradient \(-\tfrac{4}{5}\), &nbsp;perpendicular gradient \(\tfrac{5}{4}\)</div>
+      <p class="small frag"><b>To show two lines are perpendicular, say it in words:</b> "the product of the gradients is \(-1\), so the lines are perpendicular."</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Which line does this gradient belong to?</p>
+      <svg class="cg" id="fig-trap" viewBox="0 0 300 230" aria-label="The curve y equals 5 minus 2x to the power three halves plus 5, the chord from A at minus 2, 32 to B at 2, 6, and the tangent at B"></svg>
+      <p class="key"><span class="sw curve"></span>curve &nbsp; <span class="sw chord"></span>line \(AB\) &nbsp; <span class="sw tan"></span>tangent at \(B\)</p>
+      <p class="small frag">A question tells you <b>the gradient of the curve at \(B\) is \(-3\)</b>. That is the gradient of the tangent at \(B\), the dotted line. The line \(AB\) is a different line with a different gradient, \(-\tfrac{13}{2}\).</p>
+      <p class="small frag">Some students took the gradient of the perpendicular bisector of \(AB\) to be \(\tfrac{1}{3}\), straight from the \(-3\). Before you flip a gradient, ask which line it belongs to.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 6 · intersection -->
+<section class="slide duo">
+  <p class="eyebrow">Where two lines meet</p>
+  <h2>The point where two lines cross satisfies both equations, so solve them simultaneously.</h2>
+  <div class="math small">Find where \(x + 2y = 4\) and \(3x - y = 19\) meet.</div>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Substitution</p>
+      <div class="math small frag"><span class="lbl">make \(y\) the subject of the second:</span>&nbsp; \(y = 3x - 19\)</div>
+      <div class="math small frag"><span class="lbl">put it into the first:</span>&nbsp; \(x + 2(3x - 19) = 4\)</div>
+      <div class="math small frag">\(x + 6x - 38 = 4 \;\Rightarrow\; 7x = 42 \;\Rightarrow\; x = 6\)</div>
+      <div class="math small frag">\(y = 3(6) - 19 = -1\)</div>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Elimination</p>
+      <div class="math small frag"><span class="lbl">double the second so the \(y\) terms cancel:</span>&nbsp; \(6x - 2y = 38\)</div>
+      <div class="math small frag"><span class="lbl">add it to the first:</span>&nbsp; \(x + 6x = 4 + 38 \;\Rightarrow\; 7x = 42 \;\Rightarrow\; x = 6\)</div>
+      <div class="math small frag"><span class="lbl">back into the first:</span>&nbsp; \(6 + 2y = 4 \;\Rightarrow\; y = -1\)</div>
+    </div></div>
+  </div>
+  <div class="math result frag">Both routes give \((6, -1)\).</div>
+  <p class="small frag">Use substitution when one equation already says \(y = \ldots\) or \(x = \ldots\). Use elimination when both are in the \(ax + by = c\) shape. Check the answer in the equation you did not substitute into: \(3(6) - (-1) = 19\). It works.</p>
+</section>
+
+<!-- 7 · perpendicular bisector -->
+<section class="slide duo">
+  <p class="eyebrow">The perpendicular bisector</p>
+  <h2>The perpendicular bisector of \(AB\) cuts \(AB\) in half, at a right angle.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-pb" viewBox="0 0 300 260" aria-label="Points A and B joined by a line, the midpoint M, and a cyan line through M at a right angle to AB"></svg>
+      <p class="key"><span class="sw chord"></span>line \(AB\) &nbsp; <span class="sw ans"></span>perpendicular bisector</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>"Bisector"</b> means it cuts \(AB\) into two equal halves, so it passes through the midpoint \(M\). <b>"Perpendicular"</b> means it meets \(AB\) at a right angle. So you need two things:</p>
+      <div class="math small frag"><span class="lbl">1 · a point:</span>&nbsp; the midpoint \(M\) of \(AB\)</div>
+      <div class="math small frag"><span class="lbl">2 · a gradient:</span>&nbsp; find the gradient of \(AB\), then flip it and change the sign</div>
+      <div class="math small frag"><span class="lbl">3 · the line:</span>&nbsp; \(y - y_M = m(x - x_M)\) with that point and that gradient</div>
+      <div class="math small frag"><span class="lbl">4 · the form:</span>&nbsp; convert to the form the question asks for</div>
+      <p class="small frag">Every point on this line is the same distance from \(A\) as from \(B\). That fact comes back next lesson with circles.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 8 · worked example: the question and the picture -->
+<section class="slide duo">
+  <p class="eyebrow">June 2024 · Paper 12 · Q10(b)</p>
+  <h2>The curve is \(y = (5 - 2x)^{\frac{3}{2}} + 5\). Find the perpendicular bisector of \(AB\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">The curve is defined for \(x &lt; \tfrac{5}{2}\). Point \(A\) on the curve has \(y\)-coordinate 32. Point \(B\) on the curve is where the gradient of the curve is \(-3\).</p>
+      <p class="small">Find the equation of the perpendicular bisector of \(AB\). Give your answer in the form \(ax + by + c = 0\), where \(a\), \(b\) and \(c\) are integers. <span class="marks">[6]</span></p>
+      <div class="math small"><span class="lbl">finding \(B\) needs calculus (later this year), so here are both points:</span>&nbsp; \(A(-2, 32)\), \(B(2, 6)\)</div>
+      <p class="small frag"><b>Check \(A\) and \(B\) are on the curve:</b> \(x = -2\) gives \((5 + 4)^{\frac{3}{2}} + 5 = 27 + 5 = 32\), and \(x = 2\) gives \((5 - 4)^{\frac{3}{2}} + 5 = 1 + 5 = 6\).</p>
+      <p class="small frag"><b>Draw the picture first.</b> \(A\) is up and to the left, \(B\) is down and to the right, so the gradient of \(AB\) should come out negative.</p>
+      <p class="small frag">The \(-3\) is the gradient of the curve at \(B\). We do not use it in this part.</p>
+    </div></div>
+    <div><div class="card">
+      <svg class="cg" id="fig-we" viewBox="0 0 300 250" aria-label="The curve, the points A at minus 2, 32 and B at 2, 6, the line AB, the midpoint M at 0, 19, and the perpendicular bisector in cyan"></svg>
+      <p class="key"><span class="sw curve"></span>curve &nbsp; <span class="sw chord"></span>\(AB\) &nbsp; <span class="sw ans"></span>perpendicular bisector</p>
+      <p class="small">The two axes use different scales, so the right angle at \(M\) does not look square here.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · worked example: the solution with marks -->
+<section class="slide duo">
+  <p class="eyebrow">June 2024 · Paper 12 · Q10(b) · the last 4 marks</p>
+  <h2>Each line of working below earns one mark.</h2>
+  <div class="agenda">
+    <div class="row frag"><span><b>M1*</b> &nbsp;gradient of \(AB\): \(m_1 = \dfrac{32 - 6}{-2 - 2} = \dfrac{26}{-4} = -\dfrac{13}{2}\), &nbsp;so the perpendicular gradient is \(-\dfrac{1}{m_1} = \dfrac{2}{13}\)</span><span class="t">1 mark</span></div>
+    <div class="row frag"><span><b>M1*</b> &nbsp;midpoint of \(AB\): \(\left(\dfrac{-2 + 2}{2}, \dfrac{32 + 6}{2}\right) = (0, 19)\)</span><span class="t">1 mark</span></div>
+    <div class="row frag"><span><b>DM1</b> &nbsp;the line through the midpoint with the perpendicular gradient: \(y - 19 = \dfrac{2}{13}(x - 0)\)</span><span class="t">1 mark</span></div>
+    <div class="row frag"><span><b>A1</b> &nbsp;multiply by 13: \(13y - 247 = 2x\), &nbsp;then move everything to one side: \(2x - 13y + 247 = 0\)</span><span class="t">1 mark</span></div>
+  </div>
+  <div class="math result frag">\(2x - 13y + 247 = 0\) &nbsp;(any integer multiple, such as \(-2x + 13y - 247 = 0\), also scores)</div>
+  <div class="card frag">
+    <p class="small"><b>Reading the codes.</b> M is a method mark, A is an accuracy mark. The star and the D go together: the DM1 depends on both starred marks, so the equation mark only counts if you used a perpendicular gradient and the midpoint. The first two of the 6 marks are for finding \(B\) with calculus.</p>
+    <p class="small"><b>Check:</b> the midpoint \((0, 19)\) must be on the answer. \(2(0) - 13(19) + 247 = -247 + 247 = 0\). It works.</p>
+  </div>
+</section>
+
+<!-- 10 · guided practice -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · together · 10 min</p>
+  <h2>Sketch first. Give every equation as \(ax + by + c = 0\) with integers. Tap to check.</h2>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">1.&nbsp; \(A(-3, 1)\), \(B(5, 7)\). Find the length \(AB\), the midpoint of \(AB\), and the equation of the line \(AB\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">length:</span>&nbsp; across \(5 - (-3) = 8\), up \(7 - 1 = 6\), so \(\sqrt{8^2 + 6^2} = \sqrt{100} = 10\)</div>
+        <div class="math small"><span class="lbl">midpoint:</span>&nbsp; \(\left(\tfrac{-3 + 5}{2}, \tfrac{1 + 7}{2}\right) = (1, 4)\)</div>
+        <div class="math small"><span class="lbl">gradient:</span>&nbsp; \(\tfrac{7 - 1}{5 - (-3)} = \tfrac{6}{8} = \tfrac{3}{4}\)</div>
+        <div class="math small">\(y - 1 = \tfrac{3}{4}(x + 3) \Rightarrow 4y - 4 = 3x + 9\)</div>
+        <div class="math small result">\(10\); &nbsp;\((1, 4)\); &nbsp;\(3x - 4y + 13 = 0\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">2.&nbsp; Find the equation of the line through \((2, -1)\) perpendicular to \(2x + 3y = 6\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">rearrange:</span>&nbsp; \(3y = -2x + 6 \Rightarrow y = -\tfrac{2}{3}x + 2\), gradient \(-\tfrac{2}{3}\)</div>
+        <div class="math small"><span class="lbl">flip and change sign:</span>&nbsp; \(\tfrac{3}{2}\)</div>
+        <div class="math small">\(y + 1 = \tfrac{3}{2}(x - 2) \Rightarrow 2y + 2 = 3x - 6\)</div>
+        <div class="math small result">\(3x - 2y - 8 = 0\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">3.&nbsp; Find the equation of the perpendicular bisector of \(P(1, 5)\) and \(Q(7, -3)\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">midpoint:</span>&nbsp; \(\left(\tfrac{1 + 7}{2}, \tfrac{5 + (-3)}{2}\right) = (4, 1)\)</div>
+        <div class="math small"><span class="lbl">gradient \(PQ\):</span>&nbsp; \(\tfrac{-3 - 5}{7 - 1} = -\tfrac{8}{6} = -\tfrac{4}{3}\), so perpendicular \(\tfrac{3}{4}\)</div>
+        <div class="math small">\(y - 1 = \tfrac{3}{4}(x - 4) \Rightarrow 4y - 4 = 3x - 12\)</div>
+        <div class="math small result">\(3x - 4y - 8 = 0\)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · independent practice -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · on your own · 10 min</p>
+  <h2>Your turn. Tap to check when you have a final answer.</h2>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">4.&nbsp; \(A(0, 1)\), \(B(4, 3)\), \(C(2, 7)\). Show that angle \(ABC\) is a right angle, and find the area of triangle \(ABC\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">gradients:</span>&nbsp; \(AB = \tfrac{3 - 1}{4 - 0} = \tfrac{1}{2}\), &nbsp;\(BC = \tfrac{7 - 3}{2 - 4} = -2\)</div>
+        <div class="math small">\(\tfrac{1}{2} \times (-2) = -1\), so \(AB\) is perpendicular to \(BC\) and angle \(ABC = 90^\circ\).</div>
+        <div class="math small"><span class="lbl">lengths:</span>&nbsp; \(AB = \sqrt{16 + 4} = 2\sqrt{5}\), &nbsp;\(BC = \sqrt{4 + 16} = 2\sqrt{5}\)</div>
+        <div class="math small"><span class="lbl">right angle at \(B\), so these are base and height:</span>&nbsp; \(\tfrac{1}{2} \times 2\sqrt{5} \times 2\sqrt{5}\)</div>
+        <div class="math small result">Area \(= 10\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">5.&nbsp; The lines \(2x + y = 7\) and \(x - y = -1\) meet at \(P\). Find \(P\), then the line through \(P\) perpendicular to \(x - y = -1\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">second line:</span>&nbsp; \(y = x + 1\); &nbsp;into the first: \(2x + x + 1 = 7 \Rightarrow 3x = 6 \Rightarrow x = 2\), so \(y = 2 + 1 = 3\)</div>
+        <div class="math small"><span class="lbl">gradient of \(y = x + 1\) is 1:</span>&nbsp; perpendicular gradient \(-1\)</div>
+        <div class="math small">\(y - 3 = -(x - 2) \Rightarrow y - 3 = -x + 2\)</div>
+        <div class="math small result">\(P(2, 3)\); &nbsp;\(x + y - 5 = 0\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">6.&nbsp; \(y = 2x + 3\) meets the \(x\)-axis at \(A\) and the \(y\)-axis at \(B\). Find the length \(AB\) and the perpendicular bisector of \(AB\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">\(y = 0\):</span>&nbsp; \(x = -\tfrac{3}{2}\), so \(A\left(-\tfrac{3}{2}, 0\right)\); &nbsp;<span class="lbl">\(x = 0\):</span>&nbsp; \(B(0, 3)\)</div>
+        <div class="math small">\(AB = \sqrt{\tfrac{9}{4} + 9} = \sqrt{\tfrac{45}{4}} = \tfrac{3}{2}\sqrt{5}\)</div>
+        <div class="math small"><span class="lbl">midpoint</span>&nbsp; \(\left(-\tfrac{3}{4}, \tfrac{3}{2}\right)\); &nbsp;<span class="lbl">\(AB\) has gradient 2, so</span>&nbsp; \(-\tfrac{1}{2}\)</div>
+        <div class="math small">\(y - \tfrac{3}{2} = -\tfrac{1}{2}\left(x + \tfrac{3}{4}\right)\); &nbsp;multiply by 8: \(8y - 12 = -4x - 3\)</div>
+        <div class="math small result">\(AB = \tfrac{3}{2}\sqrt{5}\); &nbsp;\(4x + 8y - 9 = 0\)</div>
+      </div>
+    </div>
+  </div>
+  <p class="small">Finished early? Prove that if two lines are perpendicular, their gradients multiply to \(-1\). Hint: turn a right-angled triangle with sides 1 across and \(m\) up through \(90^\circ\).</p>
+</section>
+
+<!-- 12 · recap -->
+<section class="slide">
+  <p class="eyebrow">Recap</p>
+  <h2>Four things to carry out of here.</h2>
+  <p class="frag"><b>Gradient, midpoint and length are not in the formula booklet.</b> Know them, sketch first, and leave lengths as simplified surds.</p>
+  <p class="frag"><b>Work in \(y - y_1 = m(x - x_1)\), and convert at the end.</b> "Integers" means clear every fraction and finish with "= 0".</p>
+  <p class="frag"><b>Perpendicular: flip and change the sign, so \(m_1 m_2 = -1\).</b> First check which line the gradient you were given belongs to.</p>
+  <p class="frag"><b>Perpendicular bisector = midpoint + perpendicular gradient.</b> Two pieces of information, one line.</p>
+</section>
+
+<!-- 13 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min</p>
+  <h2>Schoology, Paper 1 → 1.3 Coordinate Geometry.</h2>
+  <p>Four questions. Do the working on paper first. For the last one, give the equation in the form \(ax + by + c = 0\) with integers.</p>
+  <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 14 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework · before next class</p>
+  <h2>A short reading and a few questions on topics we have finished.</h2>
+  <ul>
+    <li><b>Read:</b> Pure Mathematics 1 textbook, the section on straight lines, <span class="ph">section [to be added]</span>.</li>
+    <li><b>Practice:</b> Pure Mathematics 1 Question &amp; Workbook, <span class="ph">[4 to 6 questions to be added]</span> from 1.1 Quadratics and 1.2 Functions. No straight-line questions yet.</li>
+    <li><b>Credit:</b> completion, checked at the start of next class. Bring the workbook with your working in it.</li>
+  </ul>
+  <p class="small">Stuck on a workbook question? Write down where you got stuck and bring it. That still counts as done.</p>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script>
+/* ---------- static coordinate figures: numbered axes, every label uses a real minus sign ---------- */
+(function () {
+  'use strict';
+  var M = '−';
+  function lab(v) { return v < 0 ? M + (-v) : String(v); }
+  function curve(x) { return Math.pow(5 - 2 * x, 1.5) + 5; }
+  var FIGS = {
+    'fig-trap': { W: 300, H: 230, x: [-3, 3], y: [0, 44], sx: 1, sy: 10, curve: true,
+      segs: [[-2, 32, 2, 6, '#ffffff', '']],
+      lines: [[-3, 21, 3, 3, '#ffc46b', '2 4']],
+      pts: [[-2, 32, 'A', '#ffffff', -14, -6], [2, 6, 'B', '#ffffff', 8, -6]] },
+    'fig-pb': { W: 300, H: 260, x: [-1, 7], y: [-1, 5.7], sx: 1, sy: 1, /* equal scales: 31 px per unit both ways, so the right angle looks square */
+      segs: [[1, 1, 5, 3, '#ffffff', '']],
+      lines: [[1.15, 5.7, 4.5, -1, '#00e5ff', '']],
+      pts: [[1, 1, 'A', '#ffffff', -14, 4], [5, 3, 'B', '#ffffff', 8, 4], [3, 2, 'M', '#00e5ff', 9, 14]],
+      right: [3, 2, [2, 1], [-1, 2]] },
+    'fig-we': { W: 300, H: 250, x: [-3, 3], y: [0, 44], sx: 1, sy: 10, curve: true,
+      segs: [[-2, 32, 2, 6, '#ffffff', '']],
+      lines: [[-3, 19 - 6 / 13, 3, 19 + 6 / 13, '#00e5ff', '']],
+      pts: [[-2, 32, 'A', '#ffffff', -14, -6], [2, 6, 'B', '#ffffff', 8, -6], [0, 19, 'M(0, 19)', '#00e5ff', 8, -10]] }
+  };
+  Object.keys(FIGS).forEach(function (id) {
+    var svg = document.getElementById(id); if (!svg) return;
+    var f = FIGS[id], W = f.W, H = f.H, P = 26, xr = f.x, yr = f.y;
+    var kx = (W - 2 * P) / (xr[1] - xr[0]), ky = (H - 2 * P) / (yr[1] - yr[0]);
+    function px(v) { return P + (v - xr[0]) * kx; }
+    function py(v) { return H - P - (v - yr[0]) * ky; }
+    var v, cid = 'clip-' + id, s = '<defs><clipPath id="' + cid + '"><rect x="' + P + '" y="' + P + '" width="' + (W - 2 * P) + '" height="' + (H - 2 * P) + '"/></clipPath></defs>';
+    for (v = Math.ceil(xr[0] / f.sx) * f.sx; v <= xr[1]; v += f.sx) s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.06)"/>';
+    for (v = Math.ceil(yr[0] / f.sy) * f.sy; v <= yr[1]; v += f.sy) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.06)"/>';
+    s += '<line x1="' + px(xr[0]) + '" y1="' + py(0) + '" x2="' + px(xr[1]) + '" y2="' + py(0) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    s += '<line x1="' + px(0) + '" y1="' + py(yr[0]) + '" x2="' + px(0) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    for (v = Math.ceil(xr[0] / f.sx) * f.sx; v <= xr[1]; v += f.sx) if (v !== 0) s += '<text x="' + px(v) + '" y="' + (py(0) + 13) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
+    for (v = Math.ceil(yr[0] / f.sy) * f.sy; v <= yr[1]; v += f.sy) if (v !== 0) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + 3.5) + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    if (f.curve) {
+      var d = '', pen = false, i, n = 240;
+      for (i = 0; i <= n; i++) { var x = xr[0] + (xr[1] - xr[0]) * i / n; if (x >= 2.5) break; var y = curve(x); if (y > yr[1] + 20) { pen = false; continue; } d += (pen ? 'L' : 'M') + px(x).toFixed(1) + ' ' + py(y).toFixed(1); pen = true; }
+      s += '<path d="' + d + '" fill="none" stroke="#b0b0b0" stroke-width="2.4" stroke-dasharray="6 5" clip-path="url(#' + cid + ')"/>';
+    }
+    (f.lines || []).forEach(function (l) { s += '<line x1="' + px(l[0]) + '" y1="' + py(l[1]) + '" x2="' + px(l[2]) + '" y2="' + py(l[3]) + '" stroke="' + l[4] + '" stroke-width="2.6"' + (l[5] ? ' stroke-dasharray="' + l[5] + '"' : '') + ' clip-path="url(#' + cid + ')"/>'; });
+    (f.segs || []).forEach(function (l) { s += '<line x1="' + px(l[0]) + '" y1="' + py(l[1]) + '" x2="' + px(l[2]) + '" y2="' + py(l[3]) + '" stroke="' + l[4] + '" stroke-width="2.2"/>'; });
+    if (f.right) {
+      var r = f.right, len = 0.35, u = Math.hypot(r[2][0], r[2][1]), w = Math.hypot(r[3][0], r[3][1]);
+      var a = [r[2][0] / u * len, r[2][1] / u * len], b = [r[3][0] / w * len, r[3][1] / w * len];
+      s += '<polyline points="' + px(r[0] + a[0]) + ',' + py(r[1] + a[1]) + ' ' + px(r[0] + a[0] + b[0]) + ',' + py(r[1] + a[1] + b[1]) + ' ' + px(r[0] + b[0]) + ',' + py(r[1] + b[1]) + '" fill="none" stroke="#ffc46b" stroke-width="1.6"/>';
+    }
+    (f.pts || []).forEach(function (p) {
+      s += '<circle cx="' + px(p[0]) + '" cy="' + py(p[1]) + '" r="4.5" fill="' + p[3] + '"/>';
+      s += '<text x="' + (px(p[0]) + p[4]) + '" y="' + (py(p[1]) + p[5]) + '" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="' + p[3] + '">' + p[2].replace(/-/g, M) + '</text>';
+    });
+    s += '<text x="' + (W - P + 4) + '" y="' + (py(0) - 4) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">x</text>';
+    s += '<text x="' + (px(0) + 5) + '" y="' + (P - 8) + '" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">y</text>';
+    svg.innerHTML = s;
+  });
+})();
+
+/* ---------- click any graph to enlarge it; click or Esc to close ---------- */
+(function () {
+  'use strict';
+  var box = document.createElement('div');
+  box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+    function open() {
+      var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id');
+      box.innerHTML = ''; box.appendChild(c);
+      var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p);
+      box.classList.add('on');
+    }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+</script>
+
+</body>
+</html>
