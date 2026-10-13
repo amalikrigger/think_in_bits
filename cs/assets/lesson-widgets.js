@@ -14,6 +14,7 @@
      data-widget="choice"      click-to-answer question with feedback
      data-widget="myname"      folder name box, rewrites YOURNAME in every code block
      data-widget="spot"        click the details in a photo that give someone information
+     data-widget="track"       switch between parallel tracks (e.g. two printers); shows [data-show="key:value"]
      .turnin                   persistent checklist with progress
    ============================================================ */
 (function () {
@@ -806,6 +807,46 @@
   }
 
   /* ============================================================
+     TRACK SWITCH: one lesson, two parallel ways to do the same steps
+     <div data-widget="track" data-key="printer" data-default="formlabs">
+       <button type="button" data-track="formlabs">...</button> ...
+     Content marked data-show="printer:formlabs" shows only on that track.
+     Every switch with the same key stays in sync, and the choice is
+     remembered on this device. If this file fails to load, every track
+     shows, which is safe.
+     ============================================================ */
+
+  function buildTrack(host) {
+    var key = host.getAttribute('data-key') || 'track';
+    var skey = 'tib-track-' + key;
+    var btns = $$('[data-track]', host);
+    if (!btns.length) return;
+    host.setAttribute('role', 'group');
+    function apply(val) {
+      $$('[data-widget="track"]').forEach(function (h) {
+        if ((h.getAttribute('data-key') || 'track') !== key) return;
+        $$('[data-track]', h).forEach(function (b) {
+          var on = b.getAttribute('data-track') === val;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.classList.toggle('on', on);
+        });
+      });
+      $$('[data-show]').forEach(function (el) {
+        var v = el.getAttribute('data-show');
+        if (v.indexOf(key + ':') !== 0) return;
+        el.hidden = v !== key + ':' + val;
+      });
+      store(skey, val);
+    }
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.getAttribute('data-track')); });
+    });
+    var saved = store(skey);
+    var ok = btns.some(function (b) { return b.getAttribute('data-track') === saved; });
+    apply(ok ? saved : (host.getAttribute('data-default') || btns[0].getAttribute('data-track')));
+  }
+
+  /* ============================================================
      BOOT
      ============================================================ */
 
@@ -825,6 +866,7 @@
         else if (kind === 'cpu') buildCpu(host);
         else if (kind === 'myname') buildMyName(host);
         else if (kind === 'spot') buildSpot(host);
+        else if (kind === 'track') buildTrack(host);
       } catch (e) {
         // a broken widget must never take the lesson down
         host.innerHTML = '<p class="w-foot">This activity could not load. The lesson still works without it.</p>';
