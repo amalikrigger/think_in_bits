@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Line Lab</title>
+<meta name="description" content="Drag two points and read the gradient, midpoint, length and equation of the line, all exact and with the working written out. Add a perpendicular bisector, lines through a third point, or a second line to meet.">
+<link rel="icon" type="image/png" href="../../../images/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the decks and the other tools. Single committed
+   dark theme so the projector always looks the same.
+   ============================================================ */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-alt: #0f0f0f; --surface-lift: #2a2a2a;
+  --accent: #00e5ff; --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0; --faint: #777777;
+  --hairline: rgba(255,255,255,0.08); --hairline-strong: rgba(255,255,255,0.16);
+  --ok: #4ADE80; --warn: #FF7A6B; --amber: #FFC46B; --violet: #B98CFF; --focus: #6FD8FF;
+  --c-ab: #00e5ff; --c-pb: #FFC46B; --c-par: #4ADE80; --c-perp: #FF7A6B; --c-cd: #B98CFF;
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow: 0 8px 20px rgba(0,229,255,0.3);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: #0a0a0a; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; color: var(--text); font-family: var(--font); line-height: 1.5;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed; min-height: 100vh;
+  padding: clamp(16px, 3vw, 32px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1260px; margin: 0 auto; }
+.back { display: inline-block; font-family: var(--mono); font-size: 0.85rem; color: var(--text-2);
+        text-decoration: none; margin-bottom: 0.9rem; }
+.back:hover { color: var(--accent); }
+.back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.eyebrow { font-family: var(--mono); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500;
+           text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); margin: 0 0 6px; }
+h1 {
+  font-size: clamp(28px, 4.2vw, 44px); font-weight: 800; line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0; color: var(--text);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0;
+  }
+}
+.lede { font-size: clamp(15px, 1.7vw, 17.5px); color: var(--text-2); max-width: 70ch; margin: 10px 0 22px; }
+p { margin: 0; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr); gap: 22px; align-items: start; }
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+}
+.col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius);
+  padding: clamp(14px, 2vw, 22px); box-shadow: var(--shadow-card); min-width: 0;
+}
+.card.tint-pb { border-left: 4px solid var(--c-pb); }
+.card.tint-par { border-left: 4px solid var(--c-par); }
+.card.tint-perp { border-left: 4px solid var(--c-perp); }
+.card.tint-cd { border-left: 4px solid var(--c-cd); }
+.lbl { display: block; margin: 0 0 8px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.1em;
+       text-transform: uppercase; color: var(--text-2); }
+.card h2 { font-size: clamp(15px, 1.6vw, 17px); font-weight: 600; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; }
+.sw { display: inline-block; width: 22px; height: 0; border-top: 4px solid; border-radius: 2px; flex: 0 0 auto; }
+.sw.dash { border-top-style: dashed; }
+
+/* ---------- graph ---------- */
+.screen { padding: 14px; }
+.screen svg { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; touch-action: none; user-select: none; -webkit-user-select: none; }
+.handle { cursor: grab; outline: none; }
+.handle.dragging { cursor: grabbing; }
+.handle .ring { opacity: 0; }
+.handle:focus-visible .ring { opacity: 1; }
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.hint { font-size: 13px; color: var(--text-2); }
+.hint b { color: var(--text); font-weight: 600; }
+
+.controls { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.btnrow { display: flex; gap: 7px; flex-wrap: wrap; }
+.pill {
+  font-family: var(--font); font-size: 13.5px; font-weight: 500; color: var(--text);
+  background: var(--surface-lift); border: 1px solid var(--hairline-strong); border-radius: 50px;
+  padding: 8px 14px; min-height: 40px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.pill:hover { border-color: var(--accent-line); }
+.pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.pill .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; flex: 0 0 auto; }
+.pill[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+.pill[aria-pressed="true"] .dot { background: currentColor; }
+.pill.layer[data-k="pb"][aria-pressed="true"] { color: var(--c-pb); border-color: var(--c-pb); background: rgba(255,196,107,0.1); box-shadow: 0 8px 20px rgba(255,196,107,0.18); }
+.pill.layer[data-k="par"][aria-pressed="true"] { color: var(--c-par); border-color: var(--c-par); background: rgba(74,222,128,0.1); box-shadow: 0 8px 20px rgba(74,222,128,0.18); }
+.pill.layer[data-k="perp"][aria-pressed="true"] { color: var(--c-perp); border-color: var(--c-perp); background: rgba(255,122,107,0.1); box-shadow: 0 8px 20px rgba(255,122,107,0.18); }
+.pill.layer[data-k="cd"][aria-pressed="true"] { color: var(--c-cd); border-color: var(--c-cd); background: rgba(185,140,255,0.1); box-shadow: 0 8px 20px rgba(185,140,255,0.18); }
+.pill.ghost { color: var(--text-2); }
+.ctlrow { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.ctlrow .lbl { margin: 0; }
+
+/* ---------- points ---------- */
+.ptgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px 14px; }
+.pt { display: flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 17px; }
+.pt .nm { font-weight: 700; min-width: 1.3em; }
+.pt input {
+  width: 4.6em; font-family: var(--mono); font-size: 16px; color: var(--text); text-align: center;
+  background: var(--surface-alt); border: 1px solid var(--hairline-strong); border-radius: 10px; padding: 7px 4px;
+}
+.pt input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.pt input.bad { border-color: var(--warn); }
+.msg { font-size: 13px; color: var(--warn); min-height: 0; margin-top: 8px; }
+
+/* ---------- readouts ---------- */
+.trio { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.trio .wide { grid-column: 1 / -1; }
+@media (max-width: 560px) { .trio { grid-template-columns: minmax(0, 1fr); } }
+.big { font-family: var(--mono); font-size: clamp(19px, 2vw, 23px); font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big .muted { color: var(--text-2); font-weight: 500; font-size: 0.7em; }
+#gradBig .muted { display: block; }
+.sub { font-family: var(--mono); font-size: 14px; color: var(--text-2); margin-top: 4px; }
+.work {
+  font-family: var(--mono); font-size: 14.5px; line-height: 1.6; color: var(--text);
+  background: var(--surface-alt); border: 1px solid var(--hairline); border-radius: 14px;
+  padding: 10px 12px; margin-top: 10px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 8px; align-items: center;
+}
+.work .l { color: var(--text-2); text-align: right; white-space: nowrap; }
+.work.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; line-height: 1.5; }
+.work.chain .seg { white-space: nowrap; }
+.work.chain .seg:first-child { color: var(--text-2); }
+.work.chain .warn { flex-basis: 100%; color: var(--amber); font-family: var(--font); font-size: 13.5px; }
+.work .r { overflow-wrap: anywhere; }
+.steps { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.steps li { background: var(--surface-alt); border: 1px solid var(--hairline); border-radius: 12px; padding: 8px 12px; }
+.steps .t { display: block; font-size: 13px; color: var(--text-2); }
+.steps .e { display: block; font-family: var(--mono); font-size: 15px; color: var(--text); overflow-wrap: anywhere; }
+.note-line { font-size: 13.5px; color: var(--text-2); margin-top: 8px; }
+.note-line b { color: var(--text); }
+.flag { font-family: var(--mono); font-size: 14px; color: var(--amber); border: 1px dashed rgba(255,196,107,0.5); border-radius: 12px; padding: 8px 12px; margin-top: 10px; }
+
+.forms { display: flex; flex-wrap: wrap; gap: 8px; }
+.forms > .form { flex: 1 1 auto; }
+.form { background: var(--surface-alt); border: 1px solid var(--hairline); border-radius: 14px; padding: 10px 10px; min-width: 0; }
+.form .lbl { text-transform: none; letter-spacing: 0.02em; font-family: var(--mono); font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+.form .eq { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; overflow-x: auto; }
+.form .eq.na { color: var(--text-2); font-weight: 400; font-size: 13.5px; font-family: var(--font); white-space: normal; max-width: 26ch; }
+.form.key { border-color: var(--accent-line); }
+.form.key .eq { color: var(--accent); }
+
+details.how { margin-top: 12px; }
+details.how summary {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer; list-style: none;
+  font-size: 14px; font-weight: 500; color: var(--accent); background: var(--accent-wash);
+  border: 1px solid var(--accent-line); border-radius: 50px; padding: 8px 16px; min-height: 40px;
+}
+details.how summary::-webkit-details-marker { display: none; }
+details.how summary::before { content: '+'; font-family: var(--mono); font-weight: 700; }
+details.how[open] summary::before { content: '\2212'; }
+details.how summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* stacked fractions; the hidden slash and brackets keep copy-paste and screen readers honest */
+.fr { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.12; margin: 0 0.12em; font-size: 0.9em; }
+.fr > .nu { border-bottom: 1.5px solid currentColor; padding: 0 0.18em 0.06em; }
+.fr > .de { padding: 0.06em 0.18em 0; }
+.fr .fr { font-size: 0.92em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.note { margin-top: 22px; border: 1px dashed var(--accent-line); border-radius: var(--radius); padding: 16px 20px;
+        color: var(--text-2); font-size: clamp(13.5px, 1.5vw, 15px); display: flex; flex-direction: column; gap: 8px; }
+.note b { color: var(--text); }
+.backlinks { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+.chip { display: inline-block; font-size: 15px; font-weight: 500; color: var(--accent); background: var(--accent-wash);
+        border: 1px solid var(--accent-line); border-radius: 50px; padding: 9px 20px; text-decoration: none; }
+.chip:hover { box-shadow: var(--shadow-glow); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (max-width: 520px) {
+  .pt { font-size: 16px; }
+  .pt input { width: 4.2em; }
+  .work { font-size: 13.5px; }
+  .pill { font-size: 13px; padding: 7px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill, .chip { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../../../math.html">&larr; Back to Math</a>
+  <p class="eyebrow">9709 Pure 1 &middot; 1.3 Coordinate Geometry</p>
+  <h1>The Line Lab</h1>
+  <p class="lede">Drag A and B, or type in the points from your homework. Every answer below is exact and the working is written out, so you can check your own answer one step at a time.</p>
+
+  <div class="layout">
+    <div class="graphcol">
+      <div class="card screen">
+        <svg id="plot" viewBox="0 0 600 600" role="img" aria-label="Numbered grid from −10 to 10 with line AB through two draggable points"></svg>
+        <div class="legend" id="legend"></div>
+        <div class="controls">
+          <div class="btnrow" role="group" aria-label="Extra lines">
+            <button class="pill layer" type="button" data-k="pb" aria-pressed="false"><span class="dot"></span>Perpendicular bisector</button>
+            <button class="pill layer" type="button" data-k="par" aria-pressed="false"><span class="dot"></span>Parallel through P</button>
+            <button class="pill layer" type="button" data-k="perp" aria-pressed="false"><span class="dot"></span>Perpendicular through P</button>
+            <button class="pill layer" type="button" data-k="cd" aria-pressed="false"><span class="dot"></span>Second line CD</button>
+          </div>
+          <div class="ctlrow">
+            <span class="lbl">Snap to</span>
+            <div class="btnrow" role="group" aria-label="Snap points to">
+              <button class="pill snap" type="button" data-snap="1" aria-pressed="true">whole numbers</button>
+              <button class="pill snap" type="button" data-snap="0.5" aria-pressed="false">halves</button>
+            </div>
+            <button class="pill ghost" type="button" id="resetBtn">Reset points</button>
+          </div>
+          <p class="hint">Drag a point, or press Tab to reach it and move it with the arrow keys.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card">
+        <span class="lbl">The points</span>
+        <div class="ptgrid" id="ptgrid"></div>
+        <p class="msg" id="msg" role="status" hidden></p>
+        <p class="hint" style="margin-top:8px">Type whole numbers or halves, like 3, −2, 2.5 or 7/2.</p>
+      </div>
+
+      <div id="sameAB" class="flag" hidden>A and B are the same point, so there is no line yet. Move one of them.</div>
+
+      <div class="trio" id="abCards">
+        <div class="card">
+          <span class="lbl">Gradient of AB</span>
+          <div class="big" id="gradBig"></div>
+          <div class="work chain" id="gradWork"></div>
+        </div>
+        <div class="card">
+          <span class="lbl">Midpoint of AB</span>
+          <div class="big" id="midBig"></div>
+          <div class="work chain" id="midWork"></div>
+        </div>
+        <div class="card wide">
+          <span class="lbl">Length of AB</span>
+          <div class="big" id="lenBig"></div>
+          <div class="sub" id="lenDec"></div>
+          <div class="work chain" id="lenWork"></div>
+        </div>
+      </div>
+
+      <div class="card" id="eqCard">
+        <span class="lbl">Equation of line AB</span>
+        <div class="forms">
+          <div class="form"><span class="lbl">y − y₁ = m(x − x₁), with A</span><div class="eq" id="fPS"></div></div>
+          <div class="form"><span class="lbl">y = mx + c</span><div class="eq" id="fSMC"></div></div>
+          <div class="form key"><span class="lbl">ax + by + c = 0</span><div class="eq" id="fINT"></div></div>
+        </div>
+        <details class="how" id="howInt">
+          <summary>How do I get the integer form?</summary>
+          <ol class="steps" id="intSteps"></ol>
+        </details>
+      </div>
+
+      <div class="card tint-pb" id="pbCard" hidden>
+        <h2><span class="sw" style="border-color:var(--c-pb)"></span>Perpendicular bisector of AB</h2>
+        <div class="work" id="pbGrad"></div>
+        <div class="forms" style="margin-top:10px">
+          <div class="form"><span class="lbl">through M</span><div class="eq" id="pbPS"></div></div>
+          <div class="form key"><span class="lbl">ax + by + c = 0</span><div class="eq" id="pbINT"></div></div>
+        </div>
+      </div>
+
+      <div class="card tint-par" id="parCard" hidden>
+        <h2><span class="sw" style="border-color:var(--c-par)"></span>Parallel to AB through P</h2>
+        <p class="note-line" id="parNote"></p>
+        <div class="forms" style="margin-top:10px">
+          <div class="form"><span class="lbl">through P</span><div class="eq" id="parPS"></div></div>
+          <div class="form key"><span class="lbl">ax + by + c = 0</span><div class="eq" id="parINT"></div></div>
+        </div>
+      </div>
+
+      <div class="card tint-perp" id="perpCard" hidden>
+        <h2><span class="sw" style="border-color:var(--c-perp)"></span>Perpendicular to AB through P</h2>
+        <p class="note-line" id="perpNote"></p>
+        <div class="forms" style="margin-top:10px">
+          <div class="form"><span class="lbl">through P</span><div class="eq" id="perpPS"></div></div>
+          <div class="form key"><span class="lbl">ax + by + c = 0</span><div class="eq" id="perpINT"></div></div>
+        </div>
+        <span class="lbl" style="margin-top:14px">Foot of the perpendicular, F</span>
+        <div class="big" id="footBig"></div>
+        <ol class="steps" id="footSteps"></ol>
+        <span class="lbl" style="margin-top:14px">Distance from P to line AB</span>
+        <div class="big" id="distBig"></div>
+        <div class="sub" id="distDec"></div>
+        <div class="work chain" id="distWork"></div>
+      </div>
+
+      <div class="card tint-cd" id="cdCard" hidden>
+        <h2><span class="sw" style="border-color:var(--c-cd)"></span>Line CD and where it meets AB</h2>
+        <p class="flag" id="cdSameMsg" hidden>C and D are the same point, so there is no line CD yet. Move one of them.</p>
+        <div id="cdBody">
+          <div class="forms">
+            <div class="form"><span class="lbl">gradient of CD</span><div class="eq" id="cdGrad"></div></div>
+            <div class="form key"><span class="lbl">ax + by + c = 0</span><div class="eq" id="cdINT"></div></div>
+          </div>
+          <div class="big" id="meetBig" style="margin-top:12px"></div>
+          <p class="note-line" id="meetNote"></p>
+          <ol class="steps" id="meetSteps"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><b>Which form does the question want?</b> When a question says "in the form ax + by + c = 0", the coefficients must be whole numbers. Leaving a fraction in costs the mark, so clear the fractions first and then move everything to one side.</p>
+    <p><b>Perpendicular gradients.</b> Two lines are perpendicular when their gradients multiply to −1. Flip the fraction and change the sign: 2/3 becomes −3/2. A horizontal line and a vertical line are perpendicular too, even though the vertical one has no gradient.</p>
+  </div>
+
+  <div class="backlinks">
+    <a class="chip" href="../session-01-straight-lines/">Straight Lines lesson</a>
+    <a class="chip" href="../../../math.html">All math</a>
+  </div>
+</div>
+
+<script id="ll-compute">
+/* ================================================================
+   Exact arithmetic for straight lines. Pure functions, no DOM, so
+   the test harness can load this block on its own.
+   A fraction is [numerator, denominator] with denominator > 0.
+   Strings use ⟦top|bottom⟧ for a fraction; the page draws it stacked.
+   ================================================================ */
+var LL = (function () {
+  'use strict';
+  var MINUS = '−';
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function lcm(a, b) { return a / gcd(a, b) * b; }
+  function safe(n) { if (!Number.isSafeInteger(n)) throw new Error('number too large: ' + n); return n; }
+  function Q(n, d) {
+    if (d === undefined) d = 1;
+    if (d === 0) throw new Error('division by zero');
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1;
+    return [safe(n / g) + 0, safe(d / g)];
+  }
+  function add(a, b) { return Q(a[0] * b[1] + b[0] * a[1], a[1] * b[1]); }
+  function sub(a, b) { return Q(a[0] * b[1] - b[0] * a[1], a[1] * b[1]); }
+  function mul(a, b) { return Q(a[0] * b[0], a[1] * b[1]); }
+  function div(a, b) { return Q(a[0] * b[1], a[1] * b[0]); }
+  function neg(a) { return Q(-a[0], a[1]); }
+  function eq(a, b) { return a[0] === b[0] && a[1] === b[1]; }
+  function zero(a) { return a[0] === 0; }
+  function fromNum(v) { return Q(Math.round(v * 2), 2); }
+  function abs(a) { return [Math.abs(a[0]), a[1]]; }
+
+  /* ---------- formatting ---------- */
+  function mag(a) { return a[1] === 1 ? String(Math.abs(a[0])) : '⟦' + Math.abs(a[0]) + '|' + a[1] + '⟧'; }
+  function fs(a) { return (a[0] < 0 ? MINUS : '') + mag(a); }
+  function fsP(a) { return a[0] < 0 ? '(' + fs(a) + ')' : fs(a); }
+  function fsSq(a) { return (a[0] < 0 || a[1] !== 1) ? '(' + fs(a) + ')' : fs(a); }
+  function subStr(a, b) { return fs(a) + ' ' + MINUS + ' ' + fsP(b); }
+  function addStr(a, b) { return fs(a) + ' + ' + fsP(b); }
+  function pt(x, y) { return '(' + fs(x) + ', ' + fs(y) + ')'; }
+  /* a linear expression from [[coefficient, letter], ...]; letter '' is the constant */
+  function lin(terms) {
+    var s = '';
+    terms.forEach(function (t) {
+      var c = t[0], v = t[1];
+      if (zero(c)) return;
+      var m = (v && Math.abs(c[0]) === 1 && c[1] === 1) ? '' : mag(c);
+      if (s === '') s = (c[0] < 0 ? MINUS : '') + m + v;
+      else s += (c[0] < 0 ? ' ' + MINUS + ' ' : ' + ') + m + v;
+    });
+    return s === '' ? '0' : s;
+  }
+  function I(n) { return Q(n, 1); }
+  function plain(s) {
+    var re = /⟦([^⟦⟧|]*)\|([^⟦⟧|]*)⟧/;
+    function simple(t) { return /^[0-9√]+$/.test(t); }
+    while (re.test(s)) {
+      s = s.replace(re, function (_, a, b) {
+        return (simple(a) ? a : '(' + a + ')') + '/' + (simple(b) ? b : '(' + b + ')');
+      });
+    }
+    return s;
+  }
+
+  /* ---------- surds ---------- */
+  function sqfree(n) {               /* n = s² r with r square-free */
+    var s = 1, r = 1, p = 2;
+    while (p * p <= n) {
+      var e = 0;
+      while (n % p === 0) { n /= p; e++; }
+      for (var i = 0; i < Math.floor(e / 2); i++) s *= p;
+      if (e % 2) r *= p;
+      p += (p === 2 ? 1 : 2);
+    }
+    r *= n;
+    return [s, r];
+  }
+  function sqrtQ(q) {                /* √q = k√r, k a fraction, r square-free */
+    if (q[0] === 0) return { k: [0, 1], r: 1 };
+    var A = sqfree(q[0]), B = sqfree(q[1]);
+    var C = sqfree(A[1] * B[1]);
+    return { k: Q(A[0] * C[0], B[0] * B[1]), r: C[1] };
+  }
+  function surdStr(sd) {
+    if (sd.r === 1 || sd.k[0] === 0) return fs(sd.k);
+    var top = (sd.k[0] === 1 ? '' : sd.k[0]) + '√' + sd.r;
+    return sd.k[1] === 1 ? top : '⟦' + top + '|' + sd.k[1] + '⟧';
+  }
+  function surdDec(sd) {
+    if (sd.r === 1) {                /* exact rational: round half up with whole numbers */
+      var n = sd.k[0], d = sd.k[1], h = Math.floor((200 * n + d) / (2 * d));
+      return (Math.floor(h / 100)) + '.' + String(h % 100).padStart(2, '0');
+    }
+    return (sd.k[0] / sd.k[1] * Math.sqrt(sd.r)).toFixed(2);
+  }
+  function rad(q) { return q[1] === 1 ? String(q[0]) : '⟦' + q[0] + '|' + q[1] + '⟧'; }
+
+  /* ---------- lines: integer a, b, c for ax + by + c = 0, a > 0 (or b > 0 when a = 0), gcd 1 ---------- */
+  function norm(a, b, c) {
+    var L = lcm(lcm(a[1], b[1]), c[1]);
+    var A = a[0] * (L / a[1]), B = b[0] * (L / b[1]), C = c[0] * (L / c[1]);
+    var g = gcd(gcd(A, B), C) || 1;
+    A /= g; B /= g; C /= g;
+    if (A < 0 || (A === 0 && B < 0)) { A = -A; B = -B; C = -C; }
+    return { a: A + 0, b: B + 0, c: C + 0 };
+  }
+  function through(P, a, b) {        /* the line with normal (a, b) through P */
+    var c = neg(add(mul(I(a), P[0]), mul(I(b), P[1])));
+    return norm(I(a), I(b), c);
+  }
+  function lineAB(P1, P2) {
+    var a = sub(P2[1], P1[1]), b = sub(P1[0], P2[0]);
+    var c = neg(add(mul(a, P1[0]), mul(b, P1[1])));
+    return norm(a, b, c);
+  }
+  function grad(L) { return L.b === 0 ? null : Q(-L.a, L.b); }
+  function icpt(L) { return Q(-L.c, L.b); }
+  function vx(L) { return Q(-L.c, L.a); }
+  function intStr(L) { return lin([[I(L.a), 'x'], [I(L.b), 'y'], [I(L.c), '']]) + ' = 0'; }
+  function smcStr(L) {
+    if (L.b === 0) return null;
+    return 'y = ' + lin([[grad(L), 'x'], [icpt(L), '']]);
+  }
+  function vertStr(L) { return 'x = ' + fs(vx(L)); }
+  function psStr(L, P) {
+    if (L.b === 0) return null;
+    var m = grad(L), lhs = lin([[I(1), 'y'], [neg(P[1]), '']]), rhs;
+    if (zero(m)) rhs = '0';
+    else if (zero(P[0])) rhs = lin([[m, 'x']]);
+    else {
+      var inner = lin([[I(1), 'x'], [neg(P[0]), '']]);
+      if (eq(m, I(1))) rhs = inner;
+      else if (eq(m, I(-1))) rhs = MINUS + '(' + inner + ')';
+      else rhs = fs(m) + '(' + inner + ')';
+    }
+    return lhs + ' = ' + rhs;
+  }
+  function onLine(L, P) { return zero(add(add(mul(I(L.a), P[0]), mul(I(L.b), P[1])), I(L.c))); }
+
+  function intSteps(L) {
+    var st = [];
+    if (L.b === 0) {
+      var k = vx(L);
+      st.push({ t: 'The line is vertical, so start from', e: 'x = ' + fs(k), chk: 'line' });
+      if (k[1] !== 1) st.push({ t: 'Multiply both sides by ' + k[1] + ' to clear the fraction', e: lin([[I(k[1]), 'x']]) + ' = ' + fs(I(k[0])), chk: 'line' });
+      st.push({ t: 'Move everything to one side', e: intStr(L), chk: 'line' });
+      return st;
+    }
+    var m = grad(L), c = icpt(L), D = lcm(m[1], c[1]);
+    st.push({ t: 'Start from y = mx + c', e: smcStr(L), chk: 'line' });
+    if (D > 1) st.push({ t: 'Multiply every term by ' + D + ' to clear the fractions', e: lin([[I(D), 'y']]) + ' = ' + lin([[mul(m, I(D)), 'x'], [mul(c, I(D)), '']]), chk: 'line' });
+    else st.push({ t: 'There are no fractions to clear, so go straight on', e: null, chk: 'none' });
+    var M = m[0] * (D / m[1]), C = c[0] * (D / c[1]);
+    if (M > 0) {
+      st.push({ t: 'Move everything to the right, so the x term stays positive', e: '0 = ' + lin([[I(M), 'x'], [I(-D), 'y'], [I(C), '']]), chk: 'line' });
+      st.push({ t: 'Swap the two sides', e: intStr(L), chk: 'line' });
+    } else if (M < 0) {
+      st.push({ t: 'Move everything to the left, so the x term becomes positive', e: lin([[I(D), 'y'], [I(-M), 'x'], [I(-C), '']]) + ' = 0', chk: 'line' });
+      st.push({ t: 'Write the x term first', e: intStr(L), chk: 'line' });
+    } else {
+      st.push({ t: 'Move everything to the left', e: intStr(L), chk: 'line' });
+    }
+    return st;
+  }
+
+  function forms(L, P) {
+    return { ps: psStr(L, P), smc: smcStr(L), vert: L.b === 0 ? vertStr(L) : null, int: intStr(L), coef: [L.a, L.b, L.c] };
+  }
+
+  /* where two lines meet, with the working */
+  function meet(L1, L2) {
+    var det = L1.a * L2.b - L2.a * L1.b;
+    if (det === 0) {
+      var same = L1.a === L2.a && L1.b === L2.b && L1.c === L2.c;
+      return { rel: same ? 'same' : 'parallel' };
+    }
+    return { rel: 'meet', x: Q(L1.b * L2.c - L2.b * L1.c, det), y: Q(L2.a * L1.c - L1.a * L2.c, det) };
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function times(m, X) {           /* m(X), written the way you would substitute it */
+    if (eq(m, I(1))) return fsP(X);
+    if (eq(m, I(-1))) return MINUS + fsP(X);
+    return fs(m) + '(' + fs(X) + ')';
+  }
+  function plusTerm(c) { return zero(c) ? '' : (c[0] < 0 ? ' ' + MINUS + ' ' + mag(c) : ' + ' + mag(c)); }
+  function subIn(L, X, Y) {        /* "y = m(X) + c = Y" */
+    var m = grad(L), c = icpt(L);
+    if (zero(m)) return 'y = ' + fs(c);
+    return 'y = ' + times(m, X) + plusTerm(c) + ' = ' + fs(Y);
+  }
+  function meetWork(L1, n1, L2, n2, X, Y) {
+    var st = [];
+    if (L1.b === 0 || L2.b === 0) {
+      var vert = L1.b === 0 ? [L1, n1] : [L2, n2], other = L1.b === 0 ? [L2, n2] : [L1, n1];
+      st.push({ t: cap(vert[1]) + ' is vertical', e: 'x = ' + fs(X), chk: 'cx' });
+      st.push({ t: 'Substitute x = ' + fs(X) + ' into ' + other[1] + ', ' + smcStr(other[0]), e: subIn(other[0], X, Y), chk: 'cy' });
+      return st;
+    }
+    var m1 = grad(L1), c1 = icpt(L1), m2 = grad(L2), c2 = icpt(L2);
+    var dm = sub(m1, m2), dc = sub(c2, c1);
+    st.push({ t: 'Both equations give y, so set them equal', e: lin([[m1, 'x'], [c1, '']]) + ' = ' + lin([[m2, 'x'], [c2, '']]), chk: 'ex' });
+    st.push({ t: 'Collect the x terms on one side', e: lin([[dm, 'x']]) + ' = ' + fs(dc), chk: 'ex' });
+    var xs = 'x = ' + fs(X);
+    if (!eq(dm, I(1))) xs = 'x = ' + (eq(dm, I(-1)) ? MINUS + fsP(dc) : '⟦' + fs(dc) + '|' + fs(dm) + '⟧') + ' = ' + fs(X);
+    st.push({ t: 'Divide by the number in front of x', e: xs, chk: 'cx' });
+    st.push({ t: 'Substitute into ' + n1 + ', ' + smcStr(L1), e: subIn(L1, X, Y), chk: 'cy' });
+    return st;
+  }
+
+  /* gradient, midpoint and length of a segment, each as a chain of equal pieces */
+  function segment(A, B) {
+    var dy = sub(B[1], A[1]), dx = sub(B[0], A[0]);
+    var g = { pieces: ['⟦y₂ ' + MINUS + ' y₁|x₂ ' + MINUS + ' x₁⟧', '⟦' + subStr(B[1], A[1]) + '|' + subStr(B[0], A[0]) + '⟧'] };
+    if (zero(dx)) { g.m = null; g.pieces.push('⟦' + fs(dy) + '|0⟧'); g.vertical = true; }
+    else {
+      g.m = div(dy, dx);
+      var raw = '⟦' + fs(dy) + '|' + fs(dx) + '⟧';
+      g.pieces.push(raw);
+      if (raw !== fs(g.m)) g.pieces.push(fs(g.m));
+    }
+    var sx = add(A[0], B[0]), sy = add(A[1], B[1]), M = [div(sx, I(2)), div(sy, I(2))];
+    var mid = { M: M, pieces: [
+      '(⟦x₁ + x₂|2⟧, ⟦y₁ + y₂|2⟧)',
+      '(⟦' + addStr(A[0], B[0]) + '|2⟧, ⟦' + addStr(A[1], B[1]) + '|2⟧)',
+      '(⟦' + fs(sx) + '|2⟧, ⟦' + fs(sy) + '|2⟧)',
+      pt(M[0], M[1])] };
+    var len = segLength(A, B, true);
+    return { grad: g, mid: mid, len: len };
+  }
+  function segLength(A, B, withFormula) {
+    var dx = sub(B[0], A[0]), dy = sub(B[1], A[1]);
+    var dx2 = mul(dx, dx), dy2 = mul(dy, dy), s2 = add(dx2, dy2), sd = sqrtQ(s2);
+    var pieces = [];
+    if (withFormula) pieces.push('√((x₂ ' + MINUS + ' x₁)² + (y₂ ' + MINUS + ' y₁)²)');
+    pieces.push('√((' + subStr(B[0], A[0]) + ')² + (' + subStr(B[1], A[1]) + ')²)');
+    pieces.push('√(' + fsSq(dx) + '² + ' + fsSq(dy) + '²)');
+    pieces.push('√(' + fs(dx2) + ' + ' + fs(dy2) + ')');
+    pieces.push('√' + rad(s2));
+    var fin = surdStr(sd);
+    if (fin !== '√' + rad(s2)) pieces.push(fin);
+    return { sq: s2, surd: sd, str: fin, dec: surdDec(sd), exactInt: sd.r === 1 && sd.k[1] === 1, pieces: pieces };
+  }
+
+  function analyze(st) {
+    var A = [fromNum(st.A[0]), fromNum(st.A[1])], B = [fromNum(st.B[0]), fromNum(st.B[1])];
+    var P = [fromNum(st.P[0]), fromNum(st.P[1])], C = [fromNum(st.C[0]), fromNum(st.C[1])], D = [fromNum(st.D[0]), fromNum(st.D[1])];
+    var out = { pts: { A: A, B: B, P: P, C: C, D: D } };
+    if (eq(A[0], B[0]) && eq(A[1], B[1])) { out.ab = { same: true }; }
+    else {
+      var L = lineAB(A, B), seg = segment(A, B);
+      out.ab = { same: false, line: L, kind: L.b === 0 ? 'vertical' : (L.a === 0 ? 'horizontal' : 'sloped'),
+                 grad: seg.grad, mid: seg.mid, len: seg.len, forms: forms(L, A), steps: intSteps(L) };
+      var M = seg.mid.M, m = grad(L);
+      /* perpendicular bisector */
+      var PB = through(M, L.b, -L.a), mp = grad(PB), pbText;
+      if (m === null) pbText = [{ t: 'AB is vertical, so the perpendicular bisector is horizontal, gradient 0', e: null, chk: 'none' }];
+      else if (zero(m)) pbText = [{ t: 'AB is horizontal, gradient 0, so the perpendicular bisector is vertical and has no gradient', e: null, chk: 'none' }];
+      else {
+        var flip = Q(m[1], m[0]);
+        pbText = [
+          { t: 'gradient of AB', e: fs(m), chk: 'none' },
+          { t: 'flip it', e: fs(flip), chk: 'none' },
+          { t: 'change the sign', e: fs(mp), chk: 'none' },
+          { t: 'check', e: fs(m) + ' × ' + fsP(mp) + ' = ' + MINUS + '1', chk: 'none' }];
+      }
+      out.pb = { line: PB, grad: mp, through: M, text: pbText, forms: forms(PB, M) };
+      /* through P */
+      var PAR = through(P, L.a, L.b), PERP = through(P, L.b, -L.a);
+      out.par = { line: PAR, grad: grad(PAR), forms: forms(PAR, P), onAB: onLine(L, P) };
+      var F = meet(L, PERP);
+      var dist = segLength(P, [F.x, F.y], false);
+      out.perp = { line: PERP, grad: grad(PERP), forms: forms(PERP, P), onAB: onLine(L, P),
+                   F: [F.x, F.y], Fsteps: meetWork(L, 'line AB', PERP, 'the perpendicular', F.x, F.y), dist: dist };
+    }
+    if (eq(C[0], D[0]) && eq(C[1], D[1])) out.cd = { same: true };
+    else {
+      var LC = lineAB(C, D);
+      out.cd = { same: false, line: LC, grad: grad(LC), forms: forms(LC, C) };
+      if (!out.ab.same) {
+        var X = meet(out.ab.line, LC);
+        out.cd.rel = X.rel;
+        if (X.rel === 'meet') { out.cd.X = [X.x, X.y]; out.cd.steps = meetWork(out.ab.line, 'line AB', LC, 'line CD', X.x, X.y); }
+      }
+    }
+    return out;
+  }
+
+  return { analyze: analyze, plain: plain, fs: fs, pt: pt, Q: Q, fromNum: fromNum, grad: grad, vx: vx, MINUS: MINUS };
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+  var MINUS = LL.MINUS;
+  var COL = { ab: '#00e5ff', pb: '#FFC46B', par: '#4ADE80', perp: '#FF7A6B', cd: '#B98CFF', p: '#ffffff' };
+  var DEFAULTS = { A: [-4, -1], B: [4, 3], P: [2, -5], C: [-6, 6], D: [2, -6] };
+  var S = { pts: JSON.parse(JSON.stringify(DEFAULTS)), snap: 1, on: { pb: false, par: false, perp: false, cd: false } };
+  var LIM = 10, R = 11, W = 600;
+
+  /* ---------- strings to HTML: stacked fractions ---------- */
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function toHTML(s) {
+    if (s === null || s === undefined) return '';
+    s = esc(s);
+    var re = /⟦([^⟦⟧|]*)\|([^⟦⟧|]*)⟧/;
+    function txt(h) { return h.replace(/<[^>]+>/g, ''); }
+    function simple(h) { return /^[0-9√]+$/.test(txt(h)); }
+    function part(h, cls) {
+      return '<span class="' + cls + '">' + (simple(h) ? h : '<span class="sr">(</span>' + h + '<span class="sr">)</span>') + '</span>';
+    }
+    while (re.test(s)) {
+      s = s.replace(re, function (_, a, b) {
+        return '<span class="fr">' + part(a, 'nu') + '<span class="sr">/</span>' + part(b, 'de') + '</span>';
+      });
+    }
+    return s;
+  }
+  function P(s) { return LL.plain(s); }
+  function chain(el, lhs, pieces) {
+    el.innerHTML = pieces.map(function (p, i) {
+      return '<span class="seg">' + (i === 0 ? esc(lhs) + ' = ' : '= ') + toHTML(p) + '</span>';
+    }).join(' ');
+  }
+  function steps(el, list) {
+    el.innerHTML = list.map(function (s) {
+      return '<li><span class="t">' + toHTML(s.t) + '</span>' + (s.e ? '<span class="e">' + toHTML(s.e) + '</span>' : '') + '</li>';
+    }).join('');
+  }
+
+  /* ---------- the grid ---------- */
+  var svg = $('plot');
+  function X(x) { return (x + R) / (2 * R) * W; }
+  function Y(y) { return W - (y + R) / (2 * R) * W; }
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e);
+    return e;
+  }
+  var defs = el('defs', {});
+  var cp = el('clipPath', { id: 'clipGrid' }, defs);
+  el('rect', { x: 0, y: 0, width: W, height: W, rx: 14 }, cp);
+  el('rect', { x: 0, y: 0, width: W, height: W, rx: 14, fill: '#0f0f0f' });
+  var grid = el('g', { 'aria-hidden': 'true' });
+  for (var i = -R; i <= R; i++) {
+    var ax = i === 0;
+    el('line', { x1: X(i), y1: 0, x2: X(i), y2: W, stroke: ax ? 'rgba(255,255,255,0.75)' : (i % 2 === 0 ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.05)'), 'stroke-width': ax ? 2 : 1 }, grid);
+    el('line', { x1: 0, y1: Y(i), x2: W, y2: Y(i), stroke: ax ? 'rgba(255,255,255,0.75)' : (i % 2 === 0 ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.05)'), 'stroke-width': ax ? 2 : 1 }, grid);
+    if (i !== 0 && i % 2 === 0 && Math.abs(i) <= LIM) {
+      var lbl = String(i).replace('-', MINUS);
+      var tx = el('text', { x: X(i), y: Y(0) + 17, 'text-anchor': 'middle', 'font-size': 13, fill: '#b0b0b0', 'font-family': 'JetBrains Mono, monospace', class: 'tick' }, grid);
+      tx.textContent = lbl;
+      var ty = el('text', { x: X(0) - 6, y: Y(i) + 4.5, 'text-anchor': 'end', 'font-size': 13, fill: '#b0b0b0', 'font-family': 'JetBrains Mono, monospace', class: 'tick' }, grid);
+      ty.textContent = lbl;
+    }
+  }
+  var lx = el('text', { x: W - 10, y: Y(0) - 8, 'text-anchor': 'end', 'font-size': 17, 'font-style': 'italic', fill: '#ffffff', 'font-family': 'Poppins, sans-serif' }, grid); lx.textContent = 'x';
+  var ly = el('text', { x: X(0) + 9, y: 20, 'font-size': 17, 'font-style': 'italic', fill: '#ffffff', 'font-family': 'Poppins, sans-serif' }, grid); ly.textContent = 'y';
+  var lines = el('g', { 'clip-path': 'url(#clipGrid)', id: 'lines' });
+  var marks = el('g', { 'clip-path': 'url(#clipGrid)', id: 'marks' });
+  var handlesG = el('g', { id: 'handles' });
+  var labels = el('g', { id: 'labels', 'pointer-events': 'none' });
+
+  /* persistent handles keep keyboard focus across redraws */
+  var HANDLES = {};
+  [['P', COL.p], ['C', COL.cd], ['D', COL.cd], ['A', COL.ab], ['B', COL.ab]].forEach(function (h) {
+    var g = el('g', { class: 'handle', tabindex: 0, role: 'button', 'data-k': h[0] }, handlesG);
+    el('circle', { class: 'hit', r: 22, fill: 'transparent' }, g);
+    el('circle', { class: 'ring', r: 15, fill: 'none', stroke: '#6FD8FF', 'stroke-width': 2.5 }, g);
+    el('circle', { class: 'core', r: 8.5, fill: h[1], stroke: '#0f0f0f', 'stroke-width': 2.5 }, g);
+    HANDLES[h[0]] = g;
+  });
+
+  function lineEnds(L) {
+    var far = R + 2;
+    if (L.b === 0) { var k = -L.c / L.a; return [[k, -far], [k, far]]; }
+    if (Math.abs(L.a) <= Math.abs(L.b)) return [[-far, (-L.c + L.a * far) / L.b], [far, (-L.c - L.a * far) / L.b]];
+    return [[(-L.c + L.b * far) / L.a, -far], [(-L.c - L.b * far) / L.a, far]];
+  }
+  function drawLine(L, color, cls, dash) {
+    var e = lineEnds(L);
+    var a = { x1: X(e[0][0]), y1: Y(e[0][1]), x2: X(e[1][0]), y2: Y(e[1][1]), stroke: color, 'stroke-width': 3.5, 'stroke-linecap': 'round', class: 'ln ' + cls };
+    if (dash) a['stroke-dasharray'] = dash;
+    el('line', a, lines);
+  }
+  function v(q) { return q[0] / q[1]; }
+  function inView(x, y) { return Math.abs(x) <= R && Math.abs(y) <= R; }
+  /* labels are queued during a render, then placed so they avoid each other, the dots and the axis numbers */
+  var queue = [], TICKBOX = [];
+  for (var tk = -LIM; tk <= LIM; tk += 2) {
+    if (tk === 0) continue;
+    TICKBOX.push([X(tk) - 16, Y(0) + 4, X(tk) + 16, Y(0) + 24]);
+    TICKBOX.push([X(0) - 40, Y(tk) - 10, X(0) - 4, Y(tk) + 10]);
+  }
+  function label(x, y, text, color, cls) { queue.push({ x: X(x), y: Y(y), text: text, color: color, cls: cls || '' }); }
+  function overlap(a, b) {
+    var w = Math.min(a[2], b[2]) - Math.max(a[0], b[0]), h = Math.min(a[3], b[3]) - Math.max(a[1], b[1]);
+    return (w > 0 && h > 0) ? w * h : 0;
+  }
+  /* K enlarges text and handles when the graph is drawn small, so a phone shows readable labels */
+  var K = 1;
+  function sizeK() {
+    var w = svg.getBoundingClientRect().width || W;
+    K = Math.max(1, Math.min(1.8, 0.8 * W / w));
+    Array.prototype.forEach.call(svg.querySelectorAll('.tick'), function (t) { t.setAttribute('font-size', (13 * K).toFixed(1)); });
+    Object.keys(HANDLES).forEach(function (k) {
+      var g = HANDLES[k];
+      g.querySelector('.hit').setAttribute('r', (22 * K).toFixed(1));
+      g.querySelector('.ring').setAttribute('r', (15 * K).toFixed(1));
+      g.querySelector('.core').setAttribute('r', (8.5 * Math.sqrt(K)).toFixed(1));
+    });
+  }
+  function placeLabels() {
+    var placed = [], dots = queue.map(function (q) { return [q.x - 10 * K, q.y - 10 * K, q.x + 10 * K, q.y + 10 * K]; });
+    var CAND = [[12, -11, 'start'], [-12, -11, 'end'], [12, 22, 'start'], [-12, 22, 'end'], [14, 6, 'start'], [-14, 6, 'end'],
+                [0, -17, 'middle'], [0, 30, 'middle'], [12, -30, 'start'], [-12, -30, 'end'], [12, 40, 'start'], [-12, 40, 'end']];
+    queue.forEach(function (q) {
+      var w = (q.text.length * 9.1 + 4) * K, best = null;
+      CAND.forEach(function (c, ci) {
+        var tx = q.x + c[0] * K, ty = q.y + c[1] * K;
+        var x0 = c[2] === 'start' ? tx : (c[2] === 'end' ? tx - w : tx - w / 2);
+        var box = [x0, ty - 13 * K, x0 + w, ty + 4 * K], score = ci * 0.5;
+        if (box[0] < 4 || box[2] > W - 4 || box[1] < 4 || box[3] > W - 4) score += 1e6;
+        placed.concat(dots).forEach(function (b) { score += overlap(box, b) * 6; });
+        TICKBOX.forEach(function (b) { score += overlap(box, b) * 2; });
+        if (!best || score < best.score) best = { score: score, tx: tx, ty: ty, anchor: c[2], box: box };
+      });
+      placed.push(best.box);
+      var t = el('text', { x: best.tx.toFixed(1), y: best.ty.toFixed(1), 'text-anchor': best.anchor,
+        'font-size': (15 * K).toFixed(1), 'font-weight': 600, fill: q.color, 'font-family': 'JetBrains Mono, monospace',
+        stroke: '#0f0f0f', 'stroke-width': 5, 'paint-order': 'stroke', 'stroke-linejoin': 'round', class: 'plabel ' + q.cls }, labels);
+      t.textContent = q.text;
+    });
+    queue = [];
+  }
+  function dot(x, y, color, hollow, cls) {
+    el('circle', { cx: X(x), cy: Y(y), r: 6.5, fill: hollow ? '#0f0f0f' : color, stroke: color, 'stroke-width': 2.5, class: 'mk ' + (cls || '') }, marks);
+  }
+  function rightAngle(Q, L, color, cls) {
+    /* small square at Q, one side along L and one along its perpendicular */
+    var len = Math.hypot(L.a, L.b), u = [L.b / len, -L.a / len], w = [L.a / len, L.b / len], s = 0.55;
+    var p1 = [Q[0] + s * u[0], Q[1] + s * u[1]], p2 = [p1[0] + s * w[0], p1[1] + s * w[1]], p3 = [Q[0] + s * w[0], Q[1] + s * w[1]];
+    el('path', { d: 'M' + X(p1[0]) + ',' + Y(p1[1]) + ' L' + X(p2[0]) + ',' + Y(p2[1]) + ' L' + X(p3[0]) + ',' + Y(p3[1]),
+      fill: 'none', stroke: color, 'stroke-width': 2, class: 'ra ' + cls }, marks);
+  }
+  function ptText(name, q) { return name + P(LL.pt(q[0], q[1])); }
+
+  /* ---------- render ---------- */
+  var res;
+  function render() {
+    sizeK();
+    res = LL.analyze(S.pts);
+    var ab = res.ab, on = S.on;
+    while (lines.firstChild) lines.removeChild(lines.firstChild);
+    while (marks.firstChild) marks.removeChild(marks.firstChild);
+    while (labels.firstChild) labels.removeChild(labels.firstChild);
+
+    var needP = on.par || on.perp;
+    ['A', 'B', 'P', 'C', 'D'].forEach(function (k) {
+      var show = (k === 'A' || k === 'B') || (k === 'P' && needP) || ((k === 'C' || k === 'D') && on.cd);
+      if (show) label(S.pts[k][0], S.pts[k][1], ptText(k, res.pts[k]), k === 'P' ? COL.p : (k === 'A' || k === 'B' ? COL.ab : COL.cd), 'pt-' + k);
+    });
+    if (!ab.same) {
+      if (on.cd && !res.cd.same) drawLine(res.cd.line, COL.cd, 'cd');
+      if (on.pb) drawLine(res.pb.line, COL.pb, 'pb', '12 8');
+      if (on.par) drawLine(res.par.line, COL.par, 'par', '12 8');
+      if (on.perp) drawLine(res.perp.line, COL.perp, 'perp', '12 8');
+      drawLine(ab.line, COL.ab, 'ab');
+      var M = [v(ab.mid.M[0]), v(ab.mid.M[1])];
+      if (on.pb) { rightAngle(M, ab.line, COL.pb, 'pb'); dot(M[0], M[1], COL.pb, true, 'mid'); label(M[0], M[1], ptText('M', ab.mid.M), COL.pb, 'mid'); }
+      if (on.perp) {
+        var F = [v(res.perp.F[0]), v(res.perp.F[1])];
+        if (!res.perp.onAB) {
+          el('line', { x1: X(S.pts.P[0]), y1: Y(S.pts.P[1]), x2: X(F[0]), y2: Y(F[1]), stroke: COL.perp, 'stroke-width': 6, opacity: 0.35, 'stroke-linecap': 'round', class: 'pf' }, marks);
+          rightAngle(F, ab.line, COL.perp, 'perp');
+        }
+        if (inView(F[0], F[1])) { dot(F[0], F[1], COL.perp, true, 'foot'); label(F[0], F[1], ptText('F', res.perp.F), COL.perp, 'foot'); }
+      }
+      if (on.cd && !res.cd.same && res.cd.rel === 'meet') {
+        var Xq = [v(res.cd.X[0]), v(res.cd.X[1])];
+        if (inView(Xq[0], Xq[1])) { dot(Xq[0], Xq[1], '#ffffff', false, 'meet'); label(Xq[0], Xq[1], ptText('Q', res.cd.X), '#ffffff', 'meet'); }
+      }
+    }
+    /* handles */
+    ['A', 'B', 'P', 'C', 'D'].forEach(function (k) {
+      var g = HANDLES[k], show = (k === 'A' || k === 'B') || (k === 'P' && needP) || ((k === 'C' || k === 'D') && on.cd);
+      g.style.display = show ? '' : 'none';
+      g.setAttribute('tabindex', show ? '0' : '-1');
+      var p = S.pts[k];
+      g.setAttribute('transform', 'translate(' + X(p[0]).toFixed(2) + ',' + Y(p[1]).toFixed(2) + ')');
+      g.setAttribute('aria-label', 'Point ' + k + ' at ' + P(LL.pt(res.pts[k][0], res.pts[k][1])) + '. Arrow keys move it.');
+    });
+    placeLabels();
+
+    renderLegend();
+    renderInputs();
+    renderReadouts();
+  }
+
+  function renderLegend() {
+    var items = [['line AB', COL.ab, false]];
+    if (S.on.pb) items.push(['perpendicular bisector', COL.pb, true]);
+    if (S.on.par) items.push(['parallel through P', COL.par, true]);
+    if (S.on.perp) items.push(['perpendicular through P', COL.perp, true]);
+    if (S.on.cd) items.push(['line CD', COL.cd, false]);
+    $('legend').innerHTML = items.map(function (it) {
+      return '<span><i class="sw' + (it[2] ? ' dash' : '') + '" style="border-color:' + it[1] + '"></i>' + it[0] + '</span>';
+    }).join('');
+  }
+
+  /* ---------- point inputs ---------- */
+  var ORDER = ['A', 'B', 'P', 'C', 'D'];
+  var NAMECOL = { A: COL.ab, B: COL.ab, P: COL.p, C: COL.cd, D: COL.cd };
+  $('ptgrid').innerHTML = ORDER.map(function (k) {
+    return '<div class="pt" id="row-' + k + '"><span class="nm" style="color:' + NAMECOL[k] + '">' + k + '</span>(' +
+      '<input id="in-' + k + '-x" data-k="' + k + '" data-i="0" type="text" autocomplete="off" spellcheck="false" aria-label="x-coordinate of ' + k + '">,' +
+      '<input id="in-' + k + '-y" data-k="' + k + '" data-i="1" type="text" autocomplete="off" spellcheck="false" aria-label="y-coordinate of ' + k + '">)</div>';
+  }).join('');
+  function fmtCoord(n) { return P(LL.fs(LL.fromNum(n))); }
+  function renderInputs() {
+    $('row-P').hidden = !(S.on.par || S.on.perp);
+    $('row-C').hidden = !S.on.cd; $('row-D').hidden = !S.on.cd;
+    ORDER.forEach(function (k) {
+      [0, 1].forEach(function (i) {
+        var inp = $('in-' + k + '-' + (i ? 'y' : 'x'));
+        if (document.activeElement !== inp) { inp.value = fmtCoord(S.pts[k][i]); inp.classList.remove('bad'); }
+      });
+    });
+  }
+  function parseCoord(str) {
+    var s = String(str).trim().replace(/[−–]/g, '-').replace(/\s+/g, ''), val;
+    if (/^-?\d+(\.\d+)?$/.test(s) || /^-?\.\d+$/.test(s)) val = parseFloat(s);
+    else {
+      var m = s.match(/^(-?\d+)\/(\d+)$/);
+      if (!m || +m[2] === 0) return { err: 'That is not a number I can read. Try 3, −2, 2.5 or 7/2.' };
+      val = +m[1] / +m[2];
+    }
+    if (Math.abs(val * 2 - Math.round(val * 2)) > 1e-9) return { err: 'Use whole numbers or halves, like 3, −2, 2.5 or 7/2.' };
+    if (Math.abs(val) > LIM) return { err: 'Keep coordinates between −10 and 10 so they stay on the grid.' };
+    return { v: Math.round(val * 2) / 2 };
+  }
+  function showMsg(t) { $('msg').textContent = t || ''; $('msg').hidden = !t; }
+  Array.prototype.forEach.call(document.querySelectorAll('#ptgrid input'), function (inp) {
+    var k = inp.dataset.k, i = +inp.dataset.i;
+    inp.addEventListener('input', function () {
+      var r = parseCoord(inp.value);
+      if (r.err) { if (inp.value.trim() !== '' && inp.value.trim() !== '-' && inp.value.trim() !== MINUS) { inp.classList.add('bad'); showMsg(r.err); } return; }
+      inp.classList.remove('bad'); showMsg('');
+      S.pts[k][i] = r.v; render();
+    });
+    inp.addEventListener('change', function () { var r = parseCoord(inp.value); if (!r.err) inp.value = fmtCoord(r.v); });
+    inp.addEventListener('blur', function () { inp.value = fmtCoord(S.pts[k][i]); inp.classList.remove('bad'); showMsg(''); });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { inp.value = fmtCoord(S.pts[k][i]); inp.classList.remove('bad'); showMsg(''); return; }
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      var nv = clampSnap(S.pts[k][i] + (e.key === 'ArrowUp' ? S.snap : -S.snap), S.snap);
+      S.pts[k][i] = nv; inp.value = fmtCoord(nv); render();
+    });
+  });
+
+  /* ---------- readouts ---------- */
+  function setEq(id, s, naText) {
+    var e = $(id);
+    if (s === null || s === undefined) { e.className = 'eq na'; e.textContent = naText; }
+    else { e.className = 'eq'; e.innerHTML = toHTML(s); }
+  }
+  function renderReadouts() {
+    var ab = res.ab, on = S.on;
+    $('sameAB').hidden = !ab.same;
+    $('abCards').hidden = ab.same; $('eqCard').hidden = ab.same;
+    $('pbCard').hidden = !on.pb || ab.same;
+    $('parCard').hidden = !on.par || ab.same;
+    $('perpCard').hidden = !on.perp || ab.same;
+    $('cdCard').hidden = !on.cd;
+    if (!ab.same) {
+      var g = ab.grad;
+      if (g.m === null) $('gradBig').innerHTML = 'undefined <span class="muted">vertical line</span>';
+      else $('gradBig').innerHTML = 'm = ' + toHTML(LL.fs(g.m)) + (g.m[0] === 0 ? ' <span class="muted">horizontal line</span>' : '');
+      chain($('gradWork'), 'm', g.pieces);
+      if (g.m === null) $('gradWork').innerHTML += '<span class="warn">You cannot divide by 0, so the gradient is undefined.</span>';
+      $('midBig').innerHTML = 'M = ' + toHTML(LL.pt(ab.mid.M[0], ab.mid.M[1]));
+      chain($('midWork'), 'M', ab.mid.pieces);
+      $('lenBig').innerHTML = 'AB = ' + toHTML(ab.len.str);
+      $('lenDec').textContent = ab.len.exactInt ? '' : 'as a decimal: ' + ab.len.dec + ' (2 d.p.)';
+      $('lenDec').hidden = ab.len.exactInt;
+      chain($('lenWork'), 'AB', ab.len.pieces);
+
+      var f = ab.forms;
+      setEq('fPS', f.ps, 'The line is vertical, so there is no gradient to use. Its equation is ' + (f.vert ? P(f.vert) : '') + '.');
+      setEq('fSMC', f.smc, 'Not possible for a vertical line. It is ' + (f.vert ? P(f.vert) : '') + '.');
+      setEq('fINT', f.int);
+      steps($('intSteps'), ab.steps);
+
+      if (on.pb) {
+        var pb = res.pb;
+        $('pbGrad').innerHTML = pb.text.map(function (s) {
+          return s.e ? '<span class="l">' + esc(s.t) + '</span><span class="r">' + toHTML(s.e) + '</span>'
+                     : '<span class="r" style="grid-column:1 / -1;font-family:var(--font);color:var(--text-2)">' + esc(s.t) + '</span>';
+        }).join('');
+        setEq('pbPS', pb.forms.ps || pb.forms.vert);
+        setEq('pbINT', pb.forms.int);
+      }
+      if (on.par) {
+        $('parNote').innerHTML = res.par.onAB ? '<b>P is on line AB</b>, so the parallel line through P is line AB itself.'
+          : 'Parallel lines have the same gradient' + (ab.grad.m === null ? '. AB is vertical, so this line is vertical too.' : ', so this line has gradient ' + toHTML(LL.fs(ab.grad.m)) + '.');
+        setEq('parPS', res.par.forms.ps || res.par.forms.vert);
+        setEq('parINT', res.par.forms.int);
+      }
+      if (on.perp) {
+        var pp = res.perp;
+        $('perpNote').innerHTML = ab.grad.m === null ? 'AB is vertical, so the perpendicular is horizontal.'
+          : (ab.grad.m[0] === 0 ? 'AB is horizontal, so the perpendicular is vertical.'
+          : 'Flip and change the sign of ' + toHTML(LL.fs(ab.grad.m)) + ': the perpendicular gradient is ' + toHTML(LL.fs(pp.grad)) + '.');
+        setEq('perpPS', pp.forms.ps || pp.forms.vert);
+        setEq('perpINT', pp.forms.int);
+        $('footBig').innerHTML = 'F = ' + toHTML(LL.pt(pp.F[0], pp.F[1])) + (inView(v(pp.F[0]), v(pp.F[1])) ? '' : ' <span class="muted">off the grid</span>');
+        if (pp.onAB) {
+          $('footSteps').innerHTML = '<li><span class="t">P is on line AB, so the foot of the perpendicular is P itself.</span></li>';
+          $('distBig').innerHTML = '0'; $('distDec').hidden = true; $('distWork').hidden = true;
+        } else {
+          steps($('footSteps'), pp.Fsteps);
+          $('distBig').innerHTML = 'PF = ' + toHTML(pp.dist.str);
+          $('distDec').hidden = pp.dist.exactInt;
+          $('distDec').textContent = pp.dist.exactInt ? '' : 'as a decimal: ' + pp.dist.dec + ' (2 d.p.)';
+          $('distWork').hidden = false;
+          chain($('distWork'), 'PF', pp.dist.pieces);
+        }
+      }
+    }
+    if (on.cd) {
+      var cd = res.cd;
+      $('cdSameMsg').hidden = !cd.same; $('cdBody').hidden = cd.same;
+      if (!cd.same) {
+        setEq('cdGrad', cd.grad === null ? null : 'm = ' + LL.fs(cd.grad), 'undefined, vertical line');
+        setEq('cdINT', cd.forms.int);
+        var mb = $('meetBig'), mn = $('meetNote');
+        if (ab.same) { mb.textContent = ''; mn.textContent = 'Line AB needs two different points first.'; $('meetSteps').innerHTML = ''; }
+        else if (cd.rel === 'parallel') {
+          mb.innerHTML = 'parallel, no intersection'; mb.style.color = 'var(--amber)';
+          mn.innerHTML = 'Both lines have ' + (cd.grad === null ? 'no gradient (both vertical)' : 'gradient ' + toHTML(LL.fs(cd.grad))) + ' but different equations, so they never meet.';
+          $('meetSteps').innerHTML = '';
+        } else if (cd.rel === 'same') {
+          mb.innerHTML = 'same line'; mb.style.color = 'var(--ok)';
+          mn.innerHTML = 'C and D both lie on line AB, so the two equations are the same line and every point on it is shared.';
+          $('meetSteps').innerHTML = '';
+        } else {
+          mb.style.color = '';
+          mb.innerHTML = 'They meet at Q' + toHTML(LL.pt(cd.X[0], cd.X[1])) + (inView(v(cd.X[0]), v(cd.X[1])) ? '' : ' <span class="muted">off the grid</span>');
+          mn.textContent = 'Solve the two equations together:';
+          steps($('meetSteps'), cd.steps);
+        }
+      }
+    }
+  }
+
+  /* ---------- dragging and keys ---------- */
+  function clampSnap(val, step) { var s = Math.round(val / step) * step; return Math.max(-LIM, Math.min(LIM, s)) + 0; }
+  var drag = null;
+  svg.addEventListener('pointerdown', function (e) {
+    var h = e.target.closest && e.target.closest('.handle');
+    if (!h) return;
+    e.preventDefault();
+    drag = h.dataset.k; h.classList.add('dragging');
+    /* hold the page height while dragging so changing readouts never shift the graph under the pointer */
+    document.body.style.minHeight = document.documentElement.scrollHeight + 'px';
+    try { svg.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    h.focus({ preventScroll: true });
+  });
+  svg.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    var r = svg.getBoundingClientRect();
+    var wx = ((e.clientX - r.left) / r.width * W) / W * 2 * R - R;
+    var wy = R - ((e.clientY - r.top) / r.height * W) / W * 2 * R;
+    var nx = clampSnap(wx, S.snap), ny = clampSnap(wy, S.snap), p = S.pts[drag];
+    if (nx === p[0] && ny === p[1]) return;
+    p[0] = nx; p[1] = ny; render();
+  });
+  function endDrag() { if (drag) HANDLES[drag].classList.remove('dragging'); drag = null; document.body.style.minHeight = ''; }
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+  Object.keys(HANDLES).forEach(function (k) {
+    HANDLES[k].addEventListener('keydown', function (e) {
+      var d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      var p = S.pts[k];
+      p[0] = clampSnap(p[0] + d[0] * S.snap, S.snap); p[1] = clampSnap(p[1] + d[1] * S.snap, S.snap);
+      render();
+    });
+  });
+
+  /* ---------- toggles ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.pill.layer'), function (b) {
+    b.addEventListener('click', function () {
+      var k = b.dataset.k; S.on[k] = !S.on[k];
+      b.setAttribute('aria-pressed', S.on[k] ? 'true' : 'false');
+      render();
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.pill.snap'), function (b) {
+    b.addEventListener('click', function () {
+      S.snap = +b.dataset.snap;
+      document.querySelectorAll('.pill.snap').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+  $('resetBtn').addEventListener('click', function () { S.pts = JSON.parse(JSON.stringify(DEFAULTS)); showMsg(''); render(); });
+
+  render();
+  var rz = null;
+  window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(render, 120); });
+
+  /* test hooks */
+  window.__ll = {
+    set: function (pts) { Object.keys(pts).forEach(function (k) { S.pts[k] = pts[k].slice(); }); render(); },
+    state: function () { return JSON.parse(JSON.stringify(S)); },
+    result: function () { return res; },
+    toPx: function (x, y) { return [X(x), Y(y)]; }
+  };
+})();
+</script>
+</body>
+</html>

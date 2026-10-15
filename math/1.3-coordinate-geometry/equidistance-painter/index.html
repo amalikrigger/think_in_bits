@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Equidistance Painter</title>
+  <meta name="description" content="Paint points by how far they are from A and B, or from a center C. The points that tie make a perpendicular bisector, and the points at one fixed distance make a circle. The algebra shows why.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the decks and www.thinkinbits.site. Single
+   committed dark theme so the projector always looks the same.
+   ============================================================ */
+:root {
+  --ground:       #0a0a0a;
+  --ground-far:   #1a1a2e;
+  --surface:      #1a1a1a;
+  --surface-deep: #0f0f0f;
+  --surface-lift: #2a2a2a;
+
+  --accent:       #00e5ff;
+  --accent-deep:  #0099cc;
+  --accent-wash:  rgba(0,229,255,0.10);
+  --accent-line:  rgba(0,229,255,0.30);
+
+  --text:         #ffffff;
+  --text-2:       #b0b0b0;
+  --faint:        #6f6f7a;
+
+  --hairline:     rgba(255,255,255,0.07);
+  --hairline-strong: rgba(255,255,255,0.16);
+
+  --ok:           #4ADE80;
+  --ok-wash:      rgba(74,222,128,0.13);
+  --warn:         #FF7A6B;
+  --warn-wash:    rgba(255,122,107,0.13);
+  --amber:        #FFC46B;
+  --amber-wash:   rgba(255,196,107,0.12);
+
+  --shadow-card:  0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:  0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  padding: clamp(16px, 4vw, 40px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; }
+p { margin: 0; }
+
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+.tib-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+header { margin: 34px 0 0; }
+.eyebrow {
+  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); margin: 0 0 6px;
+}
+h1 {
+  font-size: clamp(28px, 4.6vw, 46px);
+  font-weight: 700; line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0; color: var(--text); text-wrap: balance;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0;
+  }
+}
+.lede { font-size: clamp(15px, 1.9vw, 19px); color: var(--text-2); max-width: 64ch; margin: 12px 0 0; }
+.lede b { color: var(--text); font-weight: 600; }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 8px; margin: 26px 0 18px; flex-wrap: wrap; }
+.tab {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 17px); font-weight: 500;
+  color: var(--text-2); background: var(--surface); cursor: pointer;
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 11px 22px; min-height: 46px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.tab:hover { border-color: var(--accent-line); color: var(--text); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tab[aria-selected="true"] {
+  background: var(--accent-wash); border-color: var(--accent); color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ---------- the instrument ---------- */
+.instrument {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.15fr) minmax(280px, 0.85fr);
+  gap: 20px; align-items: start;
+}
+@media (max-width: 860px) { .instrument { grid-template-columns: 1fr; } }
+
+.screen, .panel, .card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+.screen { padding: 14px; min-width: 0; }
+.panel { padding: 20px 22px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { padding: clamp(18px, 2.6vw, 28px); margin-top: 18px; }
+
+.stage { position: relative; }
+.stage canvas {
+  display: block; width: 100%; height: auto; aspect-ratio: 1 / 1;
+  border-radius: 14px; background: var(--surface-deep);
+  touch-action: none; cursor: crosshair;
+  -webkit-user-select: none; user-select: none;
+}
+/* invisible, focusable stand-ins for the draggable points, so they can be moved with the keyboard */
+.handle {
+  position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  border-radius: 50%; border: 0; padding: 0; background: transparent;
+  pointer-events: none; opacity: 1;
+}
+.handle:focus { outline: none; }
+.handle:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+.hint { font-size: 13px; color: var(--text-2); margin-top: 10px; }
+.hint b { color: var(--text); font-weight: 500; }
+
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+.legend .g { background: var(--ok); box-shadow: 0 0 8px rgba(74,222,128,0.7); }
+.legend .c { background: var(--accent); }
+.legend .a { background: var(--amber); }
+
+.lbl {
+  display: block; margin-bottom: 6px;
+  font-family: var(--font); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+}
+.group { display: flex; flex-direction: column; gap: 8px; }
+
+.readout { font-family: var(--mono); font-variant-numeric: tabular-nums; display: flex; flex-direction: column; gap: 6px;
+           padding-bottom: 16px; border-bottom: 1px solid var(--hairline); }
+.readout .pts { font-size: clamp(14px, 1.5vw, 16px); color: var(--text); }
+.readout .pts .ca { color: var(--accent); }
+.readout .pts .cb { color: var(--amber); }
+.last {
+  font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: clamp(14px, 1.5vw, 16px);
+  background: var(--surface-deep); border: 1px solid var(--hairline); border-left: 4px solid var(--faint);
+  border-radius: 14px; padding: 10px 14px; line-height: 1.75; min-height: 4.2em;
+}
+.last.toA { border-left-color: var(--accent); }
+.last.toB { border-left-color: var(--amber); }
+.last.tie { border-left-color: var(--ok); }
+.last .v { font-family: var(--font); font-weight: 600; }
+.last.toA .v { color: var(--accent); }
+.last.toB .v { color: var(--amber); }
+.last.tie .v { color: var(--ok); }
+.last .dim { color: var(--text-2); }
+.count { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+.count b { color: var(--ok); font-weight: 500; }
+
+/* ---------- buttons ---------- */
+.row { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+button.btn {
+  font-family: var(--font); font-size: clamp(14px, 1.5vw, 16px); font-weight: 600;
+  cursor: pointer; color: var(--ground); background: var(--accent);
+  border: 1px solid var(--accent); border-radius: 50px;
+  padding: 10px 20px; min-height: 44px;
+  box-shadow: var(--shadow-glow);
+  transition: transform .15s ease, filter .15s ease;
+}
+button.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+button.btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+button.btn.ghost { background: var(--surface-lift); color: var(--text); border-color: var(--hairline); box-shadow: none; }
+button.btn.ghost:hover { border-color: var(--accent-line); }
+.presets { display: flex; gap: 7px; flex-wrap: wrap; }
+.presets button {
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  padding: 8px 14px; border-radius: 50px; min-height: 38px;
+  border: 1px solid var(--hairline); background: var(--surface-lift); color: var(--text); cursor: pointer;
+}
+.presets button:hover { border-color: var(--accent-line); }
+.presets button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.slider-row label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-2); }
+.slider-row .val { font-family: var(--mono); color: var(--accent); font-size: 16px; }
+input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+/* ---------- predict ---------- */
+.predict { border-top: 1px solid var(--hairline); padding-top: 16px; }
+.predict .q { font-weight: 600; font-size: clamp(15px, 1.6vw, 17px); margin-bottom: 10px; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choices button {
+  text-align: left; font-family: var(--font); font-size: 14.5px; color: var(--text);
+  background: var(--surface-deep); border: 1px solid var(--hairline-strong); border-radius: 14px;
+  padding: 10px 14px; cursor: pointer; min-height: 44px;
+}
+.choices button:hover { border-color: var(--accent-line); }
+.choices button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.choices button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+.choices button.right { border-color: var(--ok); background: var(--ok-wash); color: var(--ok); }
+.choices button.wrong { border-color: var(--warn); background: var(--warn-wash); color: var(--warn); }
+.pfb { font-size: 14px; color: var(--text-2); margin-top: 10px; min-height: 1.5em; }
+.pfb.right { color: var(--ok); }
+.pfb.wrong { color: var(--warn); }
+
+/* ---------- the algebra ---------- */
+.card h2 { font-size: clamp(17px, 2vw, 21px); font-weight: 600; margin: 0 0 6px; }
+.card .sub { color: var(--text-2); font-size: clamp(14px, 1.5vw, 16px); margin-bottom: 14px; max-width: 75ch; }
+.work {
+  font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: clamp(14px, 1.55vw, 17px); line-height: 2;
+  background: var(--surface-deep); border: 1px solid var(--hairline); border-left: 4px solid var(--accent);
+  border-radius: 14px; padding: 12px 16px; overflow-x: auto;
+}
+.work .st { display: grid; grid-template-columns: 13.5em minmax(0, 1fr); gap: 0 14px; }
+.work .k { color: var(--text-2); font-family: var(--font); font-size: 0.86em; padding-top: 0.12em; }
+.work .e { overflow-wrap: anywhere; }
+.work s { text-decoration: line-through; text-decoration-color: var(--warn); text-decoration-thickness: 2px; color: var(--warn); }
+.work .keep { color: var(--accent); font-weight: 700; }
+@media (max-width: 600px) {
+  .work .st { grid-template-columns: 1fr; margin-bottom: 4px; }
+  .work .k { padding-top: 0; line-height: 1.5; }
+}
+.answer {
+  margin-top: 12px; font-family: var(--mono); font-size: clamp(16px, 1.9vw, 20px); font-weight: 700;
+  color: var(--ok); background: var(--ok-wash); border: 1px solid var(--ok); border-radius: 14px; padding: 10px 16px;
+  overflow-wrap: anywhere;
+}
+.answer.flat { color: var(--amber); background: var(--amber-wash); border-color: var(--amber); }
+.check { margin-top: 10px; font-size: clamp(13.5px, 1.5vw, 15.5px); color: var(--text-2); }
+.check .mono { font-family: var(--mono); color: var(--text); }
+.masked { font-size: 14.5px; color: var(--text-2); border: 1px dashed var(--accent-line); border-radius: 14px; padding: 14px 16px; }
+
+.link-card { border: 1px dashed var(--accent-line); background: transparent; box-shadow: none; }
+.link-card p { color: var(--text-2); font-size: clamp(14px, 1.55vw, 16.5px); max-width: 80ch; }
+.link-card p + p { margin-top: 8px; }
+.link-card b { color: var(--text); }
+.link-card .mono { font-family: var(--mono); color: var(--text); }
+
+.backlinks { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
+.chip {
+  display: inline-block; font-size: clamp(13px, 1.5vw, 16px); font-weight: 500;
+  color: var(--accent); background: var(--accent-wash);
+  border: 1px solid var(--accent-line); border-radius: 50px;
+  padding: 10px 20px; text-decoration: none;
+}
+.chip:hover { background: rgba(0,229,255,0.18); box-shadow: var(--shadow-glow); }
+.chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">9709 Pure 1 &middot; 1.3 Coordinate Geometry &middot; Sessions 1 and 2</p>
+    <h1>The Equidistance Painter</h1>
+    <p class="lede">Every point you drop is colored by a distance test. Green means it passes. Drop enough points and the green ones line up by themselves. Then the algebra shows why one test gives a <b>straight line</b> and the other gives a <b>circle</b>.</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="choose the test">
+    <button class="tab" id="tab-ab" role="tab" aria-selected="true" aria-controls="panel-ab" type="button">Same distance from A and B</button>
+    <button class="tab" id="tab-c" role="tab" aria-selected="false" aria-controls="panel-c" type="button">Same distance from C</button>
+  </div>
+
+<!-- ============ MODE 1: A AND B ============ -->
+  <section class="tabpanel" id="panel-ab" role="tabpanel" aria-labelledby="tab-ab">
+    <div class="instrument">
+      <div class="screen">
+        <div class="stage">
+          <canvas id="cv1" width="840" height="840" aria-label="A grid with points A and B. Tap to drop points, colored by whether they are the same distance from A and B."></canvas>
+          <button class="handle" id="h1A" type="button" aria-label="Point A. Use the arrow keys to move it."></button>
+          <button class="handle" id="h1B" type="button" aria-label="Point B. Use the arrow keys to move it."></button>
+        </div>
+        <div class="legend" aria-hidden="true">
+          <span><i class="g"></i>PA = PB</span>
+          <span><i class="c"></i>closer to A</span>
+          <span><i class="a"></i>closer to B</span>
+        </div>
+        <p class="hint"><b>Tap or drag</b> on the grid to paint points. <b>Drag A or B</b> to move them, or tab to a point and use the arrow keys.</p>
+      </div>
+
+      <div class="panel">
+        <div class="readout">
+          <span class="lbl">The two points</span>
+          <div class="pts" id="pts1"></div>
+        </div>
+
+        <div class="group">
+          <span class="lbl">Your last point</span>
+          <div class="last" id="last1" aria-live="polite"></div>
+          <div class="count" id="count1"></div>
+        </div>
+
+        <div class="row">
+          <button class="btn ghost" id="drop1" type="button">Drop a random point</button>
+          <button class="btn ghost" id="spray1" type="button">Spray 300 points</button>
+          <button class="btn ghost" id="clear1" type="button">Clear</button>
+        </div>
+
+        <div class="group">
+          <span class="lbl">Try a special case</span>
+          <div class="presets" id="presets1">
+            <button type="button" data-p="tilt">Tilted AB</button>
+            <button type="button" data-p="hor">Horizontal AB</button>
+            <button type="button" data-p="ver">Vertical AB</button>
+            <button type="button" data-p="same">A on top of B</button>
+          </div>
+        </div>
+
+        <div class="predict">
+          <p class="q">Where do you think the green points will be?</p>
+          <div class="choices" id="choices1">
+            <button type="button" aria-pressed="false" data-c="through">On a line through A and B</button>
+            <button type="button" aria-pressed="false" data-c="bisector">On a line that crosses AB at its middle, at a right angle</button>
+            <button type="button" aria-pressed="false" data-c="circle">On a circle</button>
+          </div>
+          <p class="pfb" id="pfb1"></p>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="reveal1" type="button">Reveal the line</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Why the green points make a straight line</h2>
+      <p class="sub">Call any green point P(x, y). It is the same distance from A and B, so PA = PB. Square both sides to get rid of the square roots, then expand.</p>
+      <div class="masked" id="mask1">Make your prediction, paint some points, then tap Reveal the line. The working for your A and B appears here.</div>
+      <div id="alg1" hidden>
+        <div class="work" id="work1"></div>
+        <div class="answer" id="ans1"></div>
+        <p class="check" id="check1"></p>
+      </div>
+    </div>
+  </section>
+
+<!-- ============ MODE 2: C ============ -->
+  <section class="tabpanel" id="panel-c" role="tabpanel" aria-labelledby="tab-c" hidden>
+    <div class="instrument">
+      <div class="screen">
+        <div class="stage">
+          <canvas id="cv2" width="840" height="840" aria-label="A grid with a center C. Tap to drop points, colored by whether they are the target distance from C."></canvas>
+          <button class="handle" id="h2C" type="button" aria-label="Center C. Use the arrow keys to move it."></button>
+        </div>
+        <div class="legend" aria-hidden="true">
+          <span><i class="g"></i>PC = r</span>
+          <span><i class="c"></i>closer than r</span>
+          <span><i class="a"></i>farther than r</span>
+        </div>
+        <p class="hint"><b>Tap or drag</b> on the grid to paint points. <b>Drag C</b> to move it, or tab to it and use the arrow keys.</p>
+      </div>
+
+      <div class="panel">
+        <div class="readout">
+          <span class="lbl">The center and the target distance</span>
+          <div class="pts" id="pts2"></div>
+        </div>
+        <div class="slider-row">
+          <label for="rRange"><span>target distance r</span><span class="val" id="rVal">4</span></label>
+          <input type="range" id="rRange" min="1" max="8" step="1" value="4">
+        </div>
+
+        <div class="group">
+          <span class="lbl">Your last point</span>
+          <div class="last" id="last2" aria-live="polite"></div>
+          <div class="count" id="count2"></div>
+        </div>
+
+        <div class="row">
+          <button class="btn ghost" id="drop2" type="button">Drop a random point</button>
+          <button class="btn ghost" id="spray2" type="button">Spray 300 points</button>
+          <button class="btn ghost" id="clear2" type="button">Clear</button>
+        </div>
+
+        <div class="predict">
+          <p class="q">Where do you think the green points will be?</p>
+          <div class="choices" id="choices2">
+            <button type="button" aria-pressed="false" data-c="square">On a square with C in the middle</button>
+            <button type="button" aria-pressed="false" data-c="circle">On a circle with C in the middle</button>
+            <button type="button" aria-pressed="false" data-c="line">On a straight line through C</button>
+          </div>
+          <p class="pfb" id="pfb2"></p>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="reveal2" type="button">Reveal the circle</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Why the green points make a circle</h2>
+      <p class="sub">Call any green point P(x, y). Its distance from C is r. Write that distance with the distance formula, then square both sides.</p>
+      <div class="masked" id="mask2">Make your prediction, paint some points, then tap Reveal the circle. The working for your C and r appears here.</div>
+      <div id="alg2" hidden>
+        <div class="work" id="work2"></div>
+        <div class="answer" id="ans2"></div>
+        <p class="check" id="check2"></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="card link-card">
+    <p><b>One idea, two answers.</b> Both tests start from the distance formula, and both times you square it.</p>
+    <p>With A and B there is a distance on each side of the equation. Each side has its own <span class="mono">x²</span> and <span class="mono">y²</span>, so they cancel. Only x and y terms are left, and that is a straight line.</p>
+    <p>With C there is just one distance, so nothing cancels. The <span class="mono">x² + y²</span> stays in the equation, and that is why you get a circle: <span class="mono">(x − a)² + (y − b)² = r²</span>.</p>
+  </div>
+
+  <div class="backlinks">
+    <a class="chip" href="../session-01-straight-lines/">Straight Lines lesson</a>
+    <a class="chip" href="../../../math.html">All math</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------------- tabs ---------------- */
+  var tabs = [$('tab-ab'), $('tab-c')], panels = [$('panel-ab'), $('panel-c')];
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o, j) { o.setAttribute('aria-selected', i === j ? 'true' : 'false'); panels[j].hidden = i !== j; });
+      painters[i].render();
+    });
+  });
+
+  /* ---------------- exact formatting: real minus signs everywhere ---------------- */
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = b; b = a % b; a = t; } return a; }
+  function sg(n) { n = Math.round(n); return n < 0 ? '−' + (-n) : String(n === 0 ? 0 : n); }
+  function frac(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1; n /= g; d /= g;
+    return d === 1 ? sg(n) : (n < 0 ? '−' : '') + Math.abs(n) + '/' + d;
+  }
+  function dec(v, k) {
+    var s = v.toFixed(k);
+    if (/^-0\.?0*$/.test(s)) s = s.slice(1);
+    return s.replace('-', '−');
+  }
+  /* a linear expression from [[coef, letter], ...]: "2x − 13y + 247" */
+  function lin(terms) {
+    var out = '';
+    terms.forEach(function (t) {
+      var c = t[0], L = t[1];
+      if (c === 0) return;
+      var mag = Math.abs(c), body = (L && mag === 1 ? '' : String(mag)) + L;
+      if (!out) out = (c < 0 ? '−' : '') + body;
+      else out += (c < 0 ? ' − ' : ' + ') + body;
+    });
+    return out || '0';
+  }
+  /* (x − a)², with (x + 3)² for a = −3 and plain x² for a = 0 */
+  function sqr(a, L) { return a === 0 ? L + '²' : '(' + L + (a < 0 ? ' + ' + (-a) : ' − ' + a) + ')²'; }
+  /* x² − 2ax + a², with the square term optionally wrapped */
+  function expd(a, L, wrap) {
+    var s = wrap ? wrap(L + '²') : L + '²';
+    if (a === 0) return s;
+    return s + (a < 0 ? ' + ' : ' − ') + Math.abs(2 * a) + L + ' + ' + (a * a);
+  }
+
+  /* ---------------- the math core (also used by the test harness) ---------------- */
+  /* PA² = PB²  ->  2(b1 − a1)x + 2(b2 − a2)y + (a1² + a2² − b1² − b2²) = 0, then integer form */
+  function bisector(A, B) {
+    var a = 2 * (B.x - A.x), b = 2 * (B.y - A.y), c = A.x * A.x + A.y * A.y - B.x * B.x - B.y * B.y;
+    if (a === 0 && b === 0) return { degenerate: true, raw: [0, 0, c] };
+    var g = gcd(gcd(a, b), c) || 1, s = a !== 0 ? Math.sign(a) : Math.sign(b);
+    var div = s * g;
+    return { degenerate: false, raw: [a, b, c], div: div, a: a / div, b: b / div, c: c / div,
+             text: lin([[a / div, 'x'], [b / div, 'y'], [c / div, '']]) + ' = 0' };
+  }
+  function circleEq(C, r) {
+    var p = -2 * C.x, q = -2 * C.y, k = C.x * C.x + C.y * C.y - r * r;
+    return { p: p, q: q, k: k,
+             centered: sqr(C.x, 'x') + ' + ' + sqr(C.y, 'y') + ' = ' + (r * r),
+             text: 'x² + y²' + tail(lin([[p, 'x'], [q, 'y'], [k, '']])) + ' = 0' };
+  }
+  function tail(s) { if (s === '0') return ''; return s.charAt(0) === '−' ? ' − ' + s.slice(1) : ' + ' + s; }
+
+  /* ---------------- shared painter ---------------- */
+  var RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var VIEW = 8.8, LIM = 8, TOL = 0.15, MAXPTS = 6000;
+  /* K grows canvas text and marks when the canvas is small on screen (phones) */
+  var K = 1;
+  function font(spec, px, fam) { return spec + ' ' + Math.round(px * K) + 'px ' + fam; }
+  var MONO = '"JetBrains Mono", monospace', SANS = 'Poppins, sans-serif';
+  var COL = { A: [0, 229, 255], B: [255, 196, 107], ok: '#4ADE80', neutral: [118, 118, 134] };
+
+  function Painter(cfg) {
+    var cv = cfg.canvas, ctx = cv.getContext('2d'), W = cv.width;
+    var S = W / (2 * VIEW);
+    var self = { pts: [], last: null, revealed: false, prediction: null, cfg: cfg, S: S };
+    function X(x) { return W / 2 + x * S; }
+    function Y(y) { return W / 2 - y * S; }
+    self.X = X; self.Y = Y;
+    function toWorld(e) {
+      var r = cv.getBoundingClientRect();
+      return { x: ((e.clientX - r.left) / r.width * W - W / 2) / S, y: (W / 2 - (e.clientY - r.top) / r.height * W) / S, scale: W / r.width };
+    }
+
+    function colorFor(d) {
+      if (Math.abs(d) <= TOL) return null;
+      /* near-ties fade almost to nothing, so the green points glow in a dark channel */
+      var t = Math.min(1, (Math.abs(d) - TOL) / 2.6);
+      t = Math.pow(t, 0.6);
+      var tgt = d < 0 ? COL.A : COL.B, n = COL.neutral;
+      var c = [0, 1, 2].map(function (i) { return Math.round(n[i] + (tgt[i] - n[i]) * t); });
+      return 'rgba(' + c.join(',') + ',' + (0.22 + 0.78 * t).toFixed(2) + ')';
+    }
+
+    function grid() {
+      ctx.clearRect(0, 0, W, W);
+      ctx.fillStyle = '#0f0f0f'; ctx.fillRect(0, 0, W, W);
+      for (var i = -LIM; i <= LIM; i++) {
+        var ax = i === 0;
+        ctx.strokeStyle = ax ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.07)';
+        ctx.lineWidth = ax ? 2 : 1;
+        ctx.beginPath(); ctx.moveTo(X(i), 0); ctx.lineTo(X(i), W); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, Y(i)); ctx.lineTo(W, Y(i)); ctx.stroke();
+      }
+      ctx.fillStyle = '#b0b0b0'; ctx.font = font('500', 21, MONO);
+      for (var j = -LIM; j <= LIM; j += 2) {
+        if (j === 0) continue;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText(sg(j), X(j), Y(0) + 7);
+        ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        ctx.fillText(sg(j), X(0) - 8, Y(j));
+      }
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = '#ffffff'; ctx.font = font('italic 500', 24, SANS);
+      ctx.fillText('x', W - 24, Y(0) - 10);
+      ctx.fillText('y', X(0) + 10, 26);
+    }
+
+    function dots() {
+      var greens = [];
+      for (var i = 0; i < self.pts.length; i++) {
+        var p = self.pts[i], col = colorFor(cfg.measure(p.x, p.y).d);
+        if (col === null) { greens.push(p); continue; }
+        ctx.fillStyle = col;
+        ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 5 * K, 0, 6.2832); ctx.fill();
+      }
+      ctx.save();
+      ctx.fillStyle = COL.ok; ctx.shadowColor = 'rgba(74,222,128,0.85)'; ctx.shadowBlur = 10;
+      greens.forEach(function (p) { ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 6.5 * K, 0, 6.2832); ctx.fill(); });
+      ctx.restore();
+      self.greenCount = greens.length;
+    }
+
+    function lastMarker() {
+      var p = self.last; if (!p) return;
+      ctx.save();
+      ctx.setLineDash([7, 7]); ctx.lineWidth = 2.5;
+      cfg.handles.forEach(function (h) {
+        ctx.strokeStyle = h.line;
+        ctx.beginPath(); ctx.moveTo(X(p.x), Y(p.y)); ctx.lineTo(X(h.x), Y(h.y)); ctx.stroke();
+      });
+      ctx.setLineDash([]);
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(X(p.x), Y(p.y), 12 * K, 0, 6.2832); ctx.stroke();
+      ctx.fillStyle = '#ffffff'; ctx.font = font('600', 22, SANS);
+      ctx.fillText('P', X(p.x) + 14, Y(p.y) - 14);
+      ctx.restore();
+    }
+
+    function handles() {
+      cfg.handles.forEach(function (h) {
+        var x = X(h.x), y = Y(h.y);
+        ctx.fillStyle = '#0f0f0f'; ctx.strokeStyle = h.color; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.arc(x, y, 13 * K, 0, 6.2832); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = h.color;
+        ctx.beginPath(); ctx.arc(x, y, 5 * K, 0, 6.2832); ctx.fill();
+        var label = h.name + '(' + sg(h.x) + ', ' + sg(h.y) + ')';
+        ctx.font = font('700', 23, MONO);
+        var w = ctx.measureText(label).width;
+        var lx = x + 20 * K, ly = y - 18 * K;
+        if (h.labelBelow) ly = y + 38 * K;
+        if (lx + w > W - 6) lx = x - 20 * K - w;
+        if (ly < 26 * K) ly = y + 38 * K;
+        if (ly > W - 8) ly = y - 18 * K;
+        ctx.fillStyle = 'rgba(15,15,15,0.92)';
+        ctx.fillRect(lx - 4, ly - 21 * K, w + 8, 28 * K);
+        ctx.fillStyle = h.color; ctx.fillText(label, lx, ly);
+      });
+    }
+
+    function placeHandles() {
+      cfg.handles.forEach(function (h) {
+        h.el.style.left = (X(h.x) / W * 100) + '%';
+        h.el.style.top = (Y(h.y) / W * 100) + '%';
+      });
+    }
+
+    self.render = function () {
+      var cw = cv.getBoundingClientRect().width;
+      K = cw > 0 ? Math.max(1, Math.min(1.9, 0.6 * W / cw)) : 1;
+      grid();
+      dots();
+      if (self.revealed) cfg.drawReveal(ctx, self);
+      lastMarker();
+      handles();
+      placeHandles();
+      cfg.panel(self);
+    };
+
+    self.add = function (x, y) {
+      if (self.pts.length >= MAXPTS) self.pts.shift();
+      self.pts.push({ x: x, y: y });
+    };
+    function rnd() { return (Math.random() * 2 - 1) * VIEW; }
+    self.dropRandom = function () { var p = { x: rnd(), y: rnd() }; self.add(p.x, p.y); self.last = p; self.render(); };
+    var spraying = null;
+    self.spray = function (n, done) {
+      self.last = null;
+      if (spraying) cancelAnimationFrame(spraying);
+      if (RM) { for (var i = 0; i < n; i++) self.add(rnd(), rnd()); self.render(); if (done) done(); return; }
+      var left = n;
+      (function step() {
+        var k = Math.min(30, left);
+        for (var i = 0; i < k; i++) self.add(rnd(), rnd());
+        left -= k; self.render();
+        if (left > 0) spraying = requestAnimationFrame(step); else { spraying = null; if (done) done(); }
+      })();
+    };
+    self.clear = function () { if (spraying) { cancelAnimationFrame(spraying); spraying = null; } self.pts = []; self.last = null; self.render(); };
+
+    /* ---- pointer: drag a handle, or paint ---- */
+    var drag = null;
+    cv.addEventListener('pointerdown', function (e) {
+      var w = toWorld(e), hitR = 26 * w.scale / S, best = null, bd = 1e9;
+      cfg.handles.forEach(function (h) {
+        var d = Math.hypot(w.x - h.x, w.y - h.y);
+        if (d < hitR && d < bd) { bd = d; best = h; }
+      });
+      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+      e.preventDefault();
+      if (best) { drag = { h: best }; }
+      else { drag = { paint: true, lx: w.x, ly: w.y }; var p = { x: w.x, y: w.y }; self.add(p.x, p.y); self.last = p; self.render(); }
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var w = toWorld(e);
+      if (drag.h) {
+        var nx = Math.max(-LIM, Math.min(LIM, Math.round(w.x))), ny = Math.max(-LIM, Math.min(LIM, Math.round(w.y)));
+        if (nx !== drag.h.x || ny !== drag.h.y) { drag.h.x = nx; drag.h.y = ny; self.render(); }
+      } else if (Math.hypot(w.x - drag.lx, w.y - drag.ly) * S > 14) {
+        drag.lx = w.x; drag.ly = w.y;
+        var p = { x: w.x, y: w.y }; self.add(p.x, p.y); self.last = p; self.render();
+      }
+    });
+    function end() { drag = null; }
+    cv.addEventListener('pointerup', end);
+    cv.addEventListener('pointercancel', end);
+
+    /* ---- keyboard: arrow keys on the focused handle ---- */
+    cfg.handles.forEach(function (h) {
+      h.el.addEventListener('keydown', function (e) {
+        var dx = 0, dy = 0;
+        if (e.key === 'ArrowLeft') dx = -1; else if (e.key === 'ArrowRight') dx = 1;
+        else if (e.key === 'ArrowUp') dy = 1; else if (e.key === 'ArrowDown') dy = -1; else return;
+        e.preventDefault();
+        h.x = Math.max(-LIM, Math.min(LIM, h.x + dx)); h.y = Math.max(-LIM, Math.min(LIM, h.y + dy));
+        self.render();
+      });
+    });
+
+    /* ---- predict ---- */
+    var choiceBtns = Array.prototype.slice.call(cfg.choices.querySelectorAll('button'));
+    choiceBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        self.prediction = b.getAttribute('data-c');
+        self.render();
+      });
+    });
+    self.renderPredict = function () {
+      var odd = self.revealed && cfg.degenerate && cfg.degenerate();
+      choiceBtns.forEach(function (b) {
+        var k = b.getAttribute('data-c');
+        b.setAttribute('aria-pressed', k === self.prediction ? 'true' : 'false');
+        b.classList.toggle('right', self.revealed && !odd && k === cfg.correct);
+        b.classList.toggle('wrong', self.revealed && !odd && k === self.prediction && k !== cfg.correct);
+      });
+      var fb = cfg.feedback;
+      if (!self.revealed) {
+        fb.className = 'pfb';
+        fb.textContent = self.prediction ? 'Locked in. Now paint or spray some points and see if you were right.' : 'Pick one before you reveal.';
+      } else if (odd) {
+        fb.className = 'pfb'; fb.textContent = cfg.say.degenerate;
+      } else if (!self.prediction) {
+        fb.className = 'pfb'; fb.textContent = cfg.say.none;
+      } else if (self.prediction === cfg.correct) {
+        fb.className = 'pfb right'; fb.textContent = cfg.say.right;
+      } else {
+        fb.className = 'pfb wrong'; fb.textContent = cfg.say[self.prediction];
+      }
+    };
+
+    cfg.revealBtn.addEventListener('click', function () { self.revealed = !self.revealed; self.render(); });
+    cfg.dropBtn.addEventListener('click', self.dropRandom);
+    cfg.sprayBtn.addEventListener('click', function () { self.spray(300); });
+    cfg.clearBtn.addEventListener('click', self.clear);
+    return self;
+  }
+
+  function step(k, e) { return '<div class="st"><span class="k">' + k + '</span><span class="e">' + e + '</span></div>'; }
+  function cancelWrap(s) { return '<s>' + s + '</s>'; }
+  function pnt(x, y) { return '(' + x + ', ' + y + ')'; }
+
+  /* ======================= MODE 1 ======================= */
+  var A = { name: 'A', x: -4, y: -1, color: '#00e5ff', line: 'rgba(0,229,255,0.75)', el: $('h1A') };
+  var B = { name: 'B', x: 2, y: 3, color: '#FFC46B', line: 'rgba(255,196,107,0.8)', el: $('h1B') };
+
+  function m1measure(x, y) {
+    var pa = Math.hypot(x - A.x, y - A.y), pb = Math.hypot(x - B.x, y - B.y);
+    var ab = Math.hypot(B.x - A.x, B.y - A.y);
+    /* (PA² − PB²) / 2AB is exactly the distance from P to the perpendicular bisector, signed */
+    var d = ab === 0 ? 0 : (pa * pa - pb * pb) / (2 * ab);
+    return { d: d, pa: pa, pb: pb };
+  }
+
+  function drawLine(ctx, P, a, b, c, style) {
+    var mx, my;
+    if (b !== 0) { mx = 0; my = -c / b; } else { mx = -c / a; my = 0; }
+    var dx = -b, dy = a, L = Math.hypot(dx, dy); dx /= L; dy /= L;
+    ctx.save();
+    ctx.strokeStyle = style.stroke; ctx.lineWidth = style.width;
+    ctx.beginPath();
+    ctx.moveTo(P.X(mx - dx * 40), P.Y(my - dy * 40));
+    ctx.lineTo(P.X(mx + dx * 40), P.Y(my + dy * 40));
+    ctx.stroke();
+    ctx.restore();
+  }
+  function eqBox(ctx, text, color) {
+    ctx.save();
+    ctx.font = font('700', 27, MONO);
+    var w = ctx.measureText(text).width;
+    ctx.fillStyle = 'rgba(10,10,10,0.88)';
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.beginPath();
+    var bh = 50 * K;
+    if (ctx.roundRect) ctx.roundRect(14, 14, w + 28, bh, 12); else ctx.rect(14, 14, w + 28, bh);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = color; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 28, 14 + bh / 2 + 1);
+    ctx.restore();
+  }
+
+  function m1reveal(ctx, P) {
+    var L = bisector(A, B);
+    if (L.degenerate) { eqBox(ctx, 'A = B: every point ties', '#FFC46B'); return; }
+    /* AB itself */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)'; ctx.lineWidth = 2.5; ctx.setLineDash([10, 8]);
+    ctx.beginPath(); ctx.moveTo(P.X(A.x), P.Y(A.y)); ctx.lineTo(P.X(B.x), P.Y(B.y)); ctx.stroke();
+    ctx.restore();
+    drawLine(ctx, P, L.a, L.b, L.c, { stroke: 'rgba(255,255,255,0.95)', width: 3 });
+    var Mx = (A.x + B.x) / 2, My = (A.y + B.y) / 2;
+    var ux = B.x - A.x, uy = B.y - A.y, ul = Math.hypot(ux, uy); ux /= ul; uy /= ul;
+    var vx = -uy, vy = ux, s = 20 * K / P.S;
+    ctx.save();
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(P.X(Mx + ux * s), P.Y(My + uy * s));
+    ctx.lineTo(P.X(Mx + ux * s + vx * s), P.Y(My + uy * s + vy * s));
+    ctx.lineTo(P.X(Mx + vx * s), P.Y(My + vy * s));
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(P.X(Mx), P.Y(My), 7 * K, 0, 6.2832); ctx.fill();
+    var lab = 'M' + pnt(frac(A.x + B.x, 2), frac(A.y + B.y, 2));
+    ctx.font = font('700', 23, MONO);
+    var w = ctx.measureText(lab).width;
+    /* put the label in the quarter opposite the right-angle mark */
+    var sx = ux - vx, sy = -(uy - vy), sl = Math.hypot(sx, sy); sx /= sl; sy /= sl;
+    var ax = P.X(Mx) + sx * 30 * K, ay = P.Y(My) + sy * 30 * K;
+    var lx = sx < 0 ? ax - w : ax, ly = ay + (sy > 0 ? 20 * K : 0);
+    lx = Math.max(6, Math.min(P.cfg.canvas.width - w - 6, lx));
+    ly = Math.max(84 * K, Math.min(P.cfg.canvas.width - 10, ly));
+    ctx.fillStyle = 'rgba(15,15,15,0.8)'; ctx.fillRect(lx - 4, ly - 21 * K, w + 8, 28 * K);
+    ctx.fillStyle = '#ffffff'; ctx.fillText(lab, lx, ly);
+    ctx.restore();
+    eqBox(ctx, L.text, '#4ADE80');
+  }
+
+  function m1panel(P) {
+    $('pts1').innerHTML = '<span class="ca">A' + pnt(sg(A.x), sg(A.y)) + '</span> &nbsp; <span class="cb">B' + pnt(sg(B.x), sg(B.y)) + '</span>';
+    var lb = $('last1'), same = A.x === B.x && A.y === B.y;
+    if (P.last) {
+      var m = m1measure(P.last.x, P.last.y), tie = Math.abs(m.d) <= TOL;
+      lb.className = 'last ' + (tie ? 'tie' : (m.d < 0 ? 'toA' : 'toB'));
+      lb.innerHTML = 'P' + pnt(dec(P.last.x, 1), dec(P.last.y, 1)) + '<br>PA = ' + dec(m.pa, 2) + ' &nbsp; PB = ' + dec(m.pb, 2) + '<br><span class="v">' +
+        (same ? 'A and B are the same point, so PA = PB for every P.' : tie ? 'A tie. PA and PB are equal, near enough.' : (m.d < 0 ? 'Closer to A.' : 'Closer to B.')) + '</span>';
+    } else {
+      lb.className = 'last';
+      lb.innerHTML = '<span class="dim">Tap the grid to drop a point P. Its distances to A and B show here.</span>';
+    }
+    $('count1').innerHTML = P.pts.length ? P.pts.length + ' point' + (P.pts.length === 1 ? '' : 's') + ', <b>' + P.greenCount + ' green</b>' + (P.pts.length >= 300 && P.greenCount < 25 ? '. Spray again for more green.' : '') : 'No points yet.';
+    $('reveal1').textContent = P.revealed ? 'Hide the line' : 'Reveal the line';
+    P.renderPredict();
+    $('mask1').hidden = P.revealed; $('alg1').hidden = !P.revealed;
+    if (P.revealed) m1algebra();
+  }
+
+  function m1algebra() {
+    var L = bisector(A, B), r = L.raw;
+    var h = '';
+    h += step('start:', 'PA² = PB²');
+    h += step('distance formula, squared:', sqr(A.x, 'x') + ' + ' + sqr(A.y, 'y') + ' = ' + sqr(B.x, 'x') + ' + ' + sqr(B.y, 'y'));
+    h += step('expand:', expd(A.x, 'x', cancelWrap) + ' + ' + expd(A.y, 'y', cancelWrap) + ' = ' + expd(B.x, 'x', cancelWrap) + ' + ' + expd(B.y, 'y', cancelWrap));
+    var left = lin([[-2 * A.x, 'x'], [-2 * A.y, 'y'], [A.x * A.x + A.y * A.y, '']]);
+    var right = lin([[-2 * B.x, 'x'], [-2 * B.y, 'y'], [B.x * B.x + B.y * B.y, '']]);
+    h += step('x² and y² cancel:', left + ' = ' + right);
+    h += step('all on one side:', lin([[r[0], 'x'], [r[1], 'y'], [r[2], '']]) + ' = 0');
+    var ans = $('ans1'), chk = $('check1');
+    if (L.degenerate) {
+      $('work1').innerHTML = h;
+      ans.className = 'answer flat';
+      ans.textContent = 'Everything cancels: 0 = 0. That is true for every point.';
+      chk.textContent = 'A and B are the same point, so every point is the same distance from both and the whole grid is green. There is no single line. Move B away from A.';
+      return;
+    }
+    if (L.div !== 1) h += step('divide by ' + sg(L.div) + ':', L.text);
+    $('work1').innerHTML = h;
+    ans.className = 'answer';
+    var extra = '';
+    if (L.a === 0) extra = ', which is the line y = ' + frac(-L.c, L.b);
+    if (L.b === 0) extra = ', which is the line x = ' + frac(-L.c, L.a);
+    ans.textContent = 'Perpendicular bisector: ' + L.text + extra;
+    var mx = frac(A.x + B.x, 2), my = frac(A.y + B.y, 2), g;
+    if (A.x === B.x) g = 'AB is vertical, so the perpendicular bisector is horizontal. ';
+    else if (A.y === B.y) g = 'AB is horizontal, so the perpendicular bisector is vertical. ';
+    else g = 'Gradient of AB = ' + frac(B.y - A.y, B.x - A.x) + '. Gradient of this line = ' + frac(-L.a, L.b) + '. Their product is −1, so they meet at a right angle. ';
+    var sub = [];
+    if (L.a !== 0) sub.push([L.a, mx]);
+    if (L.b !== 0) sub.push([L.b, my]);
+    var subs = sub.map(function (t, i) {
+      var c = t[0], s = (c === 1 ? '' : c === -1 ? '−' : sg(c)) + '(' + t[1] + ')';
+      if (i === 0) return s;
+      return c < 0 ? ' − ' + (c === -1 ? '' : String(-c)) + '(' + t[1] + ')' : ' + ' + s;
+    }).join('') + (L.c === 0 ? '' : (L.c < 0 ? ' − ' + (-L.c) : ' + ' + L.c));
+    chk.innerHTML = g + 'The midpoint M' + pnt(mx, my) + ' fits too: <span class="mono">' + subs + ' = 0</span>.';
+  }
+
+  var p1 = Painter({
+    canvas: $('cv1'), handles: [A, B], choices: $('choices1'), feedback: $('pfb1'), correct: 'bisector',
+    revealBtn: $('reveal1'), dropBtn: $('drop1'), sprayBtn: $('spray1'), clearBtn: $('clear1'),
+    measure: m1measure, drawReveal: m1reveal, panel: m1panel,
+    degenerate: function () { return A.x === B.x && A.y === B.y; },
+    say: {
+      degenerate: 'With A on top of B every point ties, so there is no line to find. Move B away from A and reveal again.',
+      right: 'Yes. The green points sit on the perpendicular bisector of AB. It cuts AB in half, at a right angle.',
+      none: 'Here it is. The green points sit on the perpendicular bisector of AB.',
+      through: 'Not this time. Most points on the line through A and B are much closer to one end. The green points cross AB at its midpoint, at a right angle.',
+      circle: 'Not this time. The green points never curve. They make a straight line through the midpoint of AB, at a right angle to it.'
+    }
+  });
+
+  var PRESETS = {
+    tilt: [[-4, -1], [2, 3]], hor: [[-3, 2], [5, 2]], ver: [[-2, -3], [-2, 5]], same: [[1, 2], [1, 2]]
+  };
+  Array.prototype.forEach.call($('presets1').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () {
+      var p = PRESETS[b.getAttribute('data-p')];
+      A.x = p[0][0]; A.y = p[0][1]; B.x = p[1][0]; B.y = p[1][1];
+      B.labelBelow = A.x === B.x && A.y === B.y;
+      p1.render();
+    });
+  });
+
+  /* ======================= MODE 2 ======================= */
+  var C = { name: 'C', x: 2, y: -1, color: '#ffffff', line: 'rgba(255,255,255,0.7)', el: $('h2C') };
+  var R = { r: 4 };
+  function m2measure(x, y) { var pc = Math.hypot(x - C.x, y - C.y); return { d: pc - R.r, pc: pc }; }
+  function m2reveal(ctx, P) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(P.X(C.x), P.Y(C.y), R.r * P.S, 0, 6.2832); ctx.stroke();
+    var t = 0.6, ex = C.x + R.r * Math.cos(t), ey = C.y + R.r * Math.sin(t);
+    ctx.setLineDash([9, 7]); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(P.X(C.x), P.Y(C.y)); ctx.lineTo(P.X(ex), P.Y(ey)); ctx.stroke();
+    ctx.setLineDash([]);
+    var mx = P.X((C.x + ex) / 2), my = P.Y((C.y + ey) / 2);
+    ctx.font = font('700', 24, MONO);
+    var lab = 'r = ' + R.r, w = ctx.measureText(lab).width;
+    ctx.fillStyle = 'rgba(15,15,15,0.8)'; ctx.fillRect(mx + 4, my - 30 * K, w + 8, 28 * K);
+    ctx.fillStyle = '#ffffff'; ctx.fillText(lab, mx + 8, my - 9 * K);
+    ctx.restore();
+    eqBox(ctx, circleEq(C, R.r).centered, '#4ADE80');
+  }
+  function m2panel(P) {
+    $('pts2').innerHTML = 'C' + pnt(sg(C.x), sg(C.y)) + ' &nbsp; r = ' + R.r;
+    $('rVal').textContent = R.r;
+    var lb = $('last2');
+    if (P.last) {
+      var m = m2measure(P.last.x, P.last.y), tie = Math.abs(m.d) <= TOL;
+      lb.className = 'last ' + (tie ? 'tie' : (m.d < 0 ? 'toA' : 'toB'));
+      lb.innerHTML = 'P' + pnt(dec(P.last.x, 1), dec(P.last.y, 1)) + '<br>PC = ' + dec(m.pc, 2) + ' &nbsp; target r = ' + R.r + '<br><span class="v">' +
+        (tie ? 'On target. PC = ' + R.r + ', near enough.' : (m.d < 0 ? 'Too close to C.' : 'Too far from C.')) + '</span>';
+    } else {
+      lb.className = 'last';
+      lb.innerHTML = '<span class="dim">Tap the grid to drop a point P. Its distance to C shows here.</span>';
+    }
+    $('count2').innerHTML = P.pts.length ? P.pts.length + ' point' + (P.pts.length === 1 ? '' : 's') + ', <b>' + P.greenCount + ' green</b>' + (P.pts.length >= 300 && P.greenCount < 25 ? '. Spray again for more green.' : '') : 'No points yet.';
+    $('reveal2').textContent = P.revealed ? 'Hide the circle' : 'Reveal the circle';
+    P.renderPredict();
+    $('mask2').hidden = P.revealed; $('alg2').hidden = !P.revealed;
+    if (P.revealed) m2algebra();
+  }
+  function m2algebra() {
+    var E = circleEq(C, R.r), keep = function (s) { return '<span class="keep">' + s + '</span>'; };
+    var h = '';
+    h += step('start:', 'PC = ' + R.r);
+    h += step('distance formula:', '√(' + sqr(C.x, 'x') + ' + ' + sqr(C.y, 'y') + ') = ' + R.r);
+    h += step('square both sides:', E.centered);
+    h += step('expand:', expd(C.x, 'x', keep) + ' + ' + expd(C.y, 'y', keep) + ' = ' + (R.r * R.r));
+    h += step('all on one side:', keep('x²') + ' + ' + keep('y²') + tail(lin([[E.p, 'x'], [E.q, 'y'], [E.k, '']])) + ' = 0');
+    $('work2').innerHTML = h;
+    $('ans2').className = 'answer';
+    $('ans2').textContent = 'Circle: ' + E.centered + ', or ' + E.text;
+    $('check2').innerHTML = 'There is only one distance this time, so nothing cancels. The x² and y² stay, both with coefficient 1. Read it back: center ' +
+      pnt(sg(C.x), sg(C.y)) + ', radius √' + (R.r * R.r) + ' = ' + R.r + '.';
+  }
+  var p2 = Painter({
+    canvas: $('cv2'), handles: [C], choices: $('choices2'), feedback: $('pfb2'), correct: 'circle',
+    revealBtn: $('reveal2'), dropBtn: $('drop2'), sprayBtn: $('spray2'), clearBtn: $('clear2'),
+    measure: m2measure, drawReveal: m2reveal, panel: m2panel,
+    say: {
+      right: 'Yes. Every point at distance ' + 'r from C is on the circle with center C and radius r.',
+      none: 'Here it is. The green points make the circle with center C and radius r.',
+      square: 'Not this time. The corners of a square are farther from C than the middle of its sides. Only a circle keeps every point the same distance away.',
+      line: 'Not this time. Points on a line through C get farther away the further you go. The green points curve all the way around C.'
+    }
+  });
+  $('rRange').addEventListener('input', function () { R.r = +this.value; p2.render(); });
+
+  var painters = [p1, p2];
+  p1.render();
+  p2.render();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { p1.render(); p2.render(); });
+  var rz = null;
+  window.addEventListener('resize', function () {
+    if (rz) cancelAnimationFrame(rz);
+    rz = requestAnimationFrame(function () { painters.forEach(function (p) { p.render(); }); });
+  });
+
+  /* test hooks */
+  window.__painter = {
+    bisector: bisector, circleEq: circleEq, VIEW: VIEW, TOL: TOL,
+    setAB: function (a, b) { A.x = a[0]; A.y = a[1]; B.x = b[0]; B.y = b[1]; p1.render(); return { work: $('work1').innerHTML, ans: $('ans1').textContent }; },
+    setC: function (c, r) { C.x = c[0]; C.y = c[1]; R.r = r; $('rRange').value = r; p2.render(); return { work: $('work2').innerHTML, ans: $('ans2').textContent }; },
+    state: function (i) { var p = painters[i]; return { n: p.pts.length, green: p.greenCount, revealed: p.revealed, A: [A.x, A.y], B: [B.x, B.y], C: [C.x, C.y], r: R.r }; },
+    m1: function (A_, B_) { A.x = A_[0]; A.y = A_[1]; B.x = B_[0]; B.y = B_[1]; p1.revealed = true; p1.render();
+      return { raw: bisector(A, B).raw, line: bisector(A, B), steps: Array.prototype.map.call($('work1').querySelectorAll('.e'), function (e) { return e.textContent; }), ans: $('ans1').textContent, check: $('check1').textContent }; },
+    m2: function (C_, r) { C.x = C_[0]; C.y = C_[1]; R.r = r; p2.revealed = true; p2.render();
+      return { eq: circleEq(C, r), steps: Array.prototype.map.call($('work2').querySelectorAll('.e'), function (e) { return e.textContent; }), ans: $('ans2').textContent }; }
+  };
+})();
+</script>
+</body>
+</html>

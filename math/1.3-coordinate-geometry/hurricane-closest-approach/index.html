@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hurricane Closest Approach</title>
+  <meta name="description" content="Drag a storm track past St. Croix and work out, the Cambridge way, how close it comes, whether it enters the warning circle, and when it is closest.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the decks and www.thinkinbits.site. Single
+   committed dark theme, so the projector always matches.
+   ============================================================ */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-deep: #0f0f0f; --surface-lift: #2a2a2a;
+  --accent: #00e5ff; --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --grid: rgba(255,255,255,0.06); --axis: rgba(255,255,255,0.85);
+  --ok: #4ADE80; --ok-wash: rgba(74,222,128,0.13);
+  --warn: #FF7A6B; --warn-wash: rgba(255,122,107,0.13);
+  --amber: #FFC46B; --amber-wash: rgba(255,196,107,0.13);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow: 0 8px 20px rgba(0,229,255,0.3);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  padding: clamp(14px, 3.5vw, 34px);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1240px; margin: 0 auto; }
+button, input { font: inherit; }
+p { margin: 0; }
+
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+  border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+.tib-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+header { margin: 34px 0 18px; }
+.eyebrow {
+  font-family: var(--mono); font-size: clamp(11px, 1.3vw, 13px); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); margin: 0 0 6px;
+}
+h1 {
+  font-size: clamp(28px, 4.6vw, 46px);
+  font-weight: 700; line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0; color: var(--text); text-wrap: balance;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    padding: 0.18em 0; margin: -0.18em 0;
+  }
+}
+.lede { font-size: clamp(15px, 1.8vw, 18px); color: var(--text-2); max-width: 70ch; margin: 12px 0 0; }
+.lede b { color: var(--text); font-weight: 600; }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 8px; margin: 0 0 16px; flex-wrap: wrap; }
+.tab {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 16px); font-weight: 500;
+  color: var(--text-2); background: var(--surface); cursor: pointer;
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 10px 22px; min-height: 44px;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.tab:hover { border-color: var(--accent-line); color: var(--text); }
+.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tab[aria-selected="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+
+/* ---------- layout ---------- */
+.instrument { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .instrument { grid-template-columns: minmax(0, 1fr); } }
+.screen, .card {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); box-shadow: var(--shadow-card);
+}
+.screen { padding: 14px; position: sticky; top: 14px; }
+@media (max-width: 900px) { .screen { position: static; } }
+.screen svg { display: block; width: 100%; height: auto; touch-action: none; user-select: none; -webkit-user-select: none; }
+.card { padding: 18px 20px; min-width: 0; }
+.card + .card { margin-top: 16px; }
+.col { min-width: 0; }
+
+.legend { display: flex; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.legend i { display: inline-block; width: 24px; height: 0; vertical-align: middle; margin-right: 6px; }
+.legend .tk { border-top: 3px solid var(--accent); }
+.legend .in { border-top: 4px solid var(--amber); }
+.legend .ci { border-top: 2px dashed var(--amber); }
+.legend .pp { border-top: 2px dashed var(--ok); }
+.draghelp { font-size: 13px; color: var(--text-2); margin-top: 8px; }
+
+.lbl {
+  display: block; margin-bottom: 4px;
+  font-family: var(--font); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+}
+.readouts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+.ro { font-family: var(--mono); font-size: clamp(14px, 1.6vw, 17px); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.ro.big { color: var(--accent); }
+.slider-row { margin-top: 16px; }
+.slider-row label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text-2); }
+.slider-row .val { font-family: var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; font-size: 15px; }
+input[type="range"] { width: 100%; accent-color: var(--amber); cursor: pointer; }
+input[type="range"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+input[type="range"]:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btnrow { display: flex; gap: 7px; flex-wrap: wrap; }
+.btnrow button {
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+  padding: 8px 14px; border-radius: 50px; min-height: 40px;
+  border: 1px solid var(--hairline-strong); background: var(--surface-lift); color: var(--text); cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.btnrow button:hover { border-color: var(--accent-line); }
+.btnrow button.active, .btnrow button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+.btnrow button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btnrow button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+button.btn {
+  font-family: var(--font); font-size: clamp(14px, 1.6vw, 16px); font-weight: 600;
+  cursor: pointer; color: var(--ground); background: var(--accent);
+  border: 1px solid var(--accent); border-radius: 50px; padding: 9px 22px; min-height: 44px;
+  box-shadow: var(--shadow-glow); transition: transform .15s ease, filter .15s ease;
+}
+button.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+button.btn:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+button.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; filter: none; }
+button.btn.ghost { background: var(--surface-lift); color: var(--text); border-color: var(--hairline-strong); box-shadow: none; }
+button.btn.ghost:hover { border-color: var(--accent-line); }
+
+.question { font-size: clamp(14px, 1.6vw, 16px); color: var(--text); }
+.question .mono { font-family: var(--mono); color: var(--accent); white-space: nowrap; }
+.question ol { margin: 10px 0 0; padding-left: 1.4em; color: var(--text-2); }
+.question li { margin: 3px 0; }
+
+/* ---------- predict ---------- */
+.predict { border: 1px dashed var(--accent-line); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; }
+.predict h3 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+.predict .hint { font-size: 13px; color: var(--text-2); margin-bottom: 10px; }
+.predict .grid2 { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+.predict input[type="number"] {
+  width: 8.5em; font-family: var(--mono); font-size: 16px; color: var(--text);
+  background: var(--surface-deep); border: 1px solid var(--hairline-strong); border-radius: 12px; padding: 8px 10px; min-height: 40px;
+}
+.predict input[type="number"]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.predict input:disabled { opacity: 0.6; }
+.pfb { font-family: var(--mono); font-size: 13.5px; color: var(--text-2); margin-top: 10px; line-height: 1.6; }
+.pfb .good { color: var(--ok); } .pfb .mid { color: var(--amber); } .pfb .far { color: var(--warn); }
+
+/* ---------- steps ---------- */
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 12px; }
+.steps .n {
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent);
+}
+.steps h4 { margin: 2px 0 6px; font-size: clamp(14px, 1.6vw, 16px); font-weight: 600; }
+.work {
+  font-family: var(--mono); font-size: clamp(13px, 1.45vw, 15px); line-height: 1.85; font-variant-numeric: tabular-nums;
+  background: var(--surface-deep); border: 1px solid var(--hairline); border-left: 4px solid var(--accent);
+  border-radius: 12px; padding: 9px 12px; overflow-wrap: break-word;
+}
+.work .c { color: var(--text-2); }
+.work .ans { color: var(--accent); font-weight: 700; }
+.work.cut { border-left-color: var(--amber); } .work.touch { border-left-color: var(--amber); } .work.miss { border-left-color: var(--ok); }
+.verdict { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 50px; font-weight: 700; }
+.verdict.cut { color: var(--amber); background: var(--amber-wash); border: 1px solid var(--amber); }
+.verdict.touch { color: var(--amber); background: var(--amber-wash); border: 1px dashed var(--amber); }
+.verdict.miss { color: var(--ok); background: var(--ok-wash); border: 1px solid var(--ok); }
+.stepnote { font-size: 13px; color: var(--text-2); margin-top: 10px; }
+
+.note { margin-top: 18px; border: 1px dashed var(--accent-line); border-radius: var(--radius); padding: 14px 18px; color: var(--text-2); font-size: clamp(13px, 1.45vw, 14.5px); display: flex; flex-direction: column; gap: 6px; }
+.note b { color: var(--text); }
+
+.handle { cursor: grab; outline: none; }
+.handle.locked { cursor: default; }
+.handle:focus-visible .ring { stroke: var(--text); stroke-width: 3; stroke-dasharray: 4 3; }
+.screen svg.dragging .handle { cursor: grabbing; }
+
+@media (max-width: 520px) {
+  .screen svg .tick { font-size: 21px; }
+  .screen svg .hlabel { font-size: 24px; }
+  .screen svg #labC { font-size: 22px; }
+  .screen svg #labIsland { font-size: 17px; }
+  .screen svg #labF { font-size: 25px; }
+  .screen svg .unitlbl { font-size: 18px; }
+  .readouts { grid-template-columns: minmax(0, 1fr); }
+  .card { padding: 16px 14px; }
+  .screen { padding: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">9709 Pure 1 &middot; 1.3 Coordinate Geometry &middot; where the math is actually used</p>
+    <h1>Hurricane Closest Approach</h1>
+    <p class="lede">An emergency planner in St. Croix is watching a storm. Over a few hours a storm's path is close to a straight line, so we <b>model it as one</b>. These storms are made up, not real storm data. How close does it come, does it enter the warning circle, and when?</p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="mode">
+    <button class="tab" id="tab-free" role="tab" aria-selected="true" type="button">Free play</button>
+    <button class="tab" id="tab-chal" role="tab" aria-selected="false" type="button">Challenge</button>
+  </div>
+
+  <div class="instrument">
+    <div class="screen">
+      <svg id="plot" viewBox="0 0 600 600" role="img" aria-label="Coordinate grid in units of 10 km with the island at the origin, the storm track, the warning circle and the closest point F"></svg>
+      <div class="legend">
+        <span><i class="tk"></i>storm track</span>
+        <span><i class="ci"></i>warning circle</span>
+        <span><i class="in"></i>track inside it</span>
+        <span><i class="pp"></i>perpendicular CF</span>
+      </div>
+      <p class="draghelp" id="dragHelp">1 grid unit = 10 km. Drag S₁ and S₂, or tab to one and use the arrow keys.</p>
+    </div>
+
+    <div class="col">
+      <div class="card" id="chalCard" hidden>
+        <span class="lbl">Pick a scenario</span>
+        <div class="btnrow" id="chalChips" style="margin-bottom:12px"></div>
+        <div class="question" id="chalText"></div>
+      </div>
+
+      <div class="card">
+        <div class="readouts">
+          <div><span class="lbl">S₁, storm now</span><span class="ro" id="roS1"></span></div>
+          <div><span class="lbl">S₂, storm in 6 hours</span><span class="ro" id="roS2"></span></div>
+          <div><span class="lbl">Distance S₁S₂</span><span class="ro" id="roDist"></span></div>
+          <div><span class="lbl">Speed</span><span class="ro big" id="roSpeed"></span></div>
+        </div>
+        <div class="slider-row">
+          <label for="rSlider"><span>Warning radius R</span><span class="val" id="rVal"></span></label>
+          <input type="range" id="rSlider" min="20" max="120" step="10" value="50">
+        </div>
+        <div id="caseBox" style="margin-top:14px">
+          <span class="lbl">Try a special case</span>
+          <div class="btnrow" id="caseChips">
+            <button type="button" data-case="vertical">vertical track</button>
+            <button type="button" data-case="horizontal">horizontal track</button>
+            <button type="button" data-case="through">through C</button>
+            <button type="button" data-case="tangent">just touching</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow" style="margin-bottom:12px">Work it out</p>
+
+        <div class="predict" id="predict">
+          <h3>Predict first</h3>
+          <p class="hint">Steps 5 and 6 answer these. Make a guess from the picture before you reveal them.</p>
+          <div class="grid2">
+            <div>
+              <label class="lbl" for="guessKm">Closest distance (km)</label>
+              <input type="number" id="guessKm" inputmode="decimal" min="0" step="1" placeholder="e.g. 40">
+            </div>
+            <div>
+              <span class="lbl" id="guessVLbl">The track will</span>
+              <div class="btnrow" id="guessV" role="group" aria-labelledby="guessVLbl">
+                <button type="button" data-v="cut" aria-pressed="false">cut</button>
+                <button type="button" data-v="touch" aria-pressed="false">touch</button>
+                <button type="button" data-v="miss" aria-pressed="false">miss</button>
+              </div>
+            </div>
+          </div>
+          <div class="pfb" id="pfb" aria-live="polite"></div>
+        </div>
+
+        <div class="row" style="margin-bottom:14px">
+          <button class="btn" id="nextBtn" type="button">Next step</button>
+          <button class="btn ghost" id="allBtn" type="button">Show all</button>
+          <button class="btn ghost" id="resetBtn" type="button">Start over</button>
+        </div>
+        <ol class="steps" id="steps" aria-live="polite"></ol>
+        <p class="stepnote" id="stepNote"></p>
+      </div>
+
+      <div class="note">
+        <p><b>Why the perpendicular.</b> The shortest distance from a point to a line is along the perpendicular. That is why the method finds the gradient &minus;1/m and the line through C with that gradient: where it meets the track is the closest point F.</p>
+        <p><b>How far to trust it.</b> A real track curves and the speed changes, so this straight-line model is for the next few hours only. Planners redo the calculation every time a new position comes in.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var NS = 'http://www.w3.org/2000/svg';
+  var MINUS = '−';
+
+  /* ================= exact arithmetic ================= */
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function fr(p, q) {
+    if (q === undefined) q = 1;
+    if (q < 0) { p = -p; q = -q; }
+    var g = gcd(p, q) || 1;
+    p = p / g; q = q / g;
+    if (p === 0) { p = 0; q = 1; }
+    return { p: p, q: q };
+  }
+  function fadd(a, b) { return fr(a.p * b.q + b.p * a.q, a.q * b.q); }
+  function fmul(a, b) { return fr(a.p * b.p, a.q * b.q); }
+  function fdiv(a, b) { return fr(a.p * b.q, a.q * b.p); }
+  function fval(a) { return a.p / a.q; }
+  function isInt(a) { return a.q === 1; }
+  function neg(n) { return n < 0 ? MINUS + Math.abs(n) : String(n); }
+  function fs(a) { return (a.p < 0 ? MINUS : '') + Math.abs(a.p) + (a.q === 1 ? '' : '/' + a.q); }
+  function fsp(a) { return a.p < 0 ? '(' + fs(a) + ')' : fs(a); }
+  /* the square-free split: n = k^2 * s */
+  function sqf(n) {
+    var k = 1, s = n;
+    for (var i = 2; i * i <= s; i++) { while (s % (i * i) === 0) { s /= i * i; k *= i; } }
+    return [k, s];
+  }
+  /* sqrt of a nonnegative fraction, written as k sqrt(s) / d in lowest terms */
+  function surd(f) {
+    if (f.p === 0) return { k: 0, s: 1, d: 1 };
+    var ks = sqf(f.p * f.q), k = ks[0], s = ks[1], d = f.q, g = gcd(k, d);
+    return { k: k / g, s: s, d: d / g };
+  }
+  function surdStr(u) {
+    if (u.s === 1) return fs(fr(u.k, u.d));
+    return (u.k === 1 ? '' : u.k) + '√' + u.s + (u.d === 1 ? '' : '/' + u.d);
+  }
+  function surdVal(u) { return u.k * Math.sqrt(u.s) / u.d; }
+  /* round half up to 1 dp, sign aware, with a real minus sign */
+  function d1(x) {
+    var v = Math.round(Math.abs(x) * 10 + 1e-9) / 10;
+    return (x < 0 && v !== 0 ? MINUS : '') + v.toFixed(1);
+  }
+  function d3(x) { var v = Math.round(Math.abs(x) * 1000 + 1e-9) / 1000; return (x < 0 && v !== 0 ? MINUS : '') + v.toFixed(3); }
+  /* exact rational to 1 dp, half up */
+  function fd1(f) {
+    var s = f.p < 0 ? -1 : 1, P = Math.abs(f.p), n = Math.floor((20 * P + f.q) / (2 * f.q));
+    var t = Math.floor(n / 10) + '.' + (n % 10);
+    return (s < 0 && n !== 0 ? MINUS : '') + t;
+  }
+
+  /* ================= writing algebra ================= */
+  /* terms: [[coef, symbol], ...]; symbol '' is the constant */
+  function expr(terms) {
+    var out = '';
+    terms.forEach(function (t) {
+      var c = t[0], v = t[1];
+      if (c === 0) return;
+      var mag = Math.abs(c), body = (v && mag === 1) ? v : mag + v;
+      if (out === '') out = (c < 0 ? MINUS : '') + body;
+      else out += (c < 0 ? ' ' + MINUS + ' ' : ' + ') + body;
+    });
+    return out === '' ? '0' : out;
+  }
+  function lineStr(a, b, c) { return expr([[a, 'x'], [b, 'y'], [c, '']]) + ' = 0'; }
+  /* "y + 8", "x", "x − 9" */
+  function shift(v, k) { return k === 0 ? v : v + (k < 0 ? ' + ' + (-k) : ' ' + MINUS + ' ' + k); }
+  /* p times x, as a student writes it: 2x, −x, −3x/2 */
+  function px(p, v) {
+    v = v || 'x';
+    if (isInt(p)) return p.p === 1 ? v : (p.p === -1 ? MINUS + v : neg(p.p) + v);
+    var top = Math.abs(p.p) === 1 ? v : Math.abs(p.p) + v;
+    return (p.p < 0 ? MINUS : '') + top + '/' + p.q;
+  }
+
+  /* ================= the model ================= */
+  function normLine(x1, y1, x2, y2) {
+    var a = y2 - y1, b = -(x2 - x1), c = -(a * x1 + b * y1);
+    var g = gcd(gcd(a, b), c) || 1;
+    a /= g; b /= g; c /= g;
+    if (a < 0 || (a === 0 && b < 0)) { a = -a; b = -b; c = -c; }
+    return { a: a + 0, b: b + 0, c: c + 0 };
+  }
+
+  /* All of the math, exact. Pure function: also used by the test harness. */
+  function compute(x1, y1, x2, y2, R) {
+    var dx = x2 - x1, dy = y2 - y1;
+    if (dx === 0 && dy === 0) return null;
+    var L = normLine(x1, y1, x2, y2), a = L.a, b = L.b, c = L.c, n = a * a + b * b;
+    var r = R / 10;
+    var o = { x1: x1, y1: y1, x2: x2, y2: y2, R: R, r: r, dx: dx, dy: dy, a: a, b: b, c: c };
+    o.kind = dx === 0 ? 'vertical' : (dy === 0 ? 'horizontal' : 'slant');
+    o.m = dx === 0 ? null : fr(dy, dx);
+    o.perp = (o.kind === 'slant') ? fr(b, a) : null;          /* −1/m */
+    o.Fx = fr(-a * c, n); o.Fy = fr(-b * c, n);
+    o.CF2 = fr(c * c, n);
+    o.CF = surd(o.CF2); o.CFval = surdVal(o.CF); o.CFkm = o.CFval * 10;
+    o.d2 = dx * dx + dy * dy;
+    o.S1S2 = surd(fr(o.d2)); o.S1S2km = surdVal(o.S1S2) * 10;
+    o.speed = o.S1S2km / 6;
+    /* circle x^2 + y^2 = r^2 against the track */
+    var A, B, C;
+    if (b !== 0) { A = n; B = 2 * a * c; C = c * c - b * b * r * r; o.qvar = 'x'; }
+    else { A = a * a; B = 0; C = c * c - a * a * r * r; o.qvar = 'y'; }
+    var g = gcd(gcd(A, B), C) || 1;
+    o.qA = A / g; o.qB = B / g + 0; o.qC = C / g + 0; o.qg = g;
+    o.disc = o.qB * o.qB - 4 * o.qA * o.qC;
+    o.verdict = o.disc > 0 ? 'cut' : (o.disc === 0 ? 'touch' : 'miss');
+    /* where F is along the track: F = S1 + t (S2 − S1) */
+    o.t = fr(-(x1 * dx + y1 * dy), o.d2);
+    o.hours = fmul(o.t, fr(6));
+    o.S1F = surd(fmul(fmul(o.t, o.t), fr(o.d2)));
+    o.S1Fkm = surdVal(o.S1F) * 10;
+    o.through = c === 0;
+    return o;
+  }
+
+  /* ================= the seven steps ================= */
+  function steps(o) {
+    var S = [], P1 = '(' + neg(o.x1) + ', ' + neg(o.y1) + ')', P2 = '(' + neg(o.x2) + ', ' + neg(o.y2) + ')';
+    var track = lineStr(o.a, o.b, o.c);
+    var lines;
+
+    /* 1 gradient */
+    lines = ['<span class="c">S₁' + P1 + ', S₂' + P2 + '</span>'];
+    if (o.kind === 'vertical') {
+      lines.push('x₂ ' + MINUS + ' x₁ = ' + neg(o.x2) + ' ' + MINUS + ' ' + fsp(fr(o.x1)) + ' = 0');
+      lines.push('so the track is <span class="ans">vertical</span> and its gradient is undefined');
+    } else {
+      lines.push('m = (y₂ ' + MINUS + ' y₁)/(x₂ ' + MINUS + ' x₁)');
+      lines.push('= (' + neg(o.y2) + ' ' + MINUS + ' ' + fsp(fr(o.y1)) + ')/(' + neg(o.x2) + ' ' + MINUS + ' ' + fsp(fr(o.x1)) + ')');
+      lines.push('= ' + neg(o.dy) + '/' + fsp(fr(o.dx)) + ' = <span class="ans">' + fs(o.m) + '</span>' + (o.kind === 'horizontal' ? '<span class="c">, a horizontal track</span>' : ''));
+    }
+    S.push({ t: 'Gradient of the track', l: lines });
+
+    /* 2 equation */
+    if (o.kind === 'vertical') {
+      lines = ['every point on it has x = ' + neg(o.x1) + ', so the track is x = ' + neg(o.x1),
+               'track: <span class="ans">' + track + '</span>'];
+    } else {
+      lines = ['<span class="c">y ' + MINUS + ' y₁ = m(x ' + MINUS + ' x₁)</span>'];
+      var right;
+      var xs = shift('x', o.x1);
+      if (o.m.p === 0) right = '0';
+      else if (isInt(o.m)) right = (o.m.p === 1 ? '' : (o.m.p === -1 ? MINUS : neg(o.m.p))) + (o.x1 === 0 ? 'x' : '(' + xs + ')');
+      else right = '(' + fs(o.m) + ')' + (o.x1 === 0 ? 'x' : '(' + xs + ')');
+      lines.push(shift('y', o.y1) + ' = ' + right);
+      lines.push((o.m.q === 1 ? 'collect terms' : 'multiply by ' + o.m.q + ' and collect terms') + ': <span class="ans">' + track + '</span>');
+    }
+    S.push({ t: 'Equation of the track', l: lines });
+
+    /* 3 perpendicular */
+    if (o.kind === 'vertical') {
+      lines = ['the track is vertical, so the perpendicular is horizontal',
+               'through C(0, 0): <span class="ans">y = 0</span>'];
+    } else if (o.kind === 'horizontal') {
+      lines = ['the track is horizontal, so the perpendicular is vertical',
+               'through C(0, 0): <span class="ans">x = 0</span>'];
+    } else {
+      var pl = normLine(0, 0, o.perp.q, o.perp.p);
+      lines = ['<span class="c">m × m⊥ = ' + MINUS + '1</span>',
+               'm⊥ = ' + MINUS + '1/m = ' + MINUS + '1 ÷ ' + fsp(o.m) + ' = <span class="ans">' + fs(o.perp) + '</span>',
+               'through C(0, 0): y = ' + px(o.perp) + ', which is <span class="ans">' + lineStr(pl.a, pl.b, pl.c) + '</span>'];
+    }
+    S.push({ t: 'The perpendicular from C', l: lines });
+
+    /* 4 closest point */
+    var Fstr = '(' + fs(o.Fx) + ', ' + fs(o.Fy) + ')';
+    if (o.kind === 'vertical') {
+      lines = ['y = 0 meets x = ' + neg(o.x1) + ' at (' + neg(o.x1) + ', 0)'];
+    } else if (o.kind === 'horizontal') {
+      lines = ['x = 0 meets y = ' + neg(o.y1) + ' at (0, ' + neg(o.y1) + ')'];
+    } else {
+      var p = o.perp, K = fr(o.a * o.a + o.b * o.b, o.a);
+      var bterm = (o.b < 0 ? ' ' + MINUS + ' ' : ' + ') + (Math.abs(o.b) === 1 ? '' : Math.abs(o.b)) + '(' + px(p) + ')';
+      var cterm = o.c === 0 ? '' : (o.c < 0 ? ' ' + MINUS + ' ' : ' + ') + Math.abs(o.c);
+      lines = ['substitute y = ' + px(p) + ' into', track,
+               expr([[o.a, 'x']]) + bterm + cterm + ' = 0',
+               px(K) + (o.c === 0 ? '' : (o.c < 0 ? ' ' + MINUS + ' ' : ' + ') + Math.abs(o.c)) + ' = 0, so x = ' + fs(o.Fx),
+               'y = ' + fsp(p) + ' × ' + fsp(o.Fx) + ' = ' + fs(o.Fy)];
+    }
+    lines.push('closest point <span class="ans">F = ' + Fstr + '</span>');
+    if (o.through) lines.push('<span class="c">F is C itself: the track passes straight through the island.</span>');
+    S.push({ t: 'Closest point F', l: lines });
+
+    /* 5 distance */
+    var fx2 = fmul(o.Fx, o.Fx), fy2 = fmul(o.Fy, o.Fy);
+    lines = ['CF = √((' + fs(o.Fx) + ')² + (' + fs(o.Fy) + ')²)'];
+    var sumStr = '√(' + fs(fx2) + ' + ' + fs(fy2) + ')';
+    var cfFirst = '= ' + sumStr + ' = √' + (isInt(o.CF2) ? fs(o.CF2) : '(' + fs(o.CF2) + ')');
+    var cfExact = surdStr(o.CF);
+    lines.push(cfFirst + (cfExact !== fs(o.CF2) || !isInt(o.CF2) ? ' = <span class="ans">' + cfExact + '</span>' : ''));
+    lines.push('≈ ' + d3(o.CFval) + ' grid units, so CF ≈ <span class="ans">' + d1(o.CFkm) + ' km</span>');
+    S.push({ t: 'Closest distance CF', l: lines });
+
+    /* 6 the circle */
+    var r2 = o.r * o.r, v = o.qvar;
+    lines = ['R = ' + o.R + ' km, so r = ' + o.r + ' grid units: <span class="c">x² + y² = ' + r2 + '</span>'];
+    if (o.b !== 0) {
+      var vB = Math.abs(o.b), sg = o.b > 0 ? 1 : -1, u = -o.a * sg, w = -o.c * sg;
+      var numer = expr([[u, 'x'], [w, '']]);
+      var simple = (u === 0) ? numer : numer;
+      lines.push('from the track: y = ' + (vB === 1 ? simple : '(' + numer + ')/' + vB));
+      if (vB === 1) {
+        var sq = (u === 0 && w >= 0) ? numer + '²' : '(' + numer + ')²';
+        lines.push('substitute: x² + ' + sq + ' = ' + r2);
+      } else {
+        lines.push('substitute: x² + ((' + numer + ')/' + vB + ')² = ' + r2);
+        lines.push('multiply by ' + (vB * vB) + ': ' + (vB * vB) + 'x² + (' + numer + ')² = ' + (vB * vB * r2));
+      }
+    } else {
+      lines.push('substitute x = ' + neg(o.x1) + ': ' + (o.x1 < 0 ? '(' + neg(o.x1) + ')' : o.x1) + '² + y² = ' + r2);
+    }
+    lines.push((o.qg > 1 ? 'tidy and divide by ' + o.qg + ': ' : 'tidy: ') + expr([[o.qA, v + '²'], [o.qB, v], [o.qC, '']]) + ' = 0');
+    lines.push('Δ = B² ' + MINUS + ' 4AC');
+    lines.push('= ' + fsp(fr(o.qB)) + '² ' + MINUS + ' 4 × ' + o.qA + ' × ' + fsp(fr(o.qC)));
+    lines.push('= ' + (o.qB * o.qB) + ' ' + MINUS + ' ' + fsp(fr(4 * o.qA * o.qC)) + ' = <span class="ans">' + neg(o.disc) + '</span>');
+    var cmp = o.verdict === 'cut' ? '<' : (o.verdict === 'touch' ? '=' : '>');
+    var vtxt = o.verdict === 'cut' ? 'Δ > 0: two points, so the track cuts the warning circle'
+             : (o.verdict === 'touch' ? 'Δ = 0: one repeated point, so the track touches the circle at F'
+             : 'Δ < 0: no real points, so the track misses the warning circle');
+    lines.push('<span class="verdict ' + o.verdict + '">' + vtxt + '</span>');
+    lines.push('<span class="c">check: CF ' + (o.verdict === 'touch' ? '= ' + d1(o.CFkm) : '≈ ' + d1(o.CFkm)) + ' km ' + cmp + ' R = ' + o.R + ' km</span>');
+    S.push({ t: 'Does it enter the warning circle?', l: lines, cls: o.verdict });
+
+    /* 7 when */
+    var ratio = fr(Math.abs(o.t.p), o.t.q);
+    if (o.t.p === 0) {
+      lines = ['F is S₁ itself, so the storm is at its <span class="ans">closest point right now</span>'];
+    } else {
+      lines = ['S₁F = ' + surdStr(o.S1F) + ' units ≈ ' + d1(o.S1Fkm) + ' km',
+               'S₁S₂ = ' + surdStr(o.S1S2) + ' units ≈ ' + d1(o.S1S2km) + ' km, covered in 6 hours',
+               'S₁F ÷ S₁S₂ = ' + fs(ratio)];
+      if (o.t.p > 0) {
+        lines.push('F is ahead of S₁ in the direction of travel');
+        lines.push('time = ' + fs(ratio) + ' × 6 = ' + fs(fmul(ratio, fr(6))) + ' hours ≈ <span class="ans">' + fd1(fmul(ratio, fr(6))) + ' hours from now</span>');
+      } else {
+        lines.push('F is behind S₁: the storm has already passed its closest point');
+        lines.push('that was ' + fs(fmul(ratio, fr(6))) + ' hours ≈ <span class="ans">' + fd1(fmul(ratio, fr(6))) + ' hours ago</span>; from now on it moves away from C');
+      }
+    }
+    S.push({ t: 'When is it closest?', l: lines });
+    return S;
+  }
+
+  /* ================= state ================= */
+  var LIM = 12;
+  var FREE0 = { s1: [11, -2], s2: [-1, 4], R: 50 };
+  var CASES = {
+    vertical:   { s1: [-6, -9], s2: [-6, 3], R: 70 },
+    horizontal: { s1: [10, 5],  s2: [-4, 5], R: 60 },
+    through:    { s1: [8, -4],  s2: [-4, 2], R: 40 },
+    tangent:    { s1: [-7, -1], s2: [-1, 7], R: 50 }
+  };
+  var CHALLENGES = [
+    { s1: [11, 0], s2: [-1, 6],   R: 60 },
+    { s1: [7, 1],  s2: [-1, 7],   R: 50 },
+    { s1: [9, -8], s2: [9, 4],    R: 100 },
+    { s1: [-1, 8], s2: [-10, 11], R: 60 }
+  ];
+  var st = {
+    mode: 'free', s1: FREE0.s1.slice(), s2: FREE0.s2.slice(), R: FREE0.R,
+    free: null, chal: -1, shown: 0, guessKm: null, guessV: null, guessStale: false
+  };
+  var cur = null;
+
+  /* ================= drawing ================= */
+  var svg = $('plot'), W = 600, U = W / (2 * LIM);
+  function X(x) { return W / 2 + x * U; }
+  function Y(y) { return W / 2 - y * U; }
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(e);
+    return e;
+  }
+  function txt(parent, x, y, s, attrs) {
+    var a = { x: x, y: y, 'font-family': 'JetBrains Mono, monospace', 'font-size': 14, fill: 'var(--text-2)' };
+    for (var k in attrs) a[k] = attrs[k];
+    var t = el('text', a, parent); t.textContent = s; return t;
+  }
+
+  var defs = el('defs', {});
+  var clip = el('clipPath', { id: 'clipv' }, defs);
+  el('rect', { x: 0, y: 0, width: W, height: W, rx: 14 }, clip);
+  el('rect', { x: 0, y: 0, width: W, height: W, rx: 14, fill: '#0f0f0f' });
+  var gridG = el('g', {});
+  for (var i = -LIM; i <= LIM; i++) {
+    var ax = i === 0;
+    el('line', { x1: X(i), y1: 0, x2: X(i), y2: W, stroke: ax ? 'var(--axis)' : 'var(--grid)', 'stroke-width': ax ? 2 : 1 }, gridG);
+    el('line', { x1: 0, y1: Y(i), x2: W, y2: Y(i), stroke: ax ? 'var(--axis)' : 'var(--grid)', 'stroke-width': ax ? 2 : 1 }, gridG);
+    if (i !== 0 && i % 2 === 0 && Math.abs(i) < LIM) {
+      txt(gridG, X(i), Y(0) + 19, neg(i), { 'text-anchor': 'middle', 'class': 'tick' });
+      txt(gridG, X(0) - 7, Y(i) + 5, neg(i), { 'text-anchor': 'end', 'class': 'tick' });
+    }
+  }
+  txt(gridG, W - 12, Y(0) - 9, 'x', { 'text-anchor': 'end', 'font-size': 17, 'font-style': 'italic', fill: 'var(--text)', 'font-family': 'Poppins, sans-serif' });
+  txt(gridG, X(0) + 10, 20, 'y', { 'font-size': 17, 'font-style': 'italic', fill: 'var(--text)', 'font-family': 'Poppins, sans-serif' });
+  txt(gridG, 12, W - 12, '1 unit = 10 km', { 'font-size': 13, fill: 'var(--text-2)', 'class': 'unitlbl' });
+
+  /* a clearly stylized island: smooth, longer east to west, around C */
+  var isl = [[-2.1, -0.15], [-1.7, 0.45], [-0.6, 0.55], [0.5, 0.75], [1.5, 0.45], [2.0, 0.1], [1.6, -0.35], [0.4, -0.5], [-0.9, -0.6], [-1.8, -0.55]];
+  function smooth(pts) {
+    var d = '', N = pts.length;
+    for (var k = 0; k < N; k++) {
+      var p0 = pts[(k - 1 + N) % N], p1 = pts[k], p2 = pts[(k + 1) % N], p3 = pts[(k + 2) % N];
+      if (k === 0) d += 'M ' + X(p1[0]).toFixed(1) + ' ' + Y(p1[1]).toFixed(1);
+      var c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      var c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ' C ' + X(c1[0]).toFixed(1) + ' ' + Y(c1[1]).toFixed(1) + ' ' + X(c2[0]).toFixed(1) + ' ' + Y(c2[1]).toFixed(1) + ' ' + X(p2[0]).toFixed(1) + ' ' + Y(p2[1]).toFixed(1);
+    }
+    return d + ' Z';
+  }
+  var islandG = el('g', {});
+  el('path', { d: smooth(isl), fill: 'rgba(74,222,128,0.22)', stroke: 'var(--ok)', 'stroke-width': 1.5, id: 'island' }, islandG);
+
+  var dyn = el('g', { 'clip-path': 'url(#clipv)' });
+  var labels = el('g', {});
+  var handles = el('g', {});
+
+  var HALO = { stroke: '#0f0f0f', 'stroke-width': 4, 'paint-order': 'stroke', 'stroke-linejoin': 'round' };
+  function halo(a) { for (var k in HALO) a[k] = HALO[k]; return a; }
+
+  function mkHandle(id, label) {
+    var g = el('g', { 'class': 'handle', id: id, tabindex: 0, role: 'button' }, handles);
+    el('circle', { r: 26, fill: 'transparent', 'class': 'hit' }, g);
+    el('circle', { r: 11, fill: id === 'h1' ? '#0f0f0f' : 'var(--accent)', stroke: 'var(--accent)', 'stroke-width': 3, 'class': 'ring' }, g);
+    var t = txt(g, 16, -14, label, halo({ 'font-size': 16, fill: 'var(--text)', 'font-weight': 700 }));
+    t.setAttribute('class', 'hlabel');
+    return g;
+  }
+  var h1 = mkHandle('h1', 'S₁ now'), h2 = mkHandle('h2', 'S₂ +6 h');
+
+  function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
+  function arrowHead(g, x, y, ux, uy, color) {
+    var s = 0.55, bx = x - ux * s, by = y - uy * s, nx = -uy * s * 0.6, ny = ux * s * 0.6;
+    el('polygon', { points: [X(x), Y(y), X(bx + nx), Y(by + ny), X(bx - nx), Y(by - ny)].join(' '), fill: color, 'class': 'arrow' }, g);
+  }
+
+  function draw(o) {
+    clear(dyn); clear(labels);
+    var r = o.r, len = Math.sqrt(o.d2), ux = o.dx / len, uy = o.dy / len;
+    var Fx = fval(o.Fx), Fy = fval(o.Fy);
+    /* warning circle */
+    el('circle', { cx: X(0), cy: Y(0), r: r * U, fill: 'rgba(255,196,107,0.06)', stroke: 'var(--amber)', 'stroke-width': 2.2, 'stroke-dasharray': '9 7', id: 'warnCircle' }, dyn);
+    /* the track, across the whole grid */
+    var far = 40;
+    el('line', { x1: X(Fx - ux * far), y1: Y(Fy - uy * far), x2: X(Fx + ux * far), y2: Y(Fy + uy * far), stroke: 'var(--accent)', 'stroke-width': 3, opacity: 0.85, id: 'trackLine' }, dyn);
+    /* part inside the circle */
+    if (o.verdict === 'cut') {
+      var h = Math.sqrt(r * r - o.CFval * o.CFval);
+      el('line', { x1: X(Fx - ux * h), y1: Y(Fy - uy * h), x2: X(Fx + ux * h), y2: Y(Fy + uy * h), stroke: 'var(--amber)', 'stroke-width': 7, 'stroke-linecap': 'round', id: 'insideSeg' }, dyn);
+    }
+    /* direction of travel */
+    var mx = (o.x1 + o.x2) / 2, my = (o.y1 + o.y2) / 2;
+    if (len >= 2) arrowHead(dyn, mx + ux * 0.27, my + uy * 0.27, ux, uy, 'var(--accent)');
+    arrowHead(dyn, o.x2 + ux * 2.4, o.y2 + uy * 2.4, ux, uy, 'var(--accent)');
+    /* perpendicular CF with a right-angle mark */
+    if (!o.through) {
+      el('line', { x1: X(0), y1: Y(0), x2: X(Fx), y2: Y(Fy), stroke: 'var(--ok)', 'stroke-width': 2.5, 'stroke-dasharray': '6 5', id: 'perpLine' }, dyn);
+      var cf = o.CFval, wx = -Fx / cf, wy = -Fy / cf, s = Math.min(0.55, cf / 2);
+      var pts = [[Fx + ux * s, Fy + uy * s], [Fx + ux * s + wx * s, Fy + uy * s + wy * s], [Fx + wx * s, Fy + wy * s]];
+      el('polyline', { points: pts.map(function (p) { return X(p[0]) + ',' + Y(p[1]); }).join(' '), fill: 'none', stroke: 'var(--ok)', 'stroke-width': 2, id: 'rightAngle' }, dyn);
+    }
+    /* C and F */
+    el('circle', { cx: X(0), cy: Y(0), r: 5, fill: 'var(--text)', id: 'ptC' }, labels);
+    txt(labels, X(0) + 9, Y(0) - 10, 'C, the island', halo({ 'font-size': 15, fill: 'var(--text)', 'font-family': 'Poppins, sans-serif', 'font-weight': 600, id: 'labC' }));
+    txt(labels, X(0), Y(-0.6) + 20, 'St. Croix (simplified outline)', halo({ 'font-size': 12.5, fill: 'var(--ok)', 'font-family': 'Poppins, sans-serif', 'text-anchor': 'middle', id: 'labIsland' }));
+    var FonGrid = Math.abs(Fx) <= LIM && Math.abs(Fy) <= LIM;
+    if (FonGrid) {
+      el('circle', { cx: X(Fx), cy: Y(Fy), r: 6.5, fill: 'var(--ok)', stroke: '#0f0f0f', 'stroke-width': 2, id: 'ptF' }, labels);
+      if (o.through) {
+        /* F sits on C: put its label on the lower side of the track, under the island label */
+        var nx = -uy, ny = ux;
+        if (ny > 0 || (ny === 0 && nx > 0)) { nx = -nx; ny = -ny; }
+        txt(labels, X(nx * 2.4), Y(ny * 2.4) + 6, 'F = C', halo({ 'font-size': 17, fill: 'var(--ok)', 'font-weight': 700, 'text-anchor': 'middle', id: 'labF' }));
+      } else {
+        var ox = Fx / o.CFval, oy = Fy / o.CFval;
+        txt(labels, X(Fx + ox * 1.1), Y(Fy + oy * 1.1) + 6, 'F', halo({ 'font-size': 18, fill: 'var(--ok)', 'font-weight': 700, 'text-anchor': 'middle', id: 'labF' }));
+      }
+    }
+    /* handles */
+    h1.setAttribute('transform', 'translate(' + X(o.x1) + ',' + Y(o.y1) + ')');
+    h2.setAttribute('transform', 'translate(' + X(o.x2) + ',' + Y(o.y2) + ')');
+    /* keep handle labels inside the grid */
+    [[h1, o.x1, o.y1], [h2, o.x2, o.y2]].forEach(function (hh) {
+      var t = hh[0].querySelector('.hlabel'), left = hh[1] > 7, low = hh[2] > 10;
+      t.setAttribute('x', left ? -16 : 16);
+      t.setAttribute('text-anchor', left ? 'end' : 'start');
+      t.setAttribute('y', low ? 28 : -14);
+    });
+    h1.setAttribute('aria-label', 'S₁, storm now, at ' + neg(o.x1) + ', ' + neg(o.y1) + '. Arrow keys move it.');
+    h2.setAttribute('aria-label', 'S₂, storm in 6 hours, at ' + neg(o.x2) + ', ' + neg(o.y2) + '. Arrow keys move it.');
+  }
+
+  /* ================= render ================= */
+  var stepsEl = $('steps');
+  function render() {
+    var o = compute(st.s1[0], st.s1[1], st.s2[0], st.s2[1], st.R);
+    cur = o;
+    $('roS1').textContent = '(' + neg(o.x1) + ', ' + neg(o.y1) + ')';
+    $('roS2').textContent = '(' + neg(o.x2) + ', ' + neg(o.y2) + ')';
+    $('roDist').textContent = surdStr(o.S1S2) + ' units ≈ ' + d1(o.S1S2km) + ' km';
+    $('roSpeed').textContent = d1(o.S1S2km) + ' ÷ 6 ≈ ' + d1(o.speed) + ' km/h';
+    $('rVal').textContent = st.R + ' km (r = ' + o.r + ' units)';
+    $('rSlider').value = st.R;
+    draw(o);
+
+    var S = steps(o);
+    stepsEl.innerHTML = S.map(function (s, k) {
+      return '<li data-step="' + (k + 1) + '"' + (k < st.shown ? '' : ' hidden') + '><span class="n">' + (k + 1) + '</span><div><h4>' + s.t + '</h4><div class="work' + (s.cls ? ' ' + s.cls : '') + '">' + s.l.join('<br>') + '</div></div></li>';
+    }).join('');
+    $('nextBtn').disabled = st.shown >= 7;
+    $('allBtn').disabled = st.shown >= 7;
+    $('nextBtn').textContent = st.shown === 0 ? 'Start: step 1' : (st.shown >= 7 ? 'All 7 steps shown' : 'Next step (' + (st.shown + 1) + ' of 7)');
+    $('stepNote').textContent = st.shown === 0 ? 'Seven steps, one at a time. Try each one on paper before you reveal it.' :
+      (st.shown < 7 ? 'Move S₁, S₂ or R at any time and the shown steps update.' : '');
+    renderPredict();
+  }
+
+  function renderPredict() {
+    var o = cur, out = [];
+    var locked = st.shown >= 5;
+    $('guessKm').disabled = locked;
+    Array.prototype.forEach.call($('guessV').querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b.dataset.v === st.guessV ? 'true' : 'false');
+      b.disabled = st.shown >= 6;
+    });
+    if (st.guessStale && (st.guessKm !== null || st.guessV)) {
+      $('pfb').innerHTML = 'The track moved after your guess. Press Start over to guess again.';
+      return;
+    }
+    if (st.shown >= 5) {
+      if (st.guessKm === null) out.push('No distance guess this time. CF ≈ ' + d1(o.CFkm) + ' km.');
+      else {
+        var diff = Math.abs(st.guessKm - o.CFkm), rel = diff / Math.max(o.CFkm, 10);
+        var cls = rel <= 0.1 ? 'good' : (rel <= 0.25 ? 'mid' : 'far');
+        var word = rel <= 0.1 ? 'Very close.' : (rel <= 0.25 ? 'Close.' : 'A fair way off. Compare CF with the grid squares.');
+        out.push('You guessed ' + d1(st.guessKm) + ' km. CF ≈ ' + d1(o.CFkm) + ' km, off by ' + d1(diff) + ' km. <span class="' + cls + '">' + word + '</span>');
+      }
+    }
+    if (st.shown >= 6) {
+      if (!st.guessV) out.push('No cut, touch or miss guess. It is a ' + o.verdict + '.');
+      else out.push('You said ' + st.guessV + '. It is a ' + o.verdict + '. ' + (st.guessV === o.verdict ? '<span class="good">Right.</span>' : '<span class="far">Not this time.</span>'));
+    }
+    $('pfb').innerHTML = out.join('<br>');
+  }
+
+  /* ================= controls ================= */
+  function changed(fromUser) {
+    if (fromUser && st.shown >= 5) st.guessStale = true;
+    render();
+  }
+  function resetSteps() {
+    st.shown = 0; st.guessKm = null; st.guessV = null; st.guessStale = false;
+    $('guessKm').value = '';
+  }
+  $('nextBtn').addEventListener('click', function () { if (st.shown < 7) { st.shown++; render(); } });
+  $('allBtn').addEventListener('click', function () { st.shown = 7; render(); });
+  $('resetBtn').addEventListener('click', function () { resetSteps(); render(); });
+  $('rSlider').addEventListener('input', function () { st.R = +this.value; changed(true); });
+  $('guessKm').addEventListener('input', function () {
+    var v = parseFloat(this.value);
+    st.guessKm = isFinite(v) && v >= 0 ? v : null;
+  });
+  Array.prototype.forEach.call($('guessV').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { st.guessV = st.guessV === b.dataset.v ? null : b.dataset.v; renderPredict(); });
+  });
+  Array.prototype.forEach.call($('caseChips').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () {
+      var c = CASES[b.dataset.case];
+      st.s1 = c.s1.slice(); st.s2 = c.s2.slice(); st.R = c.R;
+      resetSteps(); render();
+    });
+  });
+
+  /* mode tabs */
+  var tabFree = $('tab-free'), tabChal = $('tab-chal');
+  function setMode(m) {
+    if (m === st.mode) return;
+    if (m === 'chal') { st.free = { s1: st.s1.slice(), s2: st.s2.slice(), R: st.R }; }
+    st.mode = m;
+    tabFree.setAttribute('aria-selected', m === 'free' ? 'true' : 'false');
+    tabChal.setAttribute('aria-selected', m === 'chal' ? 'true' : 'false');
+    $('chalCard').hidden = m !== 'chal';
+    $('caseBox').hidden = m === 'chal';
+    $('rSlider').disabled = m === 'chal';
+    [h1, h2].forEach(function (h) {
+      h.classList.toggle('locked', m === 'chal');
+      h.setAttribute('tabindex', m === 'chal' ? '-1' : '0');
+    });
+    $('dragHelp').textContent = m === 'chal'
+      ? '1 grid unit = 10 km. The points are fixed in a challenge. Work it on paper, then reveal.'
+      : '1 grid unit = 10 km. Drag S₁ and S₂, or tab to one and use the arrow keys.';
+    if (m === 'chal') loadChallenge(st.chal < 0 ? 0 : st.chal);
+    else { var f = st.free; st.s1 = f.s1; st.s2 = f.s2; st.R = f.R; resetSteps(); render(); }
+  }
+  tabFree.addEventListener('click', function () { setMode('free'); });
+  tabChal.addEventListener('click', function () { setMode('chal'); });
+
+  var chips = $('chalChips');
+  CHALLENGES.forEach(function (c, k) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = 'Scenario ' + (k + 1); b.dataset.k = k;
+    b.addEventListener('click', function () { loadChallenge(k); });
+    chips.appendChild(b);
+  });
+  function loadChallenge(k) {
+    var c = CHALLENGES[k];
+    st.chal = k; st.s1 = c.s1.slice(); st.s2 = c.s2.slice(); st.R = c.R;
+    Array.prototype.forEach.call(chips.querySelectorAll('button'), function (b) { b.classList.toggle('active', +b.dataset.k === k); });
+    var P = function (p) { return '(' + neg(p[0]) + ', ' + neg(p[1]) + ')'; };
+    $('chalText').innerHTML = 'The storm is now at <span class="mono">S₁' + P(c.s1) + '</span>. Six hours later it is forecast to be at <span class="mono">S₂' + P(c.s2) + '</span>. Units are 10 km and C is the origin. The warning radius is <span class="mono">' + c.R + ' km</span>.' +
+      '<ol><li>Find the equation of the track in the form ax + by + c = 0.</li><li>Find F, the point on the track closest to C.</li><li>Find CF exactly, and in km.</li><li>Show whether the track cuts, touches or misses the warning circle.</li><li>When is the storm closest to C?</li></ol>';
+    resetSteps(); render();
+  }
+
+  /* dragging with pointer events, snapped to whole grid units */
+  var drag = null;
+  function toGrid(e) {
+    var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    var p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var gx = Math.round((p.x - W / 2) / U), gy = Math.round((W / 2 - p.y) / U);
+    return [Math.max(-LIM, Math.min(LIM, gx)), Math.max(-LIM, Math.min(LIM, gy))];
+  }
+  function place(which, g) {
+    var other = which === 1 ? st.s2 : st.s1, mine = which === 1 ? st.s1 : st.s2;
+    if (g[0] === other[0] && g[1] === other[1]) return false;      /* S1 = S2 is not a track */
+    if (g[0] === mine[0] && g[1] === mine[1]) return false;
+    if (which === 1) st.s1 = g; else st.s2 = g;
+    changed(true);
+    return true;
+  }
+  [[h1, 1], [h2, 2]].forEach(function (hw) {
+    var h = hw[0], which = hw[1];
+    h.addEventListener('pointerdown', function (e) {
+      if (st.mode === 'chal') return;
+      e.preventDefault();
+      drag = which; svg.classList.add('dragging');
+      try { svg.setPointerCapture(e.pointerId); } catch (err) { /* capture is optional */ }
+      h.focus({ preventScroll: true });
+    });
+    h.addEventListener('keydown', function (e) {
+      if (st.mode === 'chal') return;
+      var mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+      if (!mv) return;
+      e.preventDefault();
+      var p = which === 1 ? st.s1 : st.s2;
+      for (var step = 1; step <= 2; step++) {        /* hop over the other point instead of stopping on it */
+        var g = [p[0] + mv[0] * step, p[1] + mv[1] * step];
+        if (Math.abs(g[0]) > LIM || Math.abs(g[1]) > LIM) break;
+        if (place(which, g)) break;
+      }
+      (which === 1 ? h1 : h2).focus({ preventScroll: true });
+    });
+  });
+  svg.addEventListener('pointermove', function (e) { if (drag) place(drag, toGrid(e)); });
+  function endDrag() { drag = null; svg.classList.remove('dragging'); }
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  render();
+
+  /* test hooks */
+  window.__hca = {
+    compute: compute,
+    steps: function (x1, y1, x2, y2, R) { return steps(compute(x1, y1, x2, y2, R)); },
+    state: function () { return { s1: st.s1.slice(), s2: st.s2.slice(), R: st.R, shown: st.shown, mode: st.mode, verdict: cur.verdict }; },
+    set: function (s1, s2, R) { st.s1 = s1.slice(); st.s2 = s2.slice(); if (R) st.R = R; render(); },
+    challenges: CHALLENGES
+  };
+})();
+</script>
+</body>
+</html>

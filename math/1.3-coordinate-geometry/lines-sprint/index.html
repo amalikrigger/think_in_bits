@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Lines Sprint</title>
+  <meta name="description" content="Twelve one-step straight-line moves against the clock: gradients, midpoints, exact lengths, integer form, parallel lines and intersections. A fresh set every run.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system
+   Same tokens as the session decks, mirrored from www.thinkinbits.site.
+   Committed dark, single theme. Sibling of the Quadratics Sprint.
+   ============================================================ */
+:root {
+  --ground:          #0a0a0a;
+  --ground-far:      #1a1a2e;
+  --surface:         #1a1a1a;
+  --surface-alt:     #0f0f0f;
+  --surface-lift:    #2a2a2a;
+
+  --accent:          #00e5ff;
+  --accent-deep:     #0099cc;
+  --accent-wash:     rgba(0,229,255,0.10);
+  --accent-line:     rgba(0,229,255,0.30);
+
+  --text:            #ffffff;
+  --text-2:          #b0b0b0;
+
+  --hairline:        rgba(255,255,255,0.07);
+  --hairline-strong: rgba(255,255,255,0.16);
+
+  --ok:              #4ADE80;
+  --ok-soft:         rgba(74,222,128,0.14);
+  --warn:            #FF7A6B;
+  --warn-soft:       rgba(255,122,107,0.14);
+  --amber:           #FFC46B;
+
+  --shadow-card:     0 10px 30px rgba(0,0,0,0.5);
+  --shadow-glow:     0 8px 20px rgba(0,229,255,0.3);
+
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius: 20px;
+  color-scheme: dark;
+}
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(14px, 3.5vw, 34px);
+    padding-top: clamp(58px, 7vw, 64px);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  button { font: inherit; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .kicker {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: var(--font);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 42px);
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin: 0 0 8px;
+    color: var(--accent);
+  }
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    h1 {
+      background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      padding: 0.18em 0; margin: -0.18em 0 0.1em;
+    }
+  }
+  .subtitle {
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-2); margin: 0 0 8px;
+  }
+  .sub { color: var(--text-2); margin: 0; font-size: 15px; }
+  header { margin-bottom: 20px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 18px 20px;
+  }
+
+  /* back to the math page */
+  .tib-back {
+    position: fixed; top: 14px; left: 16px; z-index: 30;
+    display: inline-flex; align-items: center; gap: 0.5em;
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    color: var(--text-2); text-decoration: none;
+    background: rgba(26,26,26,0.82); border: 1px solid var(--hairline);
+    border-radius: 50px; padding: 7px 15px 7px 12px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+  .tib-back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media print { .tib-back { display: none !important; } }
+
+  /* real stacked fractions, drawn with CSS */
+  .fr {
+    display: inline-flex; flex-direction: column; align-items: stretch;
+    vertical-align: middle; text-align: center;
+    font-family: var(--mono); font-size: 0.86em; line-height: 1.12;
+    margin: 0 0.12em; font-variant-numeric: tabular-nums;
+  }
+  .fr > span { padding: 0 0.18em; }
+  .fr > span:first-child { border-bottom: 1.5px solid currentColor; padding-bottom: 1px; }
+  .fr > span:last-child { padding-top: 1px; }
+  .m { font-family: var(--mono); white-space: nowrap; font-size: 0.94em; }
+  .opts .fr { font-size: 0.92em; }
+  .vw .m, .mw .m { color: var(--text); }
+
+  /* start */
+  #startView .card { max-width: 560px; }
+  .why { font-size: 14.5px; margin: 0 0 14px; }
+  .why b { color: var(--accent); }
+  .moves { font-size: 13.5px; color: var(--text-2); margin: 0 0 4px; }
+  .specs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  .spec {
+    flex: 1 1 120px;
+    background: var(--surface-lift);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .spec .sv {
+    font-family: var(--font); font-weight: 700;
+    font-size: 21px; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .spec .sl { font-size: 11.5px; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; }
+  .bestrow {
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px dashed var(--hairline-strong); border-radius: 14px;
+    padding: 10px 12px; font-size: 14px; margin-bottom: 16px;
+  }
+  .bestrow .lbl { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2); }
+  .bestrow .bv { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .go {
+    display: block; width: 100%;
+    background: var(--accent); color: var(--ground);
+    border: none; border-radius: 50px;
+    padding: 15px; font-size: 17px; font-weight: 600;
+    font-family: var(--font);
+    letter-spacing: 0.01em;
+    transition: box-shadow .2s ease, transform .15s ease;
+  }
+  .go:hover { box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+
+  /* hud */
+  .hud { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .hud .qn {
+    font-family: var(--mono); font-size: 12.5px;
+    color: var(--text-2); font-variant-numeric: tabular-nums;
+  }
+  .hud .right { display: flex; align-items: center; gap: 12px; }
+  .streak {
+    display: flex; align-items: center; gap: 4px;
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    color: var(--warn); font-variant-numeric: tabular-nums;
+    opacity: 0;
+  }
+  .streak.on { opacity: 1; }
+  .score {
+    font-family: var(--font); font-weight: 700;
+    font-size: 19px; color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .clockrow { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .clocknum {
+    font-family: var(--mono); font-weight: 500;
+    font-size: 14px; font-variant-numeric: tabular-nums;
+    color: var(--text-2); flex: none; width: 34px;
+  }
+  .track {
+    flex: 1; height: 7px; border-radius: 4px;
+    background: var(--surface-lift); overflow: hidden;
+  }
+  .fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); border-radius: 4px; box-shadow: 0 0 10px rgba(0,229,255,0.35); }
+  .fill.warn { background: var(--warn); box-shadow: 0 0 10px rgba(255,122,107,0.35); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fill { transition: width 0.1s linear, background 0.3s ease; }
+  }
+
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .qcard .qtag {
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-2); margin-bottom: 8px;
+  }
+  .qcard .qt {
+    font-size: clamp(17px, 3.6vw, 21px);
+    font-weight: 500;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 460px) { .opts { grid-template-columns: 1fr; } }
+  .opts button {
+    background: var(--surface);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 14px;
+    padding: 12px 12px;
+    min-height: 58px;
+    transition: border-color .15s ease, background .15s ease;
+    color: var(--text);
+    font-size: 16.5px;
+    font-family: var(--mono);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .opts button:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-wash); }
+  .opts button:disabled { cursor: default; }
+  .opts button.right { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); font-weight: 500; }
+  .opts button.wrong { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); }
+  .opts button.dim { opacity: 0.4; }
+
+  .verdict {
+    margin-top: 12px;
+    border-radius: 14px;
+    padding: 13px 16px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+  }
+  .verdict .vh {
+    font-family: var(--font); font-weight: 700;
+    font-size: 15px; letter-spacing: 0.01em;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    margin-bottom: 5px;
+  }
+  .verdict.ok .vh { color: var(--ok); }
+  .verdict.no .vh { color: var(--warn); }
+  .verdict .pts {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 500;
+  }
+  .verdict .va { font-size: 14.5px; margin-bottom: 4px; }
+  .verdict .va .lbl { color: var(--text-2); }
+  .verdict .va .m { color: var(--ok); }
+  .verdict .vw { font-size: 14.5px; color: var(--text-2); line-height: 1.7; }
+  .next {
+    display: block; width: 100%; margin-top: 12px;
+    background: var(--accent); color: var(--ground);
+    border: none; border-radius: 50px; padding: 12px;
+    font-size: 15px; font-weight: 600;
+    font-family: var(--font);
+    transition: box-shadow .2s ease;
+  }
+  .next:hover { box-shadow: var(--shadow-glow); }
+
+  /* end */
+  #endView .card { max-width: 560px; text-align: center; }
+  .rank {
+    display: inline-block;
+    font-family: var(--font); font-weight: 700;
+    font-size: clamp(22px, 4.6vw, 30px);
+    letter-spacing: -0.01em;
+    padding: 10px 26px; border-radius: 50px;
+    border: 2px solid; margin: 12px 0 8px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rank { animation: slam 0.32s cubic-bezier(0.2,1.3,0.4,1) both; }
+    @keyframes slam { from { transform: scale(1.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  }
+  .bigscore {
+    font-family: var(--font); font-weight: 700;
+    font-size: clamp(44px, 11vw, 68px); line-height: 1;
+    color: var(--accent); font-variant-numeric: tabular-nums;
+    margin: 6px 0 2px;
+  }
+  .bigscore small { font-size: 0.45em; color: var(--text-2); font-weight: 600; }
+  .bn { color: var(--accent); font-weight: 700; font-size: 14px; min-height: 20px; }
+  .rl { color: var(--text-2); font-size: 14px; margin: 6px 0 16px; }
+  .breakdown { display: flex; gap: 8px; margin: 16px 0; }
+  .breakdown .spec { flex: 1; }
+  .missed {
+    text-align: left; margin-top: 4px;
+    border-top: 1px solid var(--hairline); padding-top: 14px;
+  }
+  .missed .mh {
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-2);
+    margin-bottom: 8px;
+  }
+  .missed .mi { font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--hairline); }
+  .missed .mi:last-child { border-bottom: none; }
+  .missed .mq { font-family: var(--mono); font-size: 13px; color: var(--warn); }
+  .missed .mq .ct { color: var(--text-2); }
+  .missed .mw { color: var(--text-2); font-size: 13.5px; }
+  .clean { color: var(--ok); font-size: 14px; text-align: left; border-top: 1px solid var(--hairline); padding-top: 14px; margin: 0; }
+</style>
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">Cambridge 9709 · 1.3 Coordinate Geometry</div>
+    <h1>The Lines Sprint</h1>
+    <p class="subtitle">gradient and form</p>
+    <p class="sub">Twelve straight-line moves that should be automatic. A fresh set every run, so you cannot memorize the answers.</p>
+  </header>
+
+  <section id="startView">
+    <div class="card">
+      <p class="why"><b>Why race?</b> A 9709 paper gives you roughly 1.5 minutes per mark. Every coordinate geometry question is built from small moves: a gradient, a midpoint, a length, an equation in integer form. When those cost you almost nothing, your time goes to the part of the question that is actually hard.</p>
+      <p class="moves">Perpendicular gradients, gradient from two points, midpoints, exact lengths, integer form, parallel lines, intersections, and picking the right gradient out of a story.</p>
+      <div class="specs">
+        <div class="spec"><div class="sv">12</div><div class="sl">questions</div></div>
+        <div class="spec"><div class="sv">35–50s</div><div class="sl">each</div></div>
+        <div class="spec"><div class="sv">Fast = more</div><div class="sl">points</div></div>
+      </div>
+      <div class="bestrow">
+        <div><div class="lbl">Personal best</div><div id="bestVal"></div></div>
+        <div class="bv" id="bestPts"></div>
+      </div>
+      <button class="go" id="goBtn" type="button">Start the clock</button>
+    </div>
+  </section>
+
+  <section id="playView" hidden>
+    <div class="hud">
+      <span class="qn" id="qn"></span>
+      <div class="right">
+        <span class="streak" id="streak"></span>
+        <span class="score" id="score">0</span>
+      </div>
+    </div>
+    <div class="clockrow">
+      <span class="clocknum" id="clocknum"></span>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="qcard">
+      <div class="qtag" id="qtag"></div>
+      <div class="qt" id="qt"></div>
+    </div>
+    <div class="opts" id="opts" role="group" aria-label="answer options"></div>
+    <div id="verdictHost" aria-live="polite"></div>
+  </section>
+
+  <section id="endView" hidden>
+    <div class="card">
+      <div class="kicker">Clock stopped</div>
+      <div class="bigscore" id="finalScore">0</div>
+      <div><span class="rank" id="rank"></span></div>
+      <p class="bn" id="bestNote"></p>
+      <p class="rl" id="rankLine"></p>
+      <div class="breakdown">
+        <div class="spec"><div class="sv" id="statPts"></div><div class="sl">points</div></div>
+        <div class="spec"><div class="sv" id="statTime"></div><div class="sl">time</div></div>
+        <div class="spec"><div class="sv" id="statStreak"></div><div class="sl">best streak</div></div>
+      </div>
+      <div class="missed" id="missedHost" hidden></div>
+      <button class="go" id="againBtn" type="button" style="margin-top:16px">Run it again</button>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =====================================================================
+     GENERATOR: 1.3 straight lines.
+     Every item is built from small integer data, and every option is a
+     plain string (real minus signs, a/b for fractions, √ for surds). The
+     page turns a/b into a stacked fraction for display, and the test
+     harness reads the plain strings back and checks them with sympy.
+     ===================================================================== */
+  var rand = Math.random;
+  function seed(s) {
+    var a = s >>> 0;
+    rand = function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function ri(lo, hi) { return lo + Math.floor(rand() * (hi - lo + 1)); }
+  function nz(lo, hi) { var v; do { v = ri(lo, hi); } while (v === 0); return v; }
+  function pick(a) { return a[Math.floor(rand() * a.length)]; }
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a; }
+  function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rand() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  var MINUS = '−';
+  function m(n) { return n < 0 ? MINUS + Math.abs(n) : String(n); }
+
+  /* fractions */
+  function F(n, d) {
+    if (d === undefined) d = 1;
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1;
+    return { n: n / g, d: d / g };
+  }
+  function fneg(f) { return F(-f.n, f.d); }
+  function finv(f) { return F(f.d, f.n); }
+  function fstr(f) { return f.d === 1 ? m(f.n) : (f.n < 0 ? MINUS : '') + Math.abs(f.n) + '/' + f.d; }
+  function fval(f) { return f.n / f.d; }
+  function fnum(v) { return typeof v === 'number' ? F(v, 1) : v; }
+  function pt(x, y) { return '(' + fstr(fnum(x)) + ', ' + fstr(fnum(y)) + ')'; }
+  function par(n) { return n < 0 ? '(' + m(n) + ')' : String(n); }
+
+  /* "+ 3y", "− y", leading term without the plus */
+  function term(c, letter, first) {
+    c = fnum(c);
+    if (c.n === 0) return '';
+    var mag = F(Math.abs(c.n), c.d);
+    var body = (letter && mag.n === 1 && mag.d === 1) ? letter : fstr(mag) + (letter || '');
+    if (first) return (c.n < 0 ? MINUS : '') + body;
+    return (c.n < 0 ? ' ' + MINUS + ' ' : ' + ') + body;
+  }
+  /* ax + by + c = 0 in Cambridge integer form: a > 0, gcd 1 */
+  function norm(a, b, c) {
+    var g = gcd(gcd(a, b), c) || 1;
+    a /= g; b /= g; c /= g;
+    if (a < 0 || (a === 0 && b < 0)) { a = -a; b = -b; c = -c; }
+    return [a, b, c];
+  }
+  function lineZero(L) {
+    var s = term(L[0], 'x', true);
+    s += s ? term(L[1], 'y', false) : term(L[1], 'y', true);
+    return s + term(L[2], '', false) + ' = 0';
+  }
+  function lineEq(a, b, k) { return term(a, 'x', true) + term(b, 'y', false) + ' = ' + m(k); }
+  function yForm(mf, cf) {
+    var s = 'y = ' + term(mf, 'x', true);
+    return s + term(cf, '', false);
+  }
+  function sameLine(L, M) { return L[0] === M[0] && L[1] === M[1] && L[2] === M[2]; }
+
+  var BANNED_TEXT = ['5x ' + MINUS + ' 2y = 10', '5x ' + MINUS + ' 2y ' + MINUS + ' 10 = 0', '3x + 2y ' + MINUS + ' 14 = 0', '3x + 2y = 14'];
+  var BANNED_PTS = [[-1, 3], [5, -5], [3, -2], [-1, 2], [5, 6]];
+  var BANNED_LINES = [[5, -2, -10], [3, 2, -14]];
+  function badPoint(x, y) { return BANNED_PTS.some(function (p) { return p[0] === x && p[1] === y; }); }
+  function badLine(a, b, c) {
+    var L = norm(a, b, c);
+    return BANNED_LINES.some(function (B) { var N = norm(B[0], B[1], B[2]); return sameLine(L, N); });
+  }
+  function pointOK(x, y) { return !badPoint(x, y); }
+
+  var TYPES = {
+    perp:  { tag: 'Perpendicular gradient', secs: 40, tip: 'Rearrange to `y = mx + c` first, then flip `m` and change its sign.' },
+    grad:  { tag: 'Gradient from two points', secs: 40, tip: 'Change in y over change in x, with both subtractions in the same order.' },
+    mid:   { tag: 'Midpoint', secs: 35, tip: 'Add the two coordinates, then halve. Take care adding a negative.' },
+    len:   { tag: 'Exact length', secs: 45, tip: 'Square both differences, add, square-root, then simplify the surd.' },
+    form:  { tag: 'Integer form', secs: 45, tip: 'Multiply every term by the lowest common denominator, then collect on one side with a positive x term.' },
+    which: { tag: 'Which line?', secs: 45, tip: 'Before you use a gradient, ask which line it belongs to.' },
+    par:   { tag: 'Parallel line', secs: 50, tip: 'Keep the x and y coefficients, then find the constant from the point.' },
+    meet:  { tag: 'Intersection', secs: 50, tip: 'Set the two expressions for y equal, solve for x, then find y.' }
+  };
+  var ORDER = ['perp', 'grad', 'mid', 'len', 'form', 'which', 'par', 'meet'];
+
+  /* ---------- 1. perpendicular gradient ---------- */
+  /* Text markup: anything between backticks is math and renders in JetBrains Mono. */
+  function M(s) { return '`' + s + '`'; }
+  function genPerp() {
+    var a, b, c;
+    do {
+      a = ri(1, 9); b = nz(-9, 9); c = nz(-12, 12);
+    } while (Math.abs(a) === Math.abs(b) || gcd(gcd(a, b), c) !== 1 || badLine(a, b, c));
+    var zeroForm = rand() < 0.5;
+    var shown = zeroForm ? lineZero([a, b, c]) : lineEq(a, b, -c);
+    var g = F(-a, b);
+    return {
+      q: 'Find the gradient of a line perpendicular to ' + M(shown) + '.',
+      eqs: [shown],
+      params: { a: a, b: b, c: c },
+      opts: [
+        { t: fstr(F(b, a)), k: 'ok' },
+        { t: fstr(g), k: 'orig' },
+        { t: fstr(F(-b, a)), k: 'flip' },
+        { t: fstr(F(a, b)), k: 'neg' }
+      ],
+      why: 'Make y the subject: ' + M(yForm(g, F(-c, b))) + ', so the gradient is ' + M(fstr(g)) + '. Flip it and change the sign: ' + M(fstr(F(b, a))) + '.',
+      traps: {
+        orig: 'That is the gradient of the line itself. Perpendicular means flip it and change the sign.',
+        flip: 'You flipped the gradient but kept its sign. Perpendicular means flip and change the sign.',
+        neg: 'You changed the sign but did not flip it. Perpendicular means flip and change the sign.'
+      }
+    };
+  }
+
+  function twoPoints(needDx, needDy) {
+    var x1, y1, x2, y2;
+    do {
+      x1 = ri(-9, 9); y1 = ri(-9, 9); x2 = ri(-9, 9); y2 = ri(-9, 9);
+    } while ((x1 === x2 && y1 === y2) || (needDx && x1 === x2) || (needDy && y1 === y2) ||
+             Math.abs(x2 - x1) > 12 || Math.abs(y2 - y1) > 12 ||
+             !pointOK(x1, y1) || !pointOK(x2, y2));
+    return [x1, y1, x2, y2];
+  }
+  function AB(P) { return M('A' + pt(P[0], P[1])) + ' and ' + M('B' + pt(P[2], P[3])); }
+
+  /* ---------- 2. gradient from two points ---------- */
+  function genGrad() {
+    var P, dx, dy;
+    do { P = twoPoints(true, true); dx = P[2] - P[0]; dy = P[3] - P[1]; } while (Math.abs(dx) === Math.abs(dy));
+    var g = F(dy, dx);
+    return {
+      q: 'Find the gradient of the line through ' + AB(P) + '.',
+      params: { x1: P[0], y1: P[1], x2: P[2], y2: P[3] },
+      opts: [
+        { t: fstr(g), k: 'ok' },
+        { t: fstr(finv(g)), k: 'inv' },
+        { t: fstr(fneg(g)), k: 'sign' },
+        { t: fstr(fneg(finv(g))), k: 'invsign' }
+      ],
+      why: 'From A to B, y changes by ' + M(m(dy)) + ' and x changes by ' + M(m(dx)) + '. Change in y ÷ change in x is ' + M(m(dy) + ' ÷ ' + par(dx) + ' = ' + fstr(g)) + '.',
+      traps: {
+        inv: 'You put the change in x on top. Gradient is change in y over change in x.',
+        sign: 'You subtracted in a different order on the top and the bottom. Take both differences the same way, B minus A.',
+        invsign: 'That is the perpendicular gradient: x-change on top and the sign flipped. Gradient is change in y over change in x, both B minus A.'
+      }
+    };
+  }
+
+  /* ---------- 3. midpoint ---------- */
+  function genMid() {
+    var P;
+    var wantWhole = rand() < 0.7;
+    do {
+      P = twoPoints(false, false);
+    } while (Math.min(P[0], P[1], P[2], P[3]) >= 0 ||
+             (wantWhole && ((P[0] + P[2]) % 2 !== 0 || (P[1] + P[3]) % 2 !== 0)));
+    var sx = P[0] + P[2], sy = P[1] + P[3];
+    var Mid = [F(sx, 2), F(sy, 2)];
+    /* the sign slip: one negative coordinate added as if it were positive */
+    var negs = [];
+    [0, 1, 2, 3].forEach(function (i) { if (P[i] < 0) negs.push(i); });
+    var bad = pick(negs);
+    var slip = bad % 2 === 0 ? [F(sx - 2 * P[bad], 2), Mid[1]] : [Mid[0], F(sy - 2 * P[bad], 2)];
+    var hx = m(P[0]) + ' + ' + par(P[2]), hy = m(P[1]) + ' + ' + par(P[3]);
+    return {
+      q: 'Find the midpoint of ' + AB(P) + '.',
+      params: { x1: P[0], y1: P[1], x2: P[2], y2: P[3] },
+      opts: [
+        { t: pt(Mid[0], Mid[1]), k: 'ok' },
+        { t: pt(F(P[2] - P[0], 2), F(P[3] - P[1], 2)), k: 'halfdiff' },
+        { t: pt(slip[0], slip[1]), k: 'slip' },
+        { t: pt(sx, sy), k: 'nohalf' }
+      ],
+      why: 'Add each pair of coordinates and halve. For x, ' + M('(' + hx + ') ÷ 2 = ' + fstr(Mid[0])) + ', and for y, ' + M('(' + hy + ') ÷ 2 = ' + fstr(Mid[1])) + '.',
+      traps: {
+        halfdiff: 'You halved the difference. The midpoint averages the coordinates: add them, then halve.',
+        slip: 'A sign slipped when you added the negative coordinate. Adding ' + M(m(P[bad])) + ' takes you down by ' + M(String(Math.abs(P[bad]))) + '.',
+        nohalf: 'You added the coordinates but did not halve them. The midpoint is the average, so divide by 2.'
+      }
+    };
+  }
+
+  /* ---------- 4. exact length ---------- */
+  function isSq(n) { var r = Math.round(Math.sqrt(n)); return r * r === n; }
+  function surd(n) {
+    var k = 1, r = n;
+    for (var f = 2; f * f <= r; f++) { while (r % (f * f) === 0) { r /= f * f; k *= f; } }
+    return { k: k, r: r };
+  }
+  function surdStr(s) { return (s.k === 1 ? '' : s.k) + '√' + s.r; }
+  function genLen() {
+    var P, dx, dy, D, s, S;
+    var wantK = rand() < 0.75;
+    do {
+      P = twoPoints(true, true);
+      dx = P[2] - P[0]; dy = P[3] - P[1];
+      D = dx * dx + dy * dy; s = Math.abs(dx) + Math.abs(dy); S = surd(D);
+    } while (isSq(D) || isSq(s) || s === D || (wantK && S.k === 1) || (!wantK && S.k !== 1));
+    var dec = Math.sqrt(D).toFixed(2);
+    var chain = M('AB = √(' + par(dx) + '² + ' + par(dy) + '²)') + ' ' + M('= √' + D) +
+      (S.k > 1 ? ' ' + M('= √' + (S.k * S.k) + ' × √' + S.r) + ' ' + M('= ' + surdStr(S)) : '');
+    return {
+      q: M('A' + pt(P[0], P[1])) + ' and ' + M('B' + pt(P[2], P[3])) + '. Find the exact length of AB as a simplified surd.',
+      params: { x1: P[0], y1: P[1], x2: P[2], y2: P[3] },
+      opts: [
+        { t: surdStr(S), k: 'ok' },
+        { t: '√' + s, k: 'sum' },
+        { t: String(D), k: 'sq' },
+        { t: dec, k: 'dec' }
+      ],
+      why: 'The differences are ' + M(m(dx)) + ' and ' + M(m(dy)) + ', so ' + chain + '.',
+      traps: {
+        sum: 'You added the differences before squaring. Square each difference first, then add.',
+        sq: 'That is the length squared. Square-root it at the end, then simplify.',
+        dec: 'That is a rounded decimal. The question asks for the exact value, so leave it as a simplified surd.'
+      }
+    };
+  }
+
+  /* ---------- 5. integer form from y = (p/q)x + r/s ---------- */
+  function genForm() {
+    var p, q, r, s;
+    do {
+      q = pick([2, 3, 4, 5, 6]); p = nz(-9, 9);
+      s = pick([2, 3, 4, 5, 6]); r = nz(-9, 9);
+    } while (gcd(p, q) !== 1 || gcd(r, s) !== 1 || q % s === 0);
+    var L = lcm(q, s);
+    var A = L * p / q, C = L * r / s;
+    var ok = norm(A, -L, C);
+    /* multiplied by q only, so r/s survives as a fraction */
+    var sg = p < 0 ? -1 : 1;
+    var oneDenStr = term(sg * p, 'x', true) + term(-sg * q, 'y', false) + term(F(sg * q * r, s), '', false) + ' = 0';
+    var signErr = [ok[0], -ok[1], ok[2]];
+    var notAll = norm(A, -1, C);
+    var shown = yForm(F(p, q), F(r, s));
+    return {
+      q: 'Write ' + M(shown) + ' in the form ' + M('ax + by + c = 0') + ', where ' + M('a') + ', ' + M('b') + ' and ' + M('c') + ' are integers.',
+      eqs: [shown],
+      params: { p: p, q: q, r: r, s: s },
+      opts: [
+        { t: lineZero(ok), k: 'ok' },
+        { t: oneDenStr, k: 'oneden' },
+        { t: lineZero(signErr), k: 'sign' },
+        { t: lineZero(notAll), k: 'notall' }
+      ],
+      why: 'Multiply every term by ' + M(String(L)) + ': ' + M(L + 'y = ' + term(A, 'x', true) + term(C, '', false)) + '. Collect everything on one side with a positive x term: ' + M(lineZero(ok)) + '.',
+      traps: {
+        oneden: 'A fraction is still left. Multiply by ' + M(String(L)) + ', which both denominators divide into, so every fraction clears.',
+        sign: 'A sign went wrong when you moved y across. A term that changes sides changes sign.',
+        notall: 'You multiplied the right side by ' + M(String(L)) + ' but left y alone. Every term on both sides gets multiplied.'
+      }
+    };
+  }
+
+  /* ---------- 6. which line does this gradient belong to? ---------- */
+  var T_LIST = [F(-3), F(-2), F(2), F(3), F(5), F(-5), F(1, 2), F(-1, 2), F(1, 3), F(-1, 3), F(3, 2), F(-3, 2), F(2, 3), F(-2, 3)];
+  function genWhich() {
+    var P, dx, dy, g, t, variant = rand() < 0.5 ? 'bisector' : 'parallel';
+    do {
+      P = twoPoints(true, true); dx = P[2] - P[0]; dy = P[3] - P[1];
+      g = F(dy, dx); t = pick(T_LIST);
+    } while (Math.abs(dx) === Math.abs(dy) || fval(t) === fval(g) || fval(t) === -fval(g));
+    var perpAB = fneg(finv(g));
+    var gWork = M(m(dy) + ' ÷ ' + par(dx) + ' = ' + fstr(g));
+    if (variant === 'bisector') {
+      return {
+        q: 'The tangent to a curve at B has gradient ' + M(fstr(t)) + '. The points ' + AB(P) + ' lie on the curve. Find the gradient of the perpendicular bisector of AB.',
+        params: { x1: P[0], y1: P[1], x2: P[2], y2: P[3], tn: t.n, td: t.d, variant: variant },
+        opts: [
+          { t: fstr(perpAB), k: 'ok' },
+          { t: fstr(fneg(finv(t))), k: 'tangent' },
+          { t: fstr(g), k: 'ab' },
+          { t: fstr(finv(g)), k: 'flip' }
+        ],
+        why: 'AB has gradient ' + gWork + ', so the perpendicular bisector of AB has gradient ' + M(fstr(perpAB)) + '. The tangent belongs to the curve at B and is not needed here.',
+        traps: {
+          tangent: 'You used the tangent. The tangent belongs to the curve at B; the perpendicular bisector is built from AB, so start from the gradient of AB.',
+          ab: 'That is the gradient of AB itself. The perpendicular bisector is perpendicular to AB: flip and change the sign.',
+          flip: 'You flipped the gradient of AB but kept its sign. Perpendicular means flip and change the sign.'
+        }
+      };
+    }
+    return {
+      q: 'The tangent to a curve at A has gradient ' + M(fstr(t)) + '. The points ' + AB(P) + ' lie on the curve. Find the gradient of a line parallel to AB.',
+      params: { x1: P[0], y1: P[1], x2: P[2], y2: P[3], tn: t.n, td: t.d, variant: variant },
+      opts: [
+        { t: fstr(g), k: 'ok' },
+        { t: fstr(t), k: 'tangent' },
+        { t: fstr(perpAB), k: 'perp' },
+        { t: fstr(fneg(g)), k: 'sign' }
+      ],
+      why: 'AB has gradient ' + gWork + ', and a parallel line has the same gradient. The tangent belongs to the curve at A and is not needed here.',
+      traps: {
+        tangent: 'That is the tangent gradient, which belongs to the curve at A. A line parallel to AB has the gradient of AB.',
+        perp: 'That is the perpendicular gradient. Parallel lines share the same gradient.',
+        sign: 'The sign of the gradient of AB slipped. Subtract in the same order on the top and the bottom.'
+      }
+    };
+  }
+
+  /* ---------- 7. parallel line through a point ---------- */
+  function genPar() {
+    var a, b, c, x0, y0, k;
+    do {
+      a = ri(1, 7); b = nz(-7, 7); c = nz(-12, 12);
+      x0 = ri(-6, 6); y0 = ri(-6, 6);
+      k = a * x0 + b * y0;
+    } while (gcd(a, b) !== 1 || a === b || x0 === y0 || k === 0 || Math.abs(k) > 25 || Math.abs(a * y0 + b * x0) > 30 || a * x0 + b * y0 + c === 0 ||
+             badLine(a, b, c) || badLine(a, b, -k) || !pointOK(x0, y0));
+    var zeroForm = rand() < 0.5;
+    var shown = zeroForm ? lineZero([a, b, c]) : lineEq(a, b, -c);
+    var ok = norm(a, b, -k);
+    var lhs = term(a, 'x', true) + term(b, 'y', false);
+    var subst = (a === 1 ? m(x0) : a + '(' + m(x0) + ')') + (b < 0 ? ' ' + MINUS + ' ' : ' + ') + (Math.abs(b) === 1 ? par(y0) : Math.abs(b) + '(' + m(y0) + ')');
+    return {
+      q: 'Find the equation of the line through ' + M('P' + pt(x0, y0)) + ' parallel to ' + M(shown) + '. Give it in the form ' + M('ax + by + c = 0') + '.',
+      eqs: [shown],
+      params: { a: a, b: b, c: c, x0: x0, y0: y0 },
+      opts: [
+        { t: lineZero(ok), k: 'ok' },
+        { t: lineZero(norm(a, b, k)), k: 'constsign' },
+        { t: lineZero(norm(b, -a, -(b * x0 - a * y0))), k: 'perp' },
+        { t: lineZero(norm(a, b, -(a * y0 + b * x0))), k: 'swap' }
+      ],
+      why: 'A parallel line keeps ' + M(lhs) + '. At P, ' + M(subst + ' = ' + m(k)) + ', so ' + M(lhs + ' = ' + m(k)) + ', which is ' + M(lineZero(ok)) + '.',
+      traps: {
+        constsign: 'The constant has the wrong sign. P gives ' + M(lhs + ' = ' + m(k)) + ', and moving ' + M(m(k)) + ' across makes it ' + M(m(-k)) + '.',
+        perp: 'That line is perpendicular: the coefficients were swapped and a sign changed. A parallel line keeps the same x and y coefficients.',
+        swap: 'You substituted the coordinates the wrong way round. ' + M('P' + pt(x0, y0)) + ' means ' + M('x = ' + m(x0)) + ' and ' + M('y = ' + m(y0)) + '.'
+      }
+    };
+  }
+
+  /* ---------- 8. point of intersection ---------- */
+  function genMeet() {
+    var x0, y0, m1, c1, form, m2, c2, a, b, k, l2, onTwo;
+    for (;;) {
+      x0 = nz(-5, 5); y0 = ri(-6, 6);
+      if (x0 === y0 || !pointOK(x0, y0)) continue;
+      m1 = nz(-4, 4); c1 = y0 - m1 * x0;
+      if (Math.abs(c1) > 12 || c1 === 0) continue;
+      form = rand() < 0.5 ? 'y' : 'std';
+      if (form === 'y') {
+        m2 = nz(-4, 4); c2 = y0 - m2 * x0;
+        if (m2 === m1 || Math.abs(c2) > 12 || c2 === 0) continue;
+        l2 = yForm(F(m2), F(c2));
+        onTwo = function (x) { return F(m2 * x + c2); };
+      } else {
+        a = ri(1, 5); b = nz(-4, 4);
+        if (gcd(a, b) !== 1 || -a === m1 * b) continue;
+        k = a * x0 + b * y0;
+        if (Math.abs(k) > 30 || badLine(a, b, -k)) continue;
+        l2 = lineEq(a, b, k);
+        onTwo = function (x) { return F(k - a * x, b); };
+      }
+      /* a point on each line with the wrong x */
+      var w1 = -x0, w2 = null;
+      [-x0, x0 + 1, x0 - 1, x0 + 2, x0 - 2].some(function (x) { var v = onTwo(x); if (v.d === 1 && x !== x0) { w2 = x; return true; } return false; });
+      if (w2 === null) continue;
+      if (Math.abs(m1 * w1 + c1) > 15 || Math.abs(fval(onTwo(w2))) > 15) continue;
+      break;
+    }
+    var l1 = yForm(F(m1), F(c1));
+    var why;
+    var rhs1 = term(m1, 'x', true) + term(c1, '', false);
+    if (form === 'y') {
+      why = 'Set the two expressions for y equal: ' + M(rhs1 + ' = ' + term(m2, 'x', true) + term(c2, '', false)) + ', so ' + M('x = ' + m(x0)) + '. Then ' + M(l1) + ' gives ' + M('y = ' + m(y0)) + '.';
+    } else {
+      var inner = (Math.abs(b) === 1 ? '' : Math.abs(b)) + '(' + rhs1 + ')';
+      why = 'Substitute for y in the second line: ' + M(term(a, 'x', true) + (b < 0 ? ' ' + MINUS + ' ' : ' + ') + inner + ' = ' + m(k)) + ', so ' + M('x = ' + m(x0)) + '. Then ' + M('y = ' + m(y0)) + '.';
+    }
+    return {
+      q: 'Find the point where the lines ' + M(l1) + ' and ' + M(l2) + ' meet.',
+      eqs: [l1, l2],
+      params: { m1: m1, c1: c1, form: form, m2: m2, c2: c2, a: a, b: b, k: k, x0: x0, y0: y0 },
+      opts: [
+        { t: pt(x0, y0), k: 'ok' },
+        { t: pt(y0, x0), k: 'swap' },
+        { t: pt(w1, m1 * w1 + c1), k: 'on1' },
+        { t: pt(w2, onTwo(w2)), k: 'on2' }
+      ],
+      why: why,
+      traps: {
+        swap: 'Right numbers, wrong order. The x-coordinate comes first.',
+        on1: 'That point is on ' + M(l1) + ' but not on ' + M(l2) + ', so the x-value went wrong. Check any answer in both equations.',
+        on2: 'That point is on ' + M(l2) + ' but not on ' + M(l1) + ', so the x-value went wrong. Check any answer in both equations.'
+      }
+    };
+  }
+
+  var GEN = { perp: genPerp, grad: genGrad, mid: genMid, len: genLen, form: genForm, which: genWhich, par: genPar, meet: genMeet };
+
+  function allText(it) {
+    return [it.q, it.why].concat(it.opts.map(function (o) { return o.t; }), Object.keys(it.traps).map(function (k) { return it.traps[k]; })).join(' | ');
+  }
+  function makeItem(type) {
+    for (var tries = 0; tries < 500; tries++) {
+      var it = GEN[type]();
+      var seen = {};
+      var dup = it.opts.some(function (o) { if (seen[o.t]) return true; seen[o.t] = 1; return false; });
+      if (dup) continue;
+      var txt = allText(it);
+      if (BANNED_TEXT.some(function (b) { return txt.indexOf(b) >= 0; })) continue;
+      /* no banned point anywhere: stem, options, working or trap text */
+      var re = /\((−?\d+), (−?\d+)\)/g, mm, hit = false;
+      while ((mm = re.exec(txt))) {
+        if (badPoint(parseInt(mm[1].replace(MINUS, '-'), 10), parseInt(mm[2].replace(MINUS, '-'), 10))) { hit = true; break; }
+      }
+      if (hit) continue;
+      it.type = type;
+      it.tag = TYPES[type].tag;
+      it.secs = TYPES[type].secs;
+      it.opts = shuffle(it.opts);
+      it.ci = it.opts.map(function (o) { return o.k; }).indexOf('ok');
+      return it;
+    }
+    throw new Error('generator stuck on ' + type);
+  }
+  /* one of each type, then four extras (never more than two of a type), no type twice in a row */
+  function makeRun() {
+    var types = ORDER.slice();
+    var extras = shuffle(ORDER).slice(0, 4);
+    types = types.concat(extras);
+    var order;
+    for (var tries = 0; tries < 200; tries++) {
+      order = shuffle(types);
+      var clash = order.some(function (t, i) { return i > 0 && order[i - 1] === t; });
+      if (!clash) break;
+    }
+    return order.map(makeItem);
+  }
+
+  /* ===================== display ===================== */
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function html(s) {
+    return esc(s).replace(/`([^`]*)`/g, '<span class="m">$1</span>')
+      .replace(/(\d+)\/(\d+)/g, '<span class="fr"><span>$1</span><span>$2</span></span>');
+  }
+  function spoken(s) { return s.replace(/(\d+)\/(\d+)/g, '$1 over $2').replace(/−/g, 'minus ').replace(/√/g, 'root '); }
+
+  var BEST_KEY = 'lines-sprint-best-1.3';
+  var order = [], idx = 0, score = 0, streak = 0, bestStreak = 0, nRight = 0;
+  var totalTime = 0, remaining = 0, timerId = null, answered = false;
+  var missed = [];
+
+  function $(id) { return document.getElementById(id); }
+  var startView = $('startView'), playView = $('playView'), endView = $('endView');
+
+  function readBest() { try { var v = localStorage.getItem(BEST_KEY); return v === null ? null : parseInt(v, 10); } catch (e) { return null; } }
+  function writeBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) {} }
+
+  function showStart() {
+    startView.hidden = false; playView.hidden = true; endView.hidden = true;
+    var b = readBest();
+    $('bestVal').textContent = b === null || isNaN(b) ? 'No run yet' : 'Beat it';
+    $('bestPts').textContent = b === null || isNaN(b) ? '' : (b + ' pts');
+  }
+
+  function begin() {
+    order = makeRun();
+    idx = 0; score = 0; streak = 0; bestStreak = 0; nRight = 0; totalTime = 0; missed = [];
+    startView.hidden = true; endView.hidden = true; playView.hidden = false;
+    loadQ();
+  }
+  $('goBtn').addEventListener('click', begin);
+  $('againBtn').addEventListener('click', begin);
+
+  function loadQ() {
+    stopTimer();
+    answered = false;
+    var it = order[idx];
+    $('qn').textContent = 'Q' + (idx + 1) + ' / ' + order.length;
+    $('qtag').textContent = it.tag;
+    $('qt').innerHTML = html(it.q);
+    $('score').textContent = score;
+    var st = $('streak');
+    if (streak >= 2) { st.classList.add('on'); st.textContent = '🔥 ' + streak; }
+    else { st.classList.remove('on'); st.textContent = ''; }
+    $('verdictHost').innerHTML = '';
+
+    var host = $('opts'); host.innerHTML = '';
+    it.opts.forEach(function (o, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = html(o.t);
+      b.setAttribute('aria-label', 'Option ' + (i + 1) + ': ' + spoken(o.t));
+      b.dataset.correct = i === it.ci ? '1' : '0';
+      b.dataset.kind = o.k;
+      b.addEventListener('click', function () { answer(i, b, host); });
+      host.appendChild(b);
+    });
+
+    /* on a phone the verdict pushes the page down; bring the new question back into view */
+    var hud = playView.getBoundingClientRect();
+    if (idx > 0 && hud.top < 0) window.scrollTo(0, Math.max(0, window.scrollY + hud.top - 64));
+
+    remaining = it.secs * 10; // tenths
+    updateClock();
+    timerId = setInterval(tick, 100);
+  }
+
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function tick() {
+    remaining--;
+    if (remaining <= 0) { remaining = 0; updateClock(); timeUp(); return; }
+    updateClock();
+  }
+  function updateClock() {
+    var it = order[idx];
+    var frac = remaining / (it.secs * 10);
+    var f = $('fill');
+    f.style.width = (frac * 100) + '%';
+    f.className = 'fill' + (frac < 0.34 ? ' warn' : '');
+    $('clocknum').textContent = Math.ceil(remaining / 10) + 's';
+  }
+
+  function answer(i, btn, host) {
+    if (answered) return;
+    answered = true;
+    stopTimer();
+    var it = order[idx];
+    totalTime += it.secs - (remaining / 10);
+    var isRight = i === it.ci;
+    Array.prototype.forEach.call(host.children, function (b) {
+      b.disabled = true;
+      if (b !== btn) b.classList.add('dim');
+    });
+    var gained = 0;
+    if (isRight) {
+      nRight++; streak++;
+      if (streak > bestStreak) bestStreak = streak;
+      var speed = Math.round(10 * (remaining / (it.secs * 10)));
+      gained = 10 + speed + (streak >= 3 ? 5 : 0);
+      score += gained;
+      btn.classList.add('right');
+      showVerdict(true, gained, speed, it, it.why);
+    } else {
+      streak = 0;
+      btn.classList.add('wrong');
+      Array.prototype.forEach.call(host.children, function (b) {
+        if (b.dataset.correct === '1') { b.classList.remove('dim'); b.classList.add('right'); }
+      });
+      missed.push(it);
+      showVerdict(false, 0, 0, it, it.traps[it.opts[i].k]);
+    }
+    $('score').textContent = score;
+  }
+
+  function timeUp() {
+    if (answered) return;
+    answered = true;
+    stopTimer();
+    var it = order[idx];
+    totalTime += it.secs;
+    streak = 0;
+    Array.prototype.forEach.call($('opts').children, function (b) {
+      b.disabled = true;
+      if (b.dataset.correct === '1') b.classList.add('right'); else b.classList.add('dim');
+    });
+    missed.push(it);
+    showVerdict(false, 0, 0, it, it.why, true);
+  }
+
+  function showVerdict(ok, gained, speed, it, reason, ranOut) {
+    var v = document.createElement('div');
+    v.className = 'verdict ' + (ok ? 'ok' : 'no');
+    var head = ok ? 'Correct' : (ranOut ? 'Out of time' : 'Not quite');
+    var pts = ok ? ('+' + gained + (speed > 0 ? '  (10 base + ' + speed + ' speed' + (gained > 10 + speed ? ' + 5 streak' : '') + ')' : '')) : '+0';
+    v.innerHTML = '<div class="vh"><span>' + head + '</span><span class="pts">' + pts + '</span></div>' +
+      '<div class="va"><span class="lbl">Answer: </span><span class="m">' + html(it.opts[it.ci].t) + '</span></div>' +
+      '<div class="vw">' + html(reason) + '</div>';
+    $('verdictHost').appendChild(v);
+
+    var nb = document.createElement('button');
+    nb.type = 'button';
+    nb.className = 'next';
+    nb.textContent = idx + 1 < order.length ? 'Next →' : 'Final score →';
+    nb.addEventListener('click', function () {
+      idx++;
+      if (idx < order.length) loadQ(); else showEnd();
+    });
+    $('verdictHost').appendChild(nb);
+    nb.focus({ preventScroll: true });
+  }
+
+  /* keys 1 to 4 pick an option */
+  document.addEventListener('keydown', function (e) {
+    if (playView.hidden || answered || e.altKey || e.ctrlKey || e.metaKey) return;
+    var n = parseInt(e.key, 10);
+    if (n >= 1 && n <= 4) {
+      var b = $('opts').children[n - 1];
+      if (b) { e.preventDefault(); b.click(); }
+    }
+  });
+
+  function rankFor(right, pts) {
+    if (right >= 11 && pts >= 220) return { t: 'Exam Pace', c: 'var(--accent)', d: 'Automatic. These will cost you almost nothing in May.' };
+    if (right >= 9) return { t: 'Nearly There', c: 'var(--ok)', d: 'Solid. A couple still need thinking time you cannot spare.' };
+    if (right >= 6) return { t: 'Warming Up', c: 'var(--text)', d: 'You know these. You are not fast at them yet, and speed comes from repeats.' };
+    return { t: 'Cold Start', c: 'var(--warn)', d: 'Go back to the worksheets first, then race again.' };
+  }
+  function clock(s) { s = Math.round(s); return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+
+  function showEnd() {
+    stopTimer();
+    playView.hidden = true; endView.hidden = false;
+    window.scrollTo(0, 0);
+    $('finalScore').innerHTML = nRight + '<small> / ' + order.length + '</small>';
+    var r = rankFor(nRight, score);
+    var rb = $('rank');
+    rb.textContent = r.t; rb.style.color = r.c; rb.style.borderColor = r.c;
+    $('rankLine').textContent = r.d;
+    $('statPts').textContent = score;
+    $('statTime').textContent = clock(totalTime);
+    $('statStreak').textContent = bestStreak;
+
+    var b = readBest();
+    if (b === null || isNaN(b) || score > b) {
+      writeBest(score);
+      $('bestNote').textContent = (b === null || isNaN(b)) ? 'First run recorded.' : 'New personal best. Beat ' + b + '.';
+    } else {
+      $('bestNote').textContent = 'Personal best: ' + b + ' pts.';
+    }
+
+    var mh = $('missedHost');
+    if (missed.length) {
+      var counts = {}, types = [];
+      missed.forEach(function (it) { if (!counts[it.type]) { counts[it.type] = 0; types.push(it.type); } counts[it.type]++; });
+      mh.hidden = false;
+      mh.innerHTML = '<div class="mh">Worth another look</div>' + types.map(function (t) {
+        return '<div class="mi"><div class="mq">' + TYPES[t].tag + (counts[t] > 1 ? ' <span class="ct">× ' + counts[t] + '</span>' : '') + '</div><div class="mw">' + html(TYPES[t].tip) + '</div></div>';
+      }).join('');
+    } else {
+      mh.hidden = false;
+      mh.innerHTML = '<p class="clean">Nothing missed. Run it again and chase the clock.</p>';
+    }
+  }
+
+  showStart();
+
+  /* test hooks: the harness generates items headless and reads the live state */
+  window.__linesGen = { seed: seed, makeItem: makeItem, makeRun: makeRun, types: ORDER, tips: TYPES };
+  window.__linesState = function () {
+    var it = order[idx];
+    return it ? { idx: idx, type: it.type, ci: it.ci, kinds: it.opts.map(function (o) { return o.k; }), answered: answered, score: score, nRight: nRight } : null;
+  };
+})();
+</script>
+</body>
+</html>

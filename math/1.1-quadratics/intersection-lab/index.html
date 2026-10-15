@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="../../../images/favicon.png">
 <title>The Intersection Lab | Think In Bits</title>
-<meta name="description" content="Slide a straight line across a curve and watch the algebra keep up. Where a line meets a curve, the discriminant tells you how many answers you get.">
+<meta name="description" content="Slide a straight line across a curve and watch the algebra keep up. Where a line meets a curve, the discriminant tells you how many answers you get. A third mode drags a point around a circle to show why the tangent is perpendicular to the radius.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
   :root {
@@ -83,6 +84,18 @@
   .note p { margin: 0 0 0.6rem; }
   .note p:last-child { margin: 0; }
 
+  /* ---- Tangent at a point ---- */
+  [hidden] { display: none !important; }
+  .chip[aria-pressed="true"] { background: var(--cyan-10); border-color: var(--cyan); color: var(--cyan);
+                               box-shadow: 0 8px 20px rgba(0,229,255,0.2); }
+  .circeq { font-family: "JetBrains Mono", monospace; font-size: 1.15rem; color: var(--ink);
+            margin: 0 0 1rem; overflow-wrap: anywhere; }
+  .ctl .val.wide { min-width: 6.4em; }
+  .snapinfo { font-size: 0.85rem; color: var(--mist); margin: 0; }
+  .take { font-size: 0.95rem; border-radius: 14px; padding: 0.85rem 1rem; margin-bottom: 0.8rem;
+          border: 1px solid var(--cyan); background: var(--cyan-10); color: var(--ink); }
+  .work .ap { color: var(--warm); }
+
   @media (max-width: 860px) {
     .layout { grid-template-columns: 1fr; }
     .wrap { padding: 1.6rem 1.1rem 3rem; }
@@ -92,9 +105,9 @@
 <body>
 <div class="wrap">
   <a class="back" href="../../../math.html">&larr; Back to Math</a>
-  <p class="eyebrow">9709 Pure 1 &middot; 1.1 Quadratics</p>
+  <p class="eyebrow">9709 Pure 1 &middot; 1.1 Quadratics &middot; 1.3 Coordinate Geometry</p>
   <h1>The Intersection Lab</h1>
-  <p class="lede">Solving a line and a curve together is one question in disguise: where do they touch? Slide the line and watch the algebra keep up. The discriminant of the quadratic you land on tells you how many answers you are going to get, before you work any of them out.</p>
+  <p class="lede">Solving a line and a curve together is one question in disguise: where do they touch? Slide the line and watch the algebra keep up. The discriminant of the quadratic you land on tells you how many answers you are going to get, before you work any of them out. <b style="color:var(--ink)">Tangent at a point</b> is for 1.3: drag a point around a circle and see why the tangent there is perpendicular to the radius.</p>
 
   <div class="layout">
     <div>
@@ -102,15 +115,16 @@
         <div class="chips" role="group" aria-label="choose the curve">
           <button class="chip active" data-curve="circle" type="button">circle: x&sup2; + y&sup2; = 17</button>
           <button class="chip" data-curve="parabola" type="button">parabola: y = x&sup2; &minus; 3</button>
+          <button class="chip" id="bTanMode" type="button" aria-pressed="false">Tangent at a point</button>
         </div>
         <canvas id="cv" width="760" height="760" aria-label="A curve with a movable straight line crossing it"></canvas>
-        <p style="font-size:0.82rem;color:var(--faint);margin:0.7rem 0 0;font-family:'JetBrains Mono',monospace">
+        <p id="dragHint" style="font-size:0.82rem;color:var(--faint);margin:0.7rem 0 0;font-family:'JetBrains Mono',monospace">
           drag on the graph to move the line</p>
       </div>
     </div>
 
     <div>
-      <div class="panel">
+      <div class="panel" id="linePanel">
         <h2>The line</h2>
         <div class="ctl">
           <label for="cRange" id="cLabel">x + y =</label>
@@ -124,7 +138,7 @@
         </div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="workPanel">
         <h2>The working, one line at a time</h2>
         <div class="work" id="work"></div>
         <div class="verdict" id="verdict"></div>
@@ -135,11 +149,59 @@
           <div class="cresult" id="cresult">Nothing checked yet.</div>
         </div>
       </div>
+
+      <div id="tanPanels" hidden>
+        <div class="panel">
+          <h2>The circle and the point P</h2>
+          <p class="circeq" id="tCircEq"></p>
+          <div class="ctl">
+            <label for="tA">center a</label>
+            <span class="val" id="tAVal"></span>
+            <input type="range" id="tA" min="-4" max="4" step="1" value="1" aria-label="x-coordinate of the center">
+          </div>
+          <div class="ctl">
+            <label for="tB">center b</label>
+            <span class="val" id="tBVal"></span>
+            <input type="range" id="tB" min="-4" max="4" step="1" value="2" aria-label="y-coordinate of the center">
+          </div>
+          <div class="ctl">
+            <label for="tR">radius r</label>
+            <span class="val" id="tRVal"></span>
+            <input type="range" id="tR" min="1" max="6" step="1" value="5" aria-label="radius">
+          </div>
+          <div class="ctl">
+            <label for="tP" id="tPLabel">P</label>
+            <span class="val wide" id="tPVal"></span>
+            <input type="range" id="tP" min="0" max="11" step="1" value="2" aria-label="move P around the circle">
+          </div>
+          <div class="chips" style="margin-bottom:0.5rem">
+            <button class="chip" id="tSnap" type="button" aria-pressed="true">Snap to whole-number points: on</button>
+          </div>
+          <p class="snapinfo" id="tSnapInfo"></p>
+        </div>
+
+        <div class="panel">
+          <h2>Radius, tangent and gradients</h2>
+          <div class="work" id="tWork"></div>
+          <div class="take">The tangent at P is perpendicular to the radius CP, so its gradient is &minus;1 divided by the gradient of CP.</div>
+        </div>
+
+        <div class="panel">
+          <h2>Back to line meets circle</h2>
+          <div class="work" id="tDiscWork"></div>
+          <div class="verdict" id="tDiscVerdict"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="note">
-    <p><b>Why two answers, and not one.</b> A straight line usually crosses a curve in two places, so a pair of simultaneous equations usually has two answer pairs. Stopping after one x-value is half an answer, and every x owes you the matching y that sits directly above or below it on the line.</p>
+  <div class="note" id="tanNote" hidden>
+    <p><b>The exam method.</b> Find the gradient of CP from the center and the point. Flip it and change the sign to get the tangent's gradient. Then use y &minus; y&#8321; = m(x &minus; x&#8321;) through P and tidy into ax + by + c = 0.</p>
+    <p><b>Two quick checks.</b> P has to satisfy the circle's equation. Substituting your tangent into the circle should leave a quadratic with &Delta; = 0.</p>
+  </div>
+
+  <div class="note" id="lineNote">
+    <p><b>Why there are usually two answers.</b> A straight line usually crosses a curve in two places, so a pair of simultaneous equations usually has two answer pairs. Stopping after one x-value is half an answer, and every x owes you the matching y that sits directly above or below it on the line.</p>
     <p><b>Where the discriminant comes in.</b> Substituting the line into the curve always leaves an ordinary quadratic. &Delta; &gt; 0 gives two crossings, &Delta; = 0 gives a tangent, and &Delta; &lt; 0 means the line misses, which is the algebra's way of saying there is no real answer to find.</p>
   </div>
 </div>
@@ -324,12 +386,380 @@
   cv.addEventListener('pointerup', function () { dragging = false; });
   cv.addEventListener('pointercancel', function () { dragging = false; });
   function moveTo(e) {
+    if (mode === 'tangent') { tanPointer(e); return; }
     var r = cv.getBoundingClientRect();
     var wx = ((e.clientX - r.left) / r.width * cv.width - CX) / S;
     var wy = (CY - (e.clientY - r.top) / r.height * cv.height) / S;
     var c = curve === 'circle' ? wx + wy : wy - 2 * wx;
     setC(Math.max(-8, Math.min(8, Math.round(c * 4) / 4)), true);
   }
+
+  /* ================= Tangent at a point (1.3 lines and circles) =================
+     Circle (x - a)^2 + (y - b)^2 = r^2, P = C + (dx, dy).
+     Exact mode: dx, dy are integers (P is a whole-number point).
+     Free mode: P sits at a whole-degree angle; multiples of 90 degrees are exact too. */
+  var mode = 'lines';
+  var tanBtn = document.getElementById('bTanMode');
+  var tanPanels = document.getElementById('tanPanels'), tanNote = document.getElementById('tanNote');
+  var lineEls = [document.getElementById('linePanel'), document.getElementById('workPanel'), document.getElementById('lineNote')];
+  var dragHint = document.getElementById('dragHint'), dragHintText = dragHint.textContent;
+  var cvLabel = cv.getAttribute('aria-label');
+  var tA = document.getElementById('tA'), tB = document.getElementById('tB'), tR = document.getElementById('tR');
+  var tP = document.getElementById('tP'), tSnap = document.getElementById('tSnap');
+  var T = { a: 1, b: 2, r: 5, snap: true, ex: true, dx: 3, dy: 4, th: Math.atan2(4, 3) };
+  var TV = { mx: 0, my: 0, s: 1, span: 10 };
+
+  function gcd(p, q) { p = Math.abs(p); q = Math.abs(q); while (q) { var t = p % q; p = q; q = t; } return p; }
+  function frac(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    var g = gcd(n, d) || 1; n /= g; d /= g;
+    return d === 1 ? neg(n) : (n < 0 ? '−' : '') + Math.abs(n) + '/' + d;
+  }
+  function br(sv) { return sv.charAt(0) === '−' ? '(' + sv + ')' : sv; }
+  function dec(v) { var s = (Math.round(v * 100) / 100).toFixed(2); return s === '-0.00' ? '0.00' : s.replace('-', '−'); }
+  function minus(p, q) { return neg(p) + ' − ' + br(neg(q)); }
+  function sq(sym, c) {
+    if (c === 0) return /^[xy]$/.test(sym) ? sym + '²' : br(sym) + '²';
+    return '(' + sym + (c > 0 ? ' − ' + c : ' + ' + (-c)) + ')²';
+  }
+  /* k0 + k1*v: "36 − 3x" when that reads naturally, else x first ("3x − 16") */
+  function lin(k0, k1, v) {
+    var xs = k1 === 0 ? '' : ((Math.abs(k1) === 1 ? '' : Math.abs(k1)) + v);
+    if (k0 === 0) return k1 === 0 ? '0' : (k1 < 0 ? '−' : '') + xs;
+    if (k1 === 0) return neg(k0);
+    if (k0 > 0 && k1 < 0) return k0 + ' − ' + xs;
+    return (k1 < 0 ? '−' : '') + xs + (k0 > 0 ? ' + ' + k0 : ' − ' + (-k0));
+  }
+  /* ax + by + c = 0 with a > 0 (or b > 0 if a = 0), gcd 1 */
+  function lineForm(A, B, C) {
+    var g = gcd(gcd(A, B), C) || 1; A /= g; B /= g; C /= g;
+    if (A < 0 || (A === 0 && B < 0)) { A = -A; B = -B; C = -C; }
+    var parts = [[A, 'x'], [B, 'y'], [C, '']], s = '';
+    parts.forEach(function (t) {
+      var v = t[0]; if (v === 0) return;
+      var mag = Math.abs(v), body = (t[1] && mag === 1 ? '' : mag) + t[1];
+      s += s ? (v > 0 ? ' + ' : ' − ') + body : (v < 0 ? '−' : '') + body;
+    });
+    return { A: A, B: B, C: C, str: s + ' = 0' };
+  }
+  function quadStr(qa, qb, qc, v) {
+    var s = (qa === 1 ? '' : qa) + v + '²';
+    if (qb) s += (qb > 0 ? ' + ' : ' − ') + (Math.abs(qb) === 1 ? '' : Math.abs(qb)) + v;
+    if (qc) s += (qc > 0 ? ' + ' : ' − ') + Math.abs(qc);
+    return s + ' = 0';
+  }
+  function circleStr(a, b, r) { return sq('x', a) + ' + ' + sq('y', b) + ' = ' + r * r; }
+  function lattice(r) {
+    var L = [];
+    for (var x = -r; x <= r; x++) for (var y = -r; y <= r; y++) if (x * x + y * y === r * r) L.push([x, y]);
+    return L.map(function (p) { var t = Math.atan2(p[1], p[0]); return { dx: p[0], dy: p[1], th: t < 0 ? t + 2 * Math.PI : t }; })
+            .sort(function (u, w) { return u.th - w.th; });
+  }
+
+  /* Everything the readouts need, for a whole-number P (dx, dy integers). */
+  function tanExact(a, b, r, dx, dy) {
+    var px0 = a + dx, py0 = b + dy, o = { P: [px0, py0], work: [], disc: [] };
+    var Pn = '(' + neg(px0) + ', ' + neg(py0) + ')', Cn = '(' + neg(a) + ', ' + neg(b) + ')';
+    o.work.push(['C =', Cn + ',  P = ' + Pn]);
+    var L = lineForm(dx, dy, -(dx * px0 + dy * py0));
+    o.line = L;
+    if (dx === 0) {
+      o.kind = 'vertical radius';
+      o.work.push(['gradient of CP:', 'C and P share x = ' + neg(a) + ', so CP is vertical and its gradient is undefined']);
+      o.work.push(['gradient of tangent:', '0, the tangent is horizontal']);
+      o.work.push(['product:', 'no product to take. A vertical radius and a horizontal tangent still meet at a right angle']);
+      o.work.push(['tangent:', 'y = ' + neg(py0) + ', so <b>' + L.str + '</b>']);
+    } else if (dy === 0) {
+      o.kind = 'horizontal radius';
+      o.work.push(['gradient of CP:', '(' + minus(py0, b) + ')/(' + minus(px0, a) + ') = 0, so CP is horizontal']);
+      o.work.push(['gradient of tangent:', 'undefined, you cannot flip 0. The tangent is vertical']);
+      o.work.push(['product:', 'no product to take. A horizontal radius and a vertical tangent still meet at a right angle']);
+      o.work.push(['tangent:', 'x = ' + neg(px0) + ', so <b>' + L.str + '</b>']);
+    } else {
+      o.kind = 'sloped';
+      var m1 = frac(dy, dx), m2 = frac(-dx, dy);
+      o.mCP = m1; o.mT = m2;
+      o.work.push(['gradient of CP:', '(' + minus(py0, b) + ')/(' + minus(px0, a) + ') = <b>' + m1 + '</b>']);
+      o.work.push(['gradient of tangent:', 'flip and change sign: <b>' + m2 + '</b>']);
+      o.work.push(['product:', m1 + ' × ' + br(m2) + ' = <b>−1</b>']);
+      var ys = py0 === 0 ? 'y' : 'y ' + (py0 > 0 ? '− ' + py0 : '+ ' + (-py0));
+      var mx = (m2.indexOf('/') >= 0 ? m2 : m2 === '1' ? '' : m2 === '−1' ? '−' : m2);
+      var xs = px0 === 0 ? (m2.indexOf('/') >= 0 ? (m2.charAt(0) === '−' ? '−(' + m2.slice(1) + ')x' : '(' + m2 + ')x') : mx + 'x')
+                         : mx + '(x ' + (px0 > 0 ? '− ' + px0 : '+ ' + (-px0)) + ')';
+      o.work.push(['through P:', ys + ' = ' + xs]);
+      o.work.push(['tangent:', '<b>' + L.str + '</b>']);
+    }
+
+    /* substitute the tangent into the circle: eliminate y if the tangent is not vertical */
+    var A = L.A, B = L.B, C = L.C, v, u, cu, cv2, M, k0, k1;
+    if (B !== 0) { v = 'x'; u = 'y'; M = B; k0 = -C; k1 = -A; cu = a; cv2 = b; }
+    else { v = 'y'; u = 'x'; M = A; k0 = -C; k1 = 0; cu = b; cv2 = a; }
+    if (M < 0) { M = -M; k0 = -k0; k1 = -k1; }
+    var uExpr = k1 === 0 ? frac(k0, M) : (M === 1 ? lin(k0, k1, v) : (k0 === 0 ? lin(0, k1, v) + '/' + M : '(' + lin(k0, k1, v) + ')/' + M));
+    o.disc.push(['rearrange:', u + ' = ' + uExpr]);
+    var vPart = sq(v, cu), uSub;
+    if (k1 === 0) uSub = sq(uExpr, cv2);
+    else uSub = cv2 === 0 ? '(' + uExpr + ')²' : sq(uExpr, cv2);
+    var circ = (v === 'x') ? vPart + ' + ' + uSub : uSub + ' + ' + vPart;
+    o.disc.push(['substitute:', circ + ' = ' + r * r]);
+    var j0 = k0 - cv2 * M;                         /* M*u - M*cv2 = j0 + k1*v */
+    if (k1 === 0) {
+      var cst = (j0 / M) * (j0 / M);
+      o.disc.push(['simplify:', (v === 'x' ? vPart + ' + ' + cst : cst + ' + ' + vPart) + ' = ' + r * r]);
+    } else if (M > 1) {
+      o.disc.push(['× ' + M * M + ':', M * M + vPart + ' + (' + lin(j0, k1, v) + ')² = ' + r * r * M * M]);
+    } else if (cv2 !== 0) {
+      o.disc.push(['simplify:', vPart + ' + (' + lin(j0, k1, v) + ')² = ' + r * r]);
+    }
+    /* M^2 (v - cu)^2 + (j0 + k1 v)^2 - r^2 M^2 = 0, all over M^2 when k1 = 0 */
+    var qa, qb, qc;
+    if (k1 === 0) { qa = 1; qb = -2 * cu; qc = cu * cu + (j0 / M) * (j0 / M) - r * r; }
+    else { qa = M * M + k1 * k1; qb = -2 * cu * M * M + 2 * j0 * k1; qc = cu * cu * M * M + j0 * j0 - r * r * M * M; }
+    o.disc.push(['tidy:', quadStr(qa, qb, qc, v)]);
+    var g = gcd(gcd(qa, qb), qc) || 1;
+    if (g > 1) { qa /= g; qb /= g; qc /= g; o.disc.push(['÷ ' + g + ':', quadStr(qa, qb, qc, v)]); }
+    var D = qb * qb - 4 * qa * qc;
+    o.disc.push(['Δ =', br(neg(qb)) + '² − 4 × ' + qa + ' × ' + br(neg(qc)) + ' = ' + qb * qb + ' − ' + 4 * qa * qc + ' = <b>' + neg(D) + '</b>']);
+    o.q = [qa, qb, qc]; o.D = D; o.v = v;
+    var root = -qb / (2 * qa);
+    o.root = root;
+    o.verdict = 'Δ = 0, so ' + v + ' = ' + neg(root) + ' is a repeated root. The line meets the circle only at P' + Pn + ', which is what a tangent does.';
+    return o;
+  }
+
+  function tanApprox(a, b, r, th) {
+    var dx = r * Math.cos(th), dy = r * Math.sin(th), px0 = a + dx, py0 = b + dy;
+    var m1 = dy / dx, m2 = -dx / dy, c = py0 - m2 * px0;
+    var o = { P: [px0, py0], work: [], disc: [], kind: 'decimal', m1: m1, m2: m2, c: c };
+    o.work.push(['C =', '(' + neg(a) + ', ' + neg(b) + '),  P ≈ (' + dec(px0) + ', ' + dec(py0) + ')']);
+    o.work.push(['gradient of CP:', '≈ <b>' + dec(m1) + '</b> <span class="ap">(decimal)</span>']);
+    o.work.push(['gradient of tangent:', 'flip and change sign: ≈ <b>' + dec(m2) + '</b> <span class="ap">(decimal)</span>']);
+    o.work.push(['product:', dec(m1) + ' × ' + br(dec(m2)) + ' ≈ <b>−1</b> (exactly −1 before rounding)']);
+    o.work.push(['tangent:', '<b>y ≈ ' + dec(m2) + 'x ' + (c < 0 ? '− ' + dec(-c) : '+ ' + dec(c)) + '</b> <span class="ap">(approximate)</span>']);
+    o.prod = m1 * m2;
+    return o;
+  }
+
+  function tanResult() {
+    return T.ex ? tanExact(T.a, T.b, T.r, T.dx, T.dy) : tanApprox(T.a, T.b, T.r, T.th);
+  }
+
+  /* place P from an angle: nearest whole-number point when snapping, else the nearest whole degree */
+  function placeAt(th) {
+    th = ((th % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    if (T.snap) {
+      var best = null, bd = 9;
+      lattice(T.r).forEach(function (p) {
+        var d = Math.abs(p.th - th); d = Math.min(d, 2 * Math.PI - d);
+        if (d < bd - 1e-12) { bd = d; best = p; }
+      });
+      T.ex = true; T.dx = best.dx; T.dy = best.dy; T.th = best.th;
+    } else {
+      var deg = Math.round(th * 180 / Math.PI) % 360;
+      T.th = deg * Math.PI / 180;
+      if (deg % 90 === 0) {
+        T.ex = true; T.dx = [T.r, 0, -T.r, 0][deg / 90]; T.dy = [0, T.r, 0, -T.r][deg / 90];
+      } else T.ex = false;
+    }
+  }
+
+  function tanView() {
+    var x0 = Math.min(0, T.a - T.r) - 2, x1 = Math.max(0, T.a + T.r) + 2;
+    var y0 = Math.min(0, T.b - T.r) - 2, y1 = Math.max(0, T.b + T.r) + 2.5;
+    var span = Math.max(x1 - x0, y1 - y0, 8);
+    TV = { mx: (x0 + x1) / 2, my: (y0 + y1) / 2, span: span, s: cv.width / span };
+  }
+  function tx(x) { return cv.width / 2 + (x - TV.mx) * TV.s; }
+  function ty(y) { return cv.height / 2 - (y - TV.my) * TV.s; }
+
+  /* labels grow when the canvas is shown small (phones), so they stay readable */
+  function fz(n) {
+    var k = cv.clientWidth ? Math.min(1.45, Math.max(1, 0.55 * cv.width / cv.clientWidth)) : 1;
+    return Math.round(n * k);
+  }
+  function tagAt(text, x, y, align, color, alt) {
+    ctx.font = '600 ' + fz(21) + 'px "JetBrains Mono", monospace';
+    var w = ctx.measureText(text).width, h = fz(28);
+    var left0 = align === 'right' ? x - w : (align === 'center' ? x - w / 2 : x);
+    var left = Math.max(6, Math.min(cv.width - w - 6, left0));
+    /* squeezed against an edge it would cover the point, so use the fallback spot */
+    if (alt && Math.abs(left - left0) > 4) return tagAt(text, alt[0], alt[1], alt[2], color);
+    var top = Math.max(6, Math.min(cv.height - h - 6, y - h / 2));
+    ctx.fillStyle = 'rgba(15,15,15,0.82)';
+    ctx.fillRect(left - 5, top, w + 10, h);
+    ctx.fillStyle = color; ctx.textBaseline = 'middle';
+    ctx.fillText(text, left, top + h / 2 + 1);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function drawTan(res) {
+    var W = cv.width, H = cv.height, half = TV.span / 2;
+    ctx.clearRect(0, 0, W, H);
+    var gx0 = Math.ceil(TV.mx - half), gx1 = Math.floor(TV.mx + half);
+    var gy0 = Math.ceil(TV.my - half), gy1 = Math.floor(TV.my + half);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+    for (var g = gx0; g <= gx1; g++) { ctx.beginPath(); ctx.moveTo(tx(g), 0); ctx.lineTo(tx(g), H); ctx.stroke(); }
+    for (g = gy0; g <= gy1; g++) { ctx.beginPath(); ctx.moveTo(0, ty(g)); ctx.lineTo(W, ty(g)); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, ty(0)); ctx.lineTo(W, ty(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tx(0), 0); ctx.lineTo(tx(0), H); ctx.stroke();
+
+    /* numbered axes */
+    var step = TV.span <= 12 ? 1 : 2;
+    ctx.fillStyle = '#b0b0b0'; ctx.font = '500 ' + fz(17) + 'px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    var ax = Math.min(H - 8, ty(0) + fz(22));
+    for (g = gx0; g <= gx1; g++) if (g !== 0 && g % step === 0 && tx(g) > 14 && tx(g) < W - 14) ctx.fillText(neg(g), tx(g), ax);
+    ctx.textAlign = 'right';
+    var ay = Math.max(30, tx(0) - 8);
+    for (g = gy0; g <= gy1; g++) if (g !== 0 && g % step === 0 && ty(g) > 14 && ty(g) < H - 14) ctx.fillText(neg(g), ay, ty(g) + 6);
+    ctx.fillText('0', ay, ax);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff'; ctx.font = 'italic 500 ' + fz(21) + 'px "Poppins", sans-serif';
+    ctx.fillText('x', W - 22, ty(0) - 10);
+    ctx.font = '500 ' + fz(21) + 'px "JetBrains Mono", monospace';
+    var eqW = ctx.measureText(circleStr(T.a, T.b, T.r)).width + 24;
+    ctx.font = 'italic 500 ' + fz(21) + 'px "Poppins", sans-serif';
+    ctx.fillText('y', tx(0) + 10, tx(0) + 10 < eqW ? 10 + fz(32) + fz(24) : 24);
+
+    /* circle */
+    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(tx(T.a), ty(T.b), T.r * TV.s, 0, Math.PI * 2); ctx.stroke();
+
+    var P = res.P, Px = tx(P[0]), Py = ty(P[1]), Cx = tx(T.a), Cy = ty(T.b);
+    var ux = (Cx - Px), uy = (Cy - Py), ul = Math.hypot(ux, uy); ux /= ul; uy /= ul;   /* toward C */
+    var vx = -uy, vy = ux;                                                           /* along the tangent */
+
+    /* tangent */
+    ctx.strokeStyle = '#4ADE80'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(Px - vx * 3 * W, Py - vy * 3 * W); ctx.lineTo(Px + vx * 3 * W, Py + vy * 3 * W); ctx.stroke();
+    /* radius CP */
+    ctx.strokeStyle = '#FFC46B'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(Cx, Cy); ctx.lineTo(Px, Py); ctx.stroke();
+    /* right-angle mark */
+    var k = 20;
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(Px + ux * k, Py + uy * k); ctx.lineTo(Px + ux * k + vx * k, Py + uy * k + vy * k);
+    ctx.lineTo(Px + vx * k, Py + vy * k); ctx.stroke();
+
+    /* C and P */
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(Cx, Cy, 7, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(Px, Py, 15, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(Px, Py, 9, 0, Math.PI * 2); ctx.fill();
+
+    ctx.font = '500 ' + fz(21) + 'px "JetBrains Mono", monospace';
+    var eq = circleStr(T.a, T.b, T.r), ew = ctx.measureText(eq).width;
+    ctx.fillStyle = 'rgba(15,15,15,0.82)'; ctx.fillRect(8, 10, ew + 16, fz(32));
+    ctx.fillStyle = 'rgba(0,229,255,0.9)'; ctx.fillText(eq, 16, 10 + fz(23));
+
+    var Ct = 'C(' + neg(T.a) + ', ' + neg(T.b) + ')';
+    var Pt = T.ex ? 'P(' + neg(P[0]) + ', ' + neg(P[1]) + ')' : 'P(' + dec(P[0]) + ', ' + dec(P[1]) + ')';
+    /* C label sits opposite P, P label sits outside the circle */
+    tagAt(Ct, Cx + ux * 22, Cy + uy * 26, ux > 0.35 ? 'left' : (ux < -0.35 ? 'right' : 'center'), '#ffffff');
+    var ox = -ux, oy = -uy;
+    tagAt(Pt, Px + ox * 30, Py + oy * 34, ox > 0.35 ? 'left' : (ox < -0.35 ? 'right' : 'center'), '#ffffff',
+          [Px - ux * 6, Py + (Py < cv.height / 2 ? fz(40) : -fz(40)), 'center']);
+  }
+
+  function renderTan() {
+    tanView();
+    document.getElementById('tAVal').textContent = neg(T.a);
+    document.getElementById('tBVal').textContent = neg(T.b);
+    document.getElementById('tRVal').textContent = String(T.r);
+    document.getElementById('tCircEq').textContent = circleStr(T.a, T.b, T.r);
+    var L = lattice(T.r);
+    document.getElementById('tSnapInfo').textContent = L.length + ' whole-number points on this circle'
+      + (L.length === 4 ? ': the ends of the horizontal and vertical diameters.' : '.');
+    tSnap.setAttribute('aria-pressed', T.snap ? 'true' : 'false');
+    tSnap.textContent = 'Snap to whole-number points: ' + (T.snap ? 'on' : 'off');
+    var res = tanResult();
+    if (T.snap) {
+      tP.min = '0'; tP.max = String(L.length - 1); tP.step = '1';
+      var idx = 0;
+      L.forEach(function (p, i) { if (p.dx === T.dx && p.dy === T.dy) idx = i; });
+      tP.value = String(idx);
+      document.getElementById('tPLabel').textContent = 'P';
+      document.getElementById('tPVal').textContent = '(' + neg(res.P[0]) + ', ' + neg(res.P[1]) + ')';
+    } else {
+      tP.min = '0'; tP.max = '359'; tP.step = '1';
+      var deg = Math.round(T.th * 180 / Math.PI) % 360;
+      tP.value = String(deg);
+      document.getElementById('tPLabel').textContent = 'angle of P';
+      document.getElementById('tPVal').textContent = T.ex && Math.abs(T.dx * T.dy) > 0
+        ? '≈ ' + (Math.round(T.th * 1800 / Math.PI) / 10) + '°' : deg + '°';
+    }
+    function lines(arr) { return arr.map(function (s) { return '<span class="lw">' + s[0] + '</span> ' + s[1]; }).join('<br>'); }
+    document.getElementById('tWork').innerHTML = lines(res.work);
+    var dv = document.getElementById('tDiscVerdict');
+    if (T.ex) {
+      document.getElementById('tDiscWork').innerHTML = lines(res.disc);
+      dv.className = 'verdict one'; dv.textContent = res.verdict;
+    } else {
+      document.getElementById('tDiscWork').innerHTML = '<span class="lw">P is not a whole-number point, so the algebra would be decimals all the way.</span>';
+      dv.className = 'verdict'; dv.textContent = 'Turn snapping on, or move P to a whole-number point, to see the tangent substituted into the circle and Δ come out as 0.';
+    }
+    drawTan(res);
+  }
+
+  function tanPointer(e) {
+    var r = cv.getBoundingClientRect();
+    var cx = (e.clientX - r.left) / r.width * cv.width, cy = (e.clientY - r.top) / r.height * cv.height;
+    var wx = TV.mx + (cx - cv.width / 2) / TV.s, wy = TV.my - (cy - cv.height / 2) / TV.s;
+    if (Math.abs(wx - T.a) < 1e-9 && Math.abs(wy - T.b) < 1e-9) return;
+    placeAt(Math.atan2(wy - T.b, wx - T.a));
+    renderTan();
+  }
+
+  function setMode(m) {
+    mode = m;
+    var on = m === 'tangent';
+    tanBtn.classList.toggle('active', on);
+    tanBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    tanPanels.hidden = !on; tanNote.hidden = !on;
+    lineEls.forEach(function (el) { el.hidden = on; });
+    dragHint.textContent = on ? 'drag P around the circle, or use the P slider' : dragHintText;
+    cv.setAttribute('aria-label', on ? 'A circle with a point P you can drag around it, the radius CP and the tangent at P' : cvLabel);
+  }
+  tanBtn.addEventListener('click', function () {
+    document.querySelectorAll('.chip[data-curve]').forEach(function (o) { o.classList.remove('active'); });
+    setMode('tangent'); renderTan();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.chip[data-curve]'), function (b) {
+    b.addEventListener('click', function () { if (mode === 'tangent') setMode('lines'); });
+  });
+  [tA, tB].forEach(function (s) {
+    s.addEventListener('input', function () { T.a = parseInt(tA.value, 10); T.b = parseInt(tB.value, 10); renderTan(); });
+  });
+  tR.addEventListener('input', function () {
+    var th = T.th; T.r = parseInt(tR.value, 10); placeAt(th); renderTan();
+  });
+  tP.addEventListener('input', function () {
+    var v = parseInt(tP.value, 10);
+    if (T.snap) { var p = lattice(T.r)[v]; T.ex = true; T.dx = p.dx; T.dy = p.dy; T.th = p.th; }
+    else placeAt(v * Math.PI / 180);
+    renderTan();
+  });
+  tSnap.addEventListener('click', function () {
+    T.snap = !T.snap;
+    if (T.snap) placeAt(T.th);
+    renderTan();
+  });
+
+  window.addEventListener('resize', function () { if (mode === 'tangent') renderTan(); });
+
+  window.__tan = {
+    state: function () {
+      var res = tanResult();
+      return { mode: mode, a: T.a, b: T.b, r: T.r, snap: T.snap, ex: T.ex, dx: T.dx, dy: T.dy, deg: T.th * 180 / Math.PI,
+               P: res.P, kind: res.kind, work: document.getElementById('tWork').textContent,
+               disc: document.getElementById('tDiscWork').textContent, verdict: document.getElementById('tDiscVerdict').textContent,
+               pval: document.getElementById('tPVal').textContent, slider: [tP.min, tP.max, tP.value] };
+    },
+    exact: tanExact, approx: tanApprox, lattice: lattice,
+    view: function () { return TV; }, toPx: function (x, y) { return [tx(x), ty(y)]; }
+  };
 
   render();
   window.__labState = function () {
