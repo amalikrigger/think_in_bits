@@ -37,7 +37,7 @@
   <h1>Straight Lines</h1>
   <p class="muted">You have met most of this before. Today is about doing it the way Cambridge marks it: exact answers, the right form of the equation, and the right gradient for the right line.</p>
   <div class="agenda">
-    <div class="row"><span>Do Now: gradient, midpoint and length</span><span class="t">5 min</span></div>
+    <div class="row"><span>Do Now: gradient, midpoint and length, and why this topic matters</span><span class="t">7 min</span></div>
     <div class="row"><span>Three measurements and three forms of a line</span><span class="t">10 min</span></div>
     <div class="row"><span>Parallel and perpendicular lines, and where two lines meet</span><span class="t">8 min</span></div>
     <div class="row"><span>The perpendicular bisector, the Bisector Lab, and a 4-mark finish from June 2024</span><span class="t">14 min</span></div>
@@ -60,6 +60,33 @@
       <div class="math small result">Gradient \(2\), midpoint \((3, 6)\), length \(4\sqrt{5}\). A decimal like 8.94 is not exact.</div>
     </div>
   </div>
+</section>
+
+<!-- 2b · why coordinate geometry -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>Coordinates are a way of describing a position relative to a fixed point, the origin.</h2>
+  <p>Once a place is a pair of numbers, questions about distance, direction and shape become algebra, and a computer can answer them.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">What each skill answers</p>
+      <p class="small"><b>Gradient:</b> how steep something is. A ramp, a roof, a road, the track of a storm.</p>
+      <p class="small"><b>Length:</b> how far apart two places are.</p>
+      <p class="small"><b>Midpoint:</b> the place halfway between two others, such as a meeting point.</p>
+      <p class="small"><b>Perpendicular:</b> the shortest way from a point to a line, so the closest a storm comes to an island.</p>
+      <p class="small"><b>Where two lines meet:</b> where two roads, or two ships' courses, cross.</p>
+      <p class="small"><b>Perpendicular bisector:</b> every place that is equally far from two others, such as a shelter that is fair to two towns.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small frag"><b>Maps and GPS.</b> A place is a pair of numbers, latitude and longitude. Apps work out distances and routes from them.</p>
+      <p class="small frag"><b>Hurricane tracking.</b> A forecast track is a line of positions. How close it comes to St. Croix is a perpendicular distance.</p>
+      <p class="small frag"><b>Games and animation.</b> Every character and every pixel has an \((x, y)\) position. Moving and colliding are distance and line calculations.</p>
+      <p class="small frag"><b>3D printers and robots.</b> The machine follows a list of coordinates and moves in straight lines from one point to the next.</p>
+      <p class="small frag"><b>Building plans and surveying.</b> Corners are points. Walls that must meet at right angles are perpendicular lines.</p>
+    </div></div>
+  </div>
+  <p class="small frag">The Do Now used the first three skills. By the end of today you can do all six, and the exam asks for them with exact answers.</p>
 </section>
 
 <!-- 3 · three measurements -->
@@ -245,17 +272,24 @@
 <!-- 9 · worked example: the solution with marks -->
 <section class="slide duo">
   <p class="eyebrow">Direct instruction · 8 of 9 · <span class="lit">Q10(b)</span> · where the last 4 marks come from</p>
-  <h2>Each line of working below earns one mark.</h2>
-  <div class="agenda">
-    <div class="row frag"><span><b>M1*</b> &nbsp;gradient of \(AB\): \(m_1 = \dfrac{32 - 6}{-2 - 2} = \dfrac{26}{-4} = -\dfrac{13}{2}\), &nbsp;so the perpendicular gradient is \(-\dfrac{1}{m_1} = \dfrac{2}{13}\)</span><span class="t">1 mark</span></div>
-    <div class="row frag"><span><b>M1*</b> &nbsp;midpoint of \(AB\): \(\left(\dfrac{-2 + 2}{2}, \dfrac{32 + 6}{2}\right) = (0, 19)\)</span><span class="t">1 mark</span></div>
-    <div class="row frag"><span><b>DM1</b> &nbsp;the line through the midpoint with the perpendicular gradient: \(y - 19 = \dfrac{2}{13}(x - 0)\)</span><span class="t">1 mark</span></div>
-    <div class="row frag"><span><b>A1</b> &nbsp;multiply by 13: \(13y - 247 = 2x\), &nbsp;then move everything to one side: \(2x - 13y + 247 = 0\)</span><span class="t">1 mark</span></div>
-  </div>
-  <div class="math result frag">\(2x - 13y + 247 = 0\) &nbsp;(any integer multiple, such as \(-2x + 13y - 247 = 0\), also scores)</div>
-  <div class="card frag">
-    <p class="small"><b>Reading the codes.</b> M is a method mark, A is an accuracy mark. The star and the D go together: the DM1 depends on both starred marks, so the equation mark only counts if you used a perpendicular gradient and the midpoint. The first two of the 6 marks are for finding \(B\) with calculus.</p>
-    <p class="small"><b>Check:</b> the midpoint \((0, 19)\) must be on the answer. \(2(0) - 13(19) + 247 = -247 + 247 = 0\). It works.</p>
+  <h2>Four marks, four lines of working. Here is what each code means.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Reading the codes</p>
+      <p class="small"><b>M</b> is a method mark. You chose a valid method and put the numbers in. A slip in the arithmetic does not lose it, but writing only an answer with no working can.</p>
+      <p class="small"><b>A</b> is an accuracy mark. The value or answer is correct. It needs the M mark before it.</p>
+      <p class="small"><b>B</b> is a mark for a correct fact or value that needs no method. It is not used in this part.</p>
+      <p class="small"><b>*</b> (the star) marks an M mark that a later mark leans on.</p>
+      <p class="small"><b>D</b> means dependent. DM1 is awarded only if both starred marks were earned.</p>
+      <p class="small">The number is how many marks the line is worth. Of the 6 marks, the first two (M1 A1) are for finding \(B\) with calculus. The four on this slide are the perpendicular bisector.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">M1* · gradient of \(AB\), then the perpendicular gradient:</span><br>\(m_1 = \dfrac{32 - 6}{-2 - 2} = -\dfrac{13}{2}\)<br>perpendicular gradient \(= -\dfrac{1}{m_1} = \dfrac{2}{13}\)<br><span class="lbl">earn it: use both points, then flip and change the sign</span></div>
+      <div class="math small frag"><span class="lbl">M1* · midpoint of \(AB\):</span><br>\(\left(\dfrac{-2 + 2}{2}, \dfrac{32 + 6}{2}\right) = (0, 19)\)<br><span class="lbl">earn it: average the \(x\)-values and the \(y\)-values</span></div>
+      <div class="math small frag"><span class="lbl">DM1 · the line through the midpoint:</span><br>\(y - 19 = \dfrac{2}{13}(x - 0)\)<br><span class="lbl">earn it: use your midpoint and gradient. It needs both stars.</span></div>
+      <div class="math small frag"><span class="lbl">A1 · the answer in the form asked:</span><br>\(13y - 247 = 2x \;\Rightarrow\; 2x - 13y + 247 = 0\)<br><span class="lbl">earn it: correct equation, integers, "= 0". Multiples score.</span></div>
+      <p class="small frag">Check: the midpoint \((0, 19)\) must be on the answer. \(2(0) - 13(19) + 247 = 0\). It works.</p>
+    </div></div>
   </div>
 </section>
 
@@ -334,10 +368,9 @@
     <div class="check" tabindex="0">
       <div class="math small">4.&nbsp; \(A(0, 1)\), \(B(4, 3)\), \(C(2, 7)\). Show that angle \(ABC\) is a right angle, and find the area of triangle \(ABC\).</div>
       <div class="ans">
-        <div class="math small"><span class="lbl">gradients:</span>&nbsp; \(AB = \tfrac{3 - 1}{4 - 0} = \tfrac{1}{2}\), &nbsp;\(BC = \tfrac{7 - 3}{2 - 4} = -2\)</div>
-        <div class="math small">\(\tfrac{1}{2} \times (-2) = -1\), so \(AB\) is perpendicular to \(BC\) and angle \(ABC = 90^\circ\).</div>
-        <div class="math small"><span class="lbl">lengths:</span>&nbsp; \(AB = \sqrt{16 + 4} = 2\sqrt{5}\), &nbsp;\(BC = \sqrt{4 + 16} = 2\sqrt{5}\)</div>
-        <div class="math small"><span class="lbl">right angle at \(B\), so these are base and height:</span>&nbsp; \(\tfrac{1}{2} \times 2\sqrt{5} \times 2\sqrt{5}\)</div>
+        <div class="math small"><span class="lbl">gradients:</span>&nbsp; \(AB = \tfrac{3 - 1}{4 - 0} = \tfrac{1}{2}\), &nbsp;\(BC = \tfrac{7 - 3}{2 - 4} = -2\). &nbsp;\(\tfrac{1}{2} \times (-2) = -1\), so \(AB \perp BC\) and angle \(ABC = 90^\circ\).</div>
+        <div class="math small"><span class="lbl">lengths:</span>&nbsp; \(AB = \sqrt{4^2 + 2^2} = 2\sqrt{5}\), &nbsp;\(BC = \sqrt{(-2)^2 + 4^2} = 2\sqrt{5}\)</div>
+        <div class="math small"><span class="lbl">area \(= \tfrac{1}{2} \times\) base \(\times\) height.</span>&nbsp; \(AB\) and \(BC\) meet at the right angle, so use them: \(\tfrac{1}{2} \times 2\sqrt{5} \times 2\sqrt{5} = \tfrac{1}{2} \times 20\)</div>
         <div class="math small result">Area \(= 10\)</div>
       </div>
     </div>
@@ -361,7 +394,7 @@
       </div>
     </div>
   </div>
-  <p class="small">Finished early? Prove that if two lines are perpendicular, their gradients multiply to \(-1\). Hint: turn a right-angled triangle with sides 1 across and \(m\) up through \(90^\circ\).</p>
+  <p class="small">Finished early? Prove that perpendicular lines have gradients that multiply to \(-1\). Hint: turn a triangle with sides 1 across and \(m\) up through \(90^\circ\).</p>
 </section>
 
 <!-- 12 · recap -->
