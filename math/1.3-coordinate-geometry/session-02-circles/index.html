@@ -40,11 +40,9 @@
   <div class="agenda">
     <div class="row"><span>Do Now, and why circles matter</span><span class="t">7 min</span></div>
     <div class="row"><span>The circle equation, how to read it, and the Circle Reader</span><span class="t">10 min</span></div>
-    <div class="row"><span>From the expanded form to the center and radius, and a route check</span><span class="t">9 min</span></div>
-    <div class="row"><span>Inside, on or outside, and a hurricane over St. Croix</span><span class="t">5 min</span></div>
-    <div class="row"><span>The tangent at a point, and the Tangent Lab</span><span class="t">6 min</span></div>
-    <div class="row"><span>A real 3-mark start from June 2023, and spot the mistake</span><span class="t">8 min</span></div>
-    <div class="row"><span>Practice together, then on your own</span><span class="t">8 min</span></div>
+    <div class="row"><span>The expanded form, a route check, and inside, on or outside</span><span class="t">14 min</span></div>
+    <div class="row"><span>The tangent at a point, the Tangent Lab, and a 3-mark start from June 2023</span><span class="t">14 min</span></div>
+    <div class="row"><span>Spot the mistake, practice together, then on your own</span><span class="t">8 min</span></div>
     <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
   </div>
 </section>
@@ -635,7 +633,13 @@ var CircleLabKit = (function () {
   }
   function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
   function frac(n, d) { if (d === 0) return 'undefined (vertical)'; if (n === 0) return '0'; if (d < 0) { n = -n; d = -d; } var g = gcd(n, d); n /= g; d /= g; return (n < 0 ? M : '') + Math.abs(n) + (d === 1 ? '' : '/' + d); }
-  return { px: px, py: py, K: K, sgn: sgn, grid: grid, std: std, expanded: expanded, circle: circle, dot: dot, gcd: gcd, frac: frac, term: term, M: M };
+  /* typeset a readout with KaTeX: real minus signs and ² become LaTeX, a/b becomes a small fraction */
+  function tex(str) {
+    if (!window.katex) return str;
+    var t = str.replace(/−/g, '-').replace(/²/g, '^{2}').replace(/(\d+)\/(\d+)/g, '\\tfrac{$1}{$2}');
+    return katex.renderToString(t, { throwOnError: false, output: 'html' });
+  }
+  return { tex: tex, px: px, py: py, K: K, sgn: sgn, grid: grid, std: std, expanded: expanded, circle: circle, dot: dot, gcd: gcd, frac: frac, term: term, M: M };
 })();
 
 /* ---------- Circle Reader: four ways to read (x − a)² + (y − b)² = r².
@@ -654,11 +658,11 @@ var CircleLabKit = (function () {
   function draw() {
     var a = +ia.value, b = +ib.value, r = +ir.value, rr = r * r;
     alab.textContent = 'a = ' + L.sgn(a); blab.textContent = 'b = ' + L.sgn(b); rlab.textContent = 'r = ' + r + ', so r² = ' + rr;
-    eqEl.innerHTML = '<b>' + L.std(a, b, rr) + '</b><br><span class="lw">expanded:</span> ' + L.expanded(a, b, rr);
+    eqEl.innerHTML = '<b>' + L.tex(L.std(a, b, rr)) + '</b><br><span class="lw">expanded:</span> ' + L.tex(L.expanded(a, b, rr));
     var ca = a, cb = b, rad = r;
     if (method === 1) rad = rr; else if (method === 2) { ca = -a; cb = -b; } else if (method === 3) { ca = b; cb = a; }
     var same = ca === a && cb === b && rad === r;
-    var h = '<span class="lw">' + NAMES[method] + ':</span> center <b>(' + L.sgn(ca) + ', ' + L.sgn(cb) + ')</b> &nbsp;radius <b>' + rad + '</b>';
+    var h = '<span class="lw">' + NAMES[method] + ':</span> center <b>' + L.tex('(' + L.sgn(ca) + ', ' + L.sgn(cb) + ')') + '</b> &nbsp;radius <b>' + L.tex(String(rad)) + '</b>';
     var s = L.grid('cr-clip');
     if (show) {
       s += L.circle(a, b, r, '#b0b0b0', '6 5', 2.2) + L.dot(a, b, '#b0b0b0', '', 0, 0);
@@ -716,10 +720,11 @@ var CircleLabKit = (function () {
     var a = +ia.value, b = +ib.value, o = OFF[+ik.value], Px = a + o[0], Py = b + o[1];
     alab.textContent = 'center (' + L.sgn(a) + ', ' + L.sgn(b) + ')   (top slider x, bottom slider y)';
     klab.textContent = 'P = (' + L.sgn(Px) + ', ' + L.sgn(Py) + ')   (slide P around the circle)';
-    eqEl.innerHTML = '<span class="lw">circle</span> &nbsp;<b>' + L.std(a, b, 25) + '</b>';
+    eqEl.innerHTML = '<span class="lw">circle</span> &nbsp;<b>' + L.tex(L.std(a, b, 25)) + '</b>';
     var dx = o[0], dy = o[1], u, v;
     if (method === 0) { u = -dy; v = dx; } else if (method === 1) { u = dx; v = dy; } else { u = dy; v = dx; }
-    var h = '<span class="lw">gradient of radius</span> &nbsp;<b>' + L.frac(dy, dx) + '</b>';
+    function g(t) { return /undefined/.test(t) ? t : L.tex(t); }
+    var h = '<span class="lw">gradient of radius</span> &nbsp;<b>' + g(L.frac(dy, dx)) + '</b>';
     var s = L.grid('tl-clip');
     s += L.circle(a, b, 5, '#b0b0b0', '6 5', 2.2);
     s += '<line x1="' + L.px(a) + '" y1="' + L.py(b) + '" x2="' + L.px(Px) + '" y2="' + L.py(Py) + '" stroke="#ffffff" stroke-width="2.4"/>';
@@ -727,8 +732,8 @@ var CircleLabKit = (function () {
       var len = Math.hypot(u, v), k = 30 / len;
       var d = Math.abs(v * (a - Px) - u * (b - Py)) / len, ok = Math.abs(d - 5) < 1e-9;
       s += '<line x1="' + L.px(Px - u * k) + '" y1="' + L.py(Py - v * k) + '" x2="' + L.px(Px + u * k) + '" y2="' + L.py(Py + v * k) + '" stroke="' + (ok ? '#00e5ff' : '#ff6b6b') + '" stroke-width="3" clip-path="url(#tl-clip)"/>';
-      h += '<br><span class="lw">gradient used</span> &nbsp;<b>' + L.frac(v, u) + '</b>'
-        + '<br><span class="lw">line</span> &nbsp;<b>' + lineEq(Px, Py, u, v) + '</b>'
+      h += '<br><span class="lw">gradient used</span> &nbsp;<b>' + g(L.frac(v, u)) + '</b>'
+        + '<br><span class="lw">line</span> &nbsp;<b>' + L.tex(lineEq(Px, Py, u, v)) + '</b>'
         + '<br><span class="lw">distance from center to line</span> ' + (Math.round(d * 100) / 100) + ' &nbsp;<span class="lw">r</span> 5';
       verdict.style.display = '';
       verdict.className = 'verdict ' + (ok ? 'ok' : 'no');
