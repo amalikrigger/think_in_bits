@@ -36,14 +36,15 @@
 <section class="slide active">
   <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 2 of 4</p>
   <h1>The Equation of a Circle</h1>
-  <p class="muted">Last lesson was straight lines. Today a circle becomes an equation you can read: where its center is, how big it is, and which way the tangent goes at any point on it.</p>
+  <p class="muted">Today a circle becomes an equation you can read: where its center is, how big it is, and which way the tangent goes. You met circle equations on Khan Academy. Today is about doing them the way Cambridge marks them.</p>
   <div class="agenda">
     <div class="row"><span>Do Now, and why circles matter</span><span class="t">7 min</span></div>
-    <div class="row"><span>The circle equation, how to read it, and the Circle Reader</span><span class="t">12 min</span></div>
-    <div class="row"><span>From the expanded form to the center and radius</span><span class="t">8 min</span></div>
-    <div class="row"><span>Inside, on or outside, and the tangent at a point</span><span class="t">8 min</span></div>
+    <div class="row"><span>The circle equation, how to read it, and the Circle Reader</span><span class="t">10 min</span></div>
+    <div class="row"><span>From the expanded form to the center and radius, and a route check</span><span class="t">9 min</span></div>
+    <div class="row"><span>Inside, on or outside, and a hurricane over St. Croix</span><span class="t">5 min</span></div>
+    <div class="row"><span>The tangent at a point, and the Tangent Lab</span><span class="t">6 min</span></div>
     <div class="row"><span>A real 3-mark start from June 2023, and spot the mistake</span><span class="t">8 min</span></div>
-    <div class="row"><span>Practice together, then on your own</span><span class="t">9 min</span></div>
+    <div class="row"><span>Practice together, then on your own</span><span class="t">8 min</span></div>
     <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
   </div>
 </section>
@@ -90,7 +91,7 @@
 
 <!-- 4 · the circle is the distance formula -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 1 of 10 · where it comes from</p>
+  <p class="eyebrow">Direct instruction · 1 of 12 · where it comes from</p>
   <h2>Every point \(3\sqrt{5}\) from \(C(1, -2)\). What equation do they all satisfy?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -110,7 +111,7 @@
 
 <!-- 5 · reading standard form -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 2 of 10 · reading the equation</p>
+  <p class="eyebrow">Direct instruction · 2 of 12 · reading the equation</p>
   <h2>Read the center with the signs flipped. Read the radius as the square root of the right-hand side.</h2>
   <div class="three">
     <div class="card">
@@ -130,7 +131,7 @@
     </div>
   </div>
   <div class="card frag">
-    <p class="eyebrow">Three mistakes from real exam scripts (June 2023 examiner report)</p>
+    <p class="eyebrow bad">Three mistakes from real exam scripts (June 2023 examiner report)</p>
     <p class="small"><b>Radius on the right instead of radius squared.</b> A circle with radius 10 is \(\ldots = 100\). Writing "= 10" or "= \(\sqrt{10}\)" was common.</p>
     <p class="small"><b>The sign of the center.</b> \((x + 3)^2\) means \(a = -3\). The center is \((-3, 5)\), not \((3, 5)\).</p>
     <p class="small"><b>\(x\) and \(y\) swapped.</b> The first number in the center goes with \(x\). Also watch for brackets that were never squared.</p>
@@ -139,7 +140,7 @@
 
 <!-- 6 · circle reader lab -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 3 of 10 · the Circle Reader</p>
+  <p class="eyebrow">Direct instruction · 3 of 12 · the Circle Reader</p>
   <h2>Set the equation, pick a reading, predict, then show it.</h2>
   <div class="lab">
     <svg class="fig" id="cr-svg" viewBox="0 0 440 440" aria-label="A grid with the circle given by the equation, and the circle a chosen reading of the equation would draw"></svg>
@@ -167,7 +168,7 @@
 
 <!-- 7 · expanded form, two routes -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 4 of 10 · the expanded form</p>
+  <p class="eyebrow">Direct instruction · 4 of 12 · the expanded form</p>
   <h2>Find the center and radius of \(x^2 + y^2 + 10x - 4y - 7 = 0\).</h2>
   <p class="small">Multiply out the brackets and a circle can look like this. Two routes get you back.</p>
   <div class="cols" style="margin-top:0.4vh">
@@ -175,6 +176,7 @@
       <p class="eyebrow">Route 1 · complete the square</p>
       <div class="math small frag"><span class="lbl">group the \(x\) terms and the \(y\) terms:</span><br>\((x^2 + 10x) + (y^2 - 4y) - 7 = 0\)</div>
       <div class="math small frag"><span class="lbl">half of 10 is 5, half of \(-4\) is \(-2\):</span><br>\((x + 5)^2 - 25 + (y - 2)^2 - 4 - 7 = 0\)</div>
+      <p class="small frag">Why subtract 25? \((x + 5)^2\) expands to \(x^2 + 10x + 25\). That is 25 more than you started with, so take it back off. Same for \((y - 2)^2\) and the 4.</p>
       <div class="math small frag"><span class="lbl">move the numbers across, \(25 + 4 + 7 = 36\):</span><br>\((x + 5)^2 + (y - 2)^2 = 36\)</div>
       <div class="math small result frag">center \((-5, 2)\), radius \(6\)</div>
     </div></div>
@@ -184,15 +186,16 @@
       <div class="math small frag"><span class="lbl">match:</span>&nbsp; \(2g = 10\), so \(g = 5\); &nbsp;\(2f = -4\), so \(f = -2\);<br>\(c = -7\)</div>
       <div class="math small frag"><span class="lbl">center \((-g, -f)\):</span>&nbsp; \((-5, 2)\)</div>
       <div class="math small frag"><span class="lbl">radius:</span>&nbsp; \(\sqrt{25 + 4 - (-7)} = \sqrt{36} = 6\)</div>
+      <p class="small frag">Where the pattern comes from: Route 1 on \(x^2 + 2gx\) gives \((x + g)^2 - g^2\). Do the same for \(y\) and move the numbers across:</p>
+      <div class="math small frag">\((x + g)^2 + (y + f)^2 = g^2 + f^2 - c\)</div>
       <div class="math small result frag">Same answer: center \((-5, 2)\), radius \(6\)</div>
     </div></div>
   </div>
-  <p class="small frag"><b>Which route?</b> Completing the square always works and shows every step, so it is the safe one to write in an exam. The pattern is a fast check, but it only works when \(x^2\) and \(y^2\) both have coefficient 1, and it is not in the formula booklet.</p>
 </section>
 
 <!-- 8 · check the shape first -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 5 of 10 · two checks before you start</p>
+  <p class="eyebrow">Direct instruction · 5 of 12 · two checks before you start</p>
   <h2>Is the equation ready, and is it really a circle?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -215,9 +218,31 @@
   </div>
 </section>
 
+<!-- 8b · route check -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 6 of 12 · route check</p>
+  <h2>Route check. Do not solve these.</h2>
+  <p class="small">Look at each equation and say what it needs first. That is the whole task. Ten seconds each.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="check" tabindex="0"><div class="math small">1.&nbsp; \((x - 4)^2 + (y + 1)^2 = 12\)</div><div class="ans"><div class="math small result">Nothing. Read it now: center \((4, -1)\), radius \(\sqrt{12} = 2\sqrt{3}\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">2.&nbsp; \(x^2 + y^2 - 8x + 2y = 0\)</div><div class="ans"><div class="math small result">Complete the square. \((x - 4)^2 + (y + 1)^2 = 17\)</div></div></div>
+    </div>
+    <div>
+      <div class="check" tabindex="0"><div class="math small">3.&nbsp; \(3x^2 + 3y^2 + 6x - 12y - 12 = 0\)</div><div class="ans"><div class="math small result">Divide by 3 first, then complete the square. \((x + 1)^2 + (y - 2)^2 = 9\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">4.&nbsp; \(x^2 + 2y^2 + 4x - 6 = 0\)</div><div class="ans"><div class="math small result">Stop. \(x^2\) and \(y^2\) have different coefficients, so this is not a circle.</div></div></div>
+    </div>
+  </div>
+  <div class="card frag">
+    <p class="eyebrow">Which route for the expanded form?</p>
+    <p class="small"><b>Completing the square</b> always works and shows every step, so it is the safe one to write in an exam. <b>The pattern</b> \((-g, -f)\), \(\sqrt{g^2 + f^2 - c}\) is a fast check. It only works once \(x^2\) and \(y^2\) have coefficient 1, and it is not in the formula booklet.</p>
+  </div>
+  <p class="small frag">Numbers 1 and 2 have the same center. The only difference is whether the squares are already done for you.</p>
+</section>
+
 <!-- 9 · inside, on, outside -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 6 of 10 · inside, on or outside</p>
+  <p class="eyebrow">Direct instruction · 7 of 12 · inside, on or outside</p>
   <h2>Put the point into the left-hand side and compare with \(r^2\).</h2>
   <div class="math small">The circle from the start: \((x - 1)^2 + (y + 2)^2 = 45\)</div>
   <div class="three">
@@ -240,9 +265,31 @@
   <p class="small frag"><b>Why this works:</b> the left-hand side is the distance from the center, squared. Less than \(r^2\) means closer than the radius. No square roots needed.</p>
 </section>
 
+<!-- 9b · application: a hurricane -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 8 of 12 · hurricanes</p>
+  <h2>Is the town inside the storm-force winds?</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-storm" viewBox="0 0 300 300" aria-label="A storm eye at 6, 8 with a circle of radius 12, Christiansted at the origin inside it, and Frederiksted at minus 2, minus 1 just outside it"></svg>
+      <p class="key"><span class="sw ans"></span>edge of the storm-force winds &nbsp; one grid square = 10 km</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small">A made-up storm. Put Christiansted at the origin, one grid unit = 10 km. The eye is at \((6, 8)\), and storm-force winds reach 120 km from the eye, so \(r = 12\).</p>
+      <div class="math small frag"><span class="lbl">the edge of the winds:</span>&nbsp; \((x - 6)^2 + (y - 8)^2 = 144\)</div>
+      <div class="math small frag"><span class="lbl">Christiansted \((0, 0)\):</span>&nbsp; \(36 + 64 = 100\), and \(100 &lt; 144\)</div>
+      <div class="math small result frag">Inside. Christiansted is 100 km from the eye.</div>
+      <div class="math small frag"><span class="lbl">Frederiksted, about \((-2, -1)\):</span>&nbsp; \(64 + 81 = 145\), and \(145 &gt; 144\)</div>
+      <div class="math small result frag">Outside, but only just. \(\sqrt{145} \approx 12.04\), so about 120.4 km away.</div>
+      <p class="small frag">Same test as the last slide, with real places. Half a kilometer decides it, which is why forecasters care about the exact radius.</p>
+    </div></div>
+  </div>
+  <p class="frag"><a class="toolchip" href="../hurricane-closest-approach/" target="_blank" rel="noopener">Hurricane Closest Approach: how close does a moving storm come?</a></p>
+</section>
+
 <!-- 10 · tangent at a point -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 7 of 10 · the tangent at a point</p>
+  <p class="eyebrow">Direct instruction · 9 of 12 · tangent at a point</p>
   <h2>A tangent is perpendicular to the radius at the point where it touches.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -256,14 +303,15 @@
       <div class="math small frag"><span class="lbl">3 · flip and change the sign:</span>&nbsp; tangent gradient \(-\tfrac{1}{2}\)</div>
       <div class="math small frag"><span class="lbl">4 · line through \(P\):</span>&nbsp; \(y - 4 = -\tfrac{1}{2}(x - 4)\)<br><span class="lbl">times 2:</span>&nbsp; \(2y - 8 = -x + 4\)</div>
       <div class="math small result frag">\(x + 2y - 12 = 0\)</div>
-      <p class="small frag"><b>The trap:</b> using the radius gradient, 2, as the tangent gradient. The radius goes into the circle. The tangent only touches it. You do not need calculus for this, and the examiners say students who tried it did worse.</p>
+      <p class="small frag"><b>Why a right angle?</b> Tilt the line even a little away from \(90^\circ\) and one side of it dips inside the circle, so it crosses the circle again. Only the line at right angles to the radius stays outside everywhere except \(P\). The Tangent Lab shows this next.</p>
+      <p class="small frag bad"><b>The trap:</b> using the radius gradient, 2, as the tangent gradient. The radius goes into the circle. The tangent only touches it. You do not need calculus for this, and the examiners say students who tried it did worse.</p>
     </div></div>
   </div>
 </section>
 
 <!-- 11 · tangent lab -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 8 of 10 · the Tangent Lab</p>
+  <p class="eyebrow">Direct instruction · 10 of 12 · the Tangent Lab</p>
   <h2>Pick a point and a method. Does the line only touch, or does it cut through?</h2>
   <div class="lab">
     <svg class="fig" id="tl-svg" viewBox="0 0 440 440" aria-label="A circle of radius 5, a point P on it, the radius to P, and the line built by the chosen method"></svg>
@@ -289,7 +337,7 @@
 
 <!-- 12 · real question -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 9 of 10 · June 2023, Paper 11, <span class="lit">Q12</span></p>
+  <p class="eyebrow">Direct instruction · 11 of 12 · June 2023, Paper 11, <span class="lit">Q12</span></p>
   <h2>A real Cambridge question opens exactly like today's lesson.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -308,7 +356,7 @@
 
 <!-- 13 · the marks -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 10 of 10 · <span class="lit">Q12(a)(b)</span> · where the 3 marks come from</p>
+  <p class="eyebrow">Direct instruction · 12 of 12 · <span class="lit">Q12(a)(b)</span> · where the 3 marks come from</p>
   <h2>Three marks, three lines of working.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -482,6 +530,10 @@
       segs: [[1, -2, 4, 4, '#ffffff', '']],
       right: [4, 4, [-1, -2], [2, -1]],
       pts: [[1, -2, 'C', '#ffffff', -16, 16], [4, 4, 'P', '#00e5ff', 6, -10]] },
+    'fig-storm': { x: [-8, 19], y: [-6, 21], k: 9, step: 4,
+      circles: [[6, 8, 12, '#00e5ff', '']],
+      segs: [[6, 8, 0, 0, '#ffc46b', '4 3'], [6, 8, -2, -1, '#ffc46b', '4 3']],
+      pts: [[6, 8, 'eye', '#ffffff', 7, -6], [0, 0, 'C', '#4fe08a', 6, 14], [-2, -1, 'F', '#ff6b6b', -14, 14]] },
     'fig-q12': { x: [-12, 12], y: [-9, 21], k: 9.6, step: 4,
       circles: [[0, 2, 10, '#ffffff', ''], [0, 14.5, Math.sqrt(31.25), '#b0b0b0', '6 5']],
       lines: [[-12, 23.5, 12, 5.5, '#00e5ff', '']],
