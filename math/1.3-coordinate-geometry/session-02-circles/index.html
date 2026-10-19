@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Equation of a Circle</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures: equal scales on both axes so circles stay round and right angles look square */
+    svg.cg { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 300px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.circ { border-color: #ffffff; }
+    .key .sw.dash { border-top-style: dashed; border-color: #b0b0b0; }
+    .key .sw.leg { border-top-style: dashed; border-color: #ffc46b; }
+    .key .sw.ans { border-color: #00e5ff; }
+    .key .sw.bad { border-color: #ff6b6b; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; align-items: stretch; }
+    .three > .card, .three > .check { min-width: 0; }
+    .three .check .math.small { padding: 0.55vh 0.8vw; }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .lab .fig { width: min(420px, 34vw); }
+    @media (max-width: 800px) { .three { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-deck-name="1.3 · Session 2" data-help-note="Click any graph to enlarge it. In the Circle Reader, set the equation with the sliders, pick a way of reading it, predict, then tap Show. In the Tangent Lab, pick a point and a method, predict, then tap Show. Tap a practice question to check your answer.">
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 2 of 4</p>
+  <h1>The Equation of a Circle</h1>
+  <p class="muted">Last lesson was straight lines. Today a circle becomes an equation you can read: where its center is, how big it is, and which way the tangent goes at any point on it.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now, and why circles matter</span><span class="t">7 min</span></div>
+    <div class="row"><span>The circle equation, how to read it, and the Circle Reader</span><span class="t">12 min</span></div>
+    <div class="row"><span>From the expanded form to the center and radius</span><span class="t">8 min</span></div>
+    <div class="row"><span>Inside, on or outside, and the tangent at a point</span><span class="t">8 min</span></div>
+    <div class="row"><span>A real 3-mark start from June 2023, and spot the mistake</span><span class="t">8 min</span></div>
+    <div class="row"><span>Practice together, then on your own</span><span class="t">9 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min · no notes, no calculator</p>
+  <h2>\(C(1, -2)\) and \(P(4, 4)\). Find the distance \(CP\), the gradient of \(CP\), and the gradient of a line perpendicular to \(CP\).</h2>
+  <p>Give the distance in exact form. Sketch the two points first.</p>
+  <div class="check" tabindex="0">
+    <div class="math">Write all three, then tap to check.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">distance:</span>&nbsp; \(\sqrt{(4 - 1)^2 + (4 - (-2))^2} = \sqrt{9 + 36} = \sqrt{45} = \sqrt{9}\sqrt{5} = 3\sqrt{5}\)</div>
+      <div class="math small"><span class="lbl">gradient:</span>&nbsp; \(\dfrac{4 - (-2)}{4 - 1} = \dfrac{6}{3} = 2\)</div>
+      <div class="math small"><span class="lbl">perpendicular gradient, flip and change the sign:</span>&nbsp; \(-\dfrac{1}{2}\), &nbsp;check \(2 \times \left(-\tfrac{1}{2}\right) = -1\)</div>
+      <div class="math small result">\(CP = 3\sqrt{5}\), gradient \(2\), perpendicular gradient \(-\tfrac{1}{2}\). All three come back today.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · why this matters -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>A circle is every point that is the same distance from one fixed point, the center.</h2>
+  <p>That distance is the radius. Turn "the same distance" into algebra and you get one equation that holds for every point on the circle and for no other point.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">What each skill answers</p>
+      <p class="small"><b>Center and radius:</b> where is the middle, and how far does it reach?</p>
+      <p class="small"><b>Inside, on or outside:</b> is this place covered or not?</p>
+      <p class="small"><b>Tangent:</b> which way does something go the moment it leaves the circle?</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small frag"><b>Hurricane wind fields.</b> Forecasters give how far out from the eye the storm-force winds reach. Is St. Croix inside that circle or outside it?</p>
+      <p class="small frag"><b>Phones and Wi-Fi.</b> A tower or router covers every point within a certain distance. That coverage area is a circle.</p>
+      <p class="small frag"><b>GPS.</b> Your phone knows how far it is from each satellite. Each distance is a circle (a sphere, in space), and you are where they meet.</p>
+      <p class="small frag"><b>Sprinklers and radar.</b> Both sweep out a circle around a fixed center.</p>
+      <p class="small frag"><b>Letting go.</b> A ball whirled on a string and released flies off along the tangent, at right angles to the string.</p>
+    </div></div>
+  </div>
+  <p class="small frag">Your Do Now distance was a radius, and your perpendicular gradient was a tangent. By the end you can do both from an equation, which is how a real Cambridge question starts.</p>
+</section>
+
+<!-- 4 · the circle is the distance formula -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 1 of 10 · where it comes from</p>
+  <h2>Every point \(3\sqrt{5}\) from \(C(1, -2)\). What equation do they all satisfy?</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-dist" viewBox="0 0 324 324" aria-label="Circle with center C at 1, minus 2 through P at 4, 4, with the across distance 3 and the up distance 6 drawn as a right-angled triangle"></svg>
+      <p class="key"><span class="sw circ"></span>radius \(CP\) &nbsp; <span class="sw leg"></span>across and up &nbsp; <span class="sw ans"></span>the circle</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small">Take any point \((x, y)\) on the circle. Its distance from \(C(1, -2)\) is the radius.</p>
+      <div class="math small frag"><span class="lbl">across is \(x - 1\), up is \(y - (-2) = y + 2\):</span><br>\(\sqrt{(x - 1)^2 + (y + 2)^2} = 3\sqrt{5}\)</div>
+      <div class="math small frag"><span class="lbl">square both sides, and \((3\sqrt{5})^2 = 9 \times 5 = 45\):</span><br>\((x - 1)^2 + (y + 2)^2 = 45\)</div>
+      <p class="small frag"><b>Check with \(P(4, 4)\):</b> \((4 - 1)^2 + (4 + 2)^2 = 9 + 36 = 45\). It works. That is your Do Now, squared.</p>
+      <div class="math result frag">Center \((a, b)\), radius \(r\):<br>\((x - a)^2 + (y - b)^2 = r^2\)</div>
+      <p class="small frag">This is Pythagoras with the square root squared away. It is not in the formula booklet, so you need it from memory.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 5 · reading standard form -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 2 of 10 · reading the equation</p>
+  <h2>Read the center with the signs flipped. Read the radius as the square root of the right-hand side.</h2>
+  <div class="three">
+    <div class="card">
+      <div class="math small">\((x + 3)^2 + (y - 5)^2 = 49\)</div>
+      <div class="math small frag"><span class="lbl">\(x + 3 = x - (-3)\):</span>&nbsp; \(a = -3\), &nbsp;\(b = 5\)</div>
+      <div class="math small result frag">center \((-3, 5)\), radius \(\sqrt{49} = 7\)</div>
+    </div>
+    <div class="card">
+      <div class="math small">\((x - 2)^2 + y^2 = 20\)</div>
+      <div class="math small frag"><span class="lbl">\(y^2 = (y - 0)^2\):</span>&nbsp; \(a = 2\), &nbsp;\(b = 0\)</div>
+      <div class="math small result frag">center \((2, 0)\), radius \(\sqrt{20} = 2\sqrt{5}\)</div>
+    </div>
+    <div class="card">
+      <div class="math small">\(x^2 + y^2 = 16\)</div>
+      <div class="math small frag"><span class="lbl">both brackets are \((x - 0)\) and \((y - 0)\):</span></div>
+      <div class="math small result frag">center \((0, 0)\), radius \(4\)</div>
+    </div>
+  </div>
+  <div class="card frag">
+    <p class="eyebrow">Three mistakes from real exam scripts (June 2023 examiner report)</p>
+    <p class="small"><b>Radius on the right instead of radius squared.</b> A circle with radius 10 is \(\ldots = 100\). Writing "= 10" or "= \(\sqrt{10}\)" was common.</p>
+    <p class="small"><b>The sign of the center.</b> \((x + 3)^2\) means \(a = -3\). The center is \((-3, 5)\), not \((3, 5)\).</p>
+    <p class="small"><b>\(x\) and \(y\) swapped.</b> The first number in the center goes with \(x\). Also watch for brackets that were never squared.</p>
+  </div>
+</section>
+
+<!-- 6 · circle reader lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 3 of 10 · the Circle Reader</p>
+  <h2>Set the equation, pick a reading, predict, then show it.</h2>
+  <div class="lab">
+    <svg class="fig" id="cr-svg" viewBox="0 0 440 440" aria-label="A grid with the circle given by the equation, and the circle a chosen reading of the equation would draw"></svg>
+    <div class="panel">
+      <div class="read" id="cr-eq"></div>
+      <label for="cr-a" id="cr-alab">a</label>
+      <input type="range" id="cr-a" min="-4" max="4" step="1" value="3">
+      <label for="cr-b" id="cr-blab">b</label>
+      <input type="range" id="cr-b" min="-4" max="4" step="1" value="-2">
+      <label for="cr-r" id="cr-rlab">r</label>
+      <input type="range" id="cr-r" min="1" max="6" step="1" value="4">
+      <div class="picks" id="cr-picks">
+        <button type="button" data-i="0" aria-pressed="true">Correct reading</button>
+        <button type="button" data-i="1" aria-pressed="false">Radius = right-hand side</button>
+        <button type="button" data-i="2" aria-pressed="false">Keep the signs</button>
+        <button type="button" data-i="3" aria-pressed="false">Swap x and y</button>
+      </div>
+      <div class="read" id="cr-read"></div>
+      <button type="button" class="toggle" id="cr-show" aria-pressed="false">Show the circle</button>
+      <div class="verdict ok" id="cr-verdict"></div>
+    </div>
+  </div>
+  <p class="key"><span class="sw dash"></span>the real circle for this equation &nbsp;&nbsp; <span class="sw ans"></span>a reading that matches &nbsp;&nbsp; <span class="sw bad"></span>a reading that misses</p>
+</section>
+
+<!-- 7 · expanded form, two routes -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 10 · the expanded form</p>
+  <h2>Find the center and radius of \(x^2 + y^2 + 10x - 4y - 7 = 0\).</h2>
+  <p class="small">Multiply out the brackets and a circle can look like this. Two routes get you back.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Route 1 · complete the square</p>
+      <div class="math small frag"><span class="lbl">group the \(x\) terms and the \(y\) terms:</span><br>\((x^2 + 10x) + (y^2 - 4y) - 7 = 0\)</div>
+      <div class="math small frag"><span class="lbl">half of 10 is 5, half of \(-4\) is \(-2\):</span><br>\((x + 5)^2 - 25 + (y - 2)^2 - 4 - 7 = 0\)</div>
+      <div class="math small frag"><span class="lbl">move the numbers across, \(25 + 4 + 7 = 36\):</span><br>\((x + 5)^2 + (y - 2)^2 = 36\)</div>
+      <div class="math small result frag">center \((-5, 2)\), radius \(6\)</div>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Route 2 · match the pattern</p>
+      <div class="math small frag">\(x^2 + y^2 + 2gx + 2fy + c = 0\) has center \((-g, -f)\) and radius \(\sqrt{g^2 + f^2 - c}\)</div>
+      <div class="math small frag"><span class="lbl">match:</span>&nbsp; \(2g = 10\), so \(g = 5\); &nbsp;\(2f = -4\), so \(f = -2\);<br>\(c = -7\)</div>
+      <div class="math small frag"><span class="lbl">center \((-g, -f)\):</span>&nbsp; \((-5, 2)\)</div>
+      <div class="math small frag"><span class="lbl">radius:</span>&nbsp; \(\sqrt{25 + 4 - (-7)} = \sqrt{36} = 6\)</div>
+      <div class="math small result frag">Same answer: center \((-5, 2)\), radius \(6\)</div>
+    </div></div>
+  </div>
+  <p class="small frag"><b>Which route?</b> Completing the square always works and shows every step, so it is the safe one to write in an exam. The pattern is a fast check, but it only works when \(x^2\) and \(y^2\) both have coefficient 1, and it is not in the formula booklet.</p>
+</section>
+
+<!-- 8 · check the shape first -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 10 · two checks before you start</p>
+  <h2>Is the equation ready, and is it really a circle?</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Check 1 · \(x^2\) and \(y^2\) must have coefficient 1</p>
+      <div class="math small">\(2x^2 + 2y^2 - 8x + 12y + 8 = 0\)</div>
+      <div class="math small frag"><span class="lbl">divide every term by 2 first:</span><br>\(x^2 + y^2 - 4x + 6y + 4 = 0\)</div>
+      <div class="math small frag"><span class="lbl">complete the square:</span><br>\((x - 2)^2 - 4 + (y + 3)^2 - 9 + 4 = 0\)</div>
+      <div class="math small frag"><span class="lbl">\(4 + 9 - 4 = 9\):</span>&nbsp; \((x - 2)^2 + (y + 3)^2 = 9\)</div>
+      <div class="math small result frag">center \((2, -3)\), radius \(3\)</div>
+      <p class="small frag">This is the same first move as dividing through by \(a\) when you completed the square in 1.1.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Check 2 · the right-hand side must be positive</p>
+      <div class="math small">\(x^2 + y^2 + 2x + 4y + 10 = 0\)</div>
+      <div class="math small frag">\((x + 1)^2 - 1 + (y + 2)^2 - 4 + 10 = 0\)</div>
+      <div class="math small frag"><span class="lbl">\(1 + 4 - 10 = -5\):</span>&nbsp; \((x + 1)^2 + (y + 2)^2 = -5\)</div>
+      <p class="small frag">Two squares added together can never be negative, so no point fits. This is <b>not a circle</b>.</p>
+      <p class="small frag"><b>Also:</b> a circle has the same coefficient on \(x^2\) and \(y^2\), and no \(xy\) term.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · inside, on, outside -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 6 of 10 · inside, on or outside</p>
+  <h2>Put the point into the left-hand side and compare with \(r^2\).</h2>
+  <div class="math small">The circle from the start: \((x - 1)^2 + (y + 2)^2 = 45\)</div>
+  <div class="three">
+    <div class="card">
+      <div class="math small">\((5, 1)\)</div>
+      <div class="math small frag">\((5 - 1)^2 + (1 + 2)^2 = 16 + 9 = 25\)</div>
+      <div class="math small result frag">\(25 &lt; 45\): inside</div>
+    </div>
+    <div class="card">
+      <div class="math small">\((7, 1)\)</div>
+      <div class="math small frag">\((7 - 1)^2 + (1 + 2)^2 = 36 + 9 = 45\)</div>
+      <div class="math small result frag">\(45 = 45\): on the circle</div>
+    </div>
+    <div class="card">
+      <div class="math small">\((-5, 2)\)</div>
+      <div class="math small frag">\((-5 - 1)^2 + (2 + 2)^2 = 36 + 16 = 52\)</div>
+      <div class="math small result frag">\(52 &gt; 45\): outside</div>
+    </div>
+  </div>
+  <p class="small frag"><b>Why this works:</b> the left-hand side is the distance from the center, squared. Less than \(r^2\) means closer than the radius. No square roots needed.</p>
+</section>
+
+<!-- 10 · tangent at a point -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 7 of 10 · the tangent at a point</p>
+  <h2>A tangent is perpendicular to the radius at the point where it touches.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-tan" viewBox="0 0 324 324" aria-label="The circle with center C at 1, minus 2, the radius to P at 4, 4, and the tangent at P meeting the radius at a right angle"></svg>
+      <p class="key"><span class="sw circ"></span>radius \(CP\) &nbsp; <span class="sw dash"></span>circle &nbsp; <span class="sw ans"></span>tangent at \(P\)</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>Find the tangent to \((x - 1)^2 + (y + 2)^2 = 45\) at \(P(4, 4)\).</b> You need a point (you have \(P\)) and a gradient.</p>
+      <div class="math small frag"><span class="lbl">1 · center from the equation:</span>&nbsp; \(C(1, -2)\)</div>
+      <div class="math small frag"><span class="lbl">2 · gradient of the radius \(CP\):</span>&nbsp; \(\dfrac{4 - (-2)}{4 - 1} = 2\)</div>
+      <div class="math small frag"><span class="lbl">3 · flip and change the sign:</span>&nbsp; tangent gradient \(-\tfrac{1}{2}\)</div>
+      <div class="math small frag"><span class="lbl">4 · line through \(P\):</span>&nbsp; \(y - 4 = -\tfrac{1}{2}(x - 4)\)<br><span class="lbl">times 2:</span>&nbsp; \(2y - 8 = -x + 4\)</div>
+      <div class="math small result frag">\(x + 2y - 12 = 0\)</div>
+      <p class="small frag"><b>The trap:</b> using the radius gradient, 2, as the tangent gradient. The radius goes into the circle. The tangent only touches it. You do not need calculus for this, and the examiners say students who tried it did worse.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 11 · tangent lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 8 of 10 · the Tangent Lab</p>
+  <h2>Pick a point and a method. Does the line only touch, or does it cut through?</h2>
+  <div class="lab">
+    <svg class="fig" id="tl-svg" viewBox="0 0 440 440" aria-label="A circle of radius 5, a point P on it, the radius to P, and the line built by the chosen method"></svg>
+    <div class="panel">
+      <div class="read" id="tl-eq"></div>
+      <label for="tl-a" id="tl-alab">center</label>
+      <input type="range" id="tl-a" min="-3" max="3" step="1" value="-1">
+      <input type="range" id="tl-b" min="-3" max="3" step="1" value="1" aria-label="y-coordinate of the center">
+      <label for="tl-k" id="tl-klab">P</label>
+      <input type="range" id="tl-k" min="0" max="11" step="1" value="1">
+      <div class="picks" id="tl-picks">
+        <button type="button" data-i="0" aria-pressed="true">Flip and change sign</button>
+        <button type="button" data-i="1" aria-pressed="false">Use the radius gradient</button>
+        <button type="button" data-i="2" aria-pressed="false">Flip only</button>
+      </div>
+      <div class="read" id="tl-read"></div>
+      <button type="button" class="toggle" id="tl-show" aria-pressed="false">Show the line</button>
+      <div class="verdict ok" id="tl-verdict"></div>
+    </div>
+  </div>
+  <p class="key"><span class="sw circ"></span>radius &nbsp;&nbsp; <span class="sw ans"></span>a tangent: touches at \(P\) only &nbsp;&nbsp; <span class="sw bad"></span>a line that cuts the circle again</p>
+</section>
+
+<!-- 12 · real question -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 9 of 10 · June 2023, Paper 11, <span class="lit">Q12</span></p>
+  <h2>A real Cambridge question opens exactly like today's lesson.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">The diagram shows a circle \(P\) with center \((0, 2)\) and radius 10 and the tangent to the circle at the point \(A\) with coordinates \((6, 10)\). It also shows a second circle \(Q\) with center at the point where this tangent meets the \(y\)‑axis and with radius \(\tfrac{5}{2}\sqrt{5}\).</p>
+      <p class="small"><b>(a)</b> Write down the equation of circle \(P\). <span class="marks">[1]</span></p>
+      <p class="small"><b>(b)</b> Find the equation of the tangent to the circle \(P\) at \(A\). <span class="marks">[2]</span></p>
+      <p class="small">Parts (c) and (d), where the tangent meets circle \(Q\), are next lesson.</p>
+      <p class="small frag"><b>Sketch first:</b> the center is on the \(y\)-axis and \(A\) is up and to the right of it, so the radius slopes up and the tangent must slope down.</p>
+    </div></div>
+    <div><div class="card">
+      <svg class="cg" id="fig-q12" viewBox="0 0 282 340" aria-label="Circle P with center 0, 2 and radius 10, the point A at 6, 10, the tangent at A crossing the y-axis, and circle Q centered where the tangent meets the y-axis"></svg>
+      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw dash"></span>circle \(Q\) &nbsp; <span class="sw ans"></span>tangent at \(A\)</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 13 · the marks -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 10 of 10 · <span class="lit">Q12(a)(b)</span> · where the 3 marks come from</p>
+  <h2>Three marks, three lines of working.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">(a) B1 · the equation, read straight from the center and radius:</span><br>\(x^2 + (y - 2)^2 = 100\)<br><span class="lbl">earn it: \(-2\) inside the bracket, and \(10^2 = 100\) on the right</span></div>
+      <div class="math small frag"><span class="lbl">(b) M1 · the gradient of the radius, or of the tangent:</span><br>\(m_{\text{radius}} = \dfrac{10 - 2}{6 - 0} = \dfrac{4}{3}\), &nbsp;so \(m_{\text{tangent}} = -\dfrac{3}{4}\)<br><span class="lbl">earn it: either gradient seen</span></div>
+      <div class="math small frag"><span class="lbl">(b) A1 · the tangent through \(A\):</span><br>\(y - 10 = -\tfrac{3}{4}(x - 6)\), &nbsp;so \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\)<br><span class="lbl">earn it: any correct form. This question does not ask for \(ax + by + c = 0\).</span></div>
+      <div class="math small result frag">\(y = -\tfrac{3}{4}x + \tfrac{29}{2}\), &nbsp;or \(3x + 4y - 58 = 0\)</div>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Reading the codes</p>
+      <p class="small"><b>B1</b> is a mark for a correct statement that needs no method. Here, writing the equation down.</p>
+      <p class="small"><b>M1</b> then <b>A1</b>: a method mark, then an accuracy mark that needs it. There are no stars or D marks in this part.</p>
+      <p class="eyebrow frag" style="margin-top:1vh">What the examiners saw</p>
+      <p class="small frag">In (a), "= 10" and "= \(\sqrt{10}\)" were common, along with unsquared brackets, swapped \(x\) and \(y\), and sign errors.</p>
+      <p class="small frag">In (b), some students turned the gradient upside down without changing the sign, or forgot to take the perpendicular at all. Those who differentiated did worse.</p>
+      <p class="small frag"><b>Check:</b> \(A(6, 10)\) must be on the answer. \(3(6) + 4(10) - 58 = 0\). It works.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 14 · spot the mistake -->
+<section class="slide">
+  <p class="eyebrow">Spot the mistake · 3 min</p>
+  <h2>Three answers to that question. What is wrong with each? Tap to check.</h2>
+  <div class="math small">Circle \(P\): center \((0, 2)\), radius 10. Tangent at \(A(6, 10)\).</div>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">A.&nbsp; "(a) \(x^2 + (y - 2)^2 = 10\)"</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">test \(A(6, 10)\), which is on the circle:</span>&nbsp; \(36 + 64 = 100\), not 10</div>
+        <div class="math small result">The right-hand side is \(r^2\). It should be \(= 100\).</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">B.&nbsp; "(a) \(x^2 + (y + 2)^2 = 100\)"</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">read it back:</span>&nbsp; \((y + 2)\) means \(b = -2\), so the center would be \((0, -2)\)</div>
+        <div class="math small result">Wrong sign. Center \((0, 2)\) gives \((y - 2)^2\).</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">C.&nbsp; "(b) gradient \(\tfrac{4}{3}\), so \(y - 10 = \tfrac{4}{3}(x - 6)\), &nbsp;\(y = \tfrac{4}{3}x + 2\)"</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">put \(x = 0\):</span>&nbsp; \(y = 2\). This line goes through the center \((0, 2)\).</div>
+        <div class="math small result">That is the radius, not the tangent. Flip and change the sign: \(-\tfrac{3}{4}\).</div>
+      </div>
+    </div>
+  </div>
+  <p class="small">These are the mistakes the June 2023 examiner report describes for this question.</p>
+</section>
+
+<!-- 15 · guided practice -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · together · 5 min</p>
+  <h2>Sketch first. Exact answers. Tap to check.</h2>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">1.&nbsp; <span class="lit">Specimen Paper 1, Q10(a)</span>. The circle \(x^2 + y^2 + 4x - 2y - 20 = 0\) has center \(C\). State the coordinates of \(C\). <span class="marks">[1]</span> &nbsp;Then find the radius.</div>
+      <div class="ans">
+        <div class="math small">\((x + 2)^2 - 4 + (y - 1)^2 - 1 - 20 = 0\)</div>
+        <div class="math small"><span class="lbl">\(4 + 1 + 20 = 25\):</span>&nbsp; \((x + 2)^2 + (y - 1)^2 = 25\)</div>
+        <div class="math small result">\(C(-2, 1)\) (B1), &nbsp;radius \(5\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">2.&nbsp; \(x^2 + y^2 - 10x + 4y + 4 = 0\). Find the center and radius. Is \((8, 1)\) inside, on or outside?</div>
+      <div class="ans">
+        <div class="math small">\((x - 5)^2 - 25 + (y + 2)^2 - 4 + 4 = 0\), &nbsp;so \((x - 5)^2 + (y + 2)^2 = 25\)</div>
+        <div class="math small"><span class="lbl">\((8, 1)\):</span>&nbsp; \((8 - 5)^2 + (1 + 2)^2 = 9 + 9 = 18\), and \(18 &lt; 25\)</div>
+        <div class="math small result">center \((5, -2)\), radius \(5\); &nbsp;inside</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">3.&nbsp; A circle has center \((2, -1)\) and passes through \((5, 1)\). Find its equation, and the tangent at \((5, 1)\) as \(ax + by + c = 0\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">\(r^2\):</span>&nbsp; \((5 - 2)^2 + (1 + 1)^2 = 9 + 4 = 13\), &nbsp;so \((x - 2)^2 + (y + 1)^2 = 13\)</div>
+        <div class="math small"><span class="lbl">radius gradient</span>&nbsp; \(\tfrac{1 - (-1)}{5 - 2} = \tfrac{2}{3}\), &nbsp;<span class="lbl">tangent</span>&nbsp; \(-\tfrac{3}{2}\)</div>
+        <div class="math small">\(y - 1 = -\tfrac{3}{2}(x - 5) \Rightarrow 2y - 2 = -3x + 15\)</div>
+        <div class="math small result">\(3x + 2y - 17 = 0\)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · independent practice -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · on your own · 4 min, finish at home</p>
+  <h2>Your turn. Tap to check when you have a final answer.</h2>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">4.&nbsp; Find the center and radius of \(2x^2 + 2y^2 + 12x - 8y - 6 = 0\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">divide by 2:</span>&nbsp; \(x^2 + y^2 + 6x - 4y - 3 = 0\)</div>
+        <div class="math small">\((x + 3)^2 - 9 + (y - 2)^2 - 4 - 3 = 0\), &nbsp;so \((x + 3)^2 + (y - 2)^2 = 16\)</div>
+        <div class="math small result">center \((-3, 2)\), radius \(4\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">5.&nbsp; \(A(-6, 2)\) and \(B(2, 4)\) are the ends of a diameter. Find the equation of the circle, and the tangent at \(B\).</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">center = midpoint:</span>&nbsp; \(\left(\tfrac{-6 + 2}{2}, \tfrac{2 + 4}{2}\right) = (-2, 3)\)</div>
+        <div class="math small"><span class="lbl">\(r^2\), center to \(B\):</span>&nbsp; \(4^2 + 1^2 = 17\), &nbsp;so \((x + 2)^2 + (y - 3)^2 = 17\)</div>
+        <div class="math small"><span class="lbl">radius gradient</span>&nbsp; \(\tfrac{4 - 3}{2 - (-2)} = \tfrac{1}{4}\), &nbsp;<span class="lbl">tangent</span>&nbsp; \(-4\): &nbsp;\(y - 4 = -4(x - 2)\)</div>
+        <div class="math small result">\((x + 2)^2 + (y - 3)^2 = 17\); &nbsp;\(4x + y - 12 = 0\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">6.&nbsp; Find the center and radius of \(x^2 + y^2 - 8y - 9 = 0\), then the tangent at \((5, 4)\).</div>
+      <div class="ans">
+        <div class="math small">\(x^2 + (y - 4)^2 - 16 - 9 = 0\), &nbsp;so \(x^2 + (y - 4)^2 = 25\): center \((0, 4)\), radius \(5\)</div>
+        <div class="math small"><span class="lbl">radius from \((0, 4)\) to \((5, 4)\) is horizontal,</span>&nbsp; gradient 0. You cannot flip 0, so draw it: the tangent is vertical.</div>
+        <div class="math small result">\(x = 5\)</div>
+      </div>
+    </div>
+  </div>
+  <p class="small">Finished early? Show that \(x^2 + y^2 - 6x + 2y + 12 = 0\) is not a circle. Then try this: a radius has gradient \(m\). Explain why the tangent has gradient \(-\tfrac{1}{m}\).</p>
+</section>
+
+<!-- 17 · recap -->
+<section class="slide">
+  <p class="eyebrow">Recap</p>
+  <h2>Four things to carry out of here.</h2>
+  <p class="frag"><b>\((x - a)^2 + (y - b)^2 = r^2\) is the distance formula, squared.</b> Center \((a, b)\), signs flipped. The right-hand side is \(r^2\).</p>
+  <p class="frag"><b>Expanded form: complete the square on \(x\) and on \(y\).</b> Divide first if \(x^2\) and \(y^2\) do not have coefficient 1. A negative right-hand side means no circle.</p>
+  <p class="frag"><b>Inside, on or outside:</b> substitute the point and compare with \(r^2\).</p>
+  <p class="frag"><b>Tangent at a point: radius gradient, then flip and change the sign.</b> A tangent is perpendicular to the radius, so it touches the circle once.</p>
+</section>
+
+<!-- 18 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min</p>
+  <h2>Schoology, Paper 1 → 1.3 Coordinate Geometry.</h2>
+  <p>Four questions. Do the working on paper first. For the last one, give the equation in the form \(ax + by + c = 0\) with integers.</p>
+  <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 19 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework · due Monday, October 26</p>
+  <h2>Reading and workbook, as posted in Schoology.</h2>
+  <ul>
+    <li><b>Read:</b> textbook sections 3.6 to 3.11. Today's lesson is section 3.10.</li>
+    <li><b>Practice:</b> workbook, every odd-numbered problem on pages 5 to 13 and pages 17 to 27.</li>
+    <li><b>Credit:</b> completion. Show your working.</li>
+  </ul>
+  <p class="small">Stuck on a question? Write down where you got stuck and bring it. That still counts as done.</p>
+  <p class="frag"><a class="toolchip" href="../../1.1-quadratics/intersection-lab/" target="_blank" rel="noopener">Intersection Lab: slide a line across a circle. A preview of next lesson</a>
+  &nbsp;<a class="toolchip" href="../line-lab/" target="_blank" rel="noopener">Line Lab: check any tangent equation step by step</a></p>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script>
+/* ---------- static figures: equal scales, numbered axes, real minus signs ---------- */
+(function () {
+  'use strict';
+  var M = '−', MONO = 'JetBrains Mono, monospace';
+  function lab(v) { return v < 0 ? M + (-v) : String(v); }
+  var R45 = Math.sqrt(45);
+  var FIGS = {
+    'fig-dist': { x: [-7, 9], y: [-10, 6], k: 17, step: 2,
+      circles: [[1, -2, R45, '#00e5ff', '']],
+      segs: [[1, -2, 4, -2, '#ffc46b', '4 3'], [4, -2, 4, 4, '#ffc46b', '4 3'], [1, -2, 4, 4, '#ffffff', '']],
+      right: [4, -2, [-1, 0], [0, 1]],
+      texts: [[2.5, -2.9, '3', '#ffc46b'], [4.5, 1.2, '6', '#ffc46b']],
+      pts: [[1, -2, 'C', '#ffffff', -16, 16], [4, 4, 'P(4, 4)', '#ffffff', 8, -6]] },
+    'fig-tan': { x: [-7, 9], y: [-10, 6], k: 17, step: 2,
+      circles: [[1, -2, R45, '#b0b0b0', '6 5']],
+      lines: [[-8, 10, 12, 0, '#00e5ff', '']],
+      segs: [[1, -2, 4, 4, '#ffffff', '']],
+      right: [4, 4, [-1, -2], [2, -1]],
+      pts: [[1, -2, 'C', '#ffffff', -16, 16], [4, 4, 'P', '#00e5ff', 6, -10]] },
+    'fig-q12': { x: [-12, 12], y: [-9, 21], k: 9.6, step: 4,
+      circles: [[0, 2, 10, '#ffffff', ''], [0, 14.5, Math.sqrt(31.25), '#b0b0b0', '6 5']],
+      lines: [[-12, 23.5, 12, 5.5, '#00e5ff', '']],
+      segs: [[0, 2, 6, 10, '#ffffff', '3 3']],
+      right: [6, 10, [-3, -4], [-4, 3]],
+      pts: [[0, 2, 'P', '#ffffff', 6, 14], [6, 10, 'A(6, 10)', '#00e5ff', 9, -9], [0, 14.5, 'Q', '#b0b0b0', 6, -6]] }
+  };
+  Object.keys(FIGS).forEach(function (id) {
+    var svg = document.getElementById(id); if (!svg) return;
+    var f = FIGS[id], P = 26, k = f.k, xr = f.x, yr = f.y;
+    var W = 2 * P + (xr[1] - xr[0]) * k, H = 2 * P + (yr[1] - yr[0]) * k;
+    svg.setAttribute('viewBox', '0 0 ' + W.toFixed(1) + ' ' + H.toFixed(1));
+    function px(v) { return P + (v - xr[0]) * k; }
+    function py(v) { return H - P - (v - yr[0]) * k; }
+    var v, cid = 'clip-' + id, s = '<defs><clipPath id="' + cid + '"><rect x="' + P + '" y="' + P + '" width="' + (W - 2 * P) + '" height="' + (H - 2 * P) + '"/></clipPath></defs>';
+    for (v = Math.ceil(xr[0]); v <= xr[1]; v++) s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.05)"/>';
+    for (v = Math.ceil(yr[0]); v <= yr[1]; v++) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.05)"/>';
+    s += '<line x1="' + px(xr[0]) + '" y1="' + py(0) + '" x2="' + px(xr[1]) + '" y2="' + py(0) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    s += '<line x1="' + px(0) + '" y1="' + py(yr[0]) + '" x2="' + px(0) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
+    for (v = Math.ceil(xr[0] / f.step) * f.step; v <= xr[1]; v += f.step) if (v !== 0) s += '<text x="' + px(v) + '" y="' + (py(0) + 13) + '" font-family="' + MONO + '" font-size="10" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
+    for (v = Math.ceil(yr[0] / f.step) * f.step; v <= yr[1]; v += f.step) if (v !== 0) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + 3.5) + '" font-family="' + MONO + '" font-size="10" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    (f.circles || []).forEach(function (c) { s += '<circle cx="' + px(c[0]) + '" cy="' + py(c[1]) + '" r="' + (c[2] * k) + '" fill="none" stroke="' + c[3] + '" stroke-width="2.4"' + (c[4] ? ' stroke-dasharray="' + c[4] + '"' : '') + ' clip-path="url(#' + cid + ')"/>'; });
+    (f.lines || []).forEach(function (l) { s += '<line x1="' + px(l[0]) + '" y1="' + py(l[1]) + '" x2="' + px(l[2]) + '" y2="' + py(l[3]) + '" stroke="' + l[4] + '" stroke-width="2.6" clip-path="url(#' + cid + ')"/>'; });
+    (f.segs || []).forEach(function (l) { s += '<line x1="' + px(l[0]) + '" y1="' + py(l[1]) + '" x2="' + px(l[2]) + '" y2="' + py(l[3]) + '" stroke="' + l[4] + '" stroke-width="2.2"' + (l[5] ? ' stroke-dasharray="' + l[5] + '"' : '') + '/>'; });
+    if (f.right) {
+      var r = f.right, len = 0.45 * (17 / k), u = Math.hypot(r[2][0], r[2][1]), w = Math.hypot(r[3][0], r[3][1]);
+      var a = [r[2][0] / u * len, r[2][1] / u * len], b = [r[3][0] / w * len, r[3][1] / w * len];
+      s += '<polyline points="' + px(r[0] + a[0]) + ',' + py(r[1] + a[1]) + ' ' + px(r[0] + a[0] + b[0]) + ',' + py(r[1] + a[1] + b[1]) + ' ' + px(r[0] + b[0]) + ',' + py(r[1] + b[1]) + '" fill="none" stroke="#ffc46b" stroke-width="1.6"/>';
+    }
+    (f.texts || []).forEach(function (t) { s += '<text x="' + px(t[0]) + '" y="' + py(t[1]) + '" font-family="' + MONO + '" font-size="13" font-weight="700" fill="' + t[3] + '" text-anchor="middle">' + t[2] + '</text>'; });
+    (f.pts || []).forEach(function (p) {
+      s += '<circle cx="' + px(p[0]) + '" cy="' + py(p[1]) + '" r="4.5" fill="' + p[3] + '"/>';
+      s += '<text x="' + (px(p[0]) + p[4]) + '" y="' + (py(p[1]) + p[5]) + '" font-family="' + MONO + '" font-size="12" font-weight="700" fill="' + p[3] + '">' + p[2].replace(/-/g, M) + '</text>';
+    });
+    s += '<text x="' + (W - P + 4) + '" y="' + (py(0) - 4) + '" font-family="' + MONO + '" font-size="11" fill="#b0b0b0">x</text>';
+    s += '<text x="' + (px(0) + 5) + '" y="' + (P - 8) + '" font-family="' + MONO + '" font-size="11" fill="#b0b0b0">y</text>';
+    svg.innerHTML = s;
+  });
+})();
+
+/* ---------- click any graph to enlarge it; click or Esc to close ---------- */
+(function () {
+  'use strict';
+  var box = document.createElement('div');
+  box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+    function open() {
+      var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id');
+      box.innerHTML = ''; box.appendChild(c);
+      var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p);
+      box.classList.add('on');
+    }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+
+/* ---------- shared grid helpers for the two labs ---------- */
+var CircleLabKit = (function () {
+  'use strict';
+  var M = '−', MONO = 'JetBrains Mono, monospace', S = 440, P0 = 26, LO = -10, HI = 10;
+  function px(v) { return P0 + (v - LO) / (HI - LO) * (S - 2 * P0); }
+  function py(v) { return S - P0 - (v - LO) / (HI - LO) * (S - 2 * P0); }
+  var K = (S - 2 * P0) / (HI - LO), CID = 'CLIP';
+  function sgn(n) { return n < 0 ? M + (-n) : String(n); }
+  function grid(cid) {
+    CID = cid;
+    var s = '<defs><clipPath id="' + cid + '"><rect x="' + P0 + '" y="' + P0 + '" width="' + (S - 2 * P0) + '" height="' + (S - 2 * P0) + '"/></clipPath></defs>', v;
+    for (v = LO; v <= HI; v++) {
+      var ax = v === 0, col = ax ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.06)', w = ax ? 1.6 : 1;
+      s += '<line x1="' + px(v) + '" y1="' + py(LO) + '" x2="' + px(v) + '" y2="' + py(HI) + '" stroke="' + col + '" stroke-width="' + w + '"/>';
+      s += '<line x1="' + px(LO) + '" y1="' + py(v) + '" x2="' + px(HI) + '" y2="' + py(v) + '" stroke="' + col + '" stroke-width="' + w + '"/>';
+      if (v % 2 === 0 && v !== 0) {
+        s += '<text x="' + px(v) + '" y="' + (py(0) + 15) + '" font-family="' + MONO + '" font-size="10.5" fill="#b0b0b0" text-anchor="middle">' + sgn(v) + '</text>';
+        s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + 4) + '" font-family="' + MONO + '" font-size="10.5" fill="#b0b0b0" text-anchor="end">' + sgn(v) + '</text>';
+      }
+    }
+    return s;
+  }
+  /* "(x − 3)²", "(x + 2)²" or "x²" */
+  function sq(name, c) { if (c === 0) return name + '²'; return '(' + name + (c > 0 ? ' − ' + c : ' + ' + (-c)) + ')²'; }
+  function std(a, b, rr) { return sq('x', a) + ' + ' + sq('y', b) + ' = ' + rr; }
+  function term(k, sym, first) {
+    if (k === 0) return '';
+    var mag = Math.abs(k), body = (mag === 1 && sym ? '' : mag) + sym;
+    return first ? (k < 0 ? M : '') + body : (k < 0 ? ' − ' : ' + ') + body;
+  }
+  function expanded(a, b, rr) { return 'x² + y²' + term(-2 * a, 'x') + term(-2 * b, 'y') + term(a * a + b * b - rr, '') + ' = 0'; }
+  function circle(cx, cy, r, col, dash, w) {
+    return '<circle cx="' + px(cx) + '" cy="' + py(cy) + '" r="' + (r * K) + '" fill="none" stroke="' + col + '" stroke-width="' + (w || 2.6) + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + ' clip-path="url(#' + CID + ')"/>';
+  }
+  function dot(x, y, col, label, dx, dy) {
+    return '<circle cx="' + px(x) + '" cy="' + py(y) + '" r="5.5" fill="' + col + '"/>' + (label ? '<text x="' + (px(x) + (dx || 8)) + '" y="' + (py(y) + (dy || -8)) + '" font-family="' + MONO + '" font-size="13" font-weight="700" fill="' + col + '">' + label + '</text>' : '');
+  }
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  function frac(n, d) { if (d === 0) return 'undefined (vertical)'; if (n === 0) return '0'; if (d < 0) { n = -n; d = -d; } var g = gcd(n, d); n /= g; d /= g; return (n < 0 ? M : '') + Math.abs(n) + (d === 1 ? '' : '/' + d); }
+  return { px: px, py: py, K: K, sgn: sgn, grid: grid, std: std, expanded: expanded, circle: circle, dot: dot, gcd: gcd, frac: frac, term: term, M: M };
+})();
+
+/* ---------- Circle Reader: four ways to read (x − a)² + (y − b)² = r².
+   Reading 0 is correct. 1-3 are the June 2023 examiner-report errors: radius = right-hand side,
+   center signs kept as written, x and y swapped. ---------- */
+(function () {
+  'use strict';
+  var svg = document.getElementById('cr-svg'); if (!svg) return;
+  var L = CircleLabKit, M = L.M;
+  var ia = document.getElementById('cr-a'), ib = document.getElementById('cr-b'), ir = document.getElementById('cr-r');
+  var eqEl = document.getElementById('cr-eq'), read = document.getElementById('cr-read'), verdict = document.getElementById('cr-verdict'), showBtn = document.getElementById('cr-show');
+  var alab = document.getElementById('cr-alab'), blab = document.getElementById('cr-blab'), rlab = document.getElementById('cr-rlab');
+  var picks = [].slice.call(document.querySelectorAll('#cr-picks button'));
+  var method = 0, show = false;
+  var NAMES = ['Correct reading', 'Radius = right-hand side', 'Keep the signs', 'Swap x and y'];
+  function draw() {
+    var a = +ia.value, b = +ib.value, r = +ir.value, rr = r * r;
+    alab.textContent = 'a = ' + L.sgn(a); blab.textContent = 'b = ' + L.sgn(b); rlab.textContent = 'r = ' + r + ', so r² = ' + rr;
+    eqEl.innerHTML = '<b>' + L.std(a, b, rr) + '</b><br><span class="lw">expanded:</span> ' + L.expanded(a, b, rr);
+    var ca = a, cb = b, rad = r;
+    if (method === 1) rad = rr; else if (method === 2) { ca = -a; cb = -b; } else if (method === 3) { ca = b; cb = a; }
+    var same = ca === a && cb === b && rad === r;
+    var h = '<span class="lw">' + NAMES[method] + ':</span> center <b>(' + L.sgn(ca) + ', ' + L.sgn(cb) + ')</b> &nbsp;radius <b>' + rad + '</b>';
+    var s = L.grid('cr-clip');
+    if (show) {
+      s += L.circle(a, b, r, '#b0b0b0', '6 5', 2.2) + L.dot(a, b, '#b0b0b0', '', 0, 0);
+      s += L.circle(ca, cb, rad, same ? '#00e5ff' : '#ff6b6b', '', 3) + L.dot(ca, cb, same ? '#00e5ff' : '#ff6b6b', 'reading', 8, -8);
+      verdict.style.display = '';
+      verdict.className = 'verdict ' + (same ? 'ok' : 'no');
+      if (method === 0) verdict.textContent = 'Matches. Every point on this circle fits the equation.';
+      else if (same) verdict.textContent = 'It matches here only by luck: ' + (method === 1 ? 'r = 1, and 1 squared is 1.' : method === 2 ? 'the center is (0, 0), so flipping changes nothing.' : 'a = b, so swapping changes nothing.') + ' Move a slider and try again.';
+      else verdict.textContent = method === 1 ? 'Misses. The right-hand side is r squared, so the radius is ' + r + ', not ' + rr + '.'
+        : method === 2 ? 'Misses. (x − a) means the center has +a, so the signs flip when you read them.'
+        : 'Misses. The number with x is the first coordinate of the center.';
+      verdict.textContent = verdict.textContent.replace(/-/g, M);
+    } else {
+      h += '<br><span class="lw">Predict first: is this the circle the equation describes?</span>';
+      verdict.style.display = 'none';
+    }
+    read.innerHTML = h;
+    svg.innerHTML = s;
+  }
+  picks.forEach(function (bt) {
+    bt.addEventListener('click', function () {
+      method = +bt.getAttribute('data-i'); show = false;
+      showBtn.setAttribute('aria-pressed', 'false'); showBtn.textContent = 'Show the circle';
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === bt ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () { show = !show; showBtn.setAttribute('aria-pressed', show ? 'true' : 'false'); showBtn.textContent = show ? 'Hide the circle' : 'Show the circle'; draw(); });
+  [ia, ib, ir].forEach(function (el) { el.addEventListener('input', draw); });
+  draw();
+})();
+
+/* ---------- Tangent Lab: radius 5, P on one of the 12 whole-number points of the circle.
+   Method 0 flips and changes sign (the tangent). 1 uses the radius gradient. 2 flips only.
+   The verdict tests the distance from the center to the line against r = 5. ---------- */
+(function () {
+  'use strict';
+  var svg = document.getElementById('tl-svg'); if (!svg) return;
+  var L = CircleLabKit, M = L.M;
+  var OFF = [[5, 0], [4, 3], [3, 4], [0, 5], [-3, 4], [-4, 3], [-5, 0], [-4, -3], [-3, -4], [0, -5], [3, -4], [4, -3]];
+  var ia = document.getElementById('tl-a'), ib = document.getElementById('tl-b'), ik = document.getElementById('tl-k');
+  var eqEl = document.getElementById('tl-eq'), read = document.getElementById('tl-read'), verdict = document.getElementById('tl-verdict'), showBtn = document.getElementById('tl-show');
+  var alab = document.getElementById('tl-alab'), klab = document.getElementById('tl-klab');
+  var picks = [].slice.call(document.querySelectorAll('#tl-picks button'));
+  var method = 0, show = false;
+  function lineEq(x0, y0, u, v) {
+    /* line through (x0, y0) with direction (u, v): v x − u y + (u y0 − v x0) = 0 */
+    var A = v, B = -u, C = u * y0 - v * x0, g = L.gcd(L.gcd(A, B), C);
+    A /= g; B /= g; C /= g;
+    if (A < 0 || (A === 0 && B < 0)) { A = -A; B = -B; C = -C; }
+    var out = L.term(A, 'x', true); out += L.term(B, 'y', out === ''); out += L.term(C, '', out === '');
+    return out + ' = 0';
+  }
+  function draw() {
+    var a = +ia.value, b = +ib.value, o = OFF[+ik.value], Px = a + o[0], Py = b + o[1];
+    alab.textContent = 'center (' + L.sgn(a) + ', ' + L.sgn(b) + ')   (top slider x, bottom slider y)';
+    klab.textContent = 'P = (' + L.sgn(Px) + ', ' + L.sgn(Py) + ')   (slide P around the circle)';
+    eqEl.innerHTML = '<span class="lw">circle</span> &nbsp;<b>' + L.std(a, b, 25) + '</b>';
+    var dx = o[0], dy = o[1], u, v;
+    if (method === 0) { u = -dy; v = dx; } else if (method === 1) { u = dx; v = dy; } else { u = dy; v = dx; }
+    var h = '<span class="lw">gradient of radius</span> &nbsp;<b>' + L.frac(dy, dx) + '</b>';
+    var s = L.grid('tl-clip');
+    s += L.circle(a, b, 5, '#b0b0b0', '6 5', 2.2);
+    s += '<line x1="' + L.px(a) + '" y1="' + L.py(b) + '" x2="' + L.px(Px) + '" y2="' + L.py(Py) + '" stroke="#ffffff" stroke-width="2.4"/>';
+    if (show) {
+      var len = Math.hypot(u, v), k = 30 / len;
+      var d = Math.abs(v * (a - Px) - u * (b - Py)) / len, ok = Math.abs(d - 5) < 1e-9;
+      s += '<line x1="' + L.px(Px - u * k) + '" y1="' + L.py(Py - v * k) + '" x2="' + L.px(Px + u * k) + '" y2="' + L.py(Py + v * k) + '" stroke="' + (ok ? '#00e5ff' : '#ff6b6b') + '" stroke-width="3" clip-path="url(#tl-clip)"/>';
+      h += '<br><span class="lw">gradient used</span> &nbsp;<b>' + L.frac(v, u) + '</b>'
+        + '<br><span class="lw">line</span> &nbsp;<b>' + lineEq(Px, Py, u, v) + '</b>'
+        + '<br><span class="lw">distance from center to line</span> ' + (Math.round(d * 100) / 100) + ' &nbsp;<span class="lw">r</span> 5';
+      verdict.style.display = '';
+      verdict.className = 'verdict ' + (ok ? 'ok' : 'no');
+      if (method === 0) verdict.textContent = 'The line is exactly 5 from the center, so it touches the circle only at P. This is the tangent.';
+      else if (ok) verdict.textContent = 'It works here only because the radius is ' + (dy === 0 ? 'horizontal' : 'vertical') + '. Move P to a point like (4, 3) from the center and try again.';
+      else verdict.textContent = method === 1 ? 'This line runs along the radius, straight through the center, and cuts the circle twice.'
+        : 'Flipping without changing the sign does not give a right angle. The line cuts the circle again.';
+      verdict.textContent = verdict.textContent.replace(/-/g, M);
+    } else {
+      h += '<br><span class="lw">Predict first: will this line only touch the circle at P?</span>';
+      verdict.style.display = 'none';
+    }
+    s += L.dot(a, b, '#ffffff', 'C', -18, 16) + L.dot(Px, Py, '#ffc46b', 'P', 9, -9);
+    read.innerHTML = h;
+    svg.innerHTML = s;
+  }
+  picks.forEach(function (bt) {
+    bt.addEventListener('click', function () {
+      method = +bt.getAttribute('data-i'); show = false;
+      showBtn.setAttribute('aria-pressed', 'false'); showBtn.textContent = 'Show the line';
+      picks.forEach(function (o) { o.setAttribute('aria-pressed', o === bt ? 'true' : 'false'); });
+      draw();
+    });
+  });
+  showBtn.addEventListener('click', function () { show = !show; showBtn.setAttribute('aria-pressed', show ? 'true' : 'false'); showBtn.textContent = show ? 'Hide the line' : 'Show the line'; draw(); });
+  [ia, ib, ik].forEach(function (el) { el.addEventListener('input', draw); });
+  draw();
+})();
+</script>
+
+</body>
+</html>
