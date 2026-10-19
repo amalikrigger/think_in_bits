@@ -7,7 +7,7 @@
   <meta name="description" content="Print a model, then design and print a part that fixes a real problem for a real person. Tinkercad, a Formlabs resin printer, and a MakerBot track ready for when it returns. CS elective lesson, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../../assets/lesson.css?v=20261012">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261019">
 </head>
 <body>
 
@@ -53,7 +53,7 @@
     <h2>What you need</h2>
     <ul>
       <li>A lab computer with a web browser, and <b>Tinkercad</b>, joined with the class code and a nickname</li>
-      <li>The lab's printer. Right now that is the <b>Formlabs Form 3</b>. The <b>MakerBot Replicator+</b> is on hold until it is repaired.</li>
+      <li>One of the lab's two printers: the <b>Formlabs Form 3</b> (resin) or the <b>MakerBot Replicator+</b> (filament). You pick.</li>
       <li>A ruler or calipers, and the real object your design has to work with</li>
       <li>Nitrile or neoprene gloves and safety glasses at the wash station</li>
     </ul>
@@ -93,7 +93,7 @@
       <tbody>
         <tr><td><b>Day 1</b></td><td>Build a nameplate, pass the safety check, find <b>Print 1</b></td><td>Print 1 in the queue</td></tr>
         <tr><td><b>Day 2</b></td><td>Pick a real problem, measure it, design <b>Print 2</b></td><td>Print 2 designed. HS: a fit test queued.</td></tr>
-        <tr><td><b>Day 3</b></td><td>Finish Print 1, slice and queue Print 2</td><td>Print 1 in your hand</td></tr>
+        <tr><td><b>Day 3</b></td><td>Your printer's tab, <b>Formlabs</b> or <b>MakerBot</b>: finish Print 1, slice and queue Print 2</td><td>Print 1 in your hand</td></tr>
         <tr><td><b>Day 4</b></td><td>Test Print 2 on the real problem, fix it, fill in the Print Card</td><td>A part someone uses</td></tr>
         <tr><td><b>Open days</b></td><td>Wait for the printer, reprint, AI Lab, finish the card</td><td>Everything handed in</td></tr>
       </tbody>
@@ -104,11 +104,12 @@
   <!-- ============ 4. queue ============ -->
   <section class="slide">
     <h2>How the printer queue works</h2>
-    <p>There is one working printer and a lot of you. Here is how everyone gets a print.</p>
+    <p>There are two printers and a lot of you. Here is how everyone gets a print.</p>
     <ul>
       <li><b>Every part fits in a 40 x 40 x 25 mm box.</b> About the size of a matchbox standing up.</li>
       <li><b>One plate holds a whole class.</b> A resin printer builds every part's layer at the same moment, so twenty short parts take about as long as one. Time depends on how <b>tall</b> the tallest part is. That is why height is the limit that matters.</li>
-      <li><b>Plates run overnight.</b> Get your file in the queue by the end of class and it prints that night.</li>
+      <li><b>Formlabs plates run overnight.</b> Get your file in the queue by the end of class and it prints that night.</li>
+      <li><b>The MakerBot prints one part at a time</b>, under 60 minutes, only while an adult is in the room. Its queue is the same sheet, in order.</li>
       <li><b>Failed prints</b> go in the Reprints folder, which always goes first on the next plate.</li>
     </ul>
     <p>To join the queue, save your STL into the plate folder on the PreForm computer with a name like this, then write the same name on the Print Queue sheet:</p>
@@ -116,15 +117,17 @@
   </section>
 
   <section class="slide">
-    <h2>Which printer is your print on?</h2>
-    <p>Your design and your STL work on both printers. Only slicing and finishing change. Pick the printer here and every printer step on this page switches to match. The page remembers your choice.</p>
-    <div data-widget="track" data-key="printer" data-default="formlabs">
-      <span class="w-tlabel">Printer:</span>
-      <button type="button" data-track="formlabs">Formlabs Form 3 <small>live</small></button>
-      <button type="button" data-track="makerbot">MakerBot Replicator+ <small>on hold</small></button>
-    </div>
-    <div class="callout flag" data-show="printer:makerbot"><b>The MakerBot is on hold until it is repaired.</b> These steps are ready for when it comes back. Until then, every print goes on the Formlabs.</div>
-    <div class="callout check" data-show="printer:formlabs"><b>Formlabs is live.</b> This is the printer every print goes on right now.</div>
+    <h2>Pick your printer</h2>
+    <p>Your design and your STL work on both printers. Only the slicing and the finishing change, so each printer has its own tab at the top of this page. On Day 3, open the tab for the printer you picked and follow it.</p>
+    <div class="twrap"><table>
+      <thead><tr><th></th><th>Formlabs tab</th><th>MakerBot tab</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pick it if</b></td><td>You want smooth, fine detail and you are fine wearing gloves</td><td>You want a tougher part, faster, with no chemicals</td></tr>
+        <tr><td><b>Prints</b></td><td>A whole class on one plate, overnight</td><td>One part at a time, in class, under 60 minutes</td></tr>
+        <tr><td><b>Finishing</b></td><td>Wash, dry, cure, clip supports</td><td>Let it cool, peel it off</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout note"><b>Check with Mr. Krigger which printers are running today</b> before you pick. If yours is down, switch to the other tab. Your STL does not change.</div>
   </section>
 
   <!-- ============ DAY 1 ============ -->
@@ -160,7 +163,6 @@
     <div class="twrap"><table>
       <thead><tr><th></th><th>Formlabs Form 3 (resin)</th><th>MakerBot Replicator+ (filament)</th></tr></thead>
       <tbody>
-        <tr><td><b>Status</b></td><td><b>Live</b></td><td>On hold until repaired</td></tr>
         <tr><td><b>Builds with</b></td><td>Liquid resin that a laser turns solid</td><td>Plastic string (PLA) melted through a hot nozzle</td></tr>
         <tr><td><b>How</b></td><td>The part grows upside down, lifted out of a tank</td><td>A nozzle draws each layer like a hot glue gun</td></tr>
         <tr><td><b>Looks like</b></td><td>Smooth, fine detail</td><td>Visible lines, a bit rougher</td></tr>
@@ -241,7 +243,7 @@
     <div class="startcard"><span class="startbadge">Day 2 start</span>
       <ol class="startsteps">
         <li><b>Open your Tinkercad class</b> with the same code and nickname.</li>
-        <li><b>Check the Print Queue sheet.</b> Print 1 may be printed already. You finish it on Day 3.</li>
+        <li><b>Check the Print Queue sheet.</b> Print 1 may be printed already. You finish it on Day 3, in your printer's tab.</li>
         <li><b>Grab a ruler or calipers.</b> Today you measure.</li>
       </ol>
     </div>
@@ -332,88 +334,55 @@
     </ul>
   </section>
 
-  <!-- ============ DAY 3 ============ -->
-  <section class="slide" data-tab="Day 3">
-    <p class="daymark">Day 3</p>
+  <!-- ============ DAY 3: FORMLABS ============ -->
+  <section class="slide" data-tab="Formlabs">
+    <p class="daymark">Day 3 &middot; Formlabs</p>
     <h2>Finish Print 1, queue Print 2</h2>
     <div class="startcard"><span class="startbadge">Day 3 start</span>
       <ol class="startsteps">
-        <li><b>Check the Print Queue sheet.</b> If Print 1 is printed, start at the wash station with Mr. Krigger. If not, start with Step 1.</li>
-        <li><b>Pick your printer below.</b> The steps on this tab switch to match.</li>
+        <li><b>Using the MakerBot?</b> Open the <b>MakerBot</b> tab at the top instead.</li>
+        <li><b>Check the Print Queue sheet.</b> If Print 1 is printed, start at the wash station (Step 2) with Mr. Krigger. If not, start with Step 1.</li>
+        <li><b>Gloves and glasses</b> are at the wash station. You need them for Steps 2 and 3.</li>
       </ol>
-    </div>
-    <div data-widget="track" data-key="printer" data-default="formlabs">
-      <span class="w-tlabel">Printer:</span>
-      <button type="button" data-track="formlabs">Formlabs Form 3 <small>live</small></button>
-      <button type="button" data-track="makerbot">MakerBot Replicator+ <small>on hold</small></button>
     </div>
     <p class="goal"><strong>Goal:</strong> by the end of today Print 1 is finished and in your hand, and Print 2 is in the queue.</p>
   </section>
 
   <section class="slide">
-    <h2>Step 1: Slice Print 2</h2>
-    <div data-show="printer:formlabs">
-      <h3>Formlabs: PreForm</h3>
-      <ol>
-        <li>On the PreForm computer, open <b>PreForm</b>. It is already signed in. Do not sign in with your own account.</li>
-        <li>Click <b>File</b>, then <b>Open</b>, and choose your Print 2 STL.</li>
-        <li>Check the printer says <b>Form 3</b> and the material matches the cartridge in the printer. Leave the layer height as Mr. Krigger set it.</li>
-        <li>Click <b>Orient</b>, then <b>Auto-Orient</b>. Click <b>Supports</b>, then <b>Auto-Generate</b>.</li>
-        <li>Look at the <b>Printability</b> check. Green is good. Red means it will not print: run Auto-Orient again, or tilt the part yourself.</li>
-        <li><b>Take a screenshot</b> of your part with its supports. It goes on your Print Card.</li>
-        <li>Save your STL into the next plate's folder and write it on the sheet. Mr. Krigger lays out the whole plate and starts it.</li>
-      </ol>
-    </div>
-    <div data-show="printer:makerbot">
-      <div class="callout flag"><b>On hold until the printer is repaired.</b> Ready for when it comes back.</div>
-      <h3>MakerBot: MakerBot Print</h3>
-      <ol>
-        <li>Open <b>MakerBot Print</b>. It is already signed in. Check the printer is the <b>Replicator+</b>.</li>
-        <li>Click <b>Add Models</b> and choose your STL. Click <b>Arrange</b> to center it, flat side down.</li>
-        <li>Open <b>Print Settings</b>: Balanced, <b>Raft on</b>, <b>Supports on</b> if anything hangs out in the air.</li>
-        <li>Click <b>Preview</b> and read the time. <b>It must be under 60 minutes.</b> Longer? Make it smaller.</li>
-        <li><b>Take a screenshot</b> of the preview. It goes on your Print Card.</li>
-        <li>Click <b>Export</b>, save the <code>.makerbot</code> file to the class USB stick, and give it to Mr. Krigger. He starts it, and an adult stays in the room the whole time.</li>
-      </ol>
-    </div>
-    <div class="callout check"><b>Checkpoint:</b> a slicer screenshot, and Print 2 in the queue.</div>
+    <h2>Step 1: Slice Print 2 in PreForm</h2>
+    <ol>
+      <li>On the PreForm computer, open <b>PreForm</b>. It is already signed in. Do not sign in with your own account.</li>
+      <li>Click <b>File</b>, then <b>Open</b>, and choose your Print 2 STL.</li>
+      <li>Check the printer says <b>Form 3</b> and the material matches the cartridge in the printer. Leave the layer height as Mr. Krigger set it.</li>
+      <li>Click <b>Orient</b>, then <b>Auto-Orient</b>. Click <b>Supports</b>, then <b>Auto-Generate</b>.</li>
+      <li>Look at the <b>Printability</b> check. Green is good. Red means it will not print: run Auto-Orient again, or tilt the part yourself.</li>
+      <li><b>Take a screenshot</b> of your part with its supports. It goes on your Print Card.</li>
+      <li>Save your STL into the next plate's folder and write it on the sheet. Mr. Krigger lays out the whole plate and starts it.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> a PreForm screenshot, and Print 2 in the queue.</div>
   </section>
 
   <section class="slide">
-    <h2>Step 2: Finish Print 1</h2>
-    <div data-show="printer:formlabs">
-      <div class="callout warn"><b>Gloves and safety glasses on first.</b> Everything here is wet with resin until the cure is done.</div>
-      <ol>
-        <li><b>Remove the build platform</b> from the printer and hold it over a paper towel, parts up.</li>
-        <li><b>Wash.</b> Put the platform in the <b>Form Wash</b>, close the lid, and set the time for the resin on the cartridge label:</li>
-      </ol>
-      <div class="twrap"><table>
-        <thead><tr><th>Resin on the label</th><th>Wash time</th></tr></thead>
-        <tbody>
-          <tr><td>Grey, White, Black or Clear <b>V5</b></td><td><b>5 minutes</b></td></tr>
-          <tr><td>Grey, White, Black or Clear <b>V4 or V4.1</b></td><td><b>10 minutes</b></td></tr>
-        </tbody>
-      </table></div>
-      <ol start="3">
-        <li><b>Dry.</b> When the basket lifts out, let the parts air dry completely. Wet IPA under the cure light leaves a sticky, white surface.</li>
-      </ol>
-    </div>
-    <div data-show="printer:makerbot">
-      <div class="callout flag"><b>On hold until the printer is repaired.</b> Ready for when it comes back.</div>
-      <ol>
-        <li><b>Wait</b> for the build plate to cool. The print is done, but the plate is still hot.</li>
-        <li>Lift out the flexible build plate and <b>bend it gently</b>. The print pops loose.</li>
-        <li>Peel off the raft and any supports with your fingers or pliers.</li>
-        <li>Put the plate back, clean, for the next person.</li>
-      </ol>
-      <div class="callout check"><b>Checkpoint:</b> Print 1 is in your hand. Take a photo of it.</div>
-    </div>
+    <h2>Step 2: Wash and dry Print 1</h2>
+    <div class="callout warn"><b>Gloves and safety glasses on first.</b> Everything here is wet with resin until the cure is done.</div>
+    <ol>
+      <li><b>Remove the build platform</b> from the printer and hold it over a paper towel, parts up.</li>
+      <li><b>Wash.</b> Put the platform in the <b>Form Wash</b>, close the lid, and set the time for the resin on the cartridge label:</li>
+    </ol>
+    <div class="twrap"><table>
+      <thead><tr><th>Resin on the label</th><th>Wash time</th></tr></thead>
+      <tbody>
+        <tr><td>Grey, White, Black or Clear <b>V5</b></td><td><b>5 minutes</b></td></tr>
+        <tr><td>Grey, White, Black or Clear <b>V4 or V4.1</b></td><td><b>10 minutes</b></td></tr>
+      </tbody>
+    </table></div>
+    <ol start="3">
+      <li><b>Dry.</b> When the basket lifts out, let the parts air dry completely. Wet IPA under the cure light leaves a sticky, white surface.</li>
+    </ol>
   </section>
 
   <section class="slide">
     <h2>Step 3: Remove, cure, clip</h2>
-    <div class="callout note" data-show="printer:makerbot"><b>MakerBot prints have no wash and no cure.</b> Once the raft is off, you are done. Skip to the mini lesson.</div>
-    <div data-show="printer:formlabs">
     <ol start="4">
       <li><b>Remove the parts</b> from the platform with the part removal tool. Push away from your other hand.</li>
       <li><b>Cure.</b> Put the parts in the <b>Form Cure</b>, choose your resin on its screen, and use the setting it shows. For V5 standard resin that is 5 minutes with no heat. For V4 it is longer and heated, so let the screen tell you.</li>
@@ -421,24 +390,78 @@
       <li><b>Clean up.</b> Gloves, towels and support bits go in the resin waste container. Close the IPA and the Form Wash lid.</li>
     </ol>
     <div class="callout check"><b>Checkpoint:</b> Print 1 is finished and in your hand. Take a photo of it.</div>
-    </div>
   </section>
 
   <section class="slide">
     <h2>Mini lesson: why a resin part grows upside down</h2>
     <p>A resin printer has a tank with a clear bottom. A laser draws one layer of your part on the bottom of the tank, and the light turns that thin film of liquid into solid plastic. The platform lifts a hair, fresh resin flows underneath, and the laser draws the next layer. Thousands of times.</p>
     <p>Your part hangs upside down from the platform the whole time. Anything that sticks out over nothing has no layer underneath to grow from. <b>Supports</b> are what hold it there. A part with no supports falls into the tank, and the printer keeps going anyway, drawing very careful layers onto nothing.</p>
-    <p>The MakerBot works the other way up. It squeezes melted plastic onto the plate and stacks layers like frosting. Different machine, same idea: one thin layer at a time.</p>
   </section>
 
   <section class="slide">
     <h2>Before you leave today</h2>
-    <p>A progress check, not the hand-in. The full list is in the <b>Turn in</b> tab.</p>
+    <p>A progress check, not the hand-in. Next stop is the <b>Day 4</b> tab.</p>
     <ul class="turnin">
-      <li>Print 1 finished and photographed</li>
-      <li>Print 2 sliced, with a screenshot</li>
+      <li>Print 1 washed, dried, cured, clipped, and photographed</li>
+      <li>Print 2 sliced in PreForm, with a screenshot</li>
       <li>Print 2 in the queue and on the sheet</li>
       <li>Station clean: waste in the container, IPA closed, lids down</li>
+    </ul>
+  </section>
+
+  <!-- ============ DAY 3: MAKERBOT ============ -->
+  <section class="slide" data-tab="MakerBot">
+    <p class="daymark">Day 3 &middot; MakerBot</p>
+    <h2>Finish Print 1, queue Print 2</h2>
+    <div class="startcard"><span class="startbadge">Day 3 start</span>
+      <ol class="startsteps">
+        <li><b>Using the Formlabs?</b> Open the <b>Formlabs</b> tab at the top instead.</li>
+        <li><b>Check the MakerBot is running today</b> with Mr. Krigger. If it is not, switch to the Formlabs tab. Your STL does not change.</li>
+        <li><b>Check the Print Queue sheet.</b> The MakerBot prints one part at a time, in order.</li>
+      </ol>
+    </div>
+    <p class="goal"><strong>Goal:</strong> by the end of today Print 1 is off the plate and in your hand, and Print 2 is in the queue.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Step 1: Slice Print 2 in MakerBot Print</h2>
+    <ol>
+      <li>Open <b>MakerBot Print</b>. It is already signed in. Do not sign in with your own account. Check the printer is the <b>Replicator+</b>.</li>
+      <li>Click <b>Add Models</b> and choose your STL. Click <b>Arrange</b> to center it, flat side down.</li>
+      <li>Open <b>Print Settings</b>: Balanced, <b>Raft on</b>, <b>Supports on</b> if anything hangs out in the air.</li>
+      <li>Click <b>Preview</b> and read the time. <b>It must be under 60 minutes.</b> Longer? Make it smaller.</li>
+      <li><b>Take a screenshot</b> of the preview. It goes on your Print Card.</li>
+      <li>Click <b>Export</b>, save the <code>.makerbot</code> file to the class USB stick, and write it on the sheet. Mr. Krigger starts it, and an adult stays in the room the whole time.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> a MakerBot Print screenshot, and Print 2 in the queue.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Step 2: Take Print 1 off the plate</h2>
+    <div class="callout warn"><b>Hands out until it stops.</b> The nozzle runs at about 200&deg;C and the plate stays hot after the print ends.</div>
+    <ol>
+      <li><b>Wait</b> for the screen to say the print is done, then wait for the build plate to cool.</li>
+      <li>Lift out the flexible build plate and <b>bend it gently</b>. The print pops loose.</li>
+      <li>Peel off the raft and any supports with your fingers or pliers. Safety glasses on if you use pliers.</li>
+      <li>Put the plate back, clean, for the next person.</li>
+    </ol>
+    <div class="callout check"><b>Checkpoint:</b> Print 1 is in your hand. Take a photo of it. No wash and no cure: filament prints are done once they are off the plate.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Mini lesson: a very precise hot glue gun</h2>
+    <p>The MakerBot pulls plastic string from a spool, melts it in the nozzle, and squeezes out a line thinner than a strand of spaghetti. It draws the outline of one layer, fills the inside with a pattern, then moves up a fraction of a millimeter and draws the next layer on top. Like stacking frosting.</p>
+    <p>Each layer needs something under it. That is why a part that sticks out over nothing needs supports, and why the <b>raft</b> goes down first: it gives your part a flat, sticky floor to start from.</p>
+  </section>
+
+  <section class="slide">
+    <h2>Before you leave today</h2>
+    <p>A progress check, not the hand-in. Next stop is the <b>Day 4</b> tab.</p>
+    <ul class="turnin">
+      <li>Print 1 off the plate, cleaned up, and photographed</li>
+      <li>Print 2 sliced in MakerBot Print, with a screenshot, under 60 minutes</li>
+      <li>Print 2 on the USB stick and on the sheet</li>
+      <li>Build plate back in, clean</li>
     </ul>
   </section>
 
@@ -449,7 +472,7 @@
     <div class="startcard"><span class="startbadge">Day 4 start</span>
       <ol class="startsteps">
         <li><b>Collect Print 2</b> from the plate.</li>
-        <li><b>Finish it</b> the same way as Print 1, in the <b>Day 3</b> tab. Gloves and glasses first.</li>
+        <li><b>Finish it</b> the same way as Print 1, in your printer's tab: <b>Formlabs</b> or <b>MakerBot</b>.</li>
         <li><b>Find the person it is for.</b></li>
       </ol>
     </div>
@@ -689,9 +712,9 @@ translate([12, 6, 3]) linear_extrude(1) text("VI", size = 8);</code></pre>
         <div class="fix">It was not cured, or not long enough. Check the setting on the Form Cure screen for your resin.</div></details>
       <details><summary>Two parts that should fit do not.</summary>
         <div class="fix">Printed holes come out a little small. Make the hole 0.3 to 0.5 mm bigger. That is exactly what the fit test is for.</div></details>
-      <details><summary>MakerBot, when it is back: the print will not stick to the plate.</summary>
+      <details><summary>MakerBot: the print will not stick to the plate.</summary>
         <div class="fix">The plate may be dirty or not level, or the raft is off. Tell Mr. Krigger. Never reach in while it moves.</div></details>
-      <details><summary>MakerBot, when it is back: the print time is over 60 minutes.</summary>
+      <details><summary>MakerBot: the print time is over 60 minutes.</summary>
         <div class="fix">Make the part smaller, or check you did not leave something big on the plate.</div></details>
     </div>
   </section>
@@ -703,7 +726,7 @@ translate([12, 6, 3]) linear_extrude(1) text("VI", size = 8);</code></pre>
   <p><a href="../../../cs.html">All Computer Science lessons</a></p>
 </footer>
 
-<script src="../../assets/lesson.js?v=20261012"></script>
-<script src="../../assets/lesson-widgets.js?v=20261012"></script>
+<script src="../../assets/lesson.js?v=20261019"></script>
+<script src="../../assets/lesson-widgets.js?v=20261019"></script>
 </body>
 </html>
