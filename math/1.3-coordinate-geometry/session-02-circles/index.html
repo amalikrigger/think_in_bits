@@ -89,7 +89,7 @@
 
 <!-- 4 · the circle is the distance formula -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 1 of 12 · where it comes from</p>
+  <p class="eyebrow">Direct instruction · 1 of 13 · where it comes from</p>
   <h2>Every point \(3\sqrt{5}\) from \(C(1, -2)\). What equation do they all satisfy?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -109,7 +109,7 @@
 
 <!-- 5 · reading standard form -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 2 of 12 · reading the equation</p>
+  <p class="eyebrow">Direct instruction · 2 of 13 · reading the equation</p>
   <h2>Read the center with the signs flipped. Read the radius as the square root of the right-hand side.</h2>
   <div class="three">
     <div class="card">
@@ -138,7 +138,7 @@
 
 <!-- 6 · circle reader lab -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 3 of 12 · the Circle Reader</p>
+  <p class="eyebrow">Direct instruction · 3 of 13 · the Circle Reader</p>
   <h2>Set the equation, pick a reading, predict, then show it.</h2>
   <div class="lab">
     <svg class="fig" id="cr-svg" viewBox="0 0 440 440" aria-label="A grid with the circle given by the equation, and the circle a chosen reading of the equation would draw"></svg>
@@ -166,7 +166,7 @@
 
 <!-- 7 · expanded form, two routes -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 4 of 12 · the expanded form</p>
+  <p class="eyebrow">Direct instruction · 4 of 13 · the expanded form</p>
   <h2>Find the center and radius of \(x^2 + y^2 + 10x - 4y - 7 = 0\).</h2>
   <p class="small">Multiply out the brackets and a circle can look like this. Two routes get you back.</p>
   <div class="cols" style="margin-top:0.4vh">
@@ -184,16 +184,54 @@
       <div class="math small frag"><span class="lbl">match:</span>&nbsp; \(2g = 10\), so \(g = 5\); &nbsp;\(2f = -4\), so \(f = -2\);<br>\(c = -7\)</div>
       <div class="math small frag"><span class="lbl">center \((-g, -f)\):</span>&nbsp; \((-5, 2)\)</div>
       <div class="math small frag"><span class="lbl">radius:</span>&nbsp; \(\sqrt{25 + 4 - (-7)} = \sqrt{36} = 6\)</div>
-      <p class="small frag">Where the pattern comes from: Route 1 on \(x^2 + 2gx\) gives \((x + g)^2 - g^2\). Do the same for \(y\) and move the numbers across:</p>
-      <div class="math small frag">\((x + g)^2 + (y + f)^2 = g^2 + f^2 - c\)</div>
       <div class="math small result frag">Same answer: center \((-5, 2)\), radius \(6\)</div>
+      <p class="small frag">Route 2 is Route 1 done once with letters. The next slide shows where it comes from.</p>
     </div></div>
   </div>
 </section>
 
+<!-- 7b · where the pattern comes from -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 13 · where the pattern comes from</p>
+  <h2>Route 2 is Route 1 with letters in place of the numbers.</h2>
+  <p class="small">Write the \(x\) coefficient as \(2g\) and the \(y\) coefficient as \(2f\). Half of \(2g\) is just \(g\), which is why the 2 is there. Left: any circle. Right: the one we just did.</p>
+  <div class="card">
+    <div style="display:flex;flex-wrap:wrap;gap:0 3vw"><p class="eyebrow" style="flex:1 1 300px;margin:0">Any circle</p><p class="eyebrow" style="flex:1 1 300px;margin:0">\(x^2 + y^2 + 10x - 4y - 7 = 0\), so \(g = 5\), \(f = -2\), \(c = -7\)</p></div>
+    <div class="frag" style="margin-top:1.1vh">
+      <span class="lbl">1 · group the \(x\) terms and the \(y\) terms:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6vh 3vw;align-items:baseline">
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x^2 + 2gx) + (y^2 + 2fy) + c = 0\)</div>
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x^2 + 10x) + (y^2 - 4y) - 7 = 0\)</div>
+      </div>
+    </div>
+    <div class="frag" style="margin-top:1.1vh">
+      <span class="lbl">2 · complete each square. Half of \(2g\) is \(g\), and you take \(g^2\) back off:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6vh 3vw;align-items:baseline">
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x + g)^2 - g^2 + (y + f)^2 - f^2 + c = 0\)</div>
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x + 5)^2 - 25 + (y - 2)^2 - 4 - 7 = 0\)</div>
+      </div>
+    </div>
+    <div class="frag" style="margin-top:1.1vh">
+      <span class="lbl">3 · move the numbers to the right-hand side:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6vh 3vw;align-items:baseline">
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x + g)^2 + (y + f)^2 = g^2 + f^2 - c\)</div>
+        <div class="math small" style="flex:1 1 300px;margin:0">\((x + 5)^2 + (y - 2)^2 = 25 + 4 + 7 = 36\)</div>
+      </div>
+    </div>
+    <div class="frag" style="margin-top:1.1vh">
+      <span class="lbl">4 · read it like slide 5: the center makes each bracket zero, and the right-hand side is \(r^2\):</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0.6vh 3vw;align-items:baseline">
+        <div class="math small" style="flex:1 1 300px;margin:0">center \((-g, -f)\), &nbsp;radius \(\sqrt{g^2 + f^2 - c}\)</div>
+        <div class="math small" style="flex:1 1 300px;margin:0">center \((-5, 2)\), &nbsp;radius \(\sqrt{36} = 6\)</div>
+      </div>
+    </div>
+  </div>
+  <p class="small frag">So the pattern is not a new rule. It is the answer to step 3, written once for every circle. If \(g^2 + f^2 - c\) is negative, there is no square root, and that is the "not a circle" case on the next slide.</p>
+</section>
+
 <!-- 8 · check the shape first -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 5 of 12 · two checks before you start</p>
+  <p class="eyebrow">Direct instruction · 6 of 13 · two checks before you start</p>
   <h2>Is the equation ready, and is it really a circle?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -211,14 +249,14 @@
       <div class="math small frag">\((x + 1)^2 - 1 + (y + 2)^2 - 4 + 10 = 0\)</div>
       <div class="math small frag"><span class="lbl">\(1 + 4 - 10 = -5\):</span>&nbsp; \((x + 1)^2 + (y + 2)^2 = -5\)</div>
       <p class="small frag">Two squares added together can never be negative, so no point fits. This is <b>not a circle</b>.</p>
-      <p class="small frag"><b>Also:</b> a circle has the same coefficient on \(x^2\) and \(y^2\), and no \(xy\) term.</p>
+      <p class="small frag"><b>Also check the squared terms.</b> Expand \((x - a)^2 + (y - b)^2\) and you always get \(x^2\) and \(y^2\) with the same coefficient, and \(x\) is never multiplied by \(y\). So \(x^2 + 2y^2 + \ldots\) is not a circle (it is an oval), and neither is anything with an \(xy\) term (the shape is tilted).</p>
     </div></div>
   </div>
 </section>
 
 <!-- 8b · route check -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 6 of 12 · route check</p>
+  <p class="eyebrow">Direct instruction · 7 of 13 · route check</p>
   <h2>Route check. Do not solve these.</h2>
   <p class="small">Look at each equation and say what it needs first. That is the whole task. Ten seconds each.</p>
   <div class="cols" style="margin-top:0.4vh">
@@ -240,7 +278,7 @@
 
 <!-- 9 · inside, on, outside -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 7 of 12 · inside, on or outside</p>
+  <p class="eyebrow">Direct instruction · 8 of 13 · inside, on or outside</p>
   <h2>Put the point into the left-hand side and compare with \(r^2\).</h2>
   <div class="math small">The circle from the start: \((x - 1)^2 + (y + 2)^2 = 45\)</div>
   <div class="three">
@@ -265,7 +303,7 @@
 
 <!-- 9b · application: a hurricane -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 8 of 12 · hurricanes</p>
+  <p class="eyebrow">Direct instruction · 9 of 13 · hurricanes</p>
   <h2>Is the town inside the storm-force winds?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -287,7 +325,7 @@
 
 <!-- 10 · tangent at a point -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 9 of 12 · tangent at a point</p>
+  <p class="eyebrow">Direct instruction · 10 of 13 · tangent at a point</p>
   <h2>A tangent is perpendicular to the radius at the point where it touches.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -309,7 +347,7 @@
 
 <!-- 11 · tangent lab -->
 <section class="slide">
-  <p class="eyebrow">Direct instruction · 10 of 12 · the Tangent Lab</p>
+  <p class="eyebrow">Direct instruction · 11 of 13 · the Tangent Lab</p>
   <h2>Pick a point and a method. Does the line only touch, or does it cut through?</h2>
   <div class="lab">
     <svg class="fig" id="tl-svg" viewBox="0 0 440 440" aria-label="A circle of radius 5, a point P on it, the radius to P, and the line built by the chosen method"></svg>
@@ -335,7 +373,7 @@
 
 <!-- 12 · real question -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 11 of 12 · June 2023, Paper 11, <span class="lit">Q12</span></p>
+  <p class="eyebrow">Direct instruction · 12 of 13 · June 2023, Paper 11, <span class="lit">Q12</span></p>
   <h2>A real Cambridge question opens exactly like today's lesson.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -354,7 +392,7 @@
 
 <!-- 13 · the marks -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 12 of 12 · <span class="lit">Q12(a)(b)</span> · where the 3 marks come from</p>
+  <p class="eyebrow">Direct instruction · 13 of 13 · <span class="lit">Q12(a)(b)</span> · where the 3 marks come from</p>
   <h2>Three marks, three lines of working.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
