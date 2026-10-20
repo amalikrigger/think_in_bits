@@ -7,7 +7,7 @@
   <meta name="description" content="Every machine in this lab is the same machine wearing different clothes. CS elective lesson, grades 7 to 12.">
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="../../assets/lesson.css?v=20261007">
+  <link rel="stylesheet" href="../../assets/lesson.css?v=20261019">
 </head>
 <body>
 
@@ -41,6 +41,7 @@
     <ul>
       <li>The four jobs every computer does: <strong>input</strong>, <strong>processing</strong>, <strong>output</strong>, <strong>storage</strong></li>
       <li>Why everything inside is <strong>binary</strong>, and what that actually means</li>
+      <li>How a <strong>color</strong>, a <strong>photo</strong> and a <strong>sound</strong> are all built from numbers, and how to change them</li>
       <li>The difference between <strong>memory</strong> and <strong>storage</strong>, which almost everyone gets wrong</li>
       <li>What a <strong>program</strong> is and what happens when one runs</li>
       <li>How to look at any machine in this lab and name its four jobs</li>
@@ -99,6 +100,54 @@
   </section>
 
   <section class="slide">
+    <h2>Numbers become color</h2>
+    <p>Your screen is a grid of tiny lights. Each one has a red part, a green part and a blue part, and each part gets one byte: <code>0</code> is off and <code>255</code> is as bright as it goes. Mix the three like paint made of light.</p>
+    <div data-widget="color"></div>
+  </section>
+
+  <section class="slide">
+    <h2>What you just saw: color</h2>
+    <ul>
+      <li>Each light gets <strong>one byte</strong>: eight switches worth 128, 64, 32, 16, 8, 4, 2 and 1. The number is the switches that are on, added up. All on is 255.</li>
+      <li>Three bytes is 24 bits, which gives <strong>16,777,216</strong> different colors.</li>
+      <li>The color codes you see in web design, like <code>#E8421F</code>, are the same three bytes written a shorter way.</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> you can make a color with lots of red and no green or blue, and say which switches you turned on.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Numbers become a photo</h2>
+    <p>Zoom into any photo far enough and it breaks into squares. Each square is a <strong>pixel</strong>, and each pixel is the three color numbers you just played with. Start at 4 by 4, then work up to 96 by 96.</p>
+    <div data-widget="pixels"></div>
+  </section>
+
+  <section class="slide">
+    <h2>What you just saw: photos</h2>
+    <ul>
+      <li>A pixel is <strong>three bytes</strong>. A phone photo with 12 million pixels is about 36 million bytes before it is squeezed smaller.</li>
+      <li>More squares means more detail, and more bytes. That is why photos take far more room than text.</li>
+      <li>A filter is arithmetic. <strong>Brighter</strong> adds to every number, <strong>invert</strong> subtracts each one from 255, and no square gets a number below 0 or above 255, because a byte cannot hold one.</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> you can find the brightest square in the picture and read out its three numbers.</div>
+  </section>
+
+  <section class="slide">
+    <h2>Numbers become sound</h2>
+    <p>Sound is air pushing and pulling. A microphone measures how hard, thousands of times a second, and every measurement is stored as one number. Play the numbers back in order and you hear the sound again. Two choices decide how good it is: how often you measure, and how precisely.</p>
+    <div data-widget="sound"></div>
+  </section>
+
+  <section class="slide">
+    <h2>What you just saw: sound</h2>
+    <ul>
+      <li>Measure more often and the shape gets truer. Measure too slowly and it gets misread: at 500 a second, slide the pitch above 250 and you hear a lower note that was never there.</li>
+      <li>Each number can be rough or precise. <strong>2 bits</strong> gives 4 levels and sounds gritty. <strong>16 bits</strong> gives 65,536 levels.</li>
+      <li>CD quality is 44,100 numbers a second at 16 bits, about <strong>88,000 bytes for every second</strong> of one channel.</li>
+    </ul>
+    <div class="callout check"><b>Checkpoint:</b> you can hear the difference between 44,100 and 1,000 measurements a second, and say why the slow one sounds worse.</div>
+  </section>
+
+  <section class="slide">
     <h2>Step 3: Memory and storage are not the same thing</h2>
     <p>Nearly everyone mixes these up, including people who have owned computers for thirty years.</p>
     <div class="tiers">
@@ -120,12 +169,12 @@
     <h2>Step 4: Watch a program actually run</h2>
     <p>A <strong>program</strong> is a list of instructions. The CPU reads one, does it, moves to the next. It cannot skim.</p>
     <div data-widget="cpu"></div>
-    <div class="callout check"><b>Checkpoint:</b> you can say why line 3 runs four times before giving up.</div>
+    <div class="callout check"><b>Checkpoint:</b> you can say why line 3 runs five times, even though the loop only goes round four times.</div>
   </section>
 
   <section class="slide">
     <h2>Fast, and profoundly stupid</h2>
-    <p>You just watched it take eighteen steps to add four numbers together. A person does that in their head. The machine needed every single instruction spelled out, in order, with nothing assumed.</p>
+    <p>You just watched it take twenty steps to add up four numbers. A person does that in their head. The machine needed every single instruction spelled out, in order, with nothing assumed.</p>
     <p>Now the other half. Your laptop runs a few billion of those steps every second. It never gets bored, never loses its place, and never decides that is close enough.</p>
     <div class="callout note"><b>This explains two things you already met.</b> Cracking a weak password means trying billions of guesses a second, which is only possible because each guess is a tiny stupid step. And an AI predicting the next word is the same story: a simple operation, run at a scale that stops feeling simple.</div>
   </section>
@@ -136,6 +185,7 @@
     <ul class="turnin">
       <li>Your name converted to bits, screenshotted</li>
       <li>You stepped the program to the end and can explain the loop</li>
+      <li>You made a color from its three numbers and read the numbers of one pixel</li>
       <li>You can say the difference between memory and storage without looking</li>
     </ul>
   </section>
@@ -243,6 +293,8 @@
         <tr><td><b>Bit</b></td><td>One switch, on or off, written as 1 or 0. The smallest thing a computer holds.</td></tr>
         <tr><td><b>Byte</b></td><td>Eight bits together, which is enough for one basic character</td></tr>
         <tr><td><b>Binary</b></td><td>Counting with only two digits, because a switch has only two positions</td></tr>
+        <tr><td><b>Pixel</b></td><td>One square of a picture. It is stored as three numbers: red, green and blue.</td></tr>
+        <tr><td><b>Sample</b></td><td>One measurement of a sound. A recording is thousands of them every second.</td></tr>
         <tr><td><b>CPU</b></td><td>The part that reads instructions and does them, one at a time, extremely fast</td></tr>
         <tr><td><b>RAM</b></td><td>Working memory. Fast, small, and gone the moment the power is</td></tr>
         <tr><td><b>Storage</b></td><td>The drive. Slower, far bigger, and still there tomorrow</td></tr>
@@ -261,7 +313,7 @@
         <div class="fix">You typed something outside the basic set, like an emoji or an accented letter. Those need more than one byte, which is exactly why they were a mess to get working on the early internet.</div></details>
       <details><summary>I stepped the program and nothing changed.</summary>
         <div class="fix">Some lines only check a condition and decide where to go next, so memory stays the same. That counts as a step. The CPU still had to do it.</div></details>
-      <details><summary>Why does it go back to line 2 instead of just repeating?</summary>
+      <details><summary>Why does it go back to line 3 instead of just repeating?</summary>
         <div class="fix">Because the condition has to be checked every single time. If it did not check, it would loop forever, which is a bug you will write for real at some point.</div></details>
       <details><summary>I cannot work out what the laser cutter stores.</summary>
         <div class="fix">Good, that is the awkward one. Ask what it has to remember while a job is running, and whether it remembers anything after the job finishes. Write down what you conclude and why.</div></details>
@@ -277,7 +329,8 @@
   <p><a href="../../../cs.html">All Computer Science lessons</a></p>
 </footer>
 
-<script src="../../assets/lesson.js?v=20261007"></script>
-<script src="../../assets/lesson-widgets.js?v=20261007"></script>
+<script src="../../assets/lesson.js?v=20261019"></script>
+<script src="../../assets/lesson-widgets.js?v=20261019"></script>
+<script src="../../assets/lesson-numbers.js?v=20261019"></script>
 </body>
 </html>
