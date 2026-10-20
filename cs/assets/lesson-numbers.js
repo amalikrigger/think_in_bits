@@ -10,6 +10,9 @@
      data-widget="color"    three bytes make a color; flip the bits
      data-widget="pixels"   a photo is a grid of those triplets
      data-widget="sound"    a sound is one number, measured over and over
+     data-widget="desk"     memory vs storage: type, save, cut the power
+     data-widget="cpulab"   the program stepper, with a dial and a guess
+     data-widget="parts"    sort a machine's parts into the four jobs
 
    Opt-in per element, and a broken widget never takes a lesson down.
    ============================================================ */
@@ -18,6 +21,8 @@
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+  var esc = function (v) { return String(v).replace(/[&<>"]/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var fmt = function (n) { return Math.round(n).toLocaleString('en-US'); };
   var bin8 = function (n) { return ('00000000' + n.toString(2)).slice(-8); };
   var clamp = function (n, lo, hi) { return Math.max(lo, Math.min(hi, n)); };
@@ -103,7 +108,48 @@
     'body.present .slide .nw-px { max-width: clamp(240px, 42vh, 330px); }',
     'body.present .slide .nw-ctl > .nw-lab { margin-bottom: 3px; }',
     'body.present .slide [data-widget="color"] .w-foot, body.present .slide [data-widget="pixels"] .w-foot, body.present .slide [data-widget="sound"] .w-foot { display: none; }',
-    '@media (max-height: 760px) { body.present .slide [data-widget="color"] .w-head, body.present .slide [data-widget="pixels"] .w-head, body.present .slide [data-widget="sound"] .w-head { display: none; } body.present .slide .nw-note { min-height: 0; } }',
+    '.nw-deskgrid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 14px; margin-bottom: 12px; }',
+    '@media (max-width: 640px) { .nw-deskgrid { grid-template-columns: minmax(0, 1fr); } }',
+    '.nw-zone { position: relative; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--hairline-strong); background: #0d0d14; }',
+    '.nw-zdesk { border-color: var(--accent-line); } .nw-zcab { border-color: var(--gold-line); }',
+    '.nw-zone h4 { margin: 0; font-size: 14px; } .nw-zone h4 span { font-weight: 500; font-size: 12px; color: var(--text-3); margin-left: 6px; }',
+    '.nw-zsub { margin: 2px 0 8px; font-size: 12.5px; color: var(--text-3); }',
+    '.nw-ta { width: 100%; box-sizing: border-box; resize: vertical; background: #14141c; color: var(--text); border: 1px solid var(--hairline-strong); border-radius: 9px; padding: 9px 11px; font: 14px var(--font); min-height: 84px; }',
+    '.nw-ta:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; } .nw-ta:disabled { opacity: .5; }',
+    '.nw-dirty { margin: 6px 0 0; font-size: 12.5px; min-height: 1.3em; color: var(--text-2); }',
+    '.nw-ok { color: var(--ok); font-weight: 600; } .nw-bad { color: var(--warn); font-weight: 600; }',
+    '.nw-off { position: absolute; inset: 0; border-radius: 14px; background: rgba(0,0,0,.9); display: flex; align-items: center; justify-content: center; font-weight: 700; letter-spacing: .08em; color: var(--warn); text-transform: uppercase; }',
+    '.nw-off[hidden] { display: none; }',
+    '.nw-doc { padding: 10px 12px; border-radius: 10px; background: #14141c; border: 1px solid var(--gold-line); font-size: 13px; display: flex; flex-direction: column; gap: 3px; }',
+    '.nw-doc.empty { border-style: dashed; color: var(--text-3); border-color: var(--hairline-strong); min-height: 70px; justify-content: center; align-items: center; }',
+    '.nw-doc b { color: var(--gold); } .nw-doc span { font-size: 11.5px; color: var(--text-3); } .nw-doc em { font-style: normal; color: var(--text-2); word-break: break-word; }',
+    '.nw-file.flash .nw-doc { animation: nwflash .6s ease; }',
+    '@keyframes nwflash { 0% { box-shadow: 0 0 0 0 rgba(255,200,87,.7); } 100% { box-shadow: 0 0 0 14px rgba(255,200,87,0); } }',
+    '.nw-cpuctl { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }',
+    '.nw-guess { max-width: 150px; }',
+    '.nw-parts { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }',
+    '.nw-part { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 7px 11px; border-radius: 10px; background: #0d0d14; border: 1px solid var(--hairline); }',
+    '.nw-part.ok { border-color: var(--ok-line); background: var(--ok-soft); } .nw-part.bad { border-color: var(--warn-line); background: var(--warn-soft); }',
+    '.nw-pn { flex: 1 1 230px; font-size: 13.5px; font-weight: 500; }',
+    '.nw-pj { display: inline-flex; gap: 5px; flex-wrap: wrap; }',
+    '.nw-jb { padding: 4px 11px; border-radius: 50px; border: 1px solid var(--hairline-strong); background: transparent; color: var(--text-2); font: 500 12px var(--font); cursor: pointer; }',
+    '.nw-jb:hover { border-color: var(--accent); } .nw-jb:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }',
+    '.nw-jb[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #04141a; font-weight: 700; }',
+    '.nw-pr { flex: 1 1 100%; margin: 2px 0 0; font-size: 12.5px; color: var(--text-2); }',
+    '.nw-detail { margin: 6px 0 0; font-size: 13.5px; color: var(--text-2); min-height: 1.4em; }',
+    '.nw-detail b { color: var(--text); }',
+    'body.present .slide .nw-pr { font-size: clamp(11px, 1vw, 13px); }',
+    'body.present .slide .nw-ta { min-height: 64px; } body.present .slide .nw-zsub { margin-bottom: 4px; }',
+    'body.present .slide [data-widget="desk"] .w-head, body.present .slide [data-widget="cpulab"] .w-head, body.present .slide [data-widget="parts"] .w-head { display: none; }',
+    'body.present .slide [data-widget="cpulab"] .w-code { padding: 6px 0; } body.present .slide [data-widget="cpulab"] .w-code li { line-height: 1.2; padding-top: 2px; padding-bottom: 2px; font-size: 13px; }',
+    'body.present .slide [data-widget="cpulab"] .w-cpu { margin: 8px 0; } body.present .slide [data-widget="cpulab"] .w-side { gap: 6px; }',
+    'body.present .slide [data-widget="cpulab"] .w-mem, body.present .slide [data-widget="cpulab"] .w-out { padding: 8px 12px; }',
+    'body.present .slide [data-widget="parts"] .nw-pr { display: none; }',
+    'body.present .slide [data-widget="parts"] .nw-part { padding: 2px 10px; }',
+    'body.present .slide [data-widget="parts"] .nw-jb { padding: 2px 10px; } body.present .slide [data-widget="parts"] .nw-parts { gap: 4px; margin-bottom: 6px; }',
+    'body.present .slide [data-widget="parts"] .nw-ctl > .nw-lab { display: none; } body.present .slide [data-widget="parts"] .nw-ctl { margin-bottom: 6px; }',
+    'body.present .slide [data-widget="desk"] .w-foot, body.present .slide [data-widget="cpulab"] .w-foot, body.present .slide [data-widget="bits"] .w-foot { display: none; }',
+    '@media (max-height: 760px) { body.present .slide [data-widget="color"] .w-head, body.present .slide [data-widget="pixels"] .w-head, body.present .slide [data-widget="sound"] .w-head, body.present .slide [data-widget="desk"] .w-head, body.present .slide [data-widget="cpulab"] .w-head, body.present .slide [data-widget="parts"] .w-head { display: none; } body.present .slide .nw-note { min-height: 0; } }',
     '@media (max-width: 520px) {',
     '  .nw-bot { margin-left: 0; }',
     '  .nw-bot { width: 100%; }',
@@ -727,16 +773,335 @@
     redraw();
   }
 
+  /* ============================================================
+     4. DESK AND CABINET: why unsaved work dies
+     ============================================================ */
+
+  function buildDesk(host) {
+    var KEY = 'tib-desk-cabinet-v1';
+    var cab = null, auto = false, timer = null, busy = false, offTimer = null;
+    try { var raw = localStorage.getItem(KEY); if (raw) cab = JSON.parse(raw); } catch (e) { cab = null; }
+
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Try it</span>' +
+      '<span class="w-sub">Type on the desk. Then see what survives a power cut.</span></div>' +
+      '<div class="nw-deskgrid">' +
+        '<div class="nw-zone nw-zdesk"><h4>The desk <span>memory (RAM)</span></h4>' +
+          '<p class="nw-zsub">Fast. Small. Wiped when the power goes.</p>' +
+          '<textarea class="nw-ta" rows="4" maxlength="400" autocomplete="off" spellcheck="false" ' +
+            'aria-label="Your document, open on the desk" placeholder="Type something. This document is open on the desk."></textarea>' +
+          '<p class="nw-dirty" aria-live="polite"></p>' +
+          '<div class="nw-off" hidden>No power</div>' +
+        '</div>' +
+        '<div class="nw-zone nw-zcab"><h4>The filing cabinet <span>storage (drive)</span></h4>' +
+          '<p class="nw-zsub">Slower. Huge. Still there tomorrow.</p>' +
+          '<div class="nw-file"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="nw-ops">' +
+        '<button class="w-btn nw-save" type="button">Save to cabinet</button>' +
+        '<button class="w-btn ghost nw-open" type="button">Open from cabinet</button>' +
+        '<button class="w-btn warn nw-cut" type="button">Cut the power</button>' +
+        '<label class="nw-chk"><input type="checkbox" class="nw-auto"> Autosave</label>' +
+      '</div>' +
+      '<p class="nw-note nw-msg" aria-live="polite"></p>' +
+      '<p class="w-foot">Nothing you type here leaves this page. The cabinet is kept on this device only.</p>';
+
+    var ta = $('.nw-ta', host), dirty = $('.nw-dirty', host), file = $('.nw-file', host);
+    var msg = $('.nw-msg', host), off = $('.nw-off', host), zdesk = $('.nw-zdesk', host);
+    var bSave = $('.nw-save', host), bOpen = $('.nw-open', host), bCut = $('.nw-cut', host);
+
+    function when() { return new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+    function snippet(t) { return t.length > 64 ? t.slice(0, 64) + '…' : t; }
+
+    function drawCab() {
+      if (!cab) { file.innerHTML = '<div class="nw-doc empty">Empty drawer</div>'; return; }
+      file.innerHTML = '<div class="nw-doc"><b>My document</b><span>saved ' + esc(cab.time) + '</span>' +
+        '<em>' + (cab.text ? '“' + esc(snippet(cab.text)) + '”' : '(blank)') + '</em></div>';
+    }
+    function drawDirty() {
+      var t = ta.value;
+      if (!t && !cab) dirty.textContent = '';
+      else if (cab && cab.text === t) dirty.innerHTML = '<span class="nw-ok">Saved.</span> A copy is in the cabinet.';
+      else if (t) dirty.innerHTML = '<span class="nw-bad">Not saved.</span> This exists only on the desk.';
+      else dirty.textContent = '';
+    }
+    function say(t) { msg.textContent = t; }
+    function save(silent) {
+      cab = { text: ta.value, time: when() };
+      try { localStorage.setItem(KEY, JSON.stringify(cab)); } catch (e) { /* kept in this page only */ }
+      drawCab(); drawDirty();
+      file.classList.remove('flash'); void file.offsetWidth; file.classList.add('flash');
+      say(silent ? 'Autosave copied the desk into the cabinet.' : 'Copied from the desk into the cabinet.');
+    }
+    function lock(on) { busy = on; [bSave, bOpen, bCut, ta].forEach(function (el) { el.disabled = on; }); }
+
+    ta.addEventListener('input', function () {
+      drawDirty();
+      if (auto) { clearTimeout(timer); timer = setTimeout(function () { save(true); }, 700); }
+    });
+    $('.nw-auto', host).addEventListener('change', function (e) {
+      auto = e.target.checked;
+      if (auto) { say('Autosave is on. Every few moments the desk is copied into the cabinet for you.'); if (ta.value) save(true); }
+      else say('Autosave is off. Nothing reaches the cabinet unless you save.');
+    });
+    bSave.addEventListener('click', function () { if (!busy) save(false); });
+    bOpen.addEventListener('click', function () {
+      if (busy) return;
+      if (!cab) { say('The cabinet is empty. Save something first.'); return; }
+      lock(true); say('Fetching from the cabinet…');
+      setTimeout(function () {
+        ta.value = cab.text; lock(false); drawDirty();
+        say('Copied from the cabinet onto the desk. Notice the wait: storage is slower than memory.');
+      }, 900);
+    });
+    bCut.addEventListener('click', function () {
+      if (busy) return;
+      var had = ta.value, saved = cab && cab.text === had;
+      lock(true); clearTimeout(timer);
+      zdesk.classList.add('dead'); off.hidden = false;
+      say('');
+      clearTimeout(offTimer);
+      offTimer = setTimeout(function () {
+        ta.value = ''; zdesk.classList.remove('dead'); off.hidden = true; lock(false); drawDirty();
+        if (!had) say('The desk was already empty. The cabinet is untouched.');
+        else if (saved) say('The desk is empty, but nothing was lost: you had saved. Open it from the cabinet to bring it back.');
+        else if (cab) say('The desk is empty. Everything you typed since your last save is gone. The older save is still in the cabinet.');
+        else say('The desk is empty and the cabinet has nothing. That text is gone for good: it never left memory.');
+      }, 1100);
+    });
+    drawCab(); drawDirty();
+    if (cab) say('The cabinet already has a saved document from earlier. Open it, or type something new.');
+  }
+
+  /* ============================================================
+     5. CPU LAB: the stepper, with a dial and a guess
+     ============================================================ */
+
+  function buildCpuLab(host) {
+    var N = 4, s, timer = null;
+
+    function program() {
+      return [
+        { src: 'set count = 0', run: function (st) { st.vars.count = 0; } },
+        { src: 'set total = 0', run: function (st) { st.vars.total = 0; } },
+        { src: 'repeat while count < ' + N, run: function (st) { if (!(st.vars.count < N)) { st.pc = 6; return true; } } },
+        { src: '    total = total + count', run: function (st) { st.vars.total += st.vars.count; } },
+        { src: '    count = count + 1', run: function (st) { st.vars.count += 1; } },
+        { src: '    go back and check again', run: function (st) { st.pc = 2; return true; } },
+        { src: 'print total', run: function (st) { st.out.push(String(st.vars.total)); } }
+      ];
+    }
+    var prog = program();
+
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Try it</span>' +
+      '<span class="w-sub">Pick how many numbers to add, guess the steps, then step through.</span></div>' +
+      '<div class="nw-cpuctl">' +
+        '<div class="nw-ctl"><label for="' + host.id + '-n">Count up to: <b class="nw-nv"></b></label>' +
+          '<input class="nw-range" style="--c:var(--accent);width:100%" id="' + host.id + '-n" type="range" min="1" max="10" step="1" value="4"></div>' +
+        '<div class="nw-ctl"><label for="' + host.id + '-g">Your guess: how many steps?</label>' +
+          '<input class="w-input nw-guess" id="' + host.id + '-g" type="number" inputmode="numeric" min="0" max="999" placeholder="a number"></div>' +
+      '</div>' +
+      '<div class="w-cpu"><ol class="w-code"></ol><div class="w-side"><div class="w-mem"></div>' +
+        '<div class="w-out"><b>Output</b><pre></pre></div></div></div>' +
+      '<div class="nw-playrow"><button class="w-btn" type="button" data-act="step">Step</button>' +
+        '<button class="w-btn ghost" type="button" data-act="run">Run it</button>' +
+        '<button class="w-btn ghost" type="button" data-act="reset">Reset</button>' +
+        '<span class="nw-stat nw-count" style="margin:0"></span></div>' +
+      '<p class="nw-note nw-verdict" aria-live="polite"></p>' +
+      '<p class="w-foot">Your laptop does this a few billion times a second. Not cleverer than you. Just relentless.</p>';
+
+    var codeEl = $('.w-code', host), memEl = $('.w-mem', host), outEl = $('.w-out pre', host);
+    var nv = $('.nw-nv', host), cnt = $('.nw-count', host), verdict = $('.nw-verdict', host), guess = $('.nw-guess', host);
+    var nRange = $('input[type=range]', host);
+
+    function reset() {
+      if (timer) { clearInterval(timer); timer = null; }
+      s = { pc: 0, vars: {}, out: [], done: false, steps: 0 };
+      verdict.textContent = '';
+      draw();
+    }
+    function draw() {
+      codeEl.innerHTML = prog.map(function (line, i) {
+        return '<li class="' + (i === s.pc && !s.done ? 'now' : '') + '"><code>' + esc(line.src) + '</code></li>';
+      }).join('');
+      var names = Object.keys(s.vars);
+      memEl.innerHTML = '<b>Memory</b>' + (names.length
+        ? '<table><tbody>' + names.map(function (k) {
+            return '<tr><td><code>' + esc(k) + '</code></td><td>' + s.vars[k] + '</td></tr>'; }).join('') + '</tbody></table>'
+        : '<p class="w-foot">nothing stored yet</p>');
+      outEl.textContent = s.out.join('\n');
+      nv.textContent = N + (N === 4 ? ' (the original)' : '');
+      cnt.innerHTML = 'Steps so far: <b>' + s.steps + '</b>';
+    }
+    function finish() {
+      var rule = '4 steps for every number, plus 4 more = ' + (4 * N + 4) + '.';
+      var g = guess.value === '' ? null : +guess.value;
+      if (g === null) verdict.textContent = 'Finished in ' + s.steps + ' steps. The rule: ' + rule;
+      else if (g === s.steps) verdict.textContent = 'You guessed ' + g + ' and it took ' + s.steps + '. Exactly right. The rule: ' + rule;
+      else verdict.textContent = 'You guessed ' + g + ' and it took ' + s.steps + '. The rule: ' + rule;
+    }
+    function step() {
+      if (s.done) return;
+      var line = prog[s.pc];
+      s.steps++;
+      var jumped = line.run(s);
+      if (!jumped) s.pc++;
+      if (s.pc >= prog.length) { s.done = true; draw(); finish(); return; }
+      draw();
+    }
+    nRange.addEventListener('input', function () { N = +nRange.value; prog = program(); guess.value = ''; reset(); });
+    host.addEventListener('click', function (e) {
+      var act = e.target.getAttribute && e.target.getAttribute('data-act');
+      if (act === 'step') { if (timer) { clearInterval(timer); timer = null; } step(); }
+      else if (act === 'reset') reset();
+      else if (act === 'run') {
+        if (timer) { clearInterval(timer); timer = null; return; }
+        if (s.done) reset();
+        timer = setInterval(function () { step(); if (s.done) { clearInterval(timer); timer = null; } }, N <= 4 ? 420 : N <= 6 ? 260 : 140);
+      }
+    });
+    reset();
+  }
+
+  /* ============================================================
+     6. SORT THE PARTS: practice for the lab audit
+     ============================================================ */
+
+  var JOBS = [['input', 'Input'], ['processing', 'Processing'], ['output', 'Output'], ['storage', 'Storage']];
+  var BOTH = ['input', 'output'];
+  var MACHINES = [
+    ['Glowforge', [
+      ['Lid camera', ['input'], null, 'It photographs the material so you can place your design on it.'],
+      ['The design file, sent over Wi-Fi', ['input'], null, 'A file coming in is input, the same as a keystroke.'],
+      ['The glowing start button', ['input'], null, 'One press tells it to begin.'],
+      ['Control board', ['processing'], null, 'It reads the file and works out where the laser must go.'],
+      ['Laser tube', ['output'], null, 'Output is not only pixels. Here it is light that cuts.'],
+      ['Motors that move the laser head', ['output'], null, 'Moving something in the real world is output.'],
+      ['Your saved designs, in your online account', ['storage'], null, 'The awkward one: the storage is online, not inside the machine. Where would you say it lives?']
+    ]],
+    ['RoboMaster S1', [
+      ['Camera on the gimbal', ['input'], null, 'It sees. Input, even though the robot uses it to make decisions.'],
+      ['Hit sensors on the armor', ['input'], null, 'They feel impacts, and a sensor is always input.'],
+      ['Commands from the app on your phone', ['input'], null, 'Whatever tells the machine what to do is input.'],
+      ['Main controller board', ['processing'], null, 'It runs your program and decides what the motors do.'],
+      ['Wheel and gimbal motors', ['output'], null, 'The robot moves. That is output.'],
+      ['The gel bead launcher', ['output'], null, 'Output does not have to be on a screen.'],
+      ['The program you wrote', ['storage', 'processing'], ['storage'], 'The awkward one. It is stored, then read as instructions. "Not sure, because" is a good answer here.']
+    ]],
+    ['micro:bit', [
+      ['Buttons A and B', ['input'], null, 'A press is a signal coming in.'],
+      ['Accelerometer (feels tilt and shake)', ['input'], null, 'A sensor. Input.'],
+      ['The 25 LED lights', ['output'], null, 'The screen is made of lights, and lights are output.'],
+      ['The processor chip', ['processing'], null, 'It reads your program one instruction at a time.'],
+      ['Flash memory that holds your program', ['storage'], null, 'It is tiny, but storage does not have to be big. It keeps your program when the power is off.'],
+      ['Radio (talks to other micro:bits)', BOTH, BOTH, 'Both: it sends and it receives. One part can do two jobs.'],
+      ['Pins along the bottom edge', BOTH, BOTH, 'You choose. A sensor plugged in is input, a motor or light is output.']
+    ]],
+    ['Raspberry Pi', [
+      ['USB ports for keyboard and mouse', ['input'], null, 'Keys and clicks come in through here.'],
+      ['HDMI port to a screen', ['output'], null, 'The picture goes out through here.'],
+      ['The processor chip', ['processing'], null, 'It does the instructions.'],
+      ['RAM chips', ['processing'], null, 'Working memory is the desk. It sits with processing, because that is where the work happens.'],
+      ['The microSD card', ['storage'], null, 'Most Pi models start up from it. Take it out and the Pi has nothing to run.'],
+      ['Wi-Fi', BOTH, BOTH, 'Both: data comes in and goes out.'],
+      ['GPIO pins', BOTH, BOTH, 'Like the micro:bit pins. Input or output, depending on what you connect.']
+    ]],
+    ['A laptop', [
+      ['Keyboard and trackpad', ['input'], null, 'You push, it listens.'],
+      ['Webcam and microphone', ['input'], null, 'They bring the room in as numbers.'],
+      ['Screen and speakers', ['output'], null, 'Pixels and sound going out.'],
+      ['The CPU', ['processing'], null, 'It reads and does the instructions.'],
+      ['RAM', ['processing'], null, 'The desk. It belongs with processing, because that is where the work happens.'],
+      ['The drive (SSD or flash)', ['storage'], null, 'The filing cabinet. It is still there when the power is off.'],
+      ['Wi-Fi', BOTH, BOTH, 'Both: data comes in and goes out.']
+    ]]
+  ];
+
+  function buildParts(host) {
+    var cur = 0, picks = [], checked = false;
+    MACHINES.forEach(function (m) { picks.push(m[1].map(function () { return {}; })); });
+
+    host.innerHTML =
+      '<div class="w-head"><span class="w-tag">Warm-up</span>' +
+      '<span class="w-sub">Pick a machine. For each part, tap the job it does. A part can do more than one.</span></div>' +
+      '<div class="nw-ctl"><span class="nw-lab">Machine</span><span class="nw-ms"></span></div>' +
+      '<div class="nw-parts"></div>' +
+      '<div class="nw-ops"><button class="w-btn nw-check" type="button">Check my card</button>' +
+        '<button class="w-btn ghost nw-clear" type="button">Clear</button></div>' +
+      '<p class="nw-note nw-sum" aria-live="polite"></p><p class="nw-detail" aria-live="polite"></p>';
+
+    var list = $('.nw-parts', host), sum = $('.nw-sum', host), detail = $('.nw-detail', host);
+    var mseg = seg('Machine', MACHINES.map(function (m, i) { return [i, m[0]]; }), cur, function (v) {
+      cur = +v; checked = false; render();
+    });
+    $('.nw-ms', host).appendChild(mseg.el);
+
+    function ok(part, set) {
+      var chosen = Object.keys(set).filter(function (k) { return set[k]; });
+      if (!chosen.length) return false;
+      var allowed = part[1], need = part[2] || [];
+      return chosen.every(function (k) { return allowed.indexOf(k) > -1; }) &&
+        need.every(function (k) { return chosen.indexOf(k) > -1; });
+    }
+
+    function render() {
+      var parts = MACHINES[cur][1], html = '';
+      parts.forEach(function (p, i) {
+        html += '<div class="nw-part" data-i="' + i + '"><span class="nw-pn">' + esc(p[0]) + '</span><span class="nw-pj">';
+        JOBS.forEach(function (j) {
+          html += '<button class="nw-jb" type="button" data-j="' + j[0] + '" aria-pressed="' + (!!picks[cur][i][j[0]]) + '">' + j[1] + '</button>';
+        });
+        html += '</span><p class="nw-pr" hidden></p></div>';
+      });
+      list.innerHTML = html;
+      sum.textContent = ''; detail.textContent = '';
+    }
+
+    list.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.nw-jb');
+      if (!b) return;
+      var row = b.closest('.nw-part'), i = +row.getAttribute('data-i'), j = b.getAttribute('data-j');
+      picks[cur][i][j] = !picks[cur][i][j];
+      b.setAttribute('aria-pressed', String(!!picks[cur][i][j]));
+      if (checked) { row.classList.remove('ok', 'bad'); $('.nw-pr', row).hidden = true; sum.textContent = ''; detail.textContent = ''; checked = false; }
+    });
+    $('.nw-check', host).addEventListener('click', function () {
+      var parts = MACHINES[cur][1], right = 0, blank = 0, firstBad = -1;
+      parts.forEach(function (p, i) {
+        var row = $('[data-i="' + i + '"]', list), good = ok(p, picks[cur][i]);
+        var any = Object.keys(picks[cur][i]).some(function (k) { return picks[cur][i][k]; });
+        if (!any) blank++;
+        if (good) right++; else if (firstBad < 0) firstBad = i;
+        row.classList.toggle('ok', good); row.classList.toggle('bad', !good);
+        var pr = $('.nw-pr', row);
+        pr.hidden = false;
+        pr.textContent = (good ? 'Yes. ' : (any ? 'Not quite. ' : 'Pick a job. ')) + p[3];
+      });
+      checked = true;
+      sum.textContent = right + ' of ' + parts.length + ' right.' + (right === parts.length ? ' That is a finished card.' : ' Fix the ones that are off, then check again.');
+      detail.innerHTML = firstBad < 0 ? '' : 'Start with <b>' + esc(parts[firstBad][0]) + '</b>: ' + esc(parts[firstBad][3]);
+    });
+    $('.nw-clear', host).addEventListener('click', function () {
+      picks[cur] = MACHINES[cur][1].map(function () { return {}; }); checked = false; render();
+    });
+    render();
+  }
+
   /* ---------- start up ---------- */
   function init() {
     $$('[data-widget]').forEach(function (host) {
       var kind = host.getAttribute('data-widget');
-      if (kind !== 'color' && kind !== 'pixels' && kind !== 'sound') return;
+      if (['color', 'pixels', 'sound', 'desk', 'cpulab', 'parts'].indexOf(kind) < 0) return;
       if (!host.id) host.id = 'nw-' + (++uid);
       try {
         if (kind === 'color') buildColor(host);
         else if (kind === 'pixels') buildPixels(host);
-        else buildSound(host);
+        else if (kind === 'sound') buildSound(host);
+        else if (kind === 'desk') buildDesk(host);
+        else if (kind === 'cpulab') buildCpuLab(host);
+        else buildParts(host);
       } catch (err) {
         if (window.console) console.error('numbers lab widget failed:', kind, err);
         host.textContent = '';
