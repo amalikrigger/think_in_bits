@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Circles · 1.3 Booklet 2</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/booklet.css">
+</head>
+<body data-booklet="1.3-circles" data-booklet-name="1.3 Coordinate Geometry · Booklet 2 · Circles" data-back="../../../math.html">
+<main class="bk">
+
+<!-- ================= cover ================= -->
+<div class="cover" id="top">
+  <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Booklet 2 of 3</p>
+  <h1>Circles</h1>
+  <p class="lead">A circle is one idea, every point the same distance from a center, turned into one equation. This booklet shows you how to read that equation, how to rebuild it when it has been multiplied out, how to test any point against it, and how to find the tangent at a point. It ends with a real Cambridge question, marked line by line.</p>
+  <div class="can">
+    <div>
+      <h3>By the end you can</h3>
+      <ul>
+        <li>write a circle's equation from its center and radius</li>
+        <li>read the center and radius from any circle equation</li>
+        <li>say whether a point is inside, on or outside a circle</li>
+        <li>find the tangent to a circle at a point</li>
+      </ul>
+    </div>
+    <div>
+      <h3>You need</h3>
+      <ul>
+        <li>distance, gradient and perpendicular gradient (Booklet 1, Straight lines)</li>
+        <li>completing the square (1.1 Quadratics)</li>
+      </ul>
+      <h3 style="margin-top:12px">How to use it</h3>
+      <p>Read in order. When a box asks you to predict, decide before you click. Do each Check yourself question on paper first, then mark yourself. Your progress is saved in this browser.</p>
+    </div>
+  </div>
+  <div class="start"><a class="bk-btn go" href="#distance" style="text-decoration:none">Start with section 1</a><a class="toolchip" href="../session-02-circles/">The class slides for this booklet</a></div>
+</div>
+
+<!-- ================= 1 ================= -->
+<section class="bsec" id="distance" data-title="A circle is a distance">
+  <div class="sec-head"><div class="num">1</div><div><h2>A circle is a distance</h2><p class="sub">Where the equation comes from, so you never have to memorize it blind.</p></div></div>
+
+  <div class="idea">
+    <p class="eyebrow">The idea</p>
+    <p>A circle is every point that is the same distance from one fixed point. The fixed point is the <b>center</b>. The distance is the <b>radius</b>.</p>
+  </div>
+
+  <div class="try" data-id="warm">
+    <div class="qh"><span class="qn">Warm up</span><span class="tag">Booklet 1 skills</span></div>
+    <div class="q"><p>\(C(1, -2)\) and \(P(4, 4)\). Find the distance \(CP\) in exact form, the gradient of \(CP\), and the gradient of a line perpendicular to \(CP\).</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">distance</span>\(\sqrt{(4 - 1)^2 + (4 - (-2))^2} = \sqrt{9 + 36} = \sqrt{45} = 3\sqrt{5}\)</div>
+      <div class="m"><span class="lbl">gradient</span>\(\dfrac{4 - (-2)}{4 - 1} = \dfrac{6}{3} = 2\)</div>
+      <div class="m"><span class="lbl">perpendicular gradient: flip it and change the sign</span>\(-\tfrac{1}{2}\), &nbsp;because \(2 \times \left(-\tfrac{1}{2}\right) = -1\)</div>
+      <p class="small">Keep these three answers. The distance is about to become a radius, and the perpendicular gradient becomes a tangent in section 6.</p>
+    </div>
+  </div>
+
+  <div class="two">
+    <figure class="card">
+      <svg class="cg" id="fig-dist" aria-label="The circle with center C at 1, minus 2 through P at 4, 4, with the radius CP and the steps 3 across and 6 up"></svg>
+      <figcaption>Across 3, up 6, so \(CP = \sqrt{45}\). Click the graph to enlarge it.</figcaption>
+    </figure>
+    <div class="steps" data-next="Next step">
+      <p>Every point \((x, y)\) on this circle is \(\sqrt{45}\) from \(C(1, -2)\). Write that down as an equation.</p>
+      <div class="step m"><span class="lbl">across is \(x - 1\), up is \(y - (-2) = y + 2\)</span>\(\sqrt{(x - 1)^2 + (y + 2)^2} = \sqrt{45}\)</div>
+      <div class="step m"><span class="lbl">square both sides</span>\((x - 1)^2 + (y + 2)^2 = 45\)</div>
+      <div class="step m"><span class="lbl">check with \(P(4, 4)\)</span>\(3^2 + 6^2 = 9 + 36 = 45\). &nbsp;It works.</div>
+      <div class="step"><p>That is the whole idea: the circle's equation is the distance formula with the square root squared away.</p></div>
+    </div>
+  </div>
+
+  <div class="labhead"><p class="eyebrow">Try it · the Circle Probe</p><p class="small">Drag the point. The left-hand side is worked out for wherever you put it.</p></div>
+  <div class="lab probe" data-a="1" data-b="-2" data-rr="45" data-x="-8,10" data-y="-11,7" data-start="4,4" data-step="2"></div>
+  <p>Find three more points where the total is exactly 45. (There are eight whole-number points on this circle. Here is a hint: \(45 = 36 + 9\).)</p>
+
+  <div class="idea">
+    <p class="eyebrow">The equation of a circle</p>
+    <div class="m result">\((x - a)^2 + (y - b)^2 = r^2\) &nbsp;has center \((a, b)\) and radius \(r\)</div>
+    <p>This is not in the formula booklet (MF19). Learn it from the picture above, so you can always rebuild it.</p>
+  </div>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="bsec" id="reading" data-title="Reading center and radius">
+  <div class="sec-head"><div class="num">2</div><div><h2>Reading center and radius</h2><p class="sub">Two rules, and the three mistakes Cambridge examiners see most.</p></div></div>
+
+  <div class="idea">
+    <p class="eyebrow">The two rules</p>
+    <p><b>Center:</b> the values of \(x\) and \(y\) that make each bracket zero. In \((x + 3)^2\), \(x + 3 = 0\) gives \(x = -3\). So the signs look flipped.</p>
+    <p><b>Radius:</b> the square root of the right-hand side. The right-hand side is \(r^2\), not \(r\).</p>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">center</p>
+    <p>What is the center of \((x + 3)^2 + (y - 5)^2 = 49\)?</p>
+    <div class="opts">
+      <button data-say="Those are the numbers as written. Make each bracket zero instead.">\((3, -5)\)</button>
+      <button data-ok data-say="Yes. x + 3 = 0 gives −3, and y − 5 = 0 gives 5.">\((-3, 5)\)</button>
+      <button data-say="The first number goes with x. Read the x bracket first.">\((5, -3)\)</button>
+      <button data-say="Check the x bracket: x + 3 is zero when x = −3.">\((3, 5)\)</button>
+    </div>
+    <div class="why-it m">\(x + 3 = 0 \Rightarrow x = -3\), &nbsp;\(y - 5 = 0 \Rightarrow y = 5\). &nbsp;Center \((-3, 5)\), radius \(\sqrt{49} = 7\).</div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">radius</p>
+    <p>What is the radius of \((x - 2)^2 + y^2 = 20\)?</p>
+    <div class="opts">
+      <button data-say="20 is r squared, the right-hand side. Take its square root.">\(20\)</button>
+      <button data-say="Half of 20 is not a square root.">\(10\)</button>
+      <button data-ok data-say="Yes. √20 = √4 × √5 = 2√5.">\(2\sqrt{5}\)</button>
+      <button data-say="Not quite. The square root of 20 is √4 × √5.">\(4\sqrt{5}\)</button>
+    </div>
+    <div class="why-it m">\(r = \sqrt{20} = \sqrt{4}\sqrt{5} = 2\sqrt{5}\). &nbsp;And \(y^2\) is \((y - 0)^2\), so the center is \((2, 0)\).</div>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">Going the other way</p>
+    <p>A circle has center \((2, -5)\) and radius 3. Put the center into the brackets with the signs flipped, and square the radius:</p>
+    <div class="m result">\((x - 2)^2 + (y + 5)^2 = 9\)</div>
+  </div>
+
+  <div class="labhead"><p class="eyebrow">Try it · the Circle Reader</p><p class="small">Set an equation, pick a way of reading it, predict, then show the circle that reading draws.</p></div>
+  <div class="lab">
+    <svg class="fig" id="cr-svg" viewBox="0 0 440 440" aria-label="A grid with the circle given by the equation, and the circle a chosen reading of the equation would draw"></svg>
+    <div class="panel">
+      <div class="read" id="cr-eq"></div>
+      <label for="cr-a" id="cr-alab">a</label>
+      <input type="range" id="cr-a" min="-4" max="4" step="1" value="3">
+      <label for="cr-b" id="cr-blab">b</label>
+      <input type="range" id="cr-b" min="-4" max="4" step="1" value="-2">
+      <label for="cr-r" id="cr-rlab">r</label>
+      <input type="range" id="cr-r" min="1" max="6" step="1" value="4">
+      <div class="picks" id="cr-picks">
+        <button type="button" data-i="0" aria-pressed="true">Correct reading</button>
+        <button type="button" data-i="1" aria-pressed="false">Radius = right-hand side</button>
+        <button type="button" data-i="2" aria-pressed="false">Keep the signs</button>
+        <button type="button" data-i="3" aria-pressed="false">Swap x and y</button>
+      </div>
+      <div class="read" id="cr-read"></div>
+      <button type="button" class="toggle" id="cr-show" aria-pressed="false">Show the circle</button>
+      <div class="verdict ok" id="cr-verdict"></div>
+    </div>
+  </div>
+  <p class="key"><span class="sw dash"></span>the real circle &nbsp; <span class="sw ans"></span>a reading that matches &nbsp; <span class="sw bad"></span>a reading that misses</p>
+
+  <p class="eyebrow" style="color:var(--warn)">What examiners saw (June 2023)</p>
+  <div class="ghosts">
+    <div class="ghost">
+      <p class="eyebrow">Radius, not radius squared</p>
+      <p>Radius 10, center \((0, 2)\):</p>
+      <div class="m wrongline">\(x^2 + (y - 2)^2 = 10\)</div>
+      <p class="fix">The right-hand side is \(r^2 = 100\).</p>
+    </div>
+    <div class="ghost">
+      <p class="eyebrow">Signs kept as written</p>
+      <p>From \((x + 3)^2 + (y - 5)^2 = 49\):</p>
+      <div class="m wrongline">center \((3, -5)\)</div>
+      <p class="fix">Make each bracket zero: \((-3, 5)\).</p>
+    </div>
+    <div class="ghost">
+      <p class="eyebrow">\(x\) and \(y\) swapped</p>
+      <p>Center \((4, -1)\):</p>
+      <div class="m wrongline">\((x + 1)^2 + (y - 4)^2\)</div>
+      <p class="fix">The first number goes with \(x\): \((x - 4)^2 + (y + 1)^2\).</p>
+    </div>
+  </div>
+  <p class="small">The examiners also saw brackets that were never squared. A circle always has both brackets squared.</p>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="bsec" id="expanded" data-title="The expanded form">
+  <div class="sec-head"><div class="num">3</div><div><h2>The expanded form</h2><p class="sub">When the brackets have been multiplied out, complete the square to get them back.</p></div></div>
+
+  <p>Multiply out \((x + 5)^2 + (y - 2)^2 = 36\) and you get \(x^2 + 10x + 25 + y^2 - 4y + 4 = 36\), which tidies up to</p>
+  <div class="m">\(x^2 + y^2 + 10x - 4y - 7 = 0\)</div>
+  <p>Same circle, but you can no longer read the center. Cambridge often gives circles this way. Here are two routes back.</p>
+
+  <div class="card">
+    <p class="eyebrow">Route 1 · complete the square (always works)</p>
+    <div class="steps">
+      <div class="step m"><span class="lbl">group the \(x\) terms and the \(y\) terms</span>\((x^2 + 10x) + (y^2 - 4y) - 7 = 0\)</div>
+      <div class="step m"><span class="lbl">half of 10 is 5, half of \(-4\) is \(-2\)</span>\((x + 5)^2 - 25 + (y - 2)^2 - 4 - 7 = 0\)</div>
+      <div class="step why"><p class="eyebrow">Why subtract 25?</p><p>\((x + 5)^2 = x^2 + 10x + 25\). That is 25 more than \(x^2 + 10x\), so you take the 25 back off. Same for \((y - 2)^2\) and the 4. This is the same move as completing the square in 1.1.</p></div>
+      <div class="step m"><span class="lbl">move the numbers to the right: \(25 + 4 + 7 = 36\)</span>\((x + 5)^2 + (y - 2)^2 = 36\)</div>
+      <div class="step m result">center \((-5, 2)\), radius \(6\)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">Route 2 · Route 1 with letters</p>
+    <p>Write any expanded circle as \(x^2 + y^2 + 2gx + 2fy + c = 0\). The 2 is there because half of \(2g\) is just \(g\). Now do Route 1 once, with letters on the left and our numbers on the right (\(g = 5\), \(f = -2\), \(c = -7\)).</p>
+    <div class="steps" data-next="Next step">
+      <div class="step pair">
+        <span class="h">Any circle</span><span class="h right">This circle</span>
+        <span class="lbl">1 · group</span>
+        <div class="m">\((x^2 + 2gx) + (y^2 + 2fy) + c = 0\)</div>
+        <div class="m">\((x^2 + 10x) + (y^2 - 4y) - 7 = 0\)</div>
+      </div>
+      <div class="step pair">
+        <span class="lbl">2 · complete each square: half of \(2g\) is \(g\), then take \(g^2\) back off</span>
+        <div class="m">\((x + g)^2 - g^2 + (y + f)^2 - f^2 + c = 0\)</div>
+        <div class="m">\((x + 5)^2 - 25 + (y - 2)^2 - 4 - 7 = 0\)</div>
+      </div>
+      <div class="step pair">
+        <span class="lbl">3 · move the numbers to the right</span>
+        <div class="m">\((x + g)^2 + (y + f)^2 = g^2 + f^2 - c\)</div>
+        <div class="m">\((x + 5)^2 + (y - 2)^2 = 36\)</div>
+      </div>
+      <div class="step pair">
+        <span class="lbl">4 · read it like section 2: make each bracket zero, square root the right</span>
+        <div class="m result">center \((-g, -f)\), &nbsp;radius \(\sqrt{g^2 + f^2 - c}\)</div>
+        <div class="m result">center \((-5, 2)\), &nbsp;radius \(6\)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="idea">
+    <p class="eyebrow">Which route?</p>
+    <p>Write Route 1 in an exam. It always works and shows every step for the method mark. Use Route 2 as a fast check. It only works once \(x^2\) and \(y^2\) have coefficient 1, and it is not in the formula booklet.</p>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">center</p>
+    <p>What is the center of \(x^2 + y^2 - 6x + 8y = 0\)?</p>
+    <div class="opts">
+      <button data-say="Half the x coefficient is −3, so the bracket is (x − 3). Make it zero.">\((-3, 4)\)</button>
+      <button data-ok data-say="Yes. (x − 3)² + (y + 4)² = 25.">\((3, -4)\)</button>
+      <button data-say="Halve the coefficients first: 2g = −6 gives g = −3.">\((6, -8)\)</button>
+      <button data-say="Halve, and then flip the sign: (−g, −f).">\((-6, 8)\)</button>
+    </div>
+    <div class="why-it m">\((x - 3)^2 - 9 + (y + 4)^2 - 16 = 0 \Rightarrow (x - 3)^2 + (y + 4)^2 = 25\). &nbsp;Center \((3, -4)\), radius 5. No number term means \(c = 0\), and that is fine. This circle passes through the origin.</div>
+  </div>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="bsec" id="checks" data-title="Is it really a circle?">
+  <div class="sec-head"><div class="num">4</div><div><h2>Is it really a circle?</h2><p class="sub">Look before you start: is the equation ready, and could it be a circle at all?</p></div></div>
+
+  <div class="two">
+    <div class="card">
+      <p class="eyebrow">Check 1 · \(x^2\) and \(y^2\) need coefficient 1</p>
+      <div class="m">\(2x^2 + 2y^2 - 8x + 12y + 8 = 0\)</div>
+      <div class="steps">
+        <div class="step m"><span class="lbl">divide every term by 2 first</span>\(x^2 + y^2 - 4x + 6y + 4 = 0\)</div>
+        <div class="step m"><span class="lbl">complete the square</span>\((x - 2)^2 - 4 + (y + 3)^2 - 9 + 4 = 0\)</div>
+        <div class="step m result">\((x - 2)^2 + (y + 3)^2 = 9\): center \((2, -3)\), radius 3</div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Check 2 · the right-hand side must be positive</p>
+      <div class="m">\(x^2 + y^2 + 2x + 4y + 10 = 0\)</div>
+      <div class="steps">
+        <div class="step m">\((x + 1)^2 - 1 + (y + 2)^2 - 4 + 10 = 0\)</div>
+        <div class="step m"><span class="lbl">\(1 + 4 - 10 = -5\)</span>\((x + 1)^2 + (y + 2)^2 = -5\)</div>
+        <div class="step"><p>Two squares added together are never negative, so no point fits. <b>This is not a circle.</b> In Route 2 terms, \(g^2 + f^2 - c\) is negative, so there is no square root.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="why">
+    <p class="eyebrow">Why a circle has equal \(x^2\) and \(y^2\), and no \(xy\)</p>
+    <p>Expand any \((x - a)^2 + (y - b)^2\). Each bracket gives exactly one \(x^2\) or one \(y^2\), so the two always match. And \(x\) only lives in the first bracket and \(y\) in the second, so they are never multiplied together.</p>
+    <p>So \(x^2 + 2y^2 + \ldots\) is not a circle. The unequal coefficients stretch it into an oval. Anything with an \(xy\) term is tilted, so it is not a circle either.</p>
+  </div>
+
+  <h3>Route check. Do not solve these.</h3>
+  <p>Say what each one needs first. That is the whole task.</p>
+  <div class="predict">
+    <p class="eyebrow">first move</p>
+    <p>\((x - 4)^2 + (y + 1)^2 = 12\)</p>
+    <div class="opts">
+      <button data-ok data-say="Yes. It is already in center–radius form.">Read it now</button>
+      <button data-say="The squares are already done for you.">Complete the square</button>
+      <button data-say="There is nothing to divide by.">Divide first</button>
+      <button data-say="Both brackets are squared and 12 is positive, so it is a circle.">Not a circle</button>
+    </div>
+    <div class="why-it m">center \((4, -1)\), radius \(\sqrt{12} = 2\sqrt{3}\)</div>
+  </div>
+  <div class="predict">
+    <p class="eyebrow">first move</p>
+    <p>\(x^2 + y^2 - 8x + 2y = 0\)</p>
+    <div class="opts">
+      <button data-say="You cannot read the center from the expanded form.">Read it now</button>
+      <button data-ok data-say="Yes. The coefficients of x² and y² are already 1.">Complete the square</button>
+      <button data-say="x² and y² already have coefficient 1.">Divide first</button>
+      <button data-say="It is a circle. No number term just means c = 0.">Not a circle</button>
+    </div>
+    <div class="why-it m">\((x - 4)^2 + (y + 1)^2 = 17\). The same center as the last one; only the radius changed.</div>
+  </div>
+  <div class="predict">
+    <p class="eyebrow">first move</p>
+    <p>\(3x^2 + 3y^2 + 6x - 12y - 12 = 0\)</p>
+    <div class="opts">
+      <button data-say="You cannot read it from the expanded form.">Read it now</button>
+      <button data-say="Not yet. The coefficient of x² is 3.">Complete the square</button>
+      <button data-ok data-say="Yes. Divide by 3, then complete the square.">Divide first</button>
+      <button data-say="The coefficients of x² and y² match (both 3), so it can be a circle.">Not a circle</button>
+    </div>
+    <div class="why-it m">\(x^2 + y^2 + 2x - 4y - 4 = 0 \Rightarrow (x + 1)^2 + (y - 2)^2 = 9\)</div>
+  </div>
+  <div class="predict">
+    <p class="eyebrow">first move</p>
+    <p>\(x^2 + 2y^2 + 4x - 6 = 0\)</p>
+    <div class="opts">
+      <button data-say="Look at the coefficients of x² and y².">Read it now</button>
+      <button data-say="Check the squared terms before you start.">Complete the square</button>
+      <button data-say="Dividing cannot make 1 and 2 equal.">Divide first</button>
+      <button data-ok data-say="Yes. x² has 1 and y² has 2, so it is an oval.">Not a circle</button>
+    </div>
+    <div class="why-it m">The coefficients of \(x^2\) and \(y^2\) differ, so this is not a circle.</div>
+  </div>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="bsec" id="inside" data-title="Inside, on or outside">
+  <div class="sec-head"><div class="num">5</div><div><h2>Inside, on or outside</h2><p class="sub">Put the point in, compare with \(r^2\). No square roots needed.</p></div></div>
+
+  <div class="idea">
+    <p class="eyebrow">The test</p>
+    <p>Substitute the point into the left-hand side of \((x - a)^2 + (y - b)^2 = r^2\). Less than \(r^2\): inside. Equal: on. More: outside.</p>
+  </div>
+  <div class="why">
+    <p class="eyebrow">Why it works</p>
+    <p>The left-hand side is the distance from the center, squared. Comparing squares is the same as comparing the distances, because distances are never negative. That is why you never need the square root.</p>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">On our circle, \((x - 1)^2 + (y + 2)^2 = 45\)</p>
+    <div class="steps">
+      <div class="step m"><span class="lbl">\((5, 1)\)</span>\((5 - 1)^2 + (1 + 2)^2 = 16 + 9 = 25\), &nbsp;\(25 < 45\): inside</div>
+      <div class="step m"><span class="lbl">\((7, 1)\)</span>\((7 - 1)^2 + (1 + 2)^2 = 36 + 9 = 45\), &nbsp;\(45 = 45\): on the circle</div>
+      <div class="step m"><span class="lbl">\((-5, 2)\)</span>\((-5 - 1)^2 + (2 + 2)^2 = 36 + 16 = 52\), &nbsp;\(52 > 45\): outside</div>
+    </div>
+    <p class="small">Watch the signs: \((-5 - 1)^2 = (-6)^2 = 36\). The square makes it positive. Go back to the Circle Probe in section 1 and check all three.</p>
+  </div>
+
+  <div class="local">
+    <p class="eyebrow">St. Croix · is the town inside the storm?</p>
+    <p>A made-up storm. Put Christiansted at the origin, with one grid unit = 10 km. The eye is at \((6, 8)\), and storm-force winds reach 120 km from the eye, so \(r = 12\) and the edge of the winds is \((x - 6)^2 + (y - 8)^2 = 144\).</p>
+    <p>Predict first: is Christiansted inside? Is Frederiksted, at about \((-2, -1)\)? Then use the buttons to check.</p>
+  </div>
+  <div class="lab probe" data-a="6" data-b="8" data-rr="144" data-x="-8,20" data-y="-6,22" data-start="6,8" data-step="4" data-unit="10" data-unit-name="km" data-center-label="eye" data-places='[[0,0,"Christiansted",7,-7,"start"],[-2,-1,"Frederiksted",-3,17,"start"]]'></div>
+  <p>Christiansted gives \(36 + 64 = 100 < 144\): inside, 100 km from the eye. Frederiksted gives \(64 + 81 = 145 > 144\): outside, but only just (about 120.4 km). Half a kilometer decides it, which is why forecasters care about the exact radius.</p>
+  <div class="chips"><a class="toolchip" href="../hurricane-closest-approach/">Hurricane Closest Approach: how close does a moving storm come?</a></div>
+</section>
+
+<!-- ================= 6 ================= -->
+<section class="bsec" id="tangent" data-title="The tangent at a point">
+  <div class="sec-head"><div class="num">6</div><div><h2>The tangent at a point</h2><p class="sub">A tangent is perpendicular to the radius where it touches.</p></div></div>
+
+  <div class="idea">
+    <p class="eyebrow">The fact</p>
+    <p>The tangent at \(P\) is at right angles to the radius \(CP\). So: find the gradient of the radius, flip it and change the sign, and draw the line through \(P\).</p>
+  </div>
+  <div class="why">
+    <p class="eyebrow">Why a right angle?</p>
+    <p>Tilt a line through \(P\) even a little away from \(90^\circ\) and one side of it dips inside the circle, so it crosses the circle a second time. Only the line at right angles to the radius stays outside everywhere except at \(P\). The Tangent Lab below lets you see this.</p>
+  </div>
+
+  <div class="two">
+    <figure class="card">
+      <svg class="cg" id="fig-tan" aria-label="The circle with center C at 1, minus 2, the radius to P at 4, 4, and the tangent at P at right angles to it"></svg>
+      <figcaption><span class="key"><span class="sw circ"></span>radius \(CP\) &nbsp; <span class="sw ans"></span>tangent at \(P\)</span></figcaption>
+    </figure>
+    <div class="card">
+      <p class="eyebrow">Tangent to \((x - 1)^2 + (y + 2)^2 = 45\) at \(P(4, 4)\)</p>
+      <div class="steps">
+        <div class="step m"><span class="lbl">1 · center from the equation</span>\(C(1, -2)\)</div>
+        <div class="step m"><span class="lbl">2 · gradient of the radius</span>\(\dfrac{4 - (-2)}{4 - 1} = 2\)</div>
+        <div class="step m"><span class="lbl">3 · flip and change the sign</span>tangent gradient \(-\tfrac{1}{2}\)</div>
+        <div class="step m"><span class="lbl">4 · line through \(P\), then times 2</span>\(y - 4 = -\tfrac{1}{2}(x - 4) \Rightarrow 2y - 8 = -x + 4\)</div>
+        <div class="step m result">\(x + 2y - 12 = 0\)</div>
+      </div>
+    </div>
+  </div>
+  <p class="small">These are your warm-up answers from section 1: the radius gradient was 2 and the perpendicular gradient was \(-\tfrac{1}{2}\).</p>
+
+  <div class="labhead"><p class="eyebrow">Try it · the Tangent Lab</p><p class="small">Pick a point and a method. Does the line only touch, or does it cut through?</p></div>
+  <div class="lab">
+    <svg class="fig" id="tl-svg" viewBox="0 0 440 440" aria-label="A circle of radius 5, a point P on it, the radius to P, and the line built by the chosen method"></svg>
+    <div class="panel">
+      <div class="read" id="tl-eq"></div>
+      <label for="tl-a" id="tl-alab">center</label>
+      <input type="range" id="tl-a" min="-3" max="3" step="1" value="-1">
+      <input type="range" id="tl-b" min="-3" max="3" step="1" value="1" aria-label="y-coordinate of the center">
+      <label for="tl-k" id="tl-klab">P</label>
+      <input type="range" id="tl-k" min="0" max="11" step="1" value="1">
+      <div class="picks" id="tl-picks">
+        <button type="button" data-i="0" aria-pressed="true">Flip and change sign</button>
+        <button type="button" data-i="1" aria-pressed="false">Use the radius gradient</button>
+        <button type="button" data-i="2" aria-pressed="false">Flip only</button>
+      </div>
+      <div class="read" id="tl-read"></div>
+      <button type="button" class="toggle" id="tl-show" aria-pressed="false">Show the line</button>
+      <div class="verdict ok" id="tl-verdict"></div>
+    </div>
+  </div>
+
+  <div class="ghost">
+    <p class="eyebrow">The trap</p>
+    <p class="wrongline">Tangent gradient \(= 2\), the radius gradient.</p>
+    <p>The radius goes into the circle through the center. The tangent only touches it. Flip <b>and</b> change the sign. You do not need calculus here, and the examiners say students who tried it did worse.</p>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">a special case</p>
+    <p>The circle \(x^2 + y^2 = 25\) passes through \((0, 5)\). What is the tangent there?</p>
+    <div class="opts">
+      <button data-say="That is the radius itself, the y-axis.">\(x = 0\)</button>
+      <button data-ok data-say="Yes. The radius is vertical, so the tangent is horizontal.">\(y = 5\)</button>
+      <button data-say="Draw it: the radius from (0, 0) to (0, 5) is vertical.">\(y = -x + 5\)</button>
+      <button data-say="That line passes through (5, 0), not (0, 5).">\(x = 5\)</button>
+    </div>
+    <div class="why-it m">The radius from \((0, 0)\) to \((0, 5)\) is vertical, so its gradient is undefined and "flip it" has nothing to flip. Draw it: the tangent is horizontal, \(y = 5\). When a gradient is 0 or undefined, sketch first.</div>
+  </div>
+</section>
+
+<!-- ================= 7 ================= -->
+<section class="bsec" id="exam" data-title="Exam corner: June 2023">
+  <div class="sec-head"><div class="num">7</div><div><h2>Exam corner</h2><p class="sub">A real Cambridge question opens exactly like this booklet. Try it, then watch the marks light up.</p></div></div>
+
+  <div class="exam">
+    <p class="src">June 2023 · Paper 11 · Question 12 (a) and (b)</p>
+    <p class="qtext">The diagram shows a circle \(P\) with center \((0, 2)\) and radius 10 and the tangent to the circle at the point \(A\) with coordinates \((6, 10)\). It also shows a second circle \(Q\) with center at the point where this tangent meets the \(y\)-axis and with radius \(\tfrac{5}{2}\sqrt{5}\).</p>
+    <p class="qtext">(a) Write down the equation of circle \(P\). <span class="mk">[1]</span></p>
+    <p class="qtext">(b) Find the equation of the tangent to the circle \(P\) at \(A\). <span class="mk">[2]</span></p>
+    <p class="small">Parts (c) and (d), where the tangent meets circle \(Q\), are in Booklet 3.</p>
+  </div>
+  <figure class="card">
+    <svg class="cg" id="fig-q12" aria-label="Circle P with center 0, 2 and radius 10, the tangent at A at 6, 10, and circle Q centered where the tangent meets the y-axis"></svg>
+    <figcaption><span class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw dash"></span>circle \(Q\) &nbsp; <span class="sw ans"></span>tangent at \(A\)</span></figcaption>
+  </figure>
+  <p><b>Sketch first.</b> The center is on the \(y\)-axis and \(A\) is up and to the right of it, so the radius slopes up and the tangent must slope down. Now write (a) and (b) on paper before you go on.</p>
+
+  <div class="marks">
+    <div class="mline" data-code="B1" data-n="1">
+      <div>(a) \(x^2 + (y - 2)^2 = 100\)</div>
+      <div class="earn">A mark for a correct statement that needs no method. Earn it with \(-2\) in the bracket and \(10^2 = 100\) on the right.</div>
+    </div>
+    <div class="mline" data-code="M1" data-n="1">
+      <div>(b) \(m_{\text{radius}} = \dfrac{10 - 2}{6 - 0} = \dfrac{4}{3}\), &nbsp;so \(m_{\text{tangent}} = -\dfrac{3}{4}\)</div>
+      <div class="earn">A method mark. Earn it by showing either gradient.</div>
+    </div>
+    <div class="mline" data-code="A1" data-n="1">
+      <div>\(y - 10 = -\tfrac{3}{4}(x - 6)\), &nbsp;so \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\)</div>
+      <div class="earn">An accuracy mark, which needs the M1 before it. Any correct form scores, because this question does not ask for \(ax + by + c = 0\). In integers: \(3x + 4y - 58 = 0\).</div>
+    </div>
+  </div>
+  <p class="small">Check: \(A(6, 10)\) must be on the answer. \(3(6) + 4(10) - 58 = 0\). It works.</p>
+
+  <div class="why">
+    <p class="eyebrow">Reading the codes</p>
+    <p><b>M</b> is a method mark: a valid method with the numbers put in. <b>A</b> is an accuracy mark for the correct answer, and it needs the M before it. <b>B</b> is a mark for a correct fact or value that needs no method. A star and a <b>D</b> (as in Booklet 1) mean a later mark depends on an earlier one. This part has none.</p>
+  </div>
+
+  <h3>Find the mistake</h3>
+  <p>Three answers to this question. Decide what is wrong with each, then open it.</p>
+  <div class="ghosts">
+    <div class="ghost">
+      <p class="eyebrow">Answer A</p>
+      <div class="m">(a) \(x^2 + (y - 2)^2 = 10\)</div>
+      <div class="steps" data-next="Show the mistake"><div class="step"><p>Test \(A(6, 10)\), which is on the circle: \(36 + 64 = 100\), not 10. The right-hand side is \(r^2\).</p></div></div>
+    </div>
+    <div class="ghost">
+      <p class="eyebrow">Answer B</p>
+      <div class="m">(a) \(x^2 + (y + 2)^2 = 100\)</div>
+      <div class="steps" data-next="Show the mistake"><div class="step"><p>\((y + 2)\) is zero at \(y = -2\), so this circle's center is \((0, -2)\). Center \((0, 2)\) needs \((y - 2)^2\).</p></div></div>
+    </div>
+    <div class="ghost">
+      <p class="eyebrow">Answer C</p>
+      <div class="m">(b) gradient \(\tfrac{4}{3}\), so \(y = \tfrac{4}{3}x + 2\)</div>
+      <div class="steps" data-next="Show the mistake"><div class="step"><p>Put \(x = 0\): \(y = 2\). This line goes through the center, so it is the radius. Flip and change the sign: \(-\tfrac{3}{4}\).</p></div></div>
+    </div>
+  </div>
+  <p class="small">These are the mistakes the June 2023 examiner report describes for this question. Answer C's check, "does my tangent go through the center?", catches the error every time.</p>
+</section>
+
+<!-- ================= 8 ================= -->
+<section class="bsec" id="check" data-title="Check yourself">
+  <div class="sec-head"><div class="num">8</div><div><h2>Check yourself</h2><p class="sub">Work on paper, open the answer, then mark yourself. Exact answers, sketch first.</p></div></div>
+  <p class="tally"></p>
+
+  <div class="try" data-id="c1">
+    <div class="qh"><span class="qn">1</span><span class="tag">Specimen Paper 1 · Q10(a)</span></div>
+    <div class="q"><p>The circle \(x^2 + y^2 + 4x - 2y - 20 = 0\) has center \(C\). State the coordinates of \(C\). [1] &nbsp;Then find the radius.</p></div>
+    <div class="sol">
+      <div class="m">\((x + 2)^2 - 4 + (y - 1)^2 - 1 - 20 = 0 \Rightarrow (x + 2)^2 + (y - 1)^2 = 25\)</div>
+      <div class="m result">\(C(-2, 1)\) (B1), radius 5</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c2">
+    <div class="qh"><span class="qn">2</span><span class="tag">sections 3 and 5</span></div>
+    <div class="q"><p>Find the center and radius of \(x^2 + y^2 - 10x + 4y + 4 = 0\). Is \((8, 1)\) inside, on or outside it?</p></div>
+    <div class="sol">
+      <div class="m">\((x - 5)^2 - 25 + (y + 2)^2 - 4 + 4 = 0 \Rightarrow (x - 5)^2 + (y + 2)^2 = 25\)</div>
+      <div class="m">\((8 - 5)^2 + (1 + 2)^2 = 9 + 9 = 18\), and \(18 < 25\)</div>
+      <div class="m result">center \((5, -2)\), radius 5; \((8, 1)\) is inside</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c3">
+    <div class="qh"><span class="qn">3</span><span class="tag">section 2</span></div>
+    <div class="q"><p>A circle has center \((-3, 4)\) and passes through the origin. Find its equation.</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">the radius squared is the distance squared from the center to \((0, 0)\)</span>\((0 + 3)^2 + (0 - 4)^2 = 9 + 16 = 25\)</div>
+      <div class="m result">\((x + 3)^2 + (y - 4)^2 = 25\)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c4">
+    <div class="qh"><span class="qn">4</span><span class="tag">section 4</span></div>
+    <div class="q"><p>Find the center and radius of \(2x^2 + 2y^2 + 12x - 8y - 6 = 0\).</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">divide by 2 first</span>\(x^2 + y^2 + 6x - 4y - 3 = 0\)</div>
+      <div class="m">\((x + 3)^2 - 9 + (y - 2)^2 - 4 - 3 = 0 \Rightarrow (x + 3)^2 + (y - 2)^2 = 16\)</div>
+      <div class="m result">center \((-3, 2)\), radius 4</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c5">
+    <div class="qh"><span class="qn">5</span><span class="tag">section 3</span></div>
+    <div class="q"><p>The circle \(x^2 + y^2 - 6x + 2y + k = 0\) has radius 4. Find \(k\).</p></div>
+    <div class="sol">
+      <div class="m">\((x - 3)^2 - 9 + (y + 1)^2 - 1 + k = 0 \Rightarrow (x - 3)^2 + (y + 1)^2 = 10 - k\)</div>
+      <div class="m">\(10 - k = 4^2 = 16\)</div>
+      <div class="m result">\(k = -6\)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c6">
+    <div class="qh"><span class="qn">6</span><span class="tag">sections 1 and 5</span></div>
+    <div class="q"><p>The point \((a, 5)\) lies on the circle \((x - 2)^2 + (y - 1)^2 = 25\). Find the two possible values of \(a\).</p></div>
+    <div class="sol">
+      <div class="m">\((a - 2)^2 + (5 - 1)^2 = 25 \Rightarrow (a - 2)^2 = 9 \Rightarrow a - 2 = \pm 3\)</div>
+      <div class="m result">\(a = 5\) or \(a = -1\)</div>
+      <p class="small">Both answers count. A horizontal line meets a circle twice.</p>
+    </div>
+  </div>
+
+  <div class="try" data-id="c7">
+    <div class="qh"><span class="qn">7</span><span class="tag">sections 2 and 6</span></div>
+    <div class="q"><p>A circle has center \((2, -1)\) and passes through \((5, 1)\). Find its equation, and the tangent at \((5, 1)\) in the form \(ax + by + c = 0\).</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">\(r^2\)</span>\((5 - 2)^2 + (1 + 1)^2 = 9 + 4 = 13\), so \((x - 2)^2 + (y + 1)^2 = 13\)</div>
+      <div class="m"><span class="lbl">radius gradient, then flip and change the sign</span>\(\tfrac{1 - (-1)}{5 - 2} = \tfrac{2}{3}\), &nbsp;tangent \(-\tfrac{3}{2}\)</div>
+      <div class="m">\(y - 1 = -\tfrac{3}{2}(x - 5) \Rightarrow 2y - 2 = -3x + 15\)</div>
+      <div class="m result">\(3x + 2y - 17 = 0\)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c8">
+    <div class="qh"><span class="qn">8</span><span class="tag">Booklet 1 and section 6</span></div>
+    <div class="q"><p>\(A(-6, 2)\) and \(B(2, 4)\) are the ends of a diameter. Find the equation of the circle, and the tangent at \(B\).</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">the center is the midpoint of a diameter</span>\(\left(\tfrac{-6 + 2}{2}, \tfrac{2 + 4}{2}\right) = (-2, 3)\)</div>
+      <div class="m"><span class="lbl">\(r^2\), center to \(B\)</span>\(4^2 + 1^2 = 17\), so \((x + 2)^2 + (y - 3)^2 = 17\)</div>
+      <div class="m"><span class="lbl">radius gradient \(\tfrac{1}{4}\), tangent gradient \(-4\)</span>\(y - 4 = -4(x - 2)\)</div>
+      <div class="m result">\(4x + y - 12 = 0\)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c9">
+    <div class="qh"><span class="qn">9</span><span class="tag">section 6</span></div>
+    <div class="q"><p>Find the center and radius of \(x^2 + y^2 - 8y - 9 = 0\), then the tangent at \((5, 4)\).</p></div>
+    <div class="sol">
+      <div class="m">\(x^2 + (y - 4)^2 - 16 - 9 = 0 \Rightarrow x^2 + (y - 4)^2 = 25\): center \((0, 4)\), radius 5</div>
+      <div class="m">The radius from \((0, 4)\) to \((5, 4)\) is horizontal, gradient 0. You cannot flip 0, so draw it: the tangent is vertical.</div>
+      <div class="m result">\(x = 5\)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c10">
+    <div class="qh"><span class="qn">10</span><span class="tag">St. Croix · section 5</span></div>
+    <div class="q"><p>On a plan of the school, one unit is 5 m. The Wi-Fi router is at \((2, 3)\) and reaches 30 m in every direction. Is a classroom door at \((7, 6)\) covered?</p></div>
+    <div class="sol">
+      <div class="m"><span class="lbl">30 m is 6 units, so \(r^2 = 36\)</span>\((7 - 2)^2 + (6 - 3)^2 = 25 + 9 = 34\)</div>
+      <div class="m result">\(34 < 36\): inside, so the door is covered (just under 30 m away)</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c11">
+    <div class="qh"><span class="qn">11</span><span class="tag">section 4 · stretch</span></div>
+    <div class="q"><p>Show that \(x^2 + y^2 - 6x + 2y + 12 = 0\) is not a circle.</p></div>
+    <div class="sol">
+      <div class="m">\((x - 3)^2 - 9 + (y + 1)^2 - 1 + 12 = 0 \Rightarrow (x - 3)^2 + (y + 1)^2 = -2\)</div>
+      <div class="m result">Two squares cannot add to \(-2\), so no point fits. It is not a circle.</div>
+    </div>
+  </div>
+
+  <div class="try" data-id="c12">
+    <div class="qh"><span class="qn">12</span><span class="tag">section 6 · stretch</span></div>
+    <div class="q"><p>A radius has gradient \(m\), where \(m \ne 0\). Explain why the tangent at the end of that radius has gradient \(-\dfrac{1}{m}\).</p></div>
+    <div class="sol">
+      <p>The tangent is perpendicular to the radius. Perpendicular gradients multiply to \(-1\), so \(m \times m_{\text{tangent}} = -1\), which gives \(m_{\text{tangent}} = -\dfrac{1}{m}\). Say it in words in an exam: "the product of the gradients is \(-1\)."</p>
+    </div>
+  </div>
+  <p class="tally"></p>
+</section>
+
+<!-- ================= 9 ================= -->
+<section class="bsec" id="summary" data-title="Summary and what is next">
+  <div class="sec-head"><div class="num">9</div><div><h2>Four things to carry with you</h2></div></div>
+  <div class="card">
+    <ol>
+      <li>\((x - a)^2 + (y - b)^2 = r^2\) is the distance formula, squared. The center makes each bracket zero. The right-hand side is \(r^2\).</li>
+      <li>Expanded form: divide first if \(x^2\) and \(y^2\) do not have coefficient 1, then complete the square on \(x\) and on \(y\). A negative right-hand side means no circle.</li>
+      <li>Inside, on or outside: substitute the point and compare with \(r^2\).</li>
+      <li>Tangent at a point: radius gradient, then flip and change the sign. Sketch first when a gradient is 0 or undefined.</li>
+    </ol>
+  </div>
+  <div class="next">
+    <p class="eyebrow">Next · Booklet 3</p>
+    <h3>Where lines meet curves</h3>
+    <p>Where a line meets a circle, how to tell if it cuts, touches or misses using the discriminant from 1.1, and parts (c) and (d) of the June 2023 question.</p>
+    <div class="chips">
+      <a class="toolchip" href="../session-02-circles/">Class slides: The Equation of a Circle</a>
+      <a class="toolchip" href="../../1.1-quadratics/intersection-lab/">Intersection Lab: slide a line across a circle</a>
+      <a class="toolchip" href="../line-lab/">Line Lab: check any tangent equation</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="bk-foot">Think In Bits · 9709 Pure Mathematics 1 · Booklet 2 of 3 in 1.3 Coordinate Geometry. Real exam questions are © Cambridge University Press &amp; Assessment, used for teaching.</footer>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/booklet.js"></script>
+<script src="../../assets/labs/circle-labs.js"></script>
+<script>
+(function () {
+  'use strict';
+  var R45 = Math.sqrt(45);
+  CircleLabKit.figures({
+    'fig-dist': { x: [-7, 9], y: [-10, 6], k: 17, step: 2,
+      circles: [[1, -2, R45, '#00e5ff', '']],
+      segs: [[1, -2, 4, -2, '#ffc46b', '4 3'], [4, -2, 4, 4, '#ffc46b', '4 3'], [1, -2, 4, 4, '#ffffff', '']],
+      right: [4, -2, [-1, 0], [0, 1]],
+      texts: [[2.5, -2.9, '3', '#ffc46b'], [4.5, 1.2, '6', '#ffc46b']],
+      pts: [[1, -2, 'C', '#ffffff', -16, 16], [4, 4, 'P(4, 4)', '#ffffff', 8, -6]] },
+    'fig-tan': { x: [-7, 9], y: [-10, 6], k: 17, step: 2,
+      circles: [[1, -2, R45, '#b0b0b0', '6 5']],
+      lines: [[-8, 10, 12, 0, '#00e5ff', '']],
+      segs: [[1, -2, 4, 4, '#ffffff', '']],
+      right: [4, 4, [-1, -2], [2, -1]],
+      pts: [[1, -2, 'C', '#ffffff', -16, 16], [4, 4, 'P', '#00e5ff', 6, -10]] },
+    'fig-q12': { x: [-12, 12], y: [-9, 21], k: 9.6, step: 4,
+      circles: [[0, 2, 10, '#ffffff', ''], [0, 14.5, Math.sqrt(31.25), '#b0b0b0', '6 5']],
+      lines: [[-12, 23.5, 12, 5.5, '#00e5ff', '']],
+      segs: [[0, 2, 6, 10, '#ffffff', '3 3']],
+      right: [6, 10, [-3, -4], [-4, 3]],
+      pts: [[0, 2, 'P', '#ffffff', 6, 14], [6, 10, 'A(6, 10)', '#00e5ff', 9, -9], [0, 14.5, 'Q', '#b0b0b0', 6, -6]] }
+  });
+  CircleLabKit.zoom();
+})();
+</script>
+</body>
+</html>
