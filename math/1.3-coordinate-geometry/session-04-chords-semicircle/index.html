@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Chords and the Semicircle</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures: equal scales on both axes so circles stay round */
+    svg.cg { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 300px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.circ { border-color: #ffffff; }
+    .key .sw.dash { border-top-style: dashed; border-color: #b0b0b0; }
+    .key .sw.ans { border-color: #00e5ff; }
+    .key .sw.gold { border-color: #ffc46b; }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .lab.geo .fig { width: min(300px, 23vw); background: #0f0f0f; border-radius: 14px; touch-action: none; }
+    .lab.geo .read { font-size: clamp(12px, 1.35vw, 16px); line-height: 1.6; }
+    .lab.geo .gk-help { margin: 0; }
+    @media (max-width: 800px) { .lab.geo .fig { width: 100%; } }
+  </style>
+</head>
+<body data-deck-name="1.3 · Session 4" data-help-note="Click any graph to enlarge it. In the Chord Lab and the Semicircle Lab, drag the cyan points round the circle (or use the buttons) and watch the gradients. Tap a box to check your answer.">
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 4 of 4</p>
+  <h1>Chords and the Semicircle</h1>
+  <p class="muted">Two facts about circles that Cambridge uses again and again: where the center sits compared with any chord, and the right angle hiding in every semicircle. Then we finish two real exam questions and try a third that joins the whole topic together.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
+    <div class="row"><span>The chord fact, and a 7-mark Cambridge question</span><span class="t">16 min</span></div>
+    <div class="row"><span>The angle in a semicircle, both ways round</span><span class="t">10 min</span></div>
+    <div class="row"><span>Finishing June 2023 <span class="lit">Q12</span>: parts (c) and (d)</span><span class="t">9 min</span></div>
+    <div class="row"><span>Review: one question that uses all of 1.3</span><span class="t">9 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">7 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide duo">
+  <p class="eyebrow">Do Now · 5 min · no notes, no calculator</p>
+  <h2>\(A\) is \((-1, 7)\) and \(B\) is \((6, 0)\). Find the perpendicular bisector of \(AB\). Does it pass through \((2, 3)\)?</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <p class="small">You did this in Session 1: midpoint, gradient, flip and change sign, then the line. Write every step, then tap to check.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">midpoint:</span>&nbsp; \(\left(\dfrac{-1 + 6}{2}, \dfrac{7 + 0}{2}\right) = \left(\tfrac{5}{2}, \tfrac{7}{2}\right)\)</div>
+          <div class="math small"><span class="lbl">gradient \(AB\):</span>&nbsp; \(\dfrac{0 - 7}{6 - (-1)} = \dfrac{-7}{7} = -1\) &nbsp;<span class="lbl">so the perpendicular gradient is</span> \(1\)</div>
+          <div class="math small"><span class="lbl">line:</span>&nbsp; \(y - \tfrac{7}{2} = 1\left(x - \tfrac{5}{2}\right)\), &nbsp;so \(y = x + 1\)</div>
+          <div class="math small"><span class="lbl">test \((2, 3)\):</span>&nbsp; \(2 + 1 = 3\). Yes, it is on the line.</div>
+          <div class="math small result">\(y = x + 1\), and \((2, 3)\) is on it.</div>
+        </div>
+      </div>
+    </div>
+    <div><div class="card frag">
+      <svg class="cg" id="fig-dn" aria-label="A circle with center 2, 3 and radius 5 through A minus 1, 7 and B 6, 0; the perpendicular bisector y equals x plus 1 passes through the center"></svg>
+      <p class="key"><span class="sw ans"></span>chord \(AB\) &nbsp; <span class="sw gold"></span>\(y = x + 1\)</p>
+      <p class="small">\((2, 3)\) is the center of a circle through \(A\) and \(B\): both are 5 away from it. That is no accident, and it is today's first fact.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 3 · why this matters -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>Find the center of a circle when all you have is its edge.</h2>
+  <p>Most real circles do not come with their center marked. Today's two facts find it from points on the edge.</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">What each fact answers</p>
+      <p class="small"><b>The chord fact:</b> pick any two points on the edge. The center is somewhere on their perpendicular bisector.</p>
+      <p class="small"><b>The angle in a semicircle:</b> spot a right angle with its corner on the circle, and you have found a diameter.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small frag"><b>Sugar mill ruins.</b> The old windmill towers across St. Croix are round stone walls. Measure three points on a wall and the chord fact puts the center on a map.</p>
+      <p class="small frag"><b>A carpenter's square.</b> Set the corner of a square on the rim of a round tabletop and mark where its edges cross the rim. That line is a diameter. Do it twice: the crossing is the center.</p>
+      <p class="small frag"><b>Hubs.</b> A Ferris wheel, a satellite dish or a bicycle wheel has to turn about its exact center, or it wobbles.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 4 · chord fact -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 1 of 6 · the chord fact</p>
+  <h2>The center of a circle lies on the perpendicular bisector of every chord.</h2>
+  <div class="lab geo" data-geo="chord" data-a="2" data-b="7"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><p class="small frag"><b>Why.</b> A <b>chord</b> joins two points on a circle (a diameter is the chord through the center). \(C\) is the center, so \(CA = r\) and \(CB = r\). That makes \(C\) the same distance from \(A\) as from \(B\). In Session 1 you saw that the points the same distance from \(A\) and \(B\) are exactly the points on the perpendicular bisector of \(AB\). So \(C\) is on it.</p></div>
+    <div><p class="small frag"><b>Two ways Cambridge uses it.</b> (1) The line from the center to the midpoint \(M\) of a chord is perpendicular to the chord, so their gradients multiply to \(-1\). (2) Draw the perpendicular bisectors of two different chords: they cross at the center.</p></div>
+  </div>
+</section>
+
+<!-- 5 · specimen Q10(b) -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 2 of 6 · Specimen Paper 1, <span class="lit">Q10(b)</span> · 4 marks</p>
+  <h2>The circle \(x^2 + y^2 + 4x - 2y - 20 = 0\) has center \(C\) and passes through points \(A\) and \(B\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">It is given that the midpoint, \(D\), of \(AB\) has coordinates \(\left(1\tfrac{1}{2}, 1\tfrac{1}{2}\right)\). Find the equation of \(AB\), giving your answer in the form \(y = mx + c\). <span class="marks">[4]</span></p>
+      <svg class="cg" id="fig-q10" aria-label="The circle with center minus 2, 1 and radius 5, the chord AB from 1, 5 to 2, minus 2 with midpoint D, and the line CD"></svg>
+      <p class="key"><span class="sw circ"></span>circle &nbsp; <span class="sw gold"></span>\(CD\) &nbsp; <span class="sw ans"></span>chord \(AB\)</p>
+      <p class="small frag"><b>Part (a), in Session 2:</b> \((x + 2)^2 + (y - 1)^2 = 25\), so \(C\) is \((-2, 1)\) and \(r = 5\).</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small frag"><b>The plan:</b> we know a point on \(AB\) (that is \(D\)) but not its gradient. The chord fact gives it: \(CD\) is perpendicular to \(AB\).</p>
+      <div class="math small frag"><span class="lbl">B1 · gradient \(CD\):</span>&nbsp; \(\dfrac{1\tfrac{1}{2} - 1}{1\tfrac{1}{2} - (-2)} = \dfrac{\tfrac{1}{2}}{3\tfrac{1}{2}} = \dfrac{1}{7}\)</div>
+      <div class="math small frag"><span class="lbl">M1 · \(CD \perp AB\), so flip and change sign:</span>&nbsp; gradient \(AB = -7\)</div>
+      <div class="math small frag"><span class="lbl">M1 · the line through \(D\) with gradient \(-7\):</span>&nbsp; \(y - 1\tfrac{1}{2} = -7\left(x - 1\tfrac{1}{2}\right)\)</div>
+      <div class="math small frag"><span class="lbl">expand:</span>&nbsp; \(y - 1\tfrac{1}{2} = -7x + 10\tfrac{1}{2}\) &nbsp;<span class="lbl">add \(1\tfrac{1}{2}\):</span></div>
+      <div class="math small result frag">A1 · \(y = -7x + 12\)</div>
+      <p class="small frag"><b>From the examiners:</b> if you start from \(y = mx + c\) instead, the method mark only comes once you have found \(c\). Either way, finish the line.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 6 · specimen Q10(c) -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 3 of 6 · Specimen Paper 1, <span class="lit">Q10(c)</span> · 3 marks</p>
+  <h2>Find, by calculation, the \(x\)-coordinates of \(A\) and \(B\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>Why substitute:</b> \(A\) and \(B\) are on the line <i>and</i> on the circle, so their coordinates fit both equations. This is Session 3's move.</p>
+      <div class="math small frag"><span class="lbl">M1 · put \(y = -7x + 12\) into the circle:</span><br>\(x^2 + (-7x + 12)^2 + 4x - 2(-7x + 12) - 20 = 0\)</div>
+      <div class="math small frag"><span class="lbl">expand each piece:</span><br>\((-7x + 12)^2 = 49x^2 - 168x + 144\) &nbsp;and&nbsp; \(-2(-7x + 12) = 14x - 24\)</div>
+      <div class="math small frag"><span class="lbl">collect:</span>&nbsp; \(x^2 + 49x^2 - 168x + 144 + 4x + 14x - 24 - 20 = 0\)</div>
+      <div class="math small frag"><span class="lbl">A1:</span>&nbsp; \(50x^2 - 150x + 100 = 0\)</div>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">divide by 50 and factor:</span>&nbsp; \(x^2 - 3x + 2 = 0\), &nbsp;\((x - 1)(x - 2) = 0\)</div>
+      <div class="math small result frag">A1 · \(x = 1\) or \(x = 2\)</div>
+      <div class="math small frag"><span class="lbl">the \(y\) values, from the line:</span>&nbsp; \(-7(1) + 12 = 5\) &nbsp;and&nbsp; \(-7(2) + 12 = -2\), &nbsp;so \((1, 5)\) and \((2, -2)\)</div>
+      <div class="math small frag"><span class="lbl">check the midpoint:</span>&nbsp; \(\left(\tfrac{1 + 2}{2}, \tfrac{5 + (-2)}{2}\right) = \left(1\tfrac{1}{2}, 1\tfrac{1}{2}\right)\) = \(D\) ✓</div>
+      <p class="small frag bad"><b>Show the method.</b> The mark scheme wants the factoring (or the formula with numbers in) on the page. A calculator answer alone scores nothing for the last mark.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7 · angle in a semicircle -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 4 of 6 · semicircle</p>
+  <h2>Join the ends of a diameter to any other point on the circle: the angle there is \(90^\circ\).</h2>
+  <div class="lab geo" data-geo="semi" data-p="2"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><div class="math small frag"><span class="lbl">two ways to check it, with \(P(3, 4)\) on \(x^2 + y^2 = 25\), \(A(-5, 0)\), \(B(5, 0)\):</span><br>gradients: \(\tfrac{4 - 0}{3 - (-5)} = \tfrac{1}{2}\) &nbsp;and&nbsp; \(\tfrac{4 - 0}{3 - 5} = -2\); &nbsp;\(\tfrac{1}{2} \times (-2) = -1\), so \(AP \perp BP\)</div></div>
+    <div><div class="math small frag"><span class="lbl">Pythagoras:</span>&nbsp; \(AP^2 = 8^2 + 4^2 = 80\), &nbsp;\(BP^2 = 2^2 + 4^2 = 20\)<br>\(80 + 20 = 100 = 10^2 = AB^2\), so the angle at \(P\) is a right angle</div></div>
+  </div>
+</section>
+
+<!-- 8 · used backwards -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 6 · the Cambridge move: use it backwards</p>
+  <h2>A right angle with its corner on a circle means the other two points are the ends of a diameter.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">\(P(-3, 1)\), \(Q(1, 5)\) and \(R(5, 1)\) lie on a circle. Show that \(PR\) is a diameter, and find the equation of the circle.</p>
+      <svg class="cg" id="fig-conv" aria-label="Points P minus 3, 1, Q 1, 5 and R 5, 1 on a circle with center 1, 1 and radius 4; the angle at Q is a right angle"></svg>
+      <p class="key"><span class="sw ans"></span>\(PQ\), \(QR\) &nbsp; <span class="sw dash"></span>diameter \(PR\)</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">gradient \(PQ\):</span>&nbsp; \(\dfrac{5 - 1}{1 - (-3)} = \dfrac{4}{4} = 1\) &nbsp;<span class="lbl">gradient \(QR\):</span>&nbsp; \(\dfrac{1 - 5}{5 - 1} = \dfrac{-4}{4} = -1\)</div>
+      <div class="math small frag"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so \(PQ \perp QR\) and angle \(PQR = 90^\circ\)</span></div>
+      <p class="small frag"><b>Which pair is the diameter?</b> The two points that are <i>not</i> the right-angle corner. The corner is at \(Q\), so the diameter is \(PR\) (the hypotenuse).</p>
+      <div class="math small frag"><span class="lbl">center = midpoint of \(PR\):</span>&nbsp; \(\left(\tfrac{-3 + 5}{2}, \tfrac{1 + 1}{2}\right) = (1, 1)\)</div>
+      <div class="math small frag"><span class="lbl">radius = half of \(PR\):</span>&nbsp; \(PR = 5 - (-3) = 8\), so \(r = 4\) &nbsp;<span class="lbl">check:</span> \(Q\) is \(\sqrt{0^2 + 4^2} = 4\) from \((1, 1)\) ✓</div>
+      <div class="math small result frag">\((x - 1)^2 + (y - 1)^2 = 16\)</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · J23 Q12(c) -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 6 of 6 · June 2023, Paper 11, <span class="lit">Q12(c)</span> · 3 marks</p>
+  <h2>Find the equation of circle \(Q\) and hence verify that the \(y\)-coordinates of both points where the two circles meet are 11.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-q12" aria-label="Circle P with center 0, 2 and radius 10, the tangent at A 6, 10 meeting the y-axis at 0, 14.5, and circle Q centered there with radius 5 over 2 root 5"></svg>
+      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\)</p>
+      <p class="small"><b>From Session 2:</b> circle \(P\) is \(x^2 + (y - 2)^2 = 100\) and the tangent at \(A(6, 10)\) is \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\). Circle \(Q\) has its center where that tangent meets the \(y\)-axis, and radius \(\tfrac{5}{2}\sqrt{5}\).</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">M1 · on the \(y\)-axis \(x = 0\), so put \(x = 0\) in the tangent:</span>&nbsp; \(y = \tfrac{29}{2}\), center \(\left(0, \tfrac{29}{2}\right)\)</div>
+      <div class="math small frag"><span class="lbl">radius squared:</span>&nbsp; \(\left(\tfrac{5}{2}\sqrt{5}\right)^2 = \tfrac{25}{4} \times 5 = \tfrac{125}{4}\)</div>
+      <div class="math small result frag">A1 · \(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\)</div>
+      <div class="math small frag"><span class="lbl">B1 · verify: put \(y = 11\) into both circles</span><br>\(P\): \(x^2 + 9^2 = 100\), so \(x^2 = 19\)<br>\(Q\): \(x^2 + \left(11 - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\), &nbsp;\(x^2 + \tfrac{49}{4} = \tfrac{125}{4}\), so \(x^2 = 19\)</div>
+      <p class="small frag"><b>Why that verifies it:</b> with \(y = 11\), both circles give the same two points, \(\left(\pm\sqrt{19}, 11\right)\). So those points are on both circles.</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> many did not use part (b) to get the center, and most skipped the verify. The quick route is the one above: \(y = 11\) into both.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 10 · J23 Q12(d) -->
+<section class="slide duo">
+  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12(d)</span> · 3 marks</p>
+  <h2>Find the coordinates of the points where the tangent meets circle \(Q\), giving the answers in surd form.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>Surd form</b> means exact, with the square root left in and simplified. \(\sqrt{20}\) simplifies because \(20 = 4 \times 5\): \(\sqrt{20} = \sqrt{4}\sqrt{5} = 2\sqrt{5}\). A decimal like 4.47 is not surd form.</p>
+      <svg class="cg" id="fig-q12d" aria-label="Circle Q with center 0, 14.5 and the tangent line through its center, cutting it at two points either side"></svg>
+      <p class="key"><span class="sw gold"></span>circle \(Q\) &nbsp; <span class="sw ans"></span>the tangent from part (b)</p>
+      <p class="small frag"><b>Notice first:</b> the tangent to \(P\) goes through the center of \(Q\). A line through the center of a circle cuts it twice, at the two ends of a diameter. So expect two points, the same distance either side of \(\left(0, \tfrac{29}{2}\right)\).</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">M1 · substitute \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\), so \(y - \tfrac{29}{2} = -\tfrac{3}{4}x\):</span><br>\(x^2 + \left(-\tfrac{3}{4}x\right)^2 = \tfrac{125}{4}\)</div>
+      <div class="math small frag"><span class="lbl">square and add:</span>&nbsp; \(x^2 + \tfrac{9}{16}x^2 = \tfrac{25}{16}x^2\), &nbsp;so \(\tfrac{25}{16}x^2 = \tfrac{125}{4}\)</div>
+      <div class="math small frag"><span class="lbl">multiply both sides by \(\tfrac{16}{25}\):</span>&nbsp; \(x^2 = \tfrac{125 \times 16}{4 \times 25} = 20\)</div>
+      <div class="math small frag"><span class="lbl">A1 · square root, both signs:</span>&nbsp; \(x = \pm\sqrt{20} = \pm 2\sqrt{5}\)</div>
+      <div class="math small frag"><span class="lbl">\(y\) from the line:</span>&nbsp; \(x = 2\sqrt{5}\): \(y = \tfrac{29}{2} - \tfrac{3}{4}(2\sqrt{5}) = \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\)<br>\(x = -2\sqrt{5}\): \(y = \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\)</div>
+      <div class="math small result frag">A1 · \(\left(2\sqrt{5}, \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\right)\) and \(\left(-2\sqrt{5}, \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\right)\)</div>
+      <p class="small frag"><b>Check:</b> the midpoint of the two points is \(\left(0, \tfrac{29}{2}\right)\), the center of \(Q\), as expected for a diameter.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 11 · J24 Q7(a) -->
+<section class="slide duo">
+  <p class="eyebrow">Review · you try first · June 2024, Paper 12, <span class="lit">Q7(a)</span> · 5 marks</p>
+  <h2>The equation of a circle is \((x - 6)^2 + (y + a)^2 = 18\). The line \(y = 2a - x\) is a tangent to the circle.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">(a) Find the two possible values of the constant \(a\). <span class="marks">[5]</span></p>
+      <p class="small"><b>3 minutes on your own.</b> This one needs Session 2 (reading a circle) and Session 3 (tangent means \(b^2 - 4ac = 0\)).</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> the substitute-then-discriminant route worked best. Marks were lost expanding brackets, and some forgot the 18 on the right-hand side.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">M1 · replace \(y\) with \(2a - x\):</span>&nbsp; \((x - 6)^2 + (2a - x + a)^2 = 18\), &nbsp;so \((x - 6)^2 + (3a - x)^2 = 18\)</div>
+      <div class="math small frag"><span class="lbl">expand:</span>&nbsp; \(x^2 - 12x + 36 + 9a^2 - 6ax + x^2 = 18\)</div>
+      <div class="math small frag"><span class="lbl">A1 · everything on one side, take away 18:</span>&nbsp; \(2x^2 - (12 + 6a)x + 9a^2 + 18 = 0\)<br><span class="lbl">so \(A = 2\), \(B = -(12 + 6a)\), \(C = 9a^2 + 18\)</span></div>
+      <div class="math small frag"><span class="lbl">DM1 · tangent, so \(B^2 - 4AC = 0\):</span>&nbsp; \((12 + 6a)^2 - 4(2)(9a^2 + 18) = 0\)</div>
+      <div class="math small frag"><span class="lbl">A1 · expand:</span>&nbsp; \(144 + 144a + 36a^2 - 72a^2 - 144 = 0\), &nbsp;so \(-36a^2 + 144a = 0\)</div>
+      <div class="math small result frag">A1 · \(-36a(a - 4) = 0\), &nbsp;\(a = 0\) or \(a = 4\)</div>
+      <p class="small frag"><b>Do both survive?</b> The question asks for two values and puts no condition on \(a\), so yes. Put each back: \(a = 4\) gives \(2x^2 - 36x + 162 = 0\), \((x - 9)^2 = 0\), touching at \((9, -1)\); \(a = 0\) touches at \((3, -3)\).</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 12 · J24 Q7(b) -->
+<section class="slide duo">
+  <p class="eyebrow">Review · June 2024, Paper 12, <span class="lit">Q7(b)</span> · 3 marks</p>
+  <h2>For the greater value of \(a\), find the equation of the diameter which is perpendicular to the given tangent.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-q7" aria-label="The circle with center 6, minus 4 and radius root 18, the tangent y equals 8 minus x touching at 9, minus 1, and the diameter y equals x minus 10 through the center and the touching point"></svg>
+      <p class="key"><span class="sw circ"></span>circle, \(a = 4\) &nbsp; <span class="sw ans"></span>tangent \(y = 8 - x\) &nbsp; <span class="sw gold"></span>the diameter</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> about 30% left this part out, and many spent time finding the touching point when the center was all they needed. Draw the picture first.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small frag"><b>Read the picture:</b> a diameter goes through the center. Perpendicular to the tangent means it is the radius to the touching point, carried on across (tangent ⊥ radius, Session 2).</p>
+      <div class="math small frag"><span class="lbl">B1 · greater value \(a = 4\), so the circle is \((x - 6)^2 + (y + 4)^2 = 18\):</span>&nbsp; center \((6, -4)\)</div>
+      <div class="math small frag"><span class="lbl">B1 · tangent \(y = 8 - x\) has gradient \(-1\), so the perpendicular gradient is</span>&nbsp; \(1\)</div>
+      <div class="math small frag"><span class="lbl">line through \((6, -4)\), gradient 1:</span>&nbsp; \(y + 4 = 1(x - 6)\)</div>
+      <div class="math small result frag">B1 · \(y = x - 10\)</div>
+      <p class="small frag"><b>Check:</b> the touching point \((9, -1)\) from part (a) fits: \(9 - 10 = -1\) ✓</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 13 · recap + homework -->
+<section class="slide">
+  <p class="eyebrow">Recap and homework · 3 min</p>
+  <h2>Two facts, and a checklist for Test 1.</h2>
+  <p class="frag"><b>Chord fact:</b> the center is on the perpendicular bisector of every chord. Center to midpoint is perpendicular to the chord: gradients multiply to \(-1\).</p>
+  <p class="frag"><b>Angle in a semicircle:</b> a diameter makes a \(90^\circ\) angle at any other point on the circle. Backwards: a right angle on the circle means the hypotenuse is a diameter, so its midpoint is the center.</p>
+  <div class="card frag" style="margin-top:0.6vh">
+    <p class="small"><b>1.3 checklist for Test 1 (Thursday, November 5; review day Tuesday, November 3):</b> gradient, distance, midpoint · parallel and perpendicular lines · equation of a line · perpendicular bisector · center and radius from either form of a circle · inside, on or outside · tangent at a point · line meets curve with \(b^2 - 4ac\) · finding \(k\) for a tangent and where it touches · chord fact · angle in a semicircle.</p>
+  </div>
+  <div class="card frag" style="margin-top:0.6vh">
+    <p class="small"><b>Homework, as posted in Schoology.</b> Workbook practice, pages 17 to 27, due Friday, October 30. Read section 3.10 of the textbook (The circle) and try Exercise 3F questions 11 and 18. Stuck? Write down where you got stuck and bring it; that still counts as done.</p>
+  </div>
+</section>
+
+<!-- 14 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min · Schoology, Paper 1 → 1.3 Coordinate Geometry</p>
+  <h2>Four questions. Work on paper first, then enter your answers in Schoology.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card"><p class="small"><b>1.</b> A circle has center \((4, -1)\). The midpoint of the chord \(AB\) is \(M(6, 2)\). What is the gradient of \(AB\)?</p></div>
+      <div class="card"><p class="small"><b>2.</b> \(P(-2, 3)\), \(Q(2, 5)\) and \(R(4, 1)\) lie on a circle, and angle \(PQR = 90^\circ\). What is the center of the circle?</p></div>
+    </div>
+    <div>
+      <div class="card"><p class="small"><b>3.</b> \(A(1, 4)\) and \(B(7, 2)\) lie on a circle. The center of the circle lies on which line?</p></div>
+      <div class="card"><p class="small"><b>4.</b> The circle \(x^2 + y^2 + 2x - 8y - 8 = 0\) has center \(C\). The chord \(AB\) has midpoint \(M(1, 5)\). Find the equation of \(AB\) in the form \(y = mx + c\). Show your working.</p></div>
+    </div>
+  </div>
+  <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 15 · if time -->
+<section class="slide duo">
+  <p class="eyebrow">If time · the sugar mill problem</p>
+  <h2>Three points on a round wall: \(A(2, 6)\), \(B(-4, 6)\), \(C(-5, -1)\). Find the center and the equation of the circle.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-mill" aria-label="Three points on a circle with center minus 1, 2 and radius 5; the perpendicular bisectors x equals minus 1 and y equals minus x plus 1 cross at the center"></svg>
+      <p class="key"><span class="sw ans"></span>chords \(AB\), \(AC\) &nbsp; <span class="sw gold"></span>their perpendicular bisectors</p>
+    </div></div>
+    <div>
+  <div class="check" tabindex="0">
+    <div class="math small">Use the chord fact twice: the center is on both perpendicular bisectors. Tap to check.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">\(AB\) is horizontal (both \(y = 6\)), midpoint \((-1, 6)\):</span>&nbsp; its perpendicular bisector is the vertical line \(x = -1\)</div>
+      <div class="math small"><span class="lbl">\(AC\): midpoint \(\left(-\tfrac{3}{2}, \tfrac{5}{2}\right)\), gradient \(\tfrac{-1 - 6}{-5 - 2} = 1\), so perpendicular gradient \(-1\):</span>&nbsp; \(y - \tfrac{5}{2} = -\left(x + \tfrac{3}{2}\right)\), &nbsp;\(y = -x + 1\)</div>
+      <div class="math small"><span class="lbl">where they cross, put \(x = -1\):</span>&nbsp; \(y = 2\), center \((-1, 2)\)</div>
+      <div class="math small"><span class="lbl">radius, center to \(A\):</span>&nbsp; \(\sqrt{3^2 + 4^2} = 5\)</div>
+      <div class="math small result">\((x + 1)^2 + (y - 2)^2 = 25\)</div>
+    </div>
+  </div>
+    </div>
+  </div>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script src="../../assets/labs/meet-labs.js"></script>
+<script src="../../assets/labs/circle-geo-labs.js"></script>
+<script>
+/* static figures for this deck; the grid drawing lives in ../../assets/labs/meet-labs.js and the
+   Chord Lab and Semicircle Lab in ../../assets/labs/circle-geo-labs.js (shared with Booklet 3) */
+(function () {
+  'use strict';
+  var F = MeetKit.figure, O = GeoKit.overlay, CY = '#00e5ff', GR = '#b0b0b0', W = '#ffffff', GO = '#ffc46b', D = '5 4';
+  function fig(id, spec, extra) { F(id, spec); if (extra) O(id, spec, extra); }
+  var dn = { x: [-3, 8], y: [-3, 9], k: 25, step: 1, fs: 9,
+    circles: [[2, 3, 5, W, '']], lines: [[1, 1, GO, '']],
+    pts: [[-1, 7, 'A', CY, -16, -8], [6, 0, 'B', CY, 8, 16], [2, 3, '(2, 3)', GO, -54, 18], [2.5, 3.5, '', CY, 0, 0]] };
+  fig('fig-dn', dn, [{ seg: [-1, 7, 6, 0], col: CY }]);
+  var q10 = { x: [-8, 4], y: [-5, 7], k: 25, step: 2, grid: 1, fs: 9,
+    circles: [[-2, 1, 5, W, '']],
+    pts: [[-2, 1, 'C', W, -14, 16], [1.5, 1.5, 'D', GO, 8, -6], [1, 5, 'A', CY, 8, -2], [2, -2, 'B', CY, 8, 14]] };
+  fig('fig-q10', q10, [{ seg: [1, 5, 2, -2], col: CY }, { seg: [-2, 1, 1.5, 1.5], col: GO, dash: D }, { right: [1.5, 1.5, -2, 1, 1, 5], col: GO }]);
+  var conv = { x: [-4, 6], y: [-4, 6], k: 28, step: 1, fs: 9,
+    circles: [[1, 1, 4, W, '']],
+    pts: [[-3, 1, 'P', CY, -18, -6], [1, 5, 'Q', CY, 8, -6], [5, 1, 'R', CY, 8, -6], [1, 1, '(1, 1)', GR, 6, 16]] };
+  fig('fig-conv', conv, [{ seg: [-3, 1, 1, 5], col: CY }, { seg: [1, 5, 5, 1], col: CY }, { seg: [-3, 1, 5, 1], col: GR, dash: D }, { right: [1, 5, -3, 1, 5, 1], col: GO }]);
+  var R5 = 2.5 * Math.sqrt(5);
+  var q12 = { x: [-11, 11], y: [-9, 21], k: 9.6, step: 4, grid: 2, fs: 8,
+    circles: [[0, 2, 10, W, ''], [0, 14.5, R5, GO, '']],
+    lines: [[-0.75, 14.5, CY, '']],
+    pts: [[6, 10, 'A', CY, 8, 4], [0, 2, '', W, 0, 0], [0, 14.5, '', GO, 0, 0], [Math.sqrt(19), 11, '', GO, 0, 0], [-Math.sqrt(19), 11, '', GO, 0, 0]],
+    texts: [[-2.6, 3, 'P', W, 12], [6.6, 17, 'Q', GO, 12]] };
+  fig('fig-q12', q12);
+  var R20 = 2 * Math.sqrt(5);
+  var q12d = { x: [-7, 7], y: [8, 21], k: 19, step: 2, grid: 1, fs: 8, noxy: true,
+    circles: [[0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']],
+    pts: [[0, 14.5, '', GO, 0, 0], [R20, 14.5 - 1.5 * Math.sqrt(5), '', CY, 0, 0], [-R20, 14.5 + 1.5 * Math.sqrt(5), '', CY, 0, 0]] };
+  fig('fig-q12d', q12d);
+  var q7 = { x: [0, 12], y: [-10, 2], k: 25, step: 2, grid: 1, fs: 9,
+    circles: [[6, -4, Math.sqrt(18), W, '']],
+    lines: [[-1, 8, CY, ''], [1, -10, GO, '']],
+    pts: [[6, -4, '(6, -4)', W, 10, 18], [9, -1, '(9, -1)', CY, 16, 5]] };
+  fig('fig-q7', q7, [{ right: [9, -1, 6, -4, 10, -2], col: GO }]);
+  var mill = { x: [-7, 5], y: [-4, 8], k: 25, step: 2, grid: 1, fs: 9,
+    circles: [[-1, 2, 5, W, '']], lines: [[-1, 1, GO, '']],
+    pts: [[2, 6, 'A', CY, 8, -6], [-4, 6, 'B', CY, -18, -6], [-5, -1, 'C', CY, -18, 14], [-1, 2, '', GO, 0, 0]] };
+  fig('fig-mill', mill, [{ seg: [2, 6, -4, 6], col: CY }, { seg: [2, 6, -5, -1], col: CY }, { seg: [-1, -4, -1, 8], col: GO }]);
+  var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+    function open() { var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id'); box.innerHTML = ''; box.appendChild(c); var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p); box.classList.add('on'); }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+</script>
+</body>
+</html>
