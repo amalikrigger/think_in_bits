@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Where Lines Meet Curves</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures: equal scales on both axes so circles stay round */
+    svg.cg { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 300px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.circ { border-color: #ffffff; }
+    .key .sw.dash { border-top-style: dashed; border-color: #b0b0b0; }
+    .key .sw.ans { border-color: #00e5ff; }
+    .key .sw.bad { border-color: #ff6b6b; }
+    .key .sw.gold { border-color: #ffc46b; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; align-items: stretch; }
+    .three > .card, .three > .check { min-width: 0; }
+    .six { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.9vw; }
+    .six figure { margin: 0; background: #0f0f0f; border-radius: 12px; padding: 0.6vh 0.4vw 0.8vh; text-align: center; }
+    .six figure > svg { width: 100%; height: auto; display: block; }
+    .six figcaption { font-family: var(--mono); font-size: clamp(11px, 1.15vw, 14px); color: var(--text-2, #b0b0b0); margin-top: 0.4vh; }
+    .six figcaption b { color: var(--text, #fff); font-weight: 600; }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .lab.meet .fig { width: min(400px, 31vw); }
+    svg.cg.mini { max-width: 92px; flex: 0 0 92px; margin: 0; }
+    .lab.meet .read { font-size: clamp(12px, 1.35vw, 16px); line-height: 1.6; }
+    .lab.meet .picks button.mt-slip { border-color: rgba(255,107,107,0.5); }
+    .lab.meet .picks button.mt-slip[aria-pressed="true"] { color: #ff6b6b; border-color: #ff6b6b; background: rgba(255,107,107,0.08); }
+    @media (max-width: 800px) { .three { grid-template-columns: 1fr; } .six { grid-template-columns: repeat(2, 1fr); } .lab.meet .fig { width: 100%; } }
+  </style>
+</head>
+<body data-deck-name="1.3 · Session 3" data-help-note="Click any graph to enlarge it. In the Meeting Lab, pick a curve, set the line with the sliders, predict, then tap Show. The red 'slip' button shows the most common exam mistake. Tap a practice question to check your answer.">
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 3 of 4</p>
+  <h1>Where Lines Meet Curves</h1>
+  <p class="muted">Does a line cut a curve, touch it, or miss it completely? Today one move answers that for circles, parabolas and reciprocal curves, and it is the same discriminant you used in 1.1.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
+    <div class="row"><span>Know these curve shapes</span><span class="t">5 min</span></div>
+    <div class="row"><span>One move for every line and curve, and the Meeting Lab</span><span class="t">13 min</span></div>
+    <div class="row"><span>Finding k for a tangent, and a 5-mark Cambridge question</span><span class="t">14 min</span></div>
+    <div class="row"><span>Spot the mistake, then on your own</span><span class="t">12 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide">
+  <p class="eyebrow">Do Now · 5 min · no notes, no calculator</p>
+  <h2>Where does the line \(y = x + 2\) meet the circle \(x^2 + y^2 = 20\)?</h2>
+  <p>Substitute, solve, and give both points. Then find \(b^2 - 4ac\) for the quadratic you solved.</p>
+  <div class="check" tabindex="0">
+    <div class="math">Write all of it, then tap to check.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">replace \(y\) with \(x + 2\):</span>&nbsp; \(x^2 + (x + 2)^2 = 20\)</div>
+      <div class="math small"><span class="lbl">expand, \((x + 2)^2 = x^2 + 4x + 4\):</span>&nbsp; \(2x^2 + 4x + 4 = 20\), &nbsp;so \(2x^2 + 4x - 16 = 0\)</div>
+      <div class="math small"><span class="lbl">divide by 2 and factor:</span>&nbsp; \(x^2 + 2x - 8 = 0\), &nbsp;\((x + 4)(x - 2) = 0\), &nbsp;\(x = 2\) or \(x = -4\)</div>
+      <div class="math small"><span class="lbl">\(y = x + 2\) for each:</span>&nbsp; \(x = 2\) gives \(y = 4\); &nbsp;\(x = -4\) gives \(y = -2\)</div>
+      <div class="math small"><span class="lbl">discriminant of \(x^2 + 2x - 8\):</span>&nbsp; \(2^2 - 4(1)(-8) = 4 + 32 = 36\)</div>
+      <div class="math small result">\((2, 4)\) and \((-4, -2)\); &nbsp;\(b^2 - 4ac = 36\). Two roots, two meeting points. Hold on to that.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · why this matters -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>A line and a curve can cross twice, touch once, or never meet.</h2>
+  <p>Each meeting point is a pair \((x, y)\) that fits both equations at once. So "where do they meet?" is the same question as "solve these together."</p>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">What each skill answers</p>
+      <p class="small"><b>Substitute and solve:</b> exactly where do the paths cross?</p>
+      <p class="small"><b>The discriminant:</b> how many times do they meet, without solving?</p>
+      <p class="small"><b>Finding k for a tangent:</b> what setting makes a path just graze the edge?</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small frag"><b>Boats near a reef.</b> A protected zone around a reef off St. Croix is close to a circle. Does a boat's straight course cross into it, graze its edge, or stay clear?</p>
+      <p class="small frag"><b>Video games.</b> Does a shot's straight path hit a round target? Game engines solve this same quadratic many times a second, and the discriminant says hit or miss.</p>
+      <p class="small frag"><b>Roads.</b> A straight road that just grazes a roundabout meets it at one point: a tangent.</p>
+      <p class="small frag"><b>Light.</b> A laser beam hitting a curved lens or mirror. Where it lands is a line meeting a curve.</p>
+    </div></div>
+  </div>
+  <p class="small frag">Your Do Now found two meeting points, and \(b^2 - 4ac\) was positive. By the end you can predict cut, touch or miss before you solve anything, which is what Cambridge asks.</p>
+</section>
+
+<!-- 4 · curve shapes -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 1 of 6 · know these curve shapes</p>
+  <h2>Sketch the curve first. Six shapes to know.</h2>
+  <div class="six">
+    <figure><svg id="sh-1" aria-label="y equals x, a straight line through the origin, and y equals minus x dashed"></svg><figcaption><b>\(y = x\)</b><br>a line</figcaption></figure>
+    <figure><svg id="sh-2" aria-label="y equals x squared, a parabola opening up, and minus x squared dashed opening down"></svg><figcaption><b>\(y = x^2\)</b><br>a parabola</figcaption></figure>
+    <figure><svg id="sh-3" aria-label="y equals x cubed rising from bottom left to top right, and minus x cubed dashed"></svg><figcaption><b>\(y = x^3\)</b><br>a cubic</figcaption></figure>
+    <figure><svg id="sh-4" aria-label="y equals 1 over x in the first and third quadrants, and minus 1 over x dashed in the second and fourth"></svg><figcaption><b>\(y = \tfrac{1}{x}\)</b><br>a reciprocal</figcaption></figure>
+    <figure><svg id="sh-5" aria-label="y equals 1 over x squared, both branches above the x-axis, and minus 1 over x squared dashed below"></svg><figcaption><b>\(y = \tfrac{1}{x^2}\)</b><br>both branches up</figcaption></figure>
+    <figure><svg id="sh-6" aria-label="y equals square root of x, starting at the origin and rising slowly to the right"></svg><figcaption><b>\(y = \sqrt{x}\)</b><br>starts at 0</figcaption></figure>
+  </div>
+  <p class="key" style="margin-top:0.8vh"><span class="sw ans"></span>\(y = kx^n\), \(k &gt; 0\) &nbsp; <span class="sw dash"></span>\(k &lt; 0\): flipped in the \(x\)-axis. The size of \(k\) only stretches it. Reciprocals get closer and closer to the axes but never reach them. Those lines are called <b>asymptotes</b>.</p>
+  <div class="check" tabindex="0">
+    <div class="math small">Predict: which quadrants is \(y = -\dfrac{1}{2x}\) in? Tap to check.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">it is \(\tfrac{1}{x}\) times \(-\tfrac{1}{2}\):</span>&nbsp; flipped in the \(x\)-axis and squashed to half height</div>
+      <div class="math small result">2nd and 4th quadrants. For \(x &gt; 0\), \(y\) is negative; for \(x &lt; 0\), \(y\) is positive. You will need this picture in 15 minutes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · the one move -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 2 of 6 · one move for every line and curve</p>
+  <h2>Substitute, rearrange to \(\ldots = 0\), then read \(b^2 - 4ac\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-three" viewBox="0 0 324 324" aria-label="The circle x squared plus y squared equals 20 with three lines: y equals x plus 2 cutting it twice, y equals 2x plus 10 touching it at minus 4, 2, and y equals 2x plus 13 missing it"></svg>
+      <p class="key"><span class="sw circ"></span>\(x^2 + y^2 = 20\) &nbsp; <span class="sw ans"></span>cuts &nbsp; <span class="sw gold"></span>touches &nbsp; <span class="sw bad"></span>misses</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>Why it works:</b> each root of the quadratic is the \(x\)-coordinate of a meeting point. So the number of roots is the number of meeting points, and \(b^2 - 4ac\) counts the roots.</p>
+      <div class="math small frag"><span class="lbl">\(y = x + 2\), your Do Now:</span>&nbsp; \(x^2 + 2x - 8 = 0\), &nbsp;\(b^2 - 4ac = 36 &gt; 0\)<br><span class="lbl">two roots:</span> the line <b>cuts</b> the circle twice</div>
+      <div class="math small frag"><span class="lbl">\(y = 2x + 10\):</span>&nbsp; \(x^2 + (2x + 10)^2 = 20\) gives \(5x^2 + 40x + 80 = 0\), so \(x^2 + 8x + 16 = 0\)<br>\(8^2 - 4(1)(16) = 0\) <span class="lbl">one repeated root, \(x = -4\):</span> it <b>touches</b> at \((-4, 2)\)</div>
+      <div class="math small frag"><span class="lbl">\(y = 2x + 13\):</span>&nbsp; \(5x^2 + 52x + 149 = 0\)<br>\(52^2 - 4(5)(149) = 2704 - 2980 = -276 &lt; 0\) <span class="lbl">no real roots:</span> it <b>misses</b></div>
+      <div class="math result frag">\(b^2 - 4ac &gt; 0\): cuts, two points &nbsp;·&nbsp; \(= 0\): touches, a tangent &nbsp;·&nbsp; \(&lt; 0\): misses</div>
+      <p class="small frag bad"><b>Rearrange to \(\ldots = 0\) first.</b> \(a\), \(b\) and \(c\) only mean anything once everything is on one side.</p>
+      <p class="small frag"><b>Two more things.</b> You can substitute for \(x\) instead: you get a quadratic in \(y\), and \(b^2 - 4ac\) works the same. And this test needs a quadratic. For a cubic, a tangent can touch the curve at one point and still cut it somewhere else.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 6 · meeting lab -->
+<section class="slide">
+  <p class="eyebrow">Direct instruction · 3 of 6 · the Meeting Lab</p>
+  <h2>Pick a curve, set the line, predict, then show it.</h2>
+  <div class="lab meet" data-curves="circle,parabola,recip,slip" data-curve="circle" data-m="1" data-c="4"></div>
+  <p class="key"><span class="sw circ"></span>the curve &nbsp;&nbsp; <span class="sw ans"></span>the line \(y = mx + c\) &nbsp;&nbsp; <span class="sw bad"></span>the slip: \(\tfrac{2}{x}\) read as \(2x\)</p>
+</section>
+
+<!-- 7 · finding k -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 4 of 6 · finding <span class="lit">k</span> for a tangent</p>
+  <h2>For which values of \(k\) is \(y = 3x + k\) a tangent to \(x^2 + y^2 = 10\)?</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-k" viewBox="0 0 324 324" aria-label="The circle x squared plus y squared equals 10 with the two tangents y equals 3x plus 10, touching at minus 3, 1, and y equals 3x minus 10, touching at 3, minus 1"></svg>
+      <p class="key"><span class="sw circ"></span>\(x^2 + y^2 = 10\) &nbsp; <span class="sw ans"></span>\(y = 3x + 10\) and \(y = 3x - 10\)</p>
+      <p class="small frag"><b>Picture check:</b> every line \(y = 3x + k\) has gradient 3, so they are all parallel. A circle has two parallel tangents, one on each side. Expect two answers.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">1 · substitute \(y = 3x + k\):</span>&nbsp; \(x^2 + (3x + k)^2 = 10\)</div>
+      <div class="math small frag"><span class="lbl">2 · expand, \((3x + k)^2 = 9x^2 + 6kx + k^2\), and rearrange to 0:</span><br>\(10x^2 + 6kx + k^2 - 10 = 0\) &nbsp;<span class="lbl">so \(a = 10\), \(b = 6k\), \(c = k^2 - 10\)</span></div>
+      <div class="math small frag"><span class="lbl">3 · tangent means touches once, so \(b^2 - 4ac = 0\):</span><br>\((6k)^2 - 4(10)(k^2 - 10) = 0\)</div>
+      <div class="math small frag"><span class="lbl">4 · simplify:</span>&nbsp; \(36k^2 - 40k^2 + 400 = 0\), &nbsp;so \(-4k^2 + 400 = 0\), &nbsp;\(k^2 = 100\)</div>
+      <div class="math small result frag">\(k = 10\) or \(k = -10\)</div>
+      <p class="small frag"><b>Do both survive?</b> The question puts no condition on \(k\), and the picture has two tangents, so keep both. \(k = 10\) gives \(10x^2 + 60x + 90 = 0\), so \((x + 3)^2 = 0\), \(x = -3\) and the point \((-3, 1)\); \(k = -10\) gives \((3, -1)\).</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 8 · cambridge Q5 -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 6 · June 2023, Paper 11, <span class="lit">Q5</span> · 5 marks</p>
+  <h2>The line \(y = kx - k\), where \(k\) is a positive constant, is a tangent to the curve \(y = -\dfrac{1}{2x}\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">Find, in either order, the value of \(k\) and the coordinates of the point where the tangent meets the curve. <span class="marks">[5]</span></p>
+      <svg class="cg" id="fig-q5" viewBox="0 0 324 324" aria-label="The curve y equals minus 1 over 2x in the second and fourth quadrants, and the line y equals 2x minus 2 touching it at one half, minus 1"></svg>
+      <p class="key"><span class="sw circ"></span>\(y = -\tfrac{1}{2x}\) &nbsp; <span class="sw ans"></span>\(y = 2x - 2\)</p>
+      <p class="small frag">You met this question in 1.1. Now you can see it: the curve is in the 2nd and 4th quadrants, and the line touches one branch. "In either order" means you may find \(k\) or the point first.</p>
+      <p class="small frag"><b>What the examiners saw:</b> many students found this hard. \(-\tfrac{1}{2x}\) often became \(-\tfrac{1}{2}x\), which is not a quadratic at all. Some kept \(k = 0\). When a quadratic gives two answers, check both make sense.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">*M1 · where they meet, both give the same \(y\), so set them equal:</span>&nbsp; \(kx - k = -\dfrac{1}{2x}\)</div>
+      <div class="math small frag"><span class="lbl">clear the fraction: multiply both sides by \(2x\) (fine, the curve has no point at \(x = 0\)), then add 1:</span><br>\(2kx^2 - 2kx = -1\) &nbsp;\(\Rightarrow\)&nbsp; \(2kx^2 - 2kx + 1 = 0\) <span class="lbl">a quadratic: \(a = 2k\), \(b = -2k\), \(c = 1\)</span></div>
+      <div class="math small frag"><span class="lbl">DM1 · tangent, so \(b^2 - 4ac = 0\):</span><br>\((-2k)^2 - 4(2k)(1) = 0\), &nbsp;\(4k^2 - 8k = 0\), &nbsp;\(4k(k - 2) = 0\)</div>
+      <div class="math small frag"><span class="lbl">A1 · \(k = 0\) or \(k = 2\). Reject 0, since \(k\) is positive:</span>&nbsp; \(k = 2\) only</div>
+      <div class="math small frag"><span class="lbl">B1 · put \(k = 2\) back:</span>&nbsp; \(4x^2 - 4x + 1 = 0\), &nbsp;\((2x - 1)^2 = 0\), &nbsp;\(x = \tfrac{1}{2}\)</div>
+      <div class="math small frag"><span class="lbl">B1 · from the line:</span>&nbsp; \(y = 2\left(\tfrac{1}{2}\right) - 2 = -1\)</div>
+      <div class="math small result frag">\(k = 2\), &nbsp;point \(\left(\tfrac{1}{2}, -1\right)\)</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · spot the mistake -->
+<section class="slide">
+  <p class="eyebrow">Spot the mistake · 3 min</p>
+  <h2>Three starts on Q5. What is wrong with each?</h2>
+  <div class="math small">\(y = kx - k\), \(k &gt; 0\), is a tangent to \(y = -\dfrac{1}{2x}\). &nbsp;<span class="lbl">A and B are real exam mistakes.</span></div>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">A.&nbsp; "\(kx - k = -\tfrac{1}{2}x\), so \(\left(k + \tfrac{1}{2}\right)x = k\)"</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">\(-\tfrac{1}{2x}\) has \(x\) on the bottom; \(-\tfrac{1}{2}x\) has it on top.</span> Different curves.</div>
+        <div class="math small result">Multiply both sides by \(2x\). Then you get a quadratic: \(2kx^2 - 2kx + 1 = 0\).</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">B.&nbsp; "\(4k(k - 2) = 0\), so \(k = 0\) or \(k = 2\). Two tangents."</div>
+      <div class="ans">
+        <div class="math small">\(k\) must be positive. Also, \(k = 0\) gives \(y = 0\) (the \(x\)-axis), which the curve never touches.</div>
+        <div class="math small"><span class="lbl">why 0 appeared:</span> with \(k = 0\), \(2kx^2 - 2kx + 1 = 0\) becomes \(1 = 0\). No \(x^2\) term, so \(b^2 - 4ac\) never applied.</div>
+        <div class="math small result">Only \(k = 2\): one tangent.</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">C.&nbsp; "Tangent, so \(b^2 - 4ac &gt; 0\)"</div>
+      <div class="ans">
+        <div class="math small"><span class="lbl">\(&gt; 0\) means two roots:</span> the line cuts the curve twice.</div>
+        <div class="math small result">A tangent touches once: \(b^2 - 4ac = 0\).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · on your own -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · on your own · 9 min, finish at home</p>
+  <h2>Sketch first. Show the quadratic and \(b^2 - 4ac\). Tap to check.</h2>
+  <div class="three">
+    <div class="check" tabindex="0">
+      <div class="math small">1.&nbsp; The line \(y = mx - 3\) is a tangent to \(y = x^2 - 5x + 6\). Find \(m\).</div>
+      <div class="ans">
+        <div class="math small">\(x^2 - 5x + 6 = mx - 3\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 - (5 + m)x + 9 = 0\); &nbsp;<span class="lbl">tangent:</span> \((5 + m)^2 - 36 = 0\), \(5 + m = \pm 6\)</div>
+        <div class="math small result">\(m = 1\) or \(m = -11\)</div>
+        <div class="math small" style="display:flex;gap:0.8vw;align-items:center"><span><span class="lbl">two answers, two different lines:</span> \(y = x - 3\) touches at \((3, 0)\); \(y = -11x - 3\) touches at \((-3, 30)\). Each is a tangent.</span>
+        <svg class="cg mini" id="fig-p1" viewBox="0 0 200 200" aria-label="The parabola y equals x squared minus 5x plus 6 with two tangents through 0, minus 3: y equals x minus 3 touching at 3, 0, and y equals minus 11x minus 3 touching at minus 3, 30"></svg></div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">2.&nbsp; Find the set of values of \(k\) for which the line \(y = kx + 1\) does not meet the curve \(y = x^2 + 4\).</div>
+      <div class="ans">
+        <div class="math small">\(x^2 + 4 = kx + 1\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 - kx + 3 = 0\)</div>
+        <div class="math small"><span class="lbl">does not meet, so \(b^2 - 4ac &lt; 0\):</span>&nbsp; \(k^2 - 12 &lt; 0\)</div>
+        <div class="math small"><span class="lbl">critical values \(\pm\sqrt{12} = \pm 2\sqrt{3}\), and \(&lt; 0\) is the between region (1.1):</span></div>
+        <div class="math small result">\(-2\sqrt{3} &lt; k &lt; 2\sqrt{3}\)</div>
+      </div>
+    </div>
+    <div class="check" tabindex="0">
+      <div class="math small">3.&nbsp; Show that the line \(y = x + k\) meets the curve \(y = \dfrac{2}{x}\) at two points, whatever the value of \(k\).</div>
+      <div class="ans">
+        <div class="math small">\(x + k = \dfrac{2}{x}\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 + kx - 2 = 0\)</div>
+        <div class="math small"><span class="lbl">\(b^2 - 4ac = k^2 - 4(1)(-2) = k^2 + 8\)</span></div>
+        <div class="math small result">\(k^2 \geq 0\), so \(k^2 + 8 \geq 8 &gt; 0\) for every \(k\): always two points.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · recap and exit -->
+<section class="slide">
+  <p class="eyebrow">Recap · 2 min</p>
+  <h2>Three things to carry out of here.</h2>
+  <p class="frag"><b>Line meets curve: substitute, rearrange to \(\ldots = 0\), read \(b^2 - 4ac\).</b> Positive: cuts twice. Zero: touches, a tangent. Negative: misses.</p>
+  <p class="frag"><b>Finding \(k\) for a tangent:</b> set \(b^2 - 4ac = 0\) and solve for \(k\). Then check every value against the question and the picture.</p>
+  <p class="frag"><b>Sketch the curve first.</b> Fractions like \(-\tfrac{1}{2x}\): multiply through by the bottom. It is not \(-\tfrac{1}{2}x\).</p>
+</section>
+
+<!-- 11b · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min · Schoology, Paper 1 → 1.3 Coordinate Geometry</p>
+  <h2>Four questions. Work on paper first, then enter your answers in Schoology.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card"><p class="small"><b>1.</b> Substitute \(y = x + 1\) into \(x^2 + y^2 = 25\) and rearrange to \(\ldots = 0\). Which equation do you get?</p></div>
+      <div class="card"><p class="small"><b>2.</b> The line \(y = 3x + c\) is a tangent to the curve \(y = x^2 + 5x + 2\). Find \(c\).</p></div>
+    </div>
+    <div>
+      <div class="card"><p class="small"><b>3.</b> Does the line \(y = x - 1\) cut, touch or miss the curve \(y = x^2 - 3x + 3\)? If it meets the curve, where?</p></div>
+      <div class="card"><p class="small"><b>4.</b> The line \(y = kx + 2\) is a tangent to the curve \(y = -\dfrac{3}{x}\). Find \(k\) and the point where the line touches the curve. Show the quadratic and \(b^2 - 4ac\).</p></div>
+    </div>
+  </div>
+  <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 12 · homework -->
+<section class="slide">
+  <p class="eyebrow">Homework</p>
+  <h2>Reading and workbook, as posted in Schoology.</h2>
+  <ul>
+    <li><b>Practice:</b> finish questions 1 to 3 from today if you did not get there.</li>
+    <li><b>Next lesson:</b> chords, the angle in a semicircle, and the rest of the June 2023 circle question, then a 1.3 review for the test on Monday, November 2.</li>
+  </ul>
+  <p class="small">Stuck on a question? Write down where you got stuck and bring it. That still counts as done.</p>
+  <p class="frag"><a class="toolchip" href="../../1.1-quadratics/intersection-lab/" target="_blank" rel="noopener">Intersection Lab: slide a line across a circle or a parabola</a></p>
+</section>
+
+<!-- 13 · if time -->
+<section class="slide duo">
+  <p class="eyebrow">If time · extra practice</p>
+  <h2>Two more. Watch which values of \(k\) survive.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+  <div class="check" tabindex="0">
+    <div class="math small">The line \(y = kx - 5\) is a tangent to the curve \(y = x^2 - x - 1\). Find the possible values of \(k\) and the point where each tangent touches.</div>
+    <div class="ans">
+      <div class="math small">\(x^2 - x - 1 = kx - 5\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 - (1 + k)x + 4 = 0\)</div>
+      <div class="math small"><span class="lbl">\(b^2 - 4ac = 0\):</span>&nbsp; \((1 + k)^2 - 16 = 0\), &nbsp;\(1 + k = \pm 4\), &nbsp;\(k = 3\) or \(k = -5\)</div>
+      <div class="math small"><span class="lbl">\(k = 3\):</span>&nbsp; \(x^2 - 4x + 4 = 0\), \(x = 2\), \(y = 3(2) - 5 = 1\) &nbsp;·&nbsp; <span class="lbl">\(k = -5\):</span>&nbsp; \(x^2 + 4x + 4 = 0\), \(x = -2\), \(y = -5(-2) - 5 = 5\)</div>
+      <div class="math small result">\(k = 3\), touching at \((2, 1)\); &nbsp;\(k = -5\), touching at \((-2, 5)\). Nothing in the question rules either out, so both stay.</div>
+    </div>
+  </div>
+    </div>
+    <div>
+  <div class="check" tabindex="0">
+    <div class="math small">Find the set of values of \(k\) for which the line \(y = kx - 1\) meets the curve \(y = x^2 + 3x + 3\) at two distinct points.</div>
+    <div class="ans">
+      <div class="math small">\(x^2 + 3x + 3 = kx - 1\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 + (3 - k)x + 4 = 0\)</div>
+      <div class="math small"><span class="lbl">two distinct points, so \(b^2 - 4ac &gt; 0\):</span>&nbsp; \((3 - k)^2 - 16 &gt; 0\)</div>
+      <div class="math small"><span class="lbl">critical values: \(3 - k = \pm 4\), so \(k = -1\) or \(k = 7\). \(&gt; 0\) is the outside region:</span></div>
+      <div class="math small result">\(k &lt; -1\) or \(k &gt; 7\). Compare practice Q2: "does not meet" gave a between region.</div>
+    </div>
+  </div>
+    </div>
+  </div>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script src="../../assets/labs/meet-labs.js"></script>
+<script>
+/* static figures for this deck; the drawing code and the Meeting Lab live in ../../assets/labs/meet-labs.js,
+   shared with the "Where lines meet curves" booklet */
+(function () {
+  'use strict';
+  var F = MeetKit.figure, CY = '#00e5ff', GR = '#b0b0b0', W = '#ffffff', D = '5 4';
+  function inv(x) { return Math.abs(x) < 1e-9 ? NaN : 1 / x; }
+  var sm = { x: [-3, 3], y: [-3, 3], k: 18, step: 2, grid: 1, fs: 8.5, noxy: true };
+  function S(extra) { var o = {}; for (var p in sm) o[p] = sm[p]; for (var q in extra) o[q] = extra[q]; return o; }
+  F('sh-1', S({ fns: [[function (x) { return -x; }, GR, D], [function (x) { return x; }, CY, '']] }));
+  F('sh-2', S({ fns: [[function (x) { return -x * x; }, GR, D], [function (x) { return x * x; }, CY, '']] }));
+  F('sh-3', S({ fns: [[function (x) { return -x * x * x; }, GR, D], [function (x) { return x * x * x; }, CY, '']] }));
+  F('sh-4', S({ fns: [[function (x) { return -inv(x); }, GR, D], [inv, CY, '']] }));
+  F('sh-5', S({ fns: [[function (x) { return -inv(x * x); }, GR, D], [function (x) { return inv(x * x); }, CY, '']] }));
+  F('sh-6', S({ fns: [[function (x) { return -Math.sqrt(x); }, GR, D, 0], [function (x) { return Math.sqrt(x); }, CY, '', 0]] }));
+  var R20 = Math.sqrt(20);
+  F('fig-three', { x: [-8, 6], y: [-6, 8], k: 19.6, step: 2,
+    circles: [[0, 0, R20, W, '']],
+    lines: [[1, 2, CY, ''], [2, 10, '#ffc46b', ''], [2, 13, '#ff6b6b', '6 4']],
+    pts: [[2, 4, '(2, 4)', CY, 9, 16], [-4, -2, '(-4, -2)', CY, 8, 16], [-4, 2, '(-4, 2)', '#ffc46b', 9, 15]] });
+  var R10 = Math.sqrt(10);
+  F('fig-k', { x: [-6, 6], y: [-6, 6], k: 23, step: 2,
+    circles: [[0, 0, R10, W, '']],
+    lines: [[3, 10, CY, ''], [3, -10, CY, '']],
+    pts: [[-3, 1, '(-3, 1)', '#ffc46b', -60, -8], [3, -1, '(3, -1)', '#ffc46b', 10, 18]] });
+  F('fig-q5', { x: [-3, 3], y: [-4, 2], k: 46, step: 1,
+    fns: [[function (x) { return Math.abs(x) < 1e-9 ? NaN : -1 / (2 * x); }, W, '']],
+    lines: [[2, -2, CY, '']],
+    pts: [[0.5, -1, '(1/2, -1)', '#ffc46b', 10, 16]] });
+  F('fig-p1', { x: [-6, 8], y: [-8, 32], k: 4.6, step: 4, grid: 4, fs: 8,
+    fns: [[function (x) { return x * x - 5 * x + 6; }, W, '']],
+    lines: [[1, -3, CY, ''], [-11, -3, CY, '']],
+    pts: [[3, 0, '', '#ffc46b', 0, 0], [-3, 30, '', '#ffc46b', 0, 0], [0, -3, '', W, 0, 0]] });
+  MeetKit.zoomAll = function () {
+    var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
+    document.body.appendChild(box);
+    function close() { box.classList.remove('on'); box.innerHTML = ''; }
+    box.addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+    [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+      svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+      function open() { var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id'); box.innerHTML = ''; box.appendChild(c); var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p); box.classList.add('on'); }
+      svg.addEventListener('click', open);
+      svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+    });
+  };
+  MeetKit.zoomAll();
+})();
+</script>
+
+</body>
+</html>
