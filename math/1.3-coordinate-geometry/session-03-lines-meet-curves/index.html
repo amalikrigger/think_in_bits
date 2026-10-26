@@ -49,7 +49,7 @@
     <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
     <div class="row"><span>Know these curve shapes</span><span class="t">5 min</span></div>
     <div class="row"><span>One move for every line and curve, and the Meeting Lab</span><span class="t">13 min</span></div>
-    <div class="row"><span>Finding k for a tangent, and a 5-mark Cambridge question</span><span class="t">14 min</span></div>
+    <div class="row"><span>Finding k for a tangent, where it touches, and a 5-mark Cambridge question</span><span class="t">16 min</span></div>
     <div class="row"><span>Spot the mistake, then on your own</span><span class="t">12 min</span></div>
     <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
   </div>
@@ -163,14 +163,36 @@
       <div class="math small frag"><span class="lbl">3 · tangent means touches once, so \(b^2 - 4ac = 0\):</span><br>\((6k)^2 - 4(10)(k^2 - 10) = 0\)</div>
       <div class="math small frag"><span class="lbl">4 · simplify:</span>&nbsp; \(36k^2 - 40k^2 + 400 = 0\), &nbsp;so \(-4k^2 + 400 = 0\), &nbsp;\(k^2 = 100\)</div>
       <div class="math small result frag">\(k = 10\) or \(k = -10\)</div>
-      <p class="small frag"><b>Do both survive?</b> The question puts no condition on \(k\), and the picture has two tangents, so keep both. \(k = 10\) gives \(10x^2 + 60x + 90 = 0\), so \((x + 3)^2 = 0\), \(x = -3\) and the point \((-3, 1)\); \(k = -10\) gives \((3, -1)\).</p>
+      <p class="small frag"><b>Do both survive?</b> The question puts no condition on \(k\), and the picture has two tangents, so keep both. <b>Next:</b> where does each line touch the circle?</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7b · where it touches -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 6 · where does the tangent touch?</p>
+  <h2>Found \(k\)? Put it back into the quadratic to find where the line touches.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>The move.</b> You never guess \(x\). Put each value of \(k\) back into the quadratic from step 2. Because \(b^2 - 4ac = 0\), it is always a perfect square, so it gives exactly one \(x\): the touching point. Then get \(y\) from the line.</p>
+      <div class="math small frag"><span class="lbl">Quicker: when \(b^2 - 4ac = 0\), the one root is</span>&nbsp; \(x = -\dfrac{b}{2a}\)</div>
+      <div class="frag"><p class="small"><b>Why it works.</b> Start from the quadratic formula:</p>
+      <div class="math small">\(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\) &nbsp;<span class="lbl">with \(b^2 - 4ac = 0\):</span>&nbsp; \(x = \dfrac{-b \pm 0}{2a} = -\dfrac{b}{2a}\)</div>
+      <p class="small">Adding or taking away 0 changes nothing, so the two roots are the same number.</p></div>
+      <p class="small frag bad"><b>When you can use it:</b> only when \(b^2 - 4ac = 0\) (a tangent). Use \(a\) and \(b\) from the quadratic rearranged to \(\ldots = 0\), after \(k\) is put in. If \(b^2 - 4ac &gt; 0\), \(-\tfrac{b}{2a}\) is halfway between the two roots, not a meeting point. It gives \(x\) only; \(y\) still comes from the line.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">\(k = 10\): put it into \(10x^2 + 6kx + k^2 - 10 = 0\)</span><br>\(10x^2 + 60x + 90 = 0\) &nbsp;<span class="lbl">÷ 10:</span> \(x^2 + 6x + 9 = 0\)<br>\((x + 3)^2 = 0\), &nbsp;\(x = -3\) &nbsp;<span class="lbl">or quicker:</span> \(x = -\dfrac{60}{2(10)} = -3\)<br><span class="lbl">from the line:</span> \(y = 3(-3) + 10 = 1\)</div>
+      <div class="math small frag"><span class="lbl">\(k = -10\): put it in the same way</span><br>\(10x^2 - 60x + 90 = 0\) &nbsp;<span class="lbl">÷ 10:</span> \(x^2 - 6x + 9 = 0\)<br>\((x - 3)^2 = 0\), &nbsp;\(x = 3\) &nbsp;<span class="lbl">or quicker:</span> \(x = -\dfrac{-60}{2(10)} = 3\)<br><span class="lbl">from the line:</span> \(y = 3(3) - 10 = -1\)</div>
+      <div class="math small result frag">\(y = 3x + 10\) touches at \((-3, 1)\); &nbsp;\(y = 3x - 10\) touches at \((3, -1)\)</div>
+      <p class="small frag"><b>Check:</b> \((-3)^2 + 1^2 = 10\) and \(3^2 + (-1)^2 = 10\). Both points are on the circle.</p>
     </div></div>
   </div>
 </section>
 
 <!-- 8 · cambridge Q5 -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 5 of 6 · June 2023, Paper 11, <span class="lit">Q5</span> · 5 marks</p>
+  <p class="eyebrow">Direct instruction · 6 of 6 · June 2023, Paper 11, <span class="lit">Q5</span> · 5 marks</p>
   <h2>The line \(y = kx - k\), where \(k\) is a positive constant, is a tangent to the curve \(y = -\dfrac{1}{2x}\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
@@ -185,7 +207,7 @@
       <div class="math small frag"><span class="lbl">clear the fraction: multiply both sides by \(2x\) (fine, the curve has no point at \(x = 0\)), then add 1:</span><br>\(2kx^2 - 2kx = -1\) &nbsp;\(\Rightarrow\)&nbsp; \(2kx^2 - 2kx + 1 = 0\) <span class="lbl">a quadratic: \(a = 2k\), \(b = -2k\), \(c = 1\)</span></div>
       <div class="math small frag"><span class="lbl">DM1 · tangent, so \(b^2 - 4ac = 0\):</span><br>\((-2k)^2 - 4(2k)(1) = 0\), &nbsp;\(4k^2 - 8k = 0\), &nbsp;\(4k(k - 2) = 0\)</div>
       <div class="math small frag"><span class="lbl">A1 · \(k = 0\) or \(k = 2\). Reject 0, since \(k\) is positive:</span>&nbsp; \(k = 2\) only</div>
-      <div class="math small frag"><span class="lbl">B1 · put \(k = 2\) back:</span>&nbsp; \(4x^2 - 4x + 1 = 0\), &nbsp;\((2x - 1)^2 = 0\), &nbsp;\(x = \tfrac{1}{2}\)</div>
+      <div class="math small frag"><span class="lbl">B1 · put \(k = 2\) back:</span>&nbsp; \(4x^2 - 4x + 1 = 0\), &nbsp;\((2x - 1)^2 = 0\), &nbsp;\(x = \tfrac{1}{2}\)<br><span class="lbl">or quicker, since \(b^2 - 4ac = 0\):</span> \(x = -\tfrac{b}{2a} = \tfrac{4}{8} = \tfrac{1}{2}\)</div>
       <div class="math small frag"><span class="lbl">B1 · from the line:</span>&nbsp; \(y = 2\left(\tfrac{1}{2}\right) - 2 = -1\)</div>
       <div class="math small result frag">\(k = 2\), &nbsp;point \(\left(\tfrac{1}{2}, -1\right)\)</div>
     </div></div>
@@ -223,20 +245,24 @@
   </div>
 </section>
 
-<!-- 10 · on your own -->
+<!-- 10 · on your own, Q1 and Q2 -->
 <section class="slide duo">
   <p class="eyebrow">Practice · on your own · 9 min, finish at home</p>
   <h2>Sketch first. Show the quadratic and \(b^2 - 4ac\). Tap to check.</h2>
-  <div class="three">
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
     <div class="check" tabindex="0">
       <div class="math small">1.&nbsp; The line \(y = mx - 3\) is a tangent to \(y = x^2 - 5x + 6\). Find \(m\).</div>
       <div class="ans">
         <div class="math small">\(x^2 - 5x + 6 = mx - 3\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 - (5 + m)x + 9 = 0\); &nbsp;<span class="lbl">tangent:</span> \((5 + m)^2 - 36 = 0\), \(5 + m = \pm 6\)</div>
         <div class="math small result">\(m = 1\) or \(m = -11\)</div>
+        <div class="math small"><span class="lbl">where each touches, put \(m\) back:</span><br>\(m = 1\): \(x^2 - 6x + 9 = 0\), \((x - 3)^2 = 0\)<br>&nbsp;&nbsp;\(x = 3\), \(y = 3 - 3 = 0\)<br>\(m = -11\): \(5 + m = -6\), so \(x^2 + 6x + 9 = 0\)<br>&nbsp;&nbsp;\((x + 3)^2 = 0\), \(x = -3\), \(y = -11(-3) - 3 = 30\)<br><span class="lbl">or quicker,</span> \(x = -\tfrac{b}{2a} = \tfrac{5 + m}{2}\): \(3\) and \(-3\)</div>
         <div class="math small" style="display:flex;gap:0.8vw;align-items:center"><span><span class="lbl">two answers, two different lines:</span> \(y = x - 3\) touches at \((3, 0)\); \(y = -11x - 3\) touches at \((-3, 30)\). Each is a tangent.</span>
         <svg class="cg mini" id="fig-p1" viewBox="0 0 200 200" aria-label="The parabola y equals x squared minus 5x plus 6 with two tangents through 0, minus 3: y equals x minus 3 touching at 3, 0, and y equals minus 11x minus 3 touching at minus 3, 30"></svg></div>
       </div>
     </div>
+    </div>
+    <div>
     <div class="check" tabindex="0">
       <div class="math small">2.&nbsp; Find the set of values of \(k\) for which the line \(y = kx + 1\) does not meet the curve \(y = x^2 + 4\).</div>
       <div class="ans">
@@ -246,24 +272,46 @@
         <div class="math small result">\(-2\sqrt{3} &lt; k &lt; 2\sqrt{3}\)</div>
       </div>
     </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10b · on your own, Q3 -->
+<section class="slide duo">
+  <p class="eyebrow">Practice · on your own · question 3</p>
+  <h2>A "show that" question: prove it for every \(k\), not just one.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-p3" viewBox="0 0 324 324" aria-label="The curve y equals 2 over x in the first and third quadrants, with three lines y equals x minus 3, y equals x, and y equals x plus 3, each crossing the curve twice"></svg>
+      <p class="key"><span class="sw circ"></span>\(y = \tfrac{2}{x}\) &nbsp; <span class="sw ans"></span>\(y = x + k\) for \(k = -3\), \(0\), \(3\)</p>
+      <p class="small">Slide the line up or down as far as you like: it still crosses both branches. The algebra proves this for every \(k\).</p>
+    </div></div>
+    <div>
     <div class="check" tabindex="0">
       <div class="math small">3.&nbsp; Show that the line \(y = x + k\) meets the curve \(y = \dfrac{2}{x}\) at two points, whatever the value of \(k\).</div>
       <div class="ans">
-        <div class="math small">\(x + k = \dfrac{2}{x}\) &nbsp;\(\Rightarrow\)&nbsp; \(x^2 + kx - 2 = 0\)</div>
-        <div class="math small"><span class="lbl">\(b^2 - 4ac = k^2 - 4(1)(-2) = k^2 + 8\)</span></div>
-        <div class="math small result">\(k^2 \geq 0\), so \(k^2 + 8 \geq 8 &gt; 0\) for every \(k\): always two points.</div>
+        <div class="math small"><span class="lbl">"show that ... whatever \(k\)" means:</span> do not find \(k\). Prove \(b^2 - 4ac &gt; 0\) for every possible \(k\).</div>
+        <div class="math small"><span class="lbl">set equal, multiply by \(x\), rearrange:</span> \(x^2 + kx - 2 = 0\), &nbsp;\(a = 1\), \(b = k\), \(c = -2\)</div>
+        <div class="math small">\(b^2 - 4ac = k^2 - 4(1)(-2) = k^2 + 8\) <span class="lbl">(minus times minus is plus)</span></div>
+        <div class="math small"><span class="lbl">\(k^2\) is a square, never negative</span> (\(k = -3\) gives 9, \(k = 0\) gives 0), so \(k^2 + 8\) is at least 8.</div>
+        <div class="math small result">\(k^2 + 8 &gt; 0\) for every \(k\), so the line always cuts the curve at two points.</div>
       </div>
+    </div>
     </div>
   </div>
 </section>
 
 <!-- 11 · recap and exit -->
 <section class="slide">
-  <p class="eyebrow">Recap · 2 min</p>
+  <p class="eyebrow">Recap and homework · 2 min</p>
   <h2>Three things to carry out of here.</h2>
   <p class="frag"><b>Line meets curve: substitute, rearrange to \(\ldots = 0\), read \(b^2 - 4ac\).</b> Positive: cuts twice. Zero: touches, a tangent. Negative: misses.</p>
-  <p class="frag"><b>Finding \(k\) for a tangent:</b> set \(b^2 - 4ac = 0\) and solve for \(k\). Then check every value against the question and the picture.</p>
+  <p class="frag"><b>Finding \(k\) for a tangent:</b> set \(b^2 - 4ac = 0\) and solve for \(k\). Check every value against the question and the picture. Then put each \(k\) back to find where it touches, or use \(x = -\tfrac{b}{2a}\).</p>
   <p class="frag"><b>Sketch the curve first.</b> Fractions like \(-\tfrac{1}{2x}\): multiply through by the bottom. It is not \(-\tfrac{1}{2}x\).</p>
+  <div class="card frag" style="margin-top:1vh">
+    <p class="small"><b>Homework, as posted in Schoology.</b> Finish practice questions 1 to 3 if you did not get there. Stuck? Write down where you got stuck and bring it; that still counts as done.</p>
+    <p class="small"><b>Next lesson:</b> chords, the angle in a semicircle, and the rest of the June 2023 circle question, then a 1.3 review for the test on Monday, November 2. &nbsp;<a class="toolchip" href="../../1.1-quadratics/intersection-lab/" target="_blank" rel="noopener">Intersection Lab</a></p>
+  </div>
 </section>
 
 <!-- 11b · exit ticket -->
@@ -281,18 +329,6 @@
     </div>
   </div>
   <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
-</section>
-
-<!-- 12 · homework -->
-<section class="slide">
-  <p class="eyebrow">Homework</p>
-  <h2>Reading and workbook, as posted in Schoology.</h2>
-  <ul>
-    <li><b>Practice:</b> finish questions 1 to 3 from today if you did not get there.</li>
-    <li><b>Next lesson:</b> chords, the angle in a semicircle, and the rest of the June 2023 circle question, then a 1.3 review for the test on Monday, November 2.</li>
-  </ul>
-  <p class="small">Stuck on a question? Write down where you got stuck and bring it. That still counts as done.</p>
-  <p class="frag"><a class="toolchip" href="../../1.1-quadratics/intersection-lab/" target="_blank" rel="noopener">Intersection Lab: slide a line across a circle or a parabola</a></p>
 </section>
 
 <!-- 13 · if time -->
@@ -362,6 +398,9 @@
     fns: [[function (x) { return x * x - 5 * x + 6; }, W, '']],
     lines: [[1, -3, CY, ''], [-11, -3, CY, '']],
     pts: [[3, 0, '', '#ffc46b', 0, 0], [-3, 30, '', '#ffc46b', 0, 0], [0, -3, '', W, 0, 0]] });
+  F('fig-p3', { x: [-6, 6], y: [-6, 6], k: 23, step: 2,
+    fns: [[function (x) { return Math.abs(x) < 1e-9 ? NaN : 2 / x; }, W, '']],
+    lines: [[1, -3, CY, ''], [1, 0, CY, ''], [1, 3, CY, '']] });
   MeetKit.zoomAll = function () {
     var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
     document.body.appendChild(box);
