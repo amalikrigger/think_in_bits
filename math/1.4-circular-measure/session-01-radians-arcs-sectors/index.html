@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Radians, Arcs and Sectors</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* sector figures (drawn by SectorKit.figure, which fits the viewBox to the drawing) */
+    svg.cg { width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 270px; }
+    .slide.duo .card svg.cg.wide { max-width: 360px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.arc { border-color: #00e5ff; }
+    .key .sw.gold { border-color: #ffc46b; }
+    .key .sw.rad { border-color: #ffffff; }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .lab.sector .fig { width: min(290px, 23vw); background: #0f0f0f; border-radius: 14px; }
+    .lab.sector .read { font-size: clamp(12px, 1.3vw, 15.5px); line-height: 1.55; }
+    .lab.sector .panel { gap: 0.7vh; }
+    .lab.sector .verdict { font-size: clamp(12px, 1.3vw, 15px); }
+    .dn .check .math { font-size: clamp(12px, 1.4vw, 16px); }
+    @media (max-width: 800px) { .lab.sector .fig { width: 100%; } }
+  </style>
+</head>
+<body data-deck-name="1.4 · Session 1" data-help-note="Click any figure to enlarge it. In the Radian Lab and the Sector Lab, drag the sliders or tap the angle buttons. In the Sector Lab, press the degrees button to see what goes wrong. Tap a box to check your answer.">
+
+<!-- 1 · title -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.4 Circular Measure · Session 1 of 2</p>
+  <h1>Radians, Arcs and Sectors</h1>
+  <p class="muted">You met radians in Pre-Calculus. Today they pay off: with the angle in radians, the length of an arc and the area of a slice of a circle each take one short formula. Then we use both, forwards and backwards, and finish a real Cambridge question.</p>
+  <div class="agenda">
+    <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
+    <div class="row"><span>Radians, a quick recap, and a check</span><span class="t">8 min</span></div>
+    <div class="row"><span>Arc length and sector area: where the formulas come from</span><span class="t">9 min</span></div>
+    <div class="row"><span>Two worked examples: forwards, then backwards</span><span class="t">11 min</span></div>
+    <div class="row"><span>June 2023, Paper 11, <span class="lit">Q4</span></span><span class="t">7 min</span></div>
+    <div class="row"><span>Practice together</span><span class="t">7 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">8 min</span></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide duo dn">
+  <p class="eyebrow">Do Now · 5 min · no notes</p>
+  <h2>Three questions: one from 1.1, one from Session 4, one from the reading.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> Solve \(x^2 - 5x + 6 &lt; 0\).</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">factor:</span>&nbsp; \((x - 2)(x - 3) &lt; 0\), roots \(2\) and \(3\)</div>
+          <div class="math small"><span class="lbl">the parabola opens up, so it is below the axis between the roots</span></div>
+          <div class="math small result">\(2 &lt; x &lt; 3\)</div>
+        </div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>2.</b> \(A(1, 2)\), \(B(7, 2)\) and \(P(4, 5)\) lie on a circle, and angle \(APB = 90^\circ\). Find the center and the radius.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">the right angle is at \(P\), so the other two points, \(A\) and \(B\), are the ends of a diameter</span></div>
+          <div class="math small"><span class="lbl">center = midpoint of \(AB\):</span>&nbsp; \(\left(\tfrac{1 + 7}{2}, \tfrac{2 + 2}{2}\right) = (4, 2)\)</div>
+          <div class="math small"><span class="lbl">radius = half of \(AB\):</span><br>\(AB = 7 - 1 = 6\), so \(r = 3\)</div>
+          <div class="math small result">center \((4, 2)\), radius \(3\)</div>
+        </div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>3.</b> Find the center and radius of \(x^2 + y^2 - 6x + 2y - 15 = 0\).</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">complete the square twice:</span><br>\((x - 3)^2 - 9 + (y + 1)^2 - 1 - 15 = 0\)</div>
+          <div class="math small"><span class="lbl">move the numbers across:</span><br>\((x - 3)^2 + (y + 1)^2 = 25\)</div>
+          <div class="math small result">center \((3, -1)\), radius \(5\)</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 3 · why this matters -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>Anything that turns sweeps out an arc and a sector.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small frag"><b>A lawn sprinkler</b> that turns through an angle waters a sector. Its area is the grass that gets wet.</p>
+      <p class="small frag"><b>A lighthouse beam</b> sweeps a sector of sea. The arc at the edge is how far the light travels along the horizon.</p>
+      <p class="small frag"><b>A bicycle wheel</b> that turns through an angle rolls the bike forward one arc length. One full turn moves it one circumference.</p>
+      <p class="small frag"><b>A slice of pizza</b> is a sector. The crust is the arc.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Why radians</p>
+      <p class="small">In radians, the arc is just the radius times the angle: \(s = r\theta\). In degrees the same arc is \(\tfrac{\theta}{360} \times 2\pi r\), with the clutter built in.</p>
+      <p class="small frag">From Trigonometry (starting November 9) to calculus, Cambridge expects radians whenever an angle has no degree sign.</p>
+      <p class="small frag">The formula sheet (MF19) gives today's two formulas, each with the note <b>θ in radians</b>. That note is where marks are lost.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 4 · radian recap -->
+<section class="slide">
+  <p class="eyebrow">Recap from Pre-Calculus · radians</p>
+  <h2>One radian is the angle at the center when the arc is exactly one radius long.</h2>
+  <div class="lab sector" data-lab="radian" data-r="3" data-t="1"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><p class="small frag"><b>Why a full turn is \(2\pi\).</b> The circumference is \(2\pi r\), which is \(2\pi\) radii (about 6.28). Each radius of arc is one radian, so a full turn is \(2\pi\) radians \(= 360^\circ\). Halve it: \(\pi\) radians \(= 180^\circ\).</p></div>
+    <div><p class="small frag"><b>Converting.</b> Degrees to radians: multiply by \(\tfrac{\pi}{180}\). Radians to degrees: multiply by \(\tfrac{180}{\pi}\). Keep \(\pi\) in the answer (exact) when the angle is a neat fraction of \(180^\circ\); otherwise give a decimal.</p></div>
+  </div>
+</section>
+
+<!-- 5 · quick check -->
+<section class="slide duo">
+  <p class="eyebrow">Check · 4 min · together</p>
+  <h2>Convert each angle. Then check your calculator's mode.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <div class="check" tabindex="0">
+        <div class="math small">(a) \(135^\circ\) in radians, exactly</div>
+        <div class="ans"><div class="math small result">\(135 \times \dfrac{\pi}{180} = \dfrac{135}{180}\pi = \dfrac{3\pi}{4}\)</div></div>
+      </div>
+      <div class="check" tabindex="0">
+        <div class="math small">(b) \(20^\circ\) in radians, exactly</div>
+        <div class="ans"><div class="math small result">\(\dfrac{20}{180}\pi = \dfrac{\pi}{9}\)</div></div>
+      </div>
+      <div class="check" tabindex="0">
+        <div class="math small">(c) \(\dfrac{5\pi}{12}\) in degrees</div>
+        <div class="ans"><div class="math small result">\(\dfrac{5\pi}{12} \times \dfrac{180}{\pi} = \dfrac{5 \times 180}{12} = 75^\circ\)</div></div>
+      </div>
+      <div class="check" tabindex="0">
+        <div class="math small">(d) \(2.5\) radians in degrees, to 1 decimal place</div>
+        <div class="ans"><div class="math small result">\(2.5 \times \dfrac{180}{\pi} = 143.2^\circ\)</div></div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">Your calculator</p>
+      <p class="small">Every calculator has a degrees mode and a radians mode. Look for <b>D</b> or <b>R</b> (or DEG, RAD) on the screen.</p>
+      <p class="small frag"><b>The 5-second test:</b> work out \(\sin\left(\tfrac{\pi}{6}\right)\). In radians mode you get \(0.5\). If you get \(0.00914\), you are in degrees mode: switch.</p>
+      <p class="small frag"><b>When it matters:</b> only for \(\sin\), \(\cos\) and \(\tan\). Today's two formulas only multiply, so the mode makes no difference to them: the angle you type in must already be in radians.</p>
+      <p class="small frag"><b>No unit written?</b> An angle like \(\theta = 1.2\) with no degree sign is in radians.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 6 · the two formulas -->
+<section class="slide duo">
+  <p class="eyebrow">New · arc length and sector area</p>
+  <h2>A sector is a fraction of the whole circle, and that fraction is \(\dfrac{\theta}{2\pi}\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-def" aria-label="A sector with radius r, angle theta at the center, and arc length s"></svg>
+      <p class="key"><span class="sw rad"></span>radii &nbsp; <span class="sw arc"></span>arc \(s\) &nbsp; <span class="sw gold"></span>angle \(\theta\)</p>
+      <p class="small">A <b>sector</b> is the slice between two radii and the curved edge, like a slice of pizza. The curved edge is the <b>arc</b>. \(\theta\) is the angle at the center, in radians.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small frag"><b>The fraction:</b> a full turn is \(2\pi\) radians, so a sector with angle \(\theta\) is \(\tfrac{\theta}{2\pi}\) of the circle. Take that fraction of the circumference, then of the area.</p>
+      <div class="math small frag"><span class="lbl">arc: \(\tfrac{\theta}{2\pi}\) of the circumference \(2\pi r\), and the \(2\pi\) cancels</span><br>\(s = \dfrac{\theta}{2\pi} \times 2\pi r\)</div>
+      <div class="math small result frag">\(s = r\theta\)</div>
+      <div class="math small frag"><span class="lbl">area: \(\tfrac{\theta}{2\pi}\) of the area \(\pi r^2\); the \(\pi\) cancels and \(\tfrac{1}{2}\) is left</span><br>\(A = \dfrac{\theta}{2\pi} \times \pi r^2\)</div>
+      <div class="math small result frag">\(A = \tfrac{1}{2}r^2\theta\)</div>
+      <p class="small frag"><b>Check with a half circle:</b> \(\theta = \pi\) gives \(s = \pi r\), half of \(2\pi r\), and \(A = \tfrac{1}{2}\pi r^2\), half of \(\pi r^2\). Both right.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7 · sector lab -->
+<section class="slide">
+  <p class="eyebrow">Sector Lab · see the formulas move</p>
+  <h2>Drag \(r\) and \(\theta\). Then press the degrees button and watch the area break.</h2>
+  <div class="lab sector" data-lab="sector" data-r="8" data-t="1"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><p class="small frag"><b>Why degrees fail.</b> The formulas were built with \(2\pi\) for a full turn. Put in \(120\) for \(\tfrac{2\pi}{3}\) and the formula thinks the sector turns through 120 radians: about 19 full turns.</p></div>
+    <div><p class="small frag bad"><b>Cambridge's list of common mistakes</b> on a sector question: using \(180\) instead of \(\pi\) in formulas that only work in radians. If a question gives degrees, convert first.</p></div>
+  </div>
+</section>
+
+<!-- 8 · worked example -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · forwards</p>
+  <h2>A sector has radius 9 cm and angle \(\dfrac{2\pi}{3}\). Find its arc length, area and perimeter.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg wide" id="fig-we" aria-label="A sector of radius 9 and angle 2 pi over 3, with arc 6 pi"></svg>
+      <p class="small"><b>Exact</b> means leave \(\pi\) in. <b>To 3 s.f.</b> (3 significant figures) means press the \(\pi\) key only at the end, then round.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">arc:</span>&nbsp; \(s = r\theta = 9 \times \dfrac{2\pi}{3} = 6\pi\)</div>
+      <div class="math small result frag">\(s = 6\pi \approx 18.8\) cm</div>
+      <div class="math small frag"><span class="lbl">area:</span>&nbsp; \(A = \tfrac{1}{2}r^2\theta = \tfrac{1}{2} \times 81 \times \dfrac{2\pi}{3} = \dfrac{162\pi}{6} = 27\pi\)</div>
+      <div class="math small result frag">\(A = 27\pi \approx 84.8\) cm²</div>
+      <p class="small frag"><b>Perimeter means every edge.</b> A sector has three: two straight radii and the arc. The arc alone is not the perimeter.</p>
+      <div class="math small frag"><span class="lbl">perimeter:</span>&nbsp; \(9 + 9 + 6\pi\)</div>
+      <div class="math small result frag">\(18 + 6\pi \approx 36.8\) cm</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · working backwards -->
+<section class="slide duo">
+  <p class="eyebrow">Worked example · backwards</p>
+  <h2>A sector has perimeter 24 cm and area 20 cm². Find \(r\) and \(\theta\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>Two facts give two equations</b> in the two unknowns:</p>
+      <div class="math small"><span class="lbl">perimeter:</span>&nbsp; \(2r + r\theta = 24\) &nbsp;(1) &nbsp;&nbsp; <span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2}r^2\theta = 20\) &nbsp;(2)</div>
+      <p class="small frag"><b>The plan:</b> \(\tfrac{1}{2}r^2\theta\) is \(\tfrac{1}{2}r \times (r\theta)\), so (2) contains \(r\theta\). Get \(r\theta\) from (1) and put it in. That leaves one unknown.</p>
+      <div class="math small frag"><span class="lbl">from (1):</span>&nbsp; \(r\theta = 24 - 2r\)</div>
+      <div class="math small frag"><span class="lbl">into (2):</span>&nbsp; \(\tfrac{1}{2}r(24 - 2r) = 20\), &nbsp;so \(12r - r^2 = 20\)</div>
+      <div class="math small frag"><span class="lbl">rearrange and factor:</span><br>\(r^2 - 12r + 20 = 0\), &nbsp;\((r - 2)(r - 10) = 0\)</div>
+      <div class="math small frag"><span class="lbl">so</span>&nbsp; \(r = 2\) &nbsp;or&nbsp; \(r = 10\)</div>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">\(\theta\) for each, from \(\theta = \tfrac{24 - 2r}{r}\):</span><br>\(r = 2\): \(\theta = \dfrac{20}{2} = 10\) &nbsp;&nbsp; \(r = 10\): \(\theta = \dfrac{4}{10} = 0.4\)</div>
+      <p class="small frag"><b>Do both work?</b> A full turn is \(2\pi \approx 6.28\) radians. \(\theta = 10\) is more than a full turn, so no sector has that angle. Reject \(r = 2\).</p>
+      <div class="math small result frag">\(r = 10\) cm, \(\theta = 0.4\) radians</div>
+      <div class="math small frag"><span class="lbl">check:</span>&nbsp; perimeter \(20 + 10(0.4) = 24\) ✓<br>area \(\tfrac{1}{2}(100)(0.4) = 20\) ✓</div>
+      <p class="small frag"><b>Check every pair; don't assume one fails.</b> In some questions both pairs make real sectors and both count.</p>
+      <p class="small frag bad"><b>From the June 2024 examiner report:</b> show how you solve the quadratic (factor, or the formula with numbers in). Correct answers with no working scored at most half the marks.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 10 · J23 Q4 -->
+<section class="slide duo">
+  <p class="eyebrow">Cambridge · June 2023, Paper 11, <span class="lit">Q4</span> · 4 marks</p>
+  <h2>Sector area \(\dfrac{16}{3}\pi\) cm², radius 8 cm. Find the perimeter of the segment \(BCD\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">The diagram shows a sector \(ABC\) of a circle with center \(A\) and radius 8 cm. The area of the sector is \(\tfrac{16}{3}\pi\) cm². The point \(D\) lies on the arc \(BC\). Find the perimeter of the segment \(BCD\). <span class="marks">[4]</span></p>
+      <svg class="cg" id="fig-q4" aria-label="Sector ABC with center A on the right, radius 8, a small angle theta at A, the chord BC and the segment BCD between the chord and the arc"></svg>
+      <p class="key"><span class="sw arc"></span>arc \(BC\) &nbsp; <span class="sw gold"></span>chord \(BC\)</p>
+      <p class="small">A <b>segment</b> is the region between a chord and the arc. Its perimeter is the arc plus the chord.</p>
+      <p class="small frag"><b>Or the cosine rule:</b> \(BC^2 = 8^2 + 8^2 - 2(8)(8)\cos\tfrac{\pi}{6} = 128 - 64\sqrt{3}\), so \(BC = 4.1411\). Same answer.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">B1 · \(\theta\) from the area, then divide by 32:</span><br>\(\tfrac{1}{2} \times 8^2 \times \theta = \tfrac{16}{3}\pi\), &nbsp;\(32\theta = \tfrac{16}{3}\pi\), &nbsp;\(\theta = \tfrac{16\pi}{3 \times 32} = \tfrac{\pi}{6}\)</div>
+      <div class="math small frag"><span class="lbl">M1 · arc \(BC = r\theta\), keeping 4 or more figures:</span><br>\(8 \times \dfrac{\pi}{6} = \dfrac{4\pi}{3} = 4.1888\)</div>
+      <p class="small frag"><b>The chord:</b> triangle \(ABC\) has \(AB = AC = 8\), so it is isosceles, not right-angled. Its line of symmetry splits it into two right triangles, each with angle \(\tfrac{\pi}{12}\) at \(A\) and hypotenuse 8. Half of \(BC\) is opposite that angle.</p>
+      <div class="math small frag"><span class="lbl">M1 · half \(BC = 8\sin\tfrac{\pi}{12}\), so (calculator in radians mode)</span><br>\(BC = 16\sin\dfrac{\pi}{12} = 4.1411\)</div>
+      <div class="math small result frag">A1 · perimeter \(= 4.1888 + 4.1411 = 8.33\) cm</div>
+      <p class="small frag bad"><b>What the examiners saw:</b> some found the area of the segment instead of its perimeter. Others wrote \(BC = 8\tan\theta\), as if \(ABC\) had a right angle. It doesn't.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 11 · practice together -->
+<section class="slide duo">
+  <p class="eyebrow">Practice together · 7 min</p>
+  <h2>Try each one on paper first, then tap to check.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> A sector has radius 5 cm and arc length 7 cm. Find the angle and the area.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">\(s = r\theta\), so \(7 = 5\theta\):</span>&nbsp; \(\theta = \tfrac{7}{5} = 1.4\) radians</div>
+          <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 5^2 \times 1.4 = \tfrac{1}{2} \times 25 \times 1.4\)</div>
+          <div class="math small result">\(\theta = 1.4\), &nbsp;area \(= 17.5\) cm²</div>
+          <p class="small"><b>Shortcut:</b> \(\tfrac{1}{2}r^2\theta = \tfrac{1}{2}r(r\theta) = \tfrac{1}{2}rs = \tfrac{1}{2} \times 5 \times 7 = 17.5\).</p>
+        </div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>2.</b> A sector has angle \(\tfrac{5\pi}{6}\) and area \(15\pi\) cm². Find the radius and the perimeter, exactly.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2}r^2 \times \dfrac{5\pi}{6} = 15\pi\), &nbsp;so \(\dfrac{5\pi}{12}r^2 = 15\pi\)</div>
+          <div class="math small"><span class="lbl">multiply both sides by \(\tfrac{12}{5\pi}\):</span><br>\(r^2 = 36\), &nbsp;\(r = 6\) <span class="lbl">(a length, so not \(-6\))</span></div>
+          <div class="math small"><span class="lbl">arc:</span>&nbsp; \(6 \times \dfrac{5\pi}{6} = 5\pi\)</div>
+          <div class="math small result">\(r = 6\) cm, &nbsp;perimeter \(= 12 + 5\pi\) cm</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 12 · recap + homework -->
+<section class="slide">
+  <p class="eyebrow">Recap and homework · 3 min</p>
+  <h2>Two formulas, one rule about the angle.</h2>
+  <p class="frag"><b>Radians:</b> \(\pi\) radians \(= 180^\circ\). Multiply by \(\tfrac{\pi}{180}\) to get radians, by \(\tfrac{180}{\pi}\) to get degrees.</p>
+  <p class="frag"><b>Arc and area:</b> \(s = r\theta\) and \(A = \tfrac{1}{2}r^2\theta\), with \(\theta\) in radians. Perimeter of a sector: \(2r + r\theta\). Perimeter of a segment: arc plus chord.</p>
+  <p class="frag"><b>Backwards:</b> two facts give two equations. Get \(r\theta\) from one and substitute; solve on the page; check every answer makes a real sector.</p>
+  <div class="card frag" style="margin-top:0.6vh">
+    <p class="small"><b>Homework.</b> Finish the four questions on the last slide. Workbook pages 17 to 27 are due Friday, October 30. Quiz 1 is due Monday, November 2, at 11:35am (start of class). <b>Next session (Monday):</b> segments, and shapes built from sectors and triangles, with real Cambridge questions.</p>
+  </div>
+</section>
+
+<!-- 13 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min · Schoology, Paper 1 → 1.4 Circular Measure</p>
+  <h2>Four questions. Work on paper first, then enter your answers in Schoology.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card"><p class="small"><b>1.</b> Express \(108^\circ\) in radians, in terms of \(\pi\).</p></div>
+      <div class="card"><p class="small"><b>2.</b> A sector has radius 7 cm and angle 1.6 radians. Find its area.</p></div>
+    </div>
+    <div>
+      <div class="card"><p class="small"><b>3.</b> A sector has radius 4 cm and area 10 cm². Find its arc length.</p></div>
+      <div class="card"><p class="small"><b>4.</b> Sector \(OAB\) has center \(O\), radius 10 cm and angle \(AOB = 1.2\) radians. Find the perimeter of the segment cut off by the chord \(AB\). Show your working.</p></div>
+    </div>
+  </div>
+  <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 14 · if time -->
+<section class="slide duo">
+  <p class="eyebrow">If time, else finish at home · on your own</p>
+  <h2>Four more. Give exact answers where you can, otherwise 3 s.f.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> A slice of pizza is a sector with radius 18 cm and angle 0.8 radians. Find the length of its crust (the arc) and its area.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">crust:</span>&nbsp; \(18 \times 0.8 = 14.4\) cm<br><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 324 \times 0.8 = 129.6\)</div>
+        <div class="math small result">\(14.4\) cm, &nbsp;\(130\) cm² (3 s.f.)</div>
+      </div></div>
+      <p class="small"><b>2.</b> A sector has radius 12 cm and angle \(50^\circ\). Find its arc length and area exactly.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">convert first:</span>&nbsp; \(50 \times \dfrac{\pi}{180} = \dfrac{5\pi}{18}\)</div>
+        <div class="math small"><span class="lbl">arc:</span>&nbsp; \(12 \times \dfrac{5\pi}{18} = \dfrac{10\pi}{3}\)<br><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 144 \times \dfrac{5\pi}{18} = 20\pi\)</div>
+        <div class="math small result">\(\dfrac{10\pi}{3}\) cm, &nbsp;\(20\pi\) cm²</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>3.</b> A sector has radius 6 cm and perimeter 30 cm. Find the angle and the area. Is it more or less than a semicircle?</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">perimeter:</span>&nbsp; \(12 + 6\theta = 30\), &nbsp;\(\theta = 3\)<br><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 36 \times 3 = 54\) cm²</div>
+        <div class="math small result">\(\theta = 3\), area \(54\) cm²; &nbsp;\(3 &lt; \pi \approx 3.14\), so just less than a semicircle</div>
+      </div></div>
+      <p class="small"><b>4.</b> A sector has area 12 cm² and arc length 6 cm. Find \(r\) and \(\theta\).</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">use \(A = \tfrac{1}{2}rs\) (practice question 1):</span><br> \(12 = \tfrac{1}{2} \times r \times 6 = 3r\), &nbsp;\(r = 4\)</div>
+        <div class="math small"><span class="lbl">then \(s = r\theta\):</span>&nbsp; \(6 = 4\theta\)</div>
+        <div class="math small result">\(r = 4\) cm, &nbsp;\(\theta = 1.5\) radians</div>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script src="../../assets/labs/sector-labs.js"></script>
+<script>
+/* static figures for this deck; the Radian Lab, the Sector Lab and SectorKit.figure live in ../../assets/labs/sector-labs.js */
+(function () {
+  'use strict';
+  var F = SectorKit.figure, P = Math.PI;
+  F('fig-def', { r: 5, t: 1.1, rot: 0.25, k: 34, O: '', rLabel: 'r', tLabel: 'θ', sLabel: 's' });
+  F('fig-we', { r: 9, t: 2 * P / 3, rot: P / 6, k: 17, rLabel: '9', tLabel: '2π/3', sLabel: '6π' });
+  var d = 9.6, a = 11 * P / 12;
+  F('fig-q4', { r: 8, t: P / 6, rot: 5 * P / 6, k: 26, O: 'A', A: 'C', B: 'B', rLabel: '8', tLabel: 'θ', chord: true, half: true, shade: 'segment',
+    extra: [[d * Math.cos(a), d * Math.sin(a), 'D', '#ffffff', 14]] });
+  var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged figure');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+    function open() { var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id'); box.innerHTML = ''; box.appendChild(c); var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p); box.classList.add('on'); }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+</script>
+</body>
+</html>
