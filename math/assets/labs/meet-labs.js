@@ -13,23 +13,30 @@ window.MeetKit = (function () {
   function lab(v) { var r = Math.round(v * 100) / 100; return r < 0 ? M + (-r) : String(r); }
   function el(x) { return typeof x === 'string' ? document.getElementById(x) : x; }
   /* spec: {x:[lo,hi], y:[lo,hi], k: px per unit, step, circles:[[cx,cy,r,col,dash]], lines:[[m,c,col,dash]] (y = mx + c),
-            fns:[[f, col, dash, xlo, xhi]], pts:[[x,y,label,col,dx,dy]], texts:[[x,y,txt,col]], asym: true (draw nothing extra) } */
+            fns:[[f, col, dash, xlo, xhi]], pts:[[x,y,label,col,dx,dy]], texts:[[x,y,txt,col]], asym: true (draw nothing extra) }
+     Optional, added Oct 28 for Curve Shapes (leaving them out gives exactly the old output):
+       ky: px per y unit (default k; only trig graphs use unequal scales), ystep: y label step (default step),
+       xgrid / ygrid: grid spacing per axis (default grid), xlabels: [[x, text]] replaces the numeric x labels (e.g. π labels),
+       vlines: [[x, col, dash, width]] full-height vertical lines, such as the asymptote x = 2. */
   function figure(target, f) {
     var svg = el(target); if (!svg) return;
-    var P = 24, k = f.k, xr = f.x, yr = f.y, W = 2 * P + (xr[1] - xr[0]) * k, H = 2 * P + (yr[1] - yr[0]) * k;
+    var P = 24, k = f.k, ky = f.ky || f.k, xr = f.x, yr = f.y, W = 2 * P + (xr[1] - xr[0]) * k, H = 2 * P + (yr[1] - yr[0]) * ky;
     svg.setAttribute('viewBox', '0 0 ' + W.toFixed(1) + ' ' + H.toFixed(1));
     function px(v) { return P + (v - xr[0]) * k; }
-    function py(v) { return H - P - (v - yr[0]) * k; }
+    function py(v) { return H - P - (v - yr[0]) * ky; }
     var id = svg.id || ('mk' + Math.random().toString(36).slice(2, 8)), cid = 'clip-' + id, v;
     var s = '<defs><clipPath id="' + cid + '"><rect x="' + P + '" y="' + P + '" width="' + (W - 2 * P) + '" height="' + (H - 2 * P) + '"/></clipPath></defs>';
-    var gstep = f.grid || 1;
+    var gstep = f.xgrid || f.grid || 1, ygstep = f.ygrid || f.grid || 1;
     for (v = Math.ceil(xr[0] / gstep) * gstep; v <= xr[1]; v += gstep) s += '<line x1="' + px(v) + '" y1="' + py(yr[0]) + '" x2="' + px(v) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.05)"/>';
-    for (v = Math.ceil(yr[0] / gstep) * gstep; v <= yr[1]; v += gstep) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.05)"/>';
+    for (v = Math.ceil(yr[0] / ygstep) * ygstep; v <= yr[1]; v += ygstep) s += '<line x1="' + px(xr[0]) + '" y1="' + py(v) + '" x2="' + px(xr[1]) + '" y2="' + py(v) + '" stroke="rgba(255,255,255,0.05)"/>';
     s += '<line x1="' + px(xr[0]) + '" y1="' + py(0) + '" x2="' + px(xr[1]) + '" y2="' + py(0) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
     s += '<line x1="' + px(0) + '" y1="' + py(yr[0]) + '" x2="' + px(0) + '" y2="' + py(yr[1]) + '" stroke="rgba(255,255,255,0.7)" stroke-width="1.4"/>';
     var fs = f.fs || 10;
-    for (v = Math.ceil(xr[0] / f.step) * f.step; v <= xr[1] + 1e-9; v += f.step) if (Math.abs(v) > 1e-9) s += '<text x="' + px(v) + '" y="' + (py(0) + fs + 3) + '" font-family="' + MONO + '" font-size="' + fs + '" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
-    for (v = Math.ceil(yr[0] / f.step) * f.step; v <= yr[1] + 1e-9; v += f.step) if (Math.abs(v) > 1e-9) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + fs * 0.35) + '" font-family="' + MONO + '" font-size="' + fs + '" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    if (f.xlabels) f.xlabels.forEach(function (t) { s += '<text x="' + px(t[0]) + '" y="' + (py(0) + fs + 3) + '" font-family="' + MONO + '" font-size="' + fs + '" fill="#b0b0b0" text-anchor="middle">' + t[1] + '</text>'; });
+    else for (v = Math.ceil(xr[0] / f.step) * f.step; v <= xr[1] + 1e-9; v += f.step) if (Math.abs(v) > 1e-9) s += '<text x="' + px(v) + '" y="' + (py(0) + fs + 3) + '" font-family="' + MONO + '" font-size="' + fs + '" fill="#b0b0b0" text-anchor="middle">' + lab(v) + '</text>';
+    var ys = f.ystep || f.step;
+    for (v = Math.ceil(yr[0] / ys) * ys; v <= yr[1] + 1e-9; v += ys) if (Math.abs(v) > 1e-9) s += '<text x="' + (px(0) - 5) + '" y="' + (py(v) + fs * 0.35) + '" font-family="' + MONO + '" font-size="' + fs + '" fill="#b0b0b0" text-anchor="end">' + lab(v) + '</text>';
+    (f.vlines || []).forEach(function (l) { if (l[0] < xr[0] || l[0] > xr[1]) return; s += '<line x1="' + px(l[0]) + '" y1="' + py(yr[0]) + '" x2="' + px(l[0]) + '" y2="' + py(yr[1]) + '" stroke="' + l[1] + '" stroke-width="' + (l[3] || 2) + '"' + (l[2] ? ' stroke-dasharray="' + l[2] + '"' : '') + '/>'; });
     (f.circles || []).forEach(function (c) { s += '<circle cx="' + px(c[0]) + '" cy="' + py(c[1]) + '" r="' + (c[2] * k) + '" fill="none" stroke="' + c[3] + '" stroke-width="2.4"' + (c[4] ? ' stroke-dasharray="' + c[4] + '"' : '') + ' clip-path="url(#' + cid + ')"/>'; });
     (f.fns || []).forEach(function (c) { s += path(c[0], c[3] == null ? xr[0] : c[3], c[4] == null ? xr[1] : c[4], yr, px, py, c[1], c[2], cid, c[5]); });
     (f.lines || []).forEach(function (l) {
