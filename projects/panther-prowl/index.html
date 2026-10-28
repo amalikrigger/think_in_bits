@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover lets the game use the whole screen on phones with a notch. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Panther Prowl</title>
+  <meta name="description" content="Panther Prowl: a Halloween maze-chase game for the GHCDS Boo Bash.">
+  <meta name="theme-color" content="#12051f">
+
+  <!-- iPhones don't allow the fullscreen button, so "Add to Home Screen" is
+       how the game goes full screen there. -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Panther Prowl">
+  <!-- "Add to Home Screen" support (manifest.webmanifest and the icons). -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <!-- A gold paw icon for the browser tab, written right here so there's no extra file to load. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%2312051f'/%3E%3Cg fill='%23F6BC1B'%3E%3Cellipse cx='12' cy='15' rx='5.5' ry='4.6'/%3E%3Cellipse cx='5.6' cy='9.6' rx='2.2' ry='2.7'/%3E%3Cellipse cx='9.6' cy='5.6' rx='2.2' ry='2.7'/%3E%3Cellipse cx='14.4' cy='5.6' rx='2.2' ry='2.7'/%3E%3Cellipse cx='18.4' cy='9.6' rx='2.2' ry='2.7'/%3E%3C/g%3E%3C/svg%3E">
+
+  <!-- Fonts are bundled so the game works with no internet. -->
+  <link rel="preload" href="assets/fonts/creepster-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/fredoka-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="src/styles.css">
+
+  <!-- All paths are relative (no leading "/"), so the game works from any
+       folder on any website, like thinkinbits.site/panther-prowl/. -->
+  <script type="module" src="src/main.js"></script>
+</head>
+<body data-screen="loading" data-layout="top">
+  <canvas id="game" aria-label="Game area: swipe, use the arrow pad, or press the arrow keys to move"></canvas>
+
+  <div id="ui">
+    <!-- In-game score display. -->
+    <header class="hud" id="hud" hidden>
+      <div class="hud-block hud-score">
+        <span class="hud-label">Score</span>
+        <span class="hud-value" id="hud-score">0</span>
+      </div>
+      <div class="hud-block hud-middle">
+        <span class="hud-label" id="hud-middle-label">Level</span>
+        <span class="hud-value hud-small" id="hud-middle">1</span>
+      </div>
+      <div class="hud-block hud-lives" id="hud-lives" aria-label="Lives"></div>
+      <button class="icon-button hud-pause" id="pause-button" aria-label="Pause">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+      </button>
+    </header>
+
+    <!-- On-screen arrow pad for touch screens. Positioned by src/render/layout.js. -->
+    <div class="dpad" id="dpad" hidden aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <circle class="dpad-ring" cx="50" cy="50" r="47"/>
+        <path class="dpad-arrow" data-dir="up" d="M50 10 L64 30 H36 Z"/>
+        <path class="dpad-arrow" data-dir="down" d="M50 90 L64 70 H36 Z"/>
+        <path class="dpad-arrow" data-dir="left" d="M10 50 L30 36 V64 Z"/>
+        <path class="dpad-arrow" data-dir="right" d="M90 50 L70 36 V64 Z"/>
+        <circle class="dpad-center" cx="50" cy="50" r="10"/>
+      </svg>
+    </div>
+
+    <!-- Big words over the maze: "Ready?", "GO!", "Hall cleared!" -->
+    <div class="banner" id="banner" aria-live="polite"></div>
+
+    <section class="screen" id="screen-loading" aria-label="Loading">
+      <p class="loading-text">Unlocking the haunted halls…</p>
+    </section>
+
+    <section class="screen" id="screen-title" aria-label="Title">
+      <div class="panel title-panel">
+        <h1 class="logo">
+          <span class="logo-top">Panther</span>
+          <span class="logo-bottom">Prowl</span>
+        </h1>
+        <p class="tagline">Boo Bash 2026 · <span class="gold">#PantherPride</span></p>
+        <div class="menu">
+          <button class="button button-primary" data-action="play-challenge">
+            <span class="button-title">Boo Bash Challenge</span>
+            <span class="button-sub" id="challenge-sub">90 seconds · win prizes!</span>
+          </button>
+          <button class="button button-secondary" data-action="play-classic">
+            <span class="button-title">Classic</span>
+            <span class="button-sub">3 lives · clear the haunted halls</span>
+          </button>
+        </div>
+        <button class="link-button" data-action="show-leaderboard">High scores</button>
+        <p class="how-to" id="how-to"></p>
+        <p class="best-line" id="best-line"></p>
+        <p class="hint" id="ios-hint" hidden>Tip: tap Share → “Add to Home Screen” to play full screen.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-pause" aria-label="Paused">
+      <div class="panel">
+        <h2 class="screen-title">Paused</h2>
+        <div class="menu">
+          <button class="button button-primary" data-action="resume"><span class="button-title">Resume</span></button>
+          <button class="button button-secondary" data-action="quit"><span class="button-title">Quit to menu</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-results" aria-label="Results">
+      <div class="panel results-panel">
+        <h2 class="screen-title" id="results-title">Caught!</h2>
+        <div class="results-score">
+          <span class="results-label">Score</span>
+          <span class="results-value" id="results-score">0</span>
+          <span class="new-best" id="results-new-best" hidden>New best!</span>
+        </div>
+        <dl class="stats" id="results-stats"></dl>
+        <div class="menu">
+          <button class="button button-primary" data-action="play-again"><span class="button-title">Play again</span></button>
+          <button class="button button-secondary" data-action="menu"><span class="button-title">Menu</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- End of a Boo Bash Challenge: the prize screen a volunteer checks. -->
+    <section class="screen" id="screen-prize" aria-label="Your prize">
+      <div class="panel prize-panel" id="prize-panel">
+        <div class="prize-meta">
+          <span id="prize-station"></span>
+          <span id="prize-play"></span>
+          <span class="live-clock" title="This clock ticks. A screenshot can't."><span class="live-dot"></span><span id="prize-clock"></span></span>
+        </div>
+        <div class="prize-badge" id="prize-badge" aria-hidden="true">
+          <div class="prize-rays"></div>
+          <svg viewBox="0 0 100 100">
+            <path class="ribbon" d="M30 58 L18 96 L32 88 L40 99 L48 64 Z M70 58 L82 96 L68 88 L60 99 L52 64 Z"/>
+            <circle class="medal" cx="50" cy="44" r="34"/>
+            <circle class="medal-ring" cx="50" cy="44" r="27"/>
+            <g class="medal-paw">
+              <ellipse cx="50" cy="51" rx="11" ry="9"/>
+              <ellipse cx="37" cy="39" rx="4.4" ry="5.4"/><ellipse cx="45" cy="32" rx="4.4" ry="5.4"/>
+              <ellipse cx="55" cy="32" rx="4.4" ry="5.4"/><ellipse cx="63" cy="39" rx="4.4" ry="5.4"/>
+            </g>
+          </svg>
+        </div>
+        <h2 class="prize-tier" id="prize-tier"></h2>
+        <div class="results-score">
+          <span class="results-label">Score</span>
+          <span class="results-value" id="prize-score">0</span>
+        </div>
+        <p class="prize-note" id="prize-note"></p>
+        <p class="prize-code" id="prize-code-row">Prize code <strong id="prize-code"></strong></p>
+        <div class="menu">
+          <button class="button button-primary" data-action="prize-continue"><span class="button-title">Continue</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Arcade-style initials: 3 letters, nothing else. Never names. -->
+    <section class="screen" id="screen-initials" aria-label="Enter your initials">
+      <div class="panel initials-panel">
+        <h2 class="screen-title">High score!</h2>
+        <p class="initials-prompt">Enter your initials</p>
+        <div class="initials-slots" id="initials-slots" aria-live="polite"><span></span><span></span><span></span></div>
+        <p class="initials-error" id="initials-error" role="alert"></p>
+        <div class="letter-keypad" id="letter-keypad"></div>
+        <div class="menu menu-row">
+          <button class="button button-secondary" data-action="initials-skip"><span class="button-title">Skip</span></button>
+          <button class="button button-primary" data-action="initials-done"><span class="button-title">Done</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-leaderboard" aria-label="High scores">
+      <div class="panel board-panel">
+        <h2 class="screen-title">High Scores</h2>
+        <p class="board-sub" id="board-sub"></p>
+        <div class="tabs" role="tablist">
+          <button role="tab" class="tab" data-board-tab="tonight" aria-selected="true">Tonight</button>
+          <button role="tab" class="tab" data-board-tab="all" aria-selected="false">All time</button>
+        </div>
+        <ol class="board" id="board-list"></ol>
+        <div class="menu" id="board-menu">
+          <button class="button button-primary" data-action="play-challenge"><span class="button-title">Play the Challenge</span></button>
+          <button class="button button-secondary" data-action="menu"><span class="button-title">Menu</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Staff only: reached by tapping the moon 5 times on the title screen. -->
+    <section class="screen" id="screen-staff-pin" aria-label="Staff PIN">
+      <div class="panel pin-panel">
+        <h2 class="screen-title small">Staff</h2>
+        <div class="pin-dots" id="pin-dots"></div>
+        <p class="initials-error" id="pin-error" role="alert"></p>
+        <div class="pin-keypad" id="pin-keypad"></div>
+        <div class="menu menu-row">
+          <button class="button button-secondary" data-action="menu"><span class="button-title">Cancel</span></button>
+          <button class="button button-primary" data-action="pin-enter"><span class="button-title">Enter</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-staff" aria-label="Staff settings">
+      <div class="panel staff-panel">
+        <h2 class="screen-title small">Staff settings</h2>
+        <p class="staff-warning" id="staff-pin-warning" hidden>This device still uses the default PIN, which is public. Change it below.</p>
+        <form id="staff-form" autocomplete="off">
+          <fieldset>
+            <legend>Prize station</legend>
+            <label class="check"><input type="checkbox" name="prizeStation"> This device gives out prizes</label>
+            <label>Station name <input type="text" name="stationName" maxlength="16"></label>
+            <p class="staff-help">Only prize stations show prize codes. On anyone else's phone, the game says “play at the booth to win”.</p>
+          </fieldset>
+          <fieldset>
+            <legend>Boo Bash Challenge</legend>
+            <label>Round length
+              <select name="roundSeconds">
+                <option value="60">60 seconds</option><option value="75">75 seconds</option><option value="90">90 seconds</option>
+                <option value="120">2 minutes</option><option value="150">2½ minutes</option><option value="180">3 minutes</option>
+              </select>
+            </label>
+            <label>Maze <select name="challengeMaze" id="staff-maze"></select></label>
+            <div class="tier-inputs" id="staff-tiers"></div>
+          </fieldset>
+          <fieldset>
+            <legend>Kiosk</legend>
+            <label class="check"><input type="checkbox" name="kiosk"> Kiosk mode (back to the title when nobody's playing)</label>
+            <label>Idle seconds <input type="number" name="kioskIdleSeconds" min="10" max="300" inputmode="numeric"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Staff PIN</legend>
+            <label>New PIN (4–6 digits) <input type="password" name="newPin" inputmode="numeric" pattern="[0-9]{4,6}" maxlength="6" placeholder="leave blank to keep"></label>
+          </fieldset>
+          <p class="initials-error" id="staff-error" role="alert"></p>
+          <div class="menu">
+            <button class="button button-primary" type="submit"><span class="button-title">Save and close</span></button>
+          </div>
+        </form>
+        <fieldset>
+          <legend>Scores and prizes</legend>
+          <div class="staff-actions">
+            <button class="button button-secondary small" data-action="staff-reset-tonight" data-confirm="Tap again to erase tonight's scores">Erase tonight's scores</button>
+            <button class="button button-secondary small" data-action="staff-reset-all" data-confirm="Tap again to erase ALL scores">Erase all scores</button>
+          </div>
+          <label>Check a prize: play number <input type="number" id="staff-check-play" min="1" inputmode="numeric"></label>
+          <p class="staff-check-result" id="staff-check-result"></p>
+          <details>
+            <summary>Prize log (newest first)</summary>
+            <ol class="prize-log" id="staff-prize-log"></ol>
+          </details>
+        </fieldset>
+        <div class="menu">
+          <button class="button button-secondary" data-action="menu"><span class="button-title">Close without saving</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shown instead of the game if a maze file has a mistake in it. -->
+    <section class="screen" id="screen-maze-error" aria-label="Maze problem">
+      <div class="panel">
+        <h2 class="screen-title">Maze problem</h2>
+        <p>The maze file has a mistake. Fix it, save, and reload the page.</p>
+        <ul class="problem-list" id="problem-list"></ul>
+      </div>
+    </section>
+
+    <!-- Sound and fullscreen buttons (on the menus, not during play). -->
+    <div class="corner-buttons">
+      <button class="icon-button" id="mute-button" aria-label="Mute sound" aria-pressed="false">
+        <svg class="icon-sound-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <svg class="icon-sound-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9l6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-button" id="fullscreen-button" aria-label="Full screen" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">Panther Prowl needs JavaScript turned on.</p></noscript>
+
+  <!-- If this browser is too old for the game (or something failed to load),
+       say so instead of showing "Unlocking…" forever. -->
+  <script nomodule>
+    document.querySelector('.loading-text').textContent = 'This browser is too old for Panther Prowl. Please update it, or try Chrome or Safari.';
+  </script>
+  <script>
+    setTimeout(function () {
+      if (document.body.getAttribute('data-screen') === 'loading') {
+        document.querySelector('.loading-text').textContent = 'Panther Prowl didn\'t load. Check the internet connection and reload. If it keeps happening, this browser may need an update.';
+      }
+    }, 12000);
+  </script>
+</body>
+</html>
