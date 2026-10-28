@@ -25,6 +25,10 @@
     .lab.geo .fig { width: min(300px, 23vw); background: #0f0f0f; border-radius: 14px; touch-action: none; }
     .lab.geo .read { font-size: clamp(12px, 1.35vw, 16px); line-height: 1.6; }
     .lab.geo .gk-help { margin: 0; }
+    .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2vw; align-items: stretch; }
+    .three > .card { min-width: 0; }
+    svg.pic { width: 100%; max-width: 190px; height: auto; display: block; margin: 0 auto 0.6vh; background: #0f0f0f; border-radius: 12px; }
+    @media (max-width: 800px) { .three { grid-template-columns: 1fr; } }
     @media (max-width: 800px) { .lab.geo .fig { width: 100%; } }
   </style>
 </head>
@@ -34,14 +38,15 @@
 <section class="slide active">
   <p class="eyebrow">9709 Pure 1 · 1.3 Coordinate Geometry · Session 4 of 4</p>
   <h1>Chords and the Semicircle</h1>
-  <p class="muted">Two facts about circles that Cambridge uses again and again: where the center sits compared with any chord, and the right angle hiding in every semicircle. Then we finish two real exam questions and try a third that joins the whole topic together.</p>
+  <p class="muted">Two facts about circles that Cambridge uses again and again: where the center sits compared with any chord, and the right angle hiding in every semicircle. Then we finish the June 2023 circle question and, if there is time, try one that joins the whole topic together.</p>
   <div class="agenda">
     <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
-    <div class="row"><span>The chord fact, and a 7-mark Cambridge question</span><span class="t">16 min</span></div>
-    <div class="row"><span>The angle in a semicircle, both ways round</span><span class="t">10 min</span></div>
-    <div class="row"><span>Finishing June 2023 <span class="lit">Q12</span>: parts (c) and (d)</span><span class="t">9 min</span></div>
-    <div class="row"><span>Review: one question that uses all of 1.3</span><span class="t">9 min</span></div>
-    <div class="row"><span>Recap and exit ticket</span><span class="t">7 min</span></div>
+    <div class="row"><span>The chord fact, and Specimen <span class="lit">Q10</span></span><span class="t">17 min</span></div>
+    <div class="row"><span>The angle in a semicircle: why it works, and using it backwards</span><span class="t">13 min</span></div>
+    <div class="row"><span>Practice on your own</span><span class="t">6 min</span></div>
+    <div class="row"><span>Finishing June 2023 <span class="lit">Q12</span>: parts (c) and (d)</span><span class="t">10 min</span></div>
+    <div class="row"><span>Recap and exit ticket</span><span class="t">5 min</span></div>
+    <div class="row"><span>If time, or Tuesday's review day: June 2024 <span class="lit">Q7</span></span><span class="t">extra</span></div>
   </div>
 </section>
 
@@ -72,22 +77,43 @@
 </section>
 
 <!-- 3 · why this matters -->
-<section class="slide duo">
+<section class="slide">
   <p class="eyebrow">Why this matters · 2 min</p>
   <h2>Find the center of a circle when all you have is its edge.</h2>
-  <p>Most real circles do not come with their center marked. Today's two facts find it from points on the edge.</p>
-  <div class="cols" style="margin-top:0.4vh">
-    <div><div class="card">
-      <p class="eyebrow">What each fact answers</p>
-      <p class="small"><b>The chord fact:</b> pick any two points on the edge. The center is somewhere on their perpendicular bisector.</p>
-      <p class="small"><b>The angle in a semicircle:</b> spot a right angle with its corner on the circle, and you have found a diameter.</p>
-    </div></div>
-    <div><div class="card">
-      <p class="eyebrow">Where you will see it</p>
-      <p class="small frag"><b>Sugar mill ruins.</b> The old windmill towers across St. Croix are round stone walls. Measure three points on a wall and the chord fact puts the center on a map.</p>
-      <p class="small frag"><b>A carpenter's square.</b> Set the corner of a square on the rim of a round tabletop and mark where its edges cross the rim. That line is a diameter. Do it twice: the crossing is the center.</p>
-      <p class="small frag"><b>Hubs.</b> A Ferris wheel, a satellite dish or a bicycle wheel has to turn about its exact center, or it wobbles.</p>
-    </div></div>
+  <p class="small">Most real circles do not come with their center marked. Today's two facts, the <b>chord fact</b> and the <b>angle in a semicircle</b>, find it from points on the edge.</p>
+  <div class="three" style="margin-top:0.6vh">
+    <div class="card frag"><svg class="pic" viewBox="0 0 220 170" role="img" aria-label="A round wall with three points A, B and C on it; the chords AB and BC and their perpendicular bisectors, which cross at the center">
+<circle cx="110" cy="85" r="70" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<line x1="145" y1="24.4" x2="49.4" y2="50" stroke="#00e5ff" stroke-width="2.4"/>
+<line x1="49.4" y1="50" x2="97.8" y2="153.9" stroke="#00e5ff" stroke-width="2.4"/>
+<line x1="92.1" y1="18.1" x2="120.2" y2="123.2" stroke="#ffc46b" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="59" y1="108.8" x2="139.1" y2="71.4" stroke="#ffc46b" stroke-width="2" stroke-dasharray="5 4"/>
+<circle cx="145" cy="24.4" r="4" fill="#00e5ff"/><circle cx="49.4" cy="50" r="4" fill="#00e5ff"/><circle cx="97.8" cy="153.9" r="4" fill="#00e5ff"/>
+<circle cx="110" cy="85" r="5" fill="#ffc46b"/>
+<text x="151" y="22" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#00e5ff">A</text>
+<text x="32" y="48" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#00e5ff">B</text>
+<text x="104" y="168" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#00e5ff">C</text>
+<text x="118" y="98" font-family="JetBrains Mono, monospace" font-size="11" fill="#ffc46b">center</text>
+</svg><p class="small"><b>Sugar mill ruins.</b> The old windmill towers on St. Croix are round stone walls. Mark three points \(A\), \(B\), \(C\) and join them into two chords. The center is on each chord's perpendicular bisector (dashed), so it is where the two bisectors cross.</p></div>
+    <div class="card frag"><svg class="pic" viewBox="0 0 220 170" role="img" aria-label="A round tabletop with the corner of a carpenter's square on the rim; where the two edges meet the rim are the ends of a diameter through the center">
+<circle cx="110" cy="85" r="65" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+<line x1="174" y1="96.3" x2="46" y2="73.7" stroke="#b0b0b0" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="77.5" y1="28.7" x2="174" y2="96.3" stroke="#ffc46b" stroke-width="4"/>
+<line x1="77.5" y1="28.7" x2="46" y2="73.7" stroke="#ffc46b" stroke-width="4"/>
+<polyline points="85.7,34.4 80,42.6 71.8,36.9" fill="none" stroke="#00e5ff" stroke-width="2"/>
+<circle cx="110" cy="85" r="5" fill="#00e5ff"/><circle cx="174" cy="96.3" r="4" fill="#ffffff"/><circle cx="46" cy="73.7" r="4" fill="#ffffff"/>
+<text x="66" y="20" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#00e5ff">90°</text>
+<text x="112" y="104" font-family="JetBrains Mono, monospace" font-size="11" fill="#00e5ff">center</text>
+<text x="20" y="160" font-family="JetBrains Mono, monospace" font-size="11" fill="#b0b0b0">dashed: a diameter</text>
+</svg><p class="small"><b>A carpenter's square.</b> Put the \(90^\circ\) corner of a square on the rim of a round tabletop. The two places its edges cross the rim are the ends of a diameter. Do it twice, from a different spot: the two diameters cross at the center.</p></div>
+    <div class="card frag"><svg class="pic" viewBox="0 0 220 170" role="img" aria-label="A wheel with spokes meeting at a hub in the exact center">
+<circle cx="110" cy="85" r="65" fill="none" stroke="#ffffff" stroke-width="3"/>
+<g stroke="#b0b0b0" stroke-width="1.6">
+<line x1="110" y1="20" x2="110" y2="150"/><line x1="45" y1="85" x2="175" y2="85"/>
+<line x1="64" y1="39" x2="156" y2="131"/><line x1="156" y1="39" x2="64" y2="131"/></g>
+<circle cx="110" cy="85" r="9" fill="#ffc46b"/>
+<text x="124" y="80" font-family="JetBrains Mono, monospace" font-size="11" fill="#ffc46b">hub</text>
+</svg><p class="small"><b>Hubs.</b> A bicycle wheel, a Ferris wheel or a satellite dish has to turn about its exact center, or it wobbles. These two facts tell you where the axle goes.</p></div>
   </div>
 </section>
 
@@ -131,18 +157,20 @@
   <h2>Find, by calculation, the \(x\)-coordinates of \(A\) and \(B\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
-      <p class="small"><b>Why substitute:</b> \(A\) and \(B\) are on the line <i>and</i> on the circle, so their coordinates fit both equations. This is Session 3's move.</p>
-      <div class="math small frag"><span class="lbl">M1 · put \(y = -7x + 12\) into the circle:</span><br>\(x^2 + (-7x + 12)^2 + 4x - 2(-7x + 12) - 20 = 0\)</div>
-      <div class="math small frag"><span class="lbl">expand each piece:</span><br>\((-7x + 12)^2 = 49x^2 - 168x + 144\) &nbsp;and&nbsp; \(-2(-7x + 12) = 14x - 24\)</div>
-      <div class="math small frag"><span class="lbl">collect:</span>&nbsp; \(x^2 + 49x^2 - 168x + 144 + 4x + 14x - 24 - 20 = 0\)</div>
-      <div class="math small frag"><span class="lbl">A1:</span>&nbsp; \(50x^2 - 150x + 100 = 0\)</div>
+      <p class="small"><b>What we are looking for.</b> \(A\) and \(B\) are the two points where the line \(y = -7x + 12\) from part (b) crosses the circle \(x^2 + y^2 + 4x - 2y - 20 = 0\).</p>
+      <svg class="cg" id="fig-q10c" aria-label="The circle with center minus 2, 1, the line y equals minus 7x plus 12 crossing it at A 1, 5 and B 2, minus 2, with dashed lines from A and B down to x equals 1 and x equals 2"></svg>
+      <p class="key"><span class="sw circ"></span>circle &nbsp; <span class="sw ans"></span>\(y = -7x + 12\) &nbsp; <span class="sw dash"></span>down to \(x = 1\) and \(x = 2\)</p>
+      <p class="small frag"><b>Why substitute?</b> \(A\) is on the line <i>and</i> on the circle, so one pair \(x, y\) makes both equations true at once. On the line, \(y\) is always \(-7x + 12\). So we write \(-7x + 12\) in place of \(y\) in the circle's equation. What is left has only \(x\) in it, and it is true only at the \(x\)-values where the line meets the circle.</p>
     </div></div>
     <div><div class="card">
-      <div class="math small frag"><span class="lbl">divide by 50 and factor:</span>&nbsp; \(x^2 - 3x + 2 = 0\), &nbsp;\((x - 1)(x - 2) = 0\)</div>
+      <div class="math small frag"><span class="lbl">M1 · put \(y = -7x + 12\) into the circle:</span><br>\(x^2 + (-7x + 12)^2 + 4x - 2(-7x + 12) - 20 = 0\)</div>
+      <div class="math small frag"><span class="lbl">expand:</span> \((-7x + 12)^2 = 49x^2 - 168x + 144\) <span class="lbl">(middle term \(2 \times (-7x) \times 12\))</span> and \(-2(-7x + 12) = 14x - 24\)</div>
+      <div class="math small frag"><span class="lbl">collect:</span> \(x^2\): \(1 + 49 = 50\); &nbsp;\(x\): \(-168 + 4 + 14 = -150\); &nbsp;numbers: \(144 - 24 - 20 = 100\)</div>
+      <div class="math small frag"><span class="lbl">A1:</span> \(50x^2 - 150x + 100 = 0\) &nbsp;<span class="lbl">÷ 50:</span> \(x^2 - 3x + 2 = 0\), &nbsp;\((x - 1)(x - 2) = 0\)</div>
       <div class="math small result frag">A1 · \(x = 1\) or \(x = 2\)</div>
-      <div class="math small frag"><span class="lbl">the \(y\) values, from the line:</span>&nbsp; \(-7(1) + 12 = 5\) &nbsp;and&nbsp; \(-7(2) + 12 = -2\), &nbsp;so \((1, 5)\) and \((2, -2)\)</div>
-      <div class="math small frag"><span class="lbl">check the midpoint:</span>&nbsp; \(\left(\tfrac{1 + 2}{2}, \tfrac{5 + (-2)}{2}\right) = \left(1\tfrac{1}{2}, 1\tfrac{1}{2}\right)\) = \(D\) ✓</div>
-      <p class="small frag bad"><b>Show the method.</b> The mark scheme wants the factoring (or the formula with numbers in) on the page. A calculator answer alone scores nothing for the last mark.</p>
+      <p class="small frag"><b>What \(x = 1\) and \(x = 2\) tell us:</b> they are the \(x\)-coordinates of \(A\) and \(B\), the two crossing points (the dashed lines on the graph). There are two because a line can cross a circle at most twice, and a quadratic has at most two roots.</p>
+      <div class="math small frag"><span class="lbl">\(y\) from the line:</span> \(-7(1) + 12 = 5\) and \(-7(2) + 12 = -2\), so \((1, 5)\) and \((2, -2)\). <span class="lbl">Midpoint:</span> \(\left(\tfrac{1 + 2}{2}, \tfrac{5 - 2}{2}\right) = \left(1\tfrac{1}{2}, 1\tfrac{1}{2}\right) = D\) ✓</div>
+      <p class="small frag bad"><b>Show the method.</b> The factoring must be on the page. A calculator answer alone loses the last mark.</p>
     </div></div>
   </div>
 </section>
@@ -153,116 +181,184 @@
   <h2>Join the ends of a diameter to any other point on the circle: the angle there is \(90^\circ\).</h2>
   <div class="lab geo" data-geo="semi" data-p="2"></div>
   <div class="cols" style="margin-top:0.6vh">
-    <div><div class="math small frag"><span class="lbl">two ways to check it, with \(P(3, 4)\) on \(x^2 + y^2 = 25\), \(A(-5, 0)\), \(B(5, 0)\):</span><br>gradients: \(\tfrac{4 - 0}{3 - (-5)} = \tfrac{1}{2}\) &nbsp;and&nbsp; \(\tfrac{4 - 0}{3 - 5} = -2\); &nbsp;\(\tfrac{1}{2} \times (-2) = -1\), so \(AP \perp BP\)</div></div>
-    <div><div class="math small frag"><span class="lbl">Pythagoras:</span>&nbsp; \(AP^2 = 8^2 + 4^2 = 80\), &nbsp;\(BP^2 = 2^2 + 4^2 = 20\)<br>\(80 + 20 = 100 = 10^2 = AB^2\), so the angle at \(P\) is a right angle</div></div>
+    <div><div class="math small frag"><span class="lbl">\(x^2 + y^2 = 25\): center \((0, 0)\), radius 5. \(A(-5, 0)\) and \(B(5, 0)\) are the ends of a diameter. \(P(3, 4)\) is on the circle because</span> \(3^2 + 4^2 = 9 + 16 = 25\)</div></div>
+    <div><div class="math small frag"><span class="lbl">gradient \(AP\):</span> \(\tfrac{4 - 0}{3 - (-5)} = \tfrac{4}{8} = \tfrac{1}{2}\); &nbsp;<span class="lbl">gradient \(BP\):</span> \(\tfrac{4 - 0}{3 - 5} = \tfrac{4}{-2} = -2\)<br>\(\tfrac{1}{2} \times (-2) = -1\), <span class="lbl">so \(AP \perp BP\): the angle at \(P\) is \(90^\circ\)</span></div></div>
+  </div>
+  <p class="small frag"><b>Now drag \(P\)</b> to the other points on the circle. The product is \(-1\) every time. Next slide: a second check with Pythagoras, and why it has to work.</p>
+</section>
+
+<!-- 8 · why it works -->
+<section class="slide duo">
+  <p class="eyebrow">Direct instruction · 5 of 6 · why it works for every point</p>
+  <h2>A second check with Pythagoras, and why every point on the circle works.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>Pythagoras, used backwards:</b> if the two shorter sides of a triangle, squared and added, equal the longest side squared, then the angle between the two shorter sides is \(90^\circ\).</p>
+      <div class="math small frag"><span class="lbl">distance squared (Session 1, without the square root):</span> \(d^2 = (x_2 - x_1)^2 + (y_2 - y_1)^2\)</div>
+      <div class="math small frag"><span class="lbl">\(AP^2\), from \(A(-5, 0)\) to \(P(3, 4)\). Change in \(x\):</span> \(3 - (-5) = 8\); <span class="lbl">change in \(y\):</span> \(4 - 0 = 4\)<br>\(AP^2 = 8^2 + 4^2 = 64 + 16 = 80\)</div>
+      <div class="math small frag"><span class="lbl">\(BP^2\), from \(B(5, 0)\) to \(P(3, 4)\). Change in \(x\):</span> \(3 - 5 = -2\); <span class="lbl">change in \(y\):</span> \(4 - 0 = 4\)<br>\(BP^2 = (-2)^2 + 4^2 = 4 + 16 = 20\)</div>
+      <div class="math small frag"><span class="lbl">\(AB^2\), from \(A(-5, 0)\) to \(B(5, 0)\). Change in \(x\):</span> \(5 - (-5) = 10\); <span class="lbl">change in \(y\):</span> \(0\); &nbsp;\(AB^2 = 10^2 = 100\)</div>
+      <div class="math small result frag">\(AP^2 + BP^2 = 80 + 20 = 100 = AB^2\), so the angle at \(P\) is \(90^\circ\)</div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>Does it work for every point?</b> Yes: every point on the circle except \(A\) and \(B\) themselves. Here is why.</p>
+      <svg class="pic" viewBox="0 0 240 190" role="img" aria-label="A circle with diameter AB, center C and a point P on the circle; the radius CP splits triangle APB into two isosceles triangles with base angles alpha and beta">
+<circle cx="120" cy="105" r="75" fill="none" stroke="#ffffff" stroke-width="2"/>
+<line x1="45" y1="105" x2="195" y2="105" stroke="#b0b0b0" stroke-width="2" stroke-dasharray="5 4"/>
+<line x1="45" y1="105" x2="163" y2="43.6" stroke="#00e5ff" stroke-width="2.4"/>
+<line x1="195" y1="105" x2="163" y2="43.6" stroke="#00e5ff" stroke-width="2.4"/>
+<line x1="120" y1="105" x2="163" y2="43.6" stroke="#ffc46b" stroke-width="2" stroke-dasharray="5 4"/>
+<circle cx="120" cy="105" r="3.5" fill="#ffc46b"/>
+<g font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">
+<text x="28" y="110" fill="#00e5ff">A</text><text x="201" y="110" fill="#00e5ff">B</text><text x="167" y="38" fill="#00e5ff">P</text><text x="114" y="123" fill="#ffc46b">C</text></g>
+<g font-family="serif" font-style="italic" font-size="15" fill="#ffffff">
+<text x="62" y="102">α</text><text x="143" y="62">α</text><text x="170" y="98">β</text><text x="158" y="72">β</text></g>
+</svg>
+      <p class="small frag">\(C\) is the center, so \(CA\), \(CP\) and \(CB\) are all radii: all the same length.</p>
+      <p class="small frag">Triangle \(ACP\) has two equal sides (\(CA = CP\)), so its two base angles are equal. Call them \(\alpha\). Triangle \(BCP\) is the same, with angles \(\beta\).</p>
+      <p class="small frag">The angle at \(P\) is \(\alpha + \beta\). The three angles of triangle \(APB\) add to \(180^\circ\): \(\alpha + \beta + (\alpha + \beta) = 180^\circ\), so \(2(\alpha + \beta) = 180^\circ\) and \(\alpha + \beta = 90^\circ\).</p>
+    </div></div>
   </div>
 </section>
 
-<!-- 8 · used backwards -->
+<!-- 9 · used backwards -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 5 of 6 · the Cambridge move: use it backwards</p>
+  <p class="eyebrow">Direct instruction · 6 of 6 · the Cambridge move: use it backwards</p>
   <h2>A right angle with its corner on a circle means the other two points are the ends of a diameter.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
       <p class="small">\(P(-3, 1)\), \(Q(1, 5)\) and \(R(5, 1)\) lie on a circle. Show that \(PR\) is a diameter, and find the equation of the circle.</p>
       <svg class="cg" id="fig-conv" aria-label="Points P minus 3, 1, Q 1, 5 and R 5, 1 on a circle with center 1, 1 and radius 4; the angle at Q is a right angle"></svg>
       <p class="key"><span class="sw ans"></span>\(PQ\), \(QR\) &nbsp; <span class="sw dash"></span>diameter \(PR\)</p>
+      <p class="small frag"><b>Why this helps:</b> once we know a diameter, its midpoint is the center and half its length is the radius. That is everything the circle's equation needs.</p>
     </div></div>
     <div><div class="card">
       <div class="math small frag"><span class="lbl">gradient \(PQ\):</span>&nbsp; \(\dfrac{5 - 1}{1 - (-3)} = \dfrac{4}{4} = 1\) &nbsp;<span class="lbl">gradient \(QR\):</span>&nbsp; \(\dfrac{1 - 5}{5 - 1} = \dfrac{-4}{4} = -1\)</div>
-      <div class="math small frag"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so \(PQ \perp QR\) and angle \(PQR = 90^\circ\)</span></div>
-      <p class="small frag"><b>Which pair is the diameter?</b> The two points that are <i>not</i> the right-angle corner. The corner is at \(Q\), so the diameter is \(PR\) (the hypotenuse).</p>
+      <div class="math small frag"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so \(PQ \perp QR\): angle \(PQR = 90^\circ\)</span></div>
+      <p class="small frag"><b>Which pair is the diameter?</b> The two points that are <i>not</i> the right-angle corner. The corner is at \(Q\), so the diameter is \(PR\), the side opposite the right angle.</p>
       <div class="math small frag"><span class="lbl">center = midpoint of \(PR\):</span>&nbsp; \(\left(\tfrac{-3 + 5}{2}, \tfrac{1 + 1}{2}\right) = (1, 1)\)</div>
-      <div class="math small frag"><span class="lbl">radius = half of \(PR\):</span>&nbsp; \(PR = 5 - (-3) = 8\), so \(r = 4\) &nbsp;<span class="lbl">check:</span> \(Q\) is \(\sqrt{0^2 + 4^2} = 4\) from \((1, 1)\) ✓</div>
-      <div class="math small result frag">\((x - 1)^2 + (y - 1)^2 = 16\)</div>
+      <div class="math small frag"><span class="lbl">radius = half of \(PR\). \(P\) and \(R\) both have \(y = 1\), so \(PR\) is flat and its length is the change in \(x\):</span> \(5 - (-3) = 8\), <span class="lbl">so</span> \(r = \tfrac{8}{2} = 4\)</div>
+      <div class="math small frag"><span class="lbl">check with \(Q\), from the center \((1, 1)\) to \(Q(1, 5)\). Change in \(x\):</span> \(1 - 1 = 0\); <span class="lbl">change in \(y\):</span> \(5 - 1 = 4\); &nbsp;\(\sqrt{0^2 + 4^2} = \sqrt{16} = 4\) ✓</div>
+      <div class="math small result frag">center \((1, 1)\), \(r^2 = 4^2 = 16\): &nbsp;\((x - 1)^2 + (y - 1)^2 = 16\)</div>
     </div></div>
   </div>
 </section>
 
-<!-- 9 · J23 Q12(c) -->
+<!-- 10 · practice -->
 <section class="slide duo">
-  <p class="eyebrow">Direct instruction · 6 of 6 · June 2023, Paper 11, <span class="lit">Q12(c)</span> · 3 marks</p>
+  <p class="eyebrow">Practice · on your own · 6 min</p>
+  <h2>Two to try. Show every step, then tap to check.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+  <div class="check" tabindex="0">
+    <div class="math small">1. The circle \((x + 1)^2 + (y - 3)^2 = 25\) has center \(C\). The chord \(AB\) has midpoint \(M(2, 4)\). Find the equation of \(AB\) in the form \(y = mx + c\).</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">center (the signs flip):</span> \(C(-1, 3)\)</div>
+      <div class="math small"><span class="lbl">gradient \(CM\):</span> \(\dfrac{4 - 3}{2 - (-1)} = \dfrac{1}{3}\)</div>
+      <div class="math small"><span class="lbl">chord fact, \(CM \perp AB\); flip and change sign:</span> gradient \(AB = -3\)</div>
+      <div class="math small"><span class="lbl">line through \(M\):</span> \(y - 4 = -3(x - 2)\), &nbsp;\(y - 4 = -3x + 6\)</div>
+      <div class="math small result">\(y = -3x + 10\)</div>
+    </div>
+  </div>
+    </div>
+    <div>
+  <div class="check" tabindex="0">
+    <div class="math small">2. \(A(-2, 0)\), \(B(4, 0)\) and \(P(1, 3)\) lie on a circle. Show that angle \(APB = 90^\circ\), and find the equation of the circle.</div>
+    <div class="ans">
+      <div class="math small"><span class="lbl">gradient \(AP\):</span> \(\dfrac{3 - 0}{1 - (-2)} = \dfrac{3}{3} = 1\); &nbsp;<span class="lbl">gradient \(BP\):</span> \(\dfrac{3 - 0}{1 - 4} = \dfrac{3}{-3} = -1\)</div>
+      <div class="math small"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so angle \(APB = 90^\circ\) and \(AB\) is a diameter</span></div>
+      <div class="math small"><span class="lbl">center = midpoint of \(AB\):</span> \(\left(\tfrac{-2 + 4}{2}, \tfrac{0 + 0}{2}\right) = (1, 0)\); &nbsp;<span class="lbl">radius = half of \(AB\):</span> \(\tfrac{4 - (-2)}{2} = 3\)</div>
+      <div class="math small"><span class="lbl">check: \(P\) is 3 from \((1, 0)\):</span> \(\sqrt{0^2 + 3^2} = 3\) ✓</div>
+      <div class="math small result">\((x - 1)^2 + y^2 = 9\)</div>
+    </div>
+  </div>
+    </div>
+  </div>
+  <p class="small">Out of time? Finish these at home.</p>
+</section>
+
+<!-- 11 · J23 Q12, the question so far -->
+<section class="slide duo">
+  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12</span> · the question so far</p>
+  <h2>Before parts (c) and (d): circle \(P\), the point \(A\), and the tangent at \(A\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-q12s" aria-label="Circle P with center 0, 2 and radius 10, the point A 6, 10, the tangent at A, and circle Q centered where the tangent meets the y-axis"></svg>
+      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\)</p>
+      <p class="small">The question: circle \(P\) has center \((0, 2)\) and radius 10. The tangent to \(P\) at \(A(6, 10)\) is drawn. Circle \(Q\) has its center where that tangent meets the \(y\)-axis, and radius \(\tfrac{5}{2}\sqrt{5}\).</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">(a) circle \(P\): center \((0, 2)\), radius 10:</span> \((x - 0)^2 + (y - 2)^2 = 10^2\), &nbsp;that is \(x^2 + (y - 2)^2 = 100\)</div>
+      <p class="small frag"><b>(b) the tangent at \(A\).</b> A tangent is perpendicular to the radius at the point it touches (Session 2). So find the radius's gradient, then flip it and change the sign.</p>
+      <div class="math small frag"><span class="lbl">radius from \((0, 2)\) to \(A(6, 10)\):</span> \(\dfrac{10 - 2}{6 - 0} = \dfrac{8}{6} = \dfrac{4}{3}\), &nbsp;<span class="lbl">so the tangent's gradient is</span> \(-\dfrac{3}{4}\)</div>
+      <div class="math small frag"><span class="lbl">line through \(A(6, 10)\):</span> \(y - 10 = -\tfrac{3}{4}(x - 6) = -\tfrac{3}{4}x + \tfrac{9}{2}\) <span class="lbl">(because \(-\tfrac{3}{4} \times -6 = \tfrac{18}{4} = \tfrac{9}{2}\))</span></div>
+      <div class="math small frag"><span class="lbl">add 10 to both sides; \(\tfrac{9}{2} + 10 = \tfrac{9}{2} + \tfrac{20}{2} = \tfrac{29}{2}\):</span></div>
+      <div class="math small result frag">tangent: \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\)</div>
+      <p class="small frag"><b>Keep these two:</b> circle \(P\) and the tangent. Parts (c) and (d) use both. (\(\tfrac{29}{2}\) is 14.5.)</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 12 · J23 Q12(c) -->
+<section class="slide duo">
+  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12(c)</span> · 3 marks</p>
   <h2>Find the equation of circle \(Q\) and hence verify that the \(y\)-coordinates of both points where the two circles meet are 11.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
-      <svg class="cg" id="fig-q12" aria-label="Circle P with center 0, 2 and radius 10, the tangent at A 6, 10 meeting the y-axis at 0, 14.5, and circle Q centered there with radius 5 over 2 root 5"></svg>
-      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\)</p>
-      <p class="small"><b>From Session 2:</b> circle \(P\) is \(x^2 + (y - 2)^2 = 100\) and the tangent at \(A(6, 10)\) is \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\). Circle \(Q\) has its center where that tangent meets the \(y\)-axis, and radius \(\tfrac{5}{2}\sqrt{5}\).</p>
+      <svg class="cg" id="fig-q12" aria-label="Circle P with center 0, 2, the tangent at A, and circle Q with center 0, 29 over 2; the two circles meet on the dashed line y equals 11"></svg>
+      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\) &nbsp; <span class="sw dash"></span>\(y = 11\)</p>
+      <p class="small"><b>From the last slide:</b> circle \(P\) is \(x^2 + (y - 2)^2 = 100\) and the tangent is \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\). Circle \(Q\)'s center is where the tangent meets the \(y\)-axis; its radius is \(\tfrac{5}{2}\sqrt{5}\).</p>
     </div></div>
     <div><div class="card">
-      <div class="math small frag"><span class="lbl">M1 · on the \(y\)-axis \(x = 0\), so put \(x = 0\) in the tangent:</span>&nbsp; \(y = \tfrac{29}{2}\), center \(\left(0, \tfrac{29}{2}\right)\)</div>
-      <div class="math small frag"><span class="lbl">radius squared:</span>&nbsp; \(\left(\tfrac{5}{2}\sqrt{5}\right)^2 = \tfrac{25}{4} \times 5 = \tfrac{125}{4}\)</div>
-      <div class="math small result frag">A1 · \(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\)</div>
-      <div class="math small frag"><span class="lbl">B1 · verify: put \(y = 11\) into both circles</span><br>\(P\): \(x^2 + 9^2 = 100\), so \(x^2 = 19\)<br>\(Q\): \(x^2 + \left(11 - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\), &nbsp;\(x^2 + \tfrac{49}{4} = \tfrac{125}{4}\), so \(x^2 = 19\)</div>
-      <p class="small frag"><b>Why that verifies it:</b> with \(y = 11\), both circles give the same two points, \(\left(\pm\sqrt{19}, 11\right)\). So those points are on both circles.</p>
-      <p class="small frag bad"><b>What the examiners saw:</b> many did not use part (b) to get the center, and most skipped the verify. The quick route is the one above: \(y = 11\) into both.</p>
+      <div class="math small frag"><span class="lbl">M1 · every point on the \(y\)-axis has \(x = 0\), so put \(x = 0\) in the tangent:</span> \(y = \tfrac{29}{2}\). <span class="lbl">Center of \(Q\):</span> \(\left(0, \tfrac{29}{2}\right)\)</div>
+      <div class="math small frag"><span class="lbl">radius squared (square the \(\tfrac{5}{2}\) and the \(\sqrt{5}\)):</span> \(\left(\tfrac{5}{2}\sqrt{5}\right)^2 = \tfrac{25}{4} \times 5 = \tfrac{125}{4}\)</div>
+      <div class="math small result frag">A1 · circle \(Q\): \(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\)</div>
+      <p class="small frag"><b>B1 · verify.</b> If both meeting points have \(y = 11\), then \(y = 11\) in each circle must give the same \(x\) values.</p>
+      <div class="math small frag"><span class="lbl">\(P\):</span> \(x^2 + (11 - 2)^2 = 100\), &nbsp;\(x^2 + 81 = 100\), &nbsp;\(x^2 = 19\)<br><span class="lbl">\(Q\): \(11 - \tfrac{29}{2} = \tfrac{22}{2} - \tfrac{29}{2} = -\tfrac{7}{2}\), squared is \(\tfrac{49}{4}\):</span> \(x^2 + \tfrac{49}{4} = \tfrac{125}{4}\), &nbsp;\(x^2 = \tfrac{76}{4} = 19\)</div>
+      <p class="small frag"><b>Why that verifies it:</b> with \(y = 11\), both circles give \(x = \pm\sqrt{19}\). So \(\left(\pm\sqrt{19}, 11\right)\) are on both circles: they are where the circles meet.</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> many did not use part (b) to get the center, and most skipped the verify.</p>
     </div></div>
   </div>
 </section>
 
-<!-- 10 · J23 Q12(d) -->
+<!-- 13 · J23 Q12(d), the plan -->
 <section class="slide duo">
-  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12(d)</span> · 3 marks</p>
+  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12(d)</span> · 3 marks · 1 of 2</p>
   <h2>Find the coordinates of the points where the tangent meets circle \(Q\), giving the answers in surd form.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
-      <p class="small"><b>Surd form</b> means exact, with the square root left in and simplified. \(\sqrt{20}\) simplifies because \(20 = 4 \times 5\): \(\sqrt{20} = \sqrt{4}\sqrt{5} = 2\sqrt{5}\). A decimal like 4.47 is not surd form.</p>
-      <svg class="cg" id="fig-q12d" aria-label="Circle Q with center 0, 14.5 and the tangent line through its center, cutting it at two points either side"></svg>
+      <svg class="cg" id="fig-q12d" aria-label="Circle Q with center 0, 29 over 2 and the tangent line through its center, cutting the circle at two points D and E"></svg>
       <p class="key"><span class="sw gold"></span>circle \(Q\) &nbsp; <span class="sw ans"></span>the tangent from part (b)</p>
-      <p class="small frag"><b>Notice first:</b> the tangent to \(P\) goes through the center of \(Q\). A line through the center of a circle cuts it twice, at the two ends of a diameter. So expect two points, the same distance either side of \(\left(0, \tfrac{29}{2}\right)\).</p>
+      <p class="small">The question does not name the two points; we call them \(D\) and \(E\).</p>
+      <p class="small frag"><b>Surd form</b> means exact, with the square root left in and simplified: \(\sqrt{20} = \sqrt{4 \times 5} = \sqrt{4}\sqrt{5} = 2\sqrt{5}\). A decimal like 4.47 is not surd form.</p>
     </div></div>
     <div><div class="card">
-      <div class="math small frag"><span class="lbl">M1 · substitute \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\), so \(y - \tfrac{29}{2} = -\tfrac{3}{4}x\):</span><br>\(x^2 + \left(-\tfrac{3}{4}x\right)^2 = \tfrac{125}{4}\)</div>
-      <div class="math small frag"><span class="lbl">square and add:</span>&nbsp; \(x^2 + \tfrac{9}{16}x^2 = \tfrac{25}{16}x^2\), &nbsp;so \(\tfrac{25}{16}x^2 = \tfrac{125}{4}\)</div>
-      <div class="math small frag"><span class="lbl">multiply both sides by \(\tfrac{16}{25}\):</span>&nbsp; \(x^2 = \tfrac{125 \times 16}{4 \times 25} = 20\)</div>
-      <div class="math small frag"><span class="lbl">A1 · square root, both signs:</span>&nbsp; \(x = \pm\sqrt{20} = \pm 2\sqrt{5}\)</div>
-      <div class="math small frag"><span class="lbl">\(y\) from the line:</span>&nbsp; \(x = 2\sqrt{5}\): \(y = \tfrac{29}{2} - \tfrac{3}{4}(2\sqrt{5}) = \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\)<br>\(x = -2\sqrt{5}\): \(y = \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\)</div>
-      <div class="math small result frag">A1 · \(\left(2\sqrt{5}, \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\right)\) and \(\left(-2\sqrt{5}, \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\right)\)</div>
-      <p class="small frag"><b>Check:</b> the midpoint of the two points is \(\left(0, \tfrac{29}{2}\right)\), the center of \(Q\), as expected for a diameter.</p>
+      <p class="small frag"><b>What we know.</b> Circle \(Q\) is \(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\) (part (c)). The tangent is \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\) (part (b)).</p>
+      <p class="small frag"><b>Notice first:</b> the tangent passes through \(Q\)'s center (put \(x = 0\) in it: \(y = \tfrac{29}{2}\)). A line through the center cuts a circle twice, at the two ends of a diameter. So expect two points, the same distance either side of \(\left(0, \tfrac{29}{2}\right)\).</p>
+      <p class="small frag"><b>The plan, the same move as slide 6:</b> \(D\) and \(E\) are on the line and on circle \(Q\). Put the line into the circle's equation, solve for \(x\), then get \(y\) from the line.</p>
+      <div class="math small frag"><span class="lbl">a neat way in: take \(\tfrac{29}{2}\) from both sides of the tangent:</span> \(y - \tfrac{29}{2} = -\tfrac{3}{4}x\). <span class="lbl">That is exactly the bracket in circle \(Q\), so swap it in:</span></div>
+      <div class="math small result frag">M1 · \(x^2 + \left(-\tfrac{3}{4}x\right)^2 = \tfrac{125}{4}\)</div>
     </div></div>
   </div>
 </section>
 
-<!-- 11 · J24 Q7(a) -->
-<section class="slide duo">
-  <p class="eyebrow">Review · you try first · June 2024, Paper 12, <span class="lit">Q7(a)</span> · 5 marks</p>
-  <h2>The equation of a circle is \((x - 6)^2 + (y + a)^2 = 18\). The line \(y = 2a - x\) is a tangent to the circle.</h2>
+<!-- 14 · J23 Q12(d), solving -->
+<section class="slide">
+  <p class="eyebrow">June 2023, Paper 11, <span class="lit">Q12(d)</span> · 2 of 2 · solving</p>
+  <h2>Solve \(x^2 + \left(-\tfrac{3}{4}x\right)^2 = \tfrac{125}{4}\), then find each \(y\) from the tangent.</h2>
   <div class="cols" style="margin-top:0.4vh">
-    <div><div class="card">
-      <p class="small">(a) Find the two possible values of the constant \(a\). <span class="marks">[5]</span></p>
-      <p class="small"><b>3 minutes on your own.</b> This one needs Session 2 (reading a circle) and Session 3 (tangent means \(b^2 - 4ac = 0\)).</p>
-      <p class="small frag bad"><b>What the examiners saw:</b> the substitute-then-discriminant route worked best. Marks were lost expanding brackets, and some forgot the 18 on the right-hand side.</p>
-    </div></div>
-    <div><div class="card">
-      <div class="math small frag"><span class="lbl">M1 · replace \(y\) with \(2a - x\):</span>&nbsp; \((x - 6)^2 + (2a - x + a)^2 = 18\), &nbsp;so \((x - 6)^2 + (3a - x)^2 = 18\)</div>
-      <div class="math small frag"><span class="lbl">expand:</span>&nbsp; \(x^2 - 12x + 36 + 9a^2 - 6ax + x^2 = 18\)</div>
-      <div class="math small frag"><span class="lbl">A1 · everything on one side, take away 18:</span>&nbsp; \(2x^2 - (12 + 6a)x + 9a^2 + 18 = 0\)<br><span class="lbl">so \(A = 2\), \(B = -(12 + 6a)\), \(C = 9a^2 + 18\)</span></div>
-      <div class="math small frag"><span class="lbl">DM1 · tangent, so \(B^2 - 4AC = 0\):</span>&nbsp; \((12 + 6a)^2 - 4(2)(9a^2 + 18) = 0\)</div>
-      <div class="math small frag"><span class="lbl">A1 · expand:</span>&nbsp; \(144 + 144a + 36a^2 - 72a^2 - 144 = 0\), &nbsp;so \(-36a^2 + 144a = 0\)</div>
-      <div class="math small result frag">A1 · \(-36a(a - 4) = 0\), &nbsp;\(a = 0\) or \(a = 4\)</div>
-      <p class="small frag"><b>Do both survive?</b> The question asks for two values and puts no condition on \(a\), so yes. Put each back: \(a = 4\) gives \(2x^2 - 36x + 162 = 0\), \((x - 9)^2 = 0\), touching at \((9, -1)\); \(a = 0\) touches at \((3, -3)\).</p>
-    </div></div>
-  </div>
-</section>
-
-<!-- 12 · J24 Q7(b) -->
-<section class="slide duo">
-  <p class="eyebrow">Review · June 2024, Paper 12, <span class="lit">Q7(b)</span> · 3 marks</p>
-  <h2>For the greater value of \(a\), find the equation of the diameter which is perpendicular to the given tangent.</h2>
-  <div class="cols" style="margin-top:0.4vh">
-    <div><div class="card">
-      <svg class="cg" id="fig-q7" aria-label="The circle with center 6, minus 4 and radius root 18, the tangent y equals 8 minus x touching at 9, minus 1, and the diameter y equals x minus 10 through the center and the touching point"></svg>
-      <p class="key"><span class="sw circ"></span>circle, \(a = 4\) &nbsp; <span class="sw ans"></span>tangent \(y = 8 - x\) &nbsp; <span class="sw gold"></span>the diameter</p>
-      <p class="small frag bad"><b>What the examiners saw:</b> about 30% left this part out, and many spent time finding the touching point when the center was all they needed. Draw the picture first.</p>
-    </div></div>
-    <div><div class="card">
-      <p class="small frag"><b>Read the picture:</b> a diameter goes through the center. Perpendicular to the tangent means it is the radius to the touching point, carried on across (tangent ⊥ radius, Session 2).</p>
-      <div class="math small frag"><span class="lbl">B1 · greater value \(a = 4\), so the circle is \((x - 6)^2 + (y + 4)^2 = 18\):</span>&nbsp; center \((6, -4)\)</div>
-      <div class="math small frag"><span class="lbl">B1 · tangent \(y = 8 - x\) has gradient \(-1\), so the perpendicular gradient is</span>&nbsp; \(1\)</div>
-      <div class="math small frag"><span class="lbl">line through \((6, -4)\), gradient 1:</span>&nbsp; \(y + 4 = 1(x - 6)\)</div>
-      <div class="math small result frag">B1 · \(y = x - 10\)</div>
-      <p class="small frag"><b>Check:</b> the touching point \((9, -1)\) from part (a) fits: \(9 - 10 = -1\) ✓</p>
-    </div></div>
+    <div>
+      <div class="math small frag"><span class="lbl">square the bracket (a negative squared is positive):</span> \(\left(-\tfrac{3}{4}x\right)^2 = \tfrac{9}{16}x^2\)</div>
+      <div class="math small frag"><span class="lbl">add, writing \(x^2\) as \(\tfrac{16}{16}x^2\):</span> \(\tfrac{16}{16}x^2 + \tfrac{9}{16}x^2 = \tfrac{25}{16}x^2\), &nbsp;so \(\tfrac{25}{16}x^2 = \tfrac{125}{4}\)</div>
+      <div class="math small frag"><span class="lbl">multiply both sides by \(\tfrac{16}{25}\) to leave \(x^2\) on its own:</span> \(x^2 = \tfrac{125}{4} \times \tfrac{16}{25} = \tfrac{2000}{100} = 20\)</div>
+      <div class="math small frag"><span class="lbl">A1 · square root; both signs, because \(\sqrt{20}\) and \(-\sqrt{20}\) both square to 20:</span> \(x = \pm\sqrt{20} = \pm 2\sqrt{5}\)</div>
+    </div>
+    <div>
+      <div class="math small frag"><span class="lbl">\(D\): put \(x = 2\sqrt{5}\) in the tangent:</span> \(y = -\tfrac{3}{4}(2\sqrt{5}) + \tfrac{29}{2} = -\tfrac{6}{4}\sqrt{5} + \tfrac{29}{2} = \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\)</div>
+      <div class="math small frag"><span class="lbl">\(E\): put \(x = -2\sqrt{5}\):</span> \(y = -\tfrac{3}{4}(-2\sqrt{5}) + \tfrac{29}{2} = \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\)</div>
+      <div class="math small result frag">A1 · \(D\left(2\sqrt{5}, \tfrac{29}{2} - \tfrac{3}{2}\sqrt{5}\right)\) and \(E\left(-2\sqrt{5}, \tfrac{29}{2} + \tfrac{3}{2}\sqrt{5}\right)\)</div>
+      <p class="small frag"><b>Check the midpoint.</b> The \(x\)-values \(2\sqrt{5}\) and \(-2\sqrt{5}\) average to 0. In the \(y\)-values the \(\pm\tfrac{3}{2}\sqrt{5}\) cancel, so they average to \(\tfrac{29}{2}\). The midpoint is \(\left(0, \tfrac{29}{2}\right)\), the center of \(Q\), as expected for a diameter.</p>
+    </div>
   </div>
 </section>
 
@@ -295,6 +391,72 @@
     </div>
   </div>
   <div class="math result">Submit before you leave. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 17 · J24 Q7(a), what a is -->
+<section class="slide duo">
+  <p class="eyebrow">If time, or Tuesday's review · June 2024, Paper 12, <span class="lit">Q7(a)</span> · 5 marks · 1 of 2</p>
+  <h2>The circle \((x - 6)^2 + (y + a)^2 = 18\) has the line \(y = 2a - x\) as a tangent. Find the two possible values of the constant \(a\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-q7a" aria-label="Two cases: with a equals 0, the dashed circle centered 6, 0 and the dashed line y equals minus x touch at 3, minus 3; with a equals 4, the circle centered 6, minus 4 and the line y equals 8 minus x touch at 9, minus 1"></svg>
+      <p class="key"><span class="sw dash"></span>\(a = 0\): circle and line &nbsp; <span class="sw ans"></span>\(a = 4\): line (white circle)</p>
+      <p class="small frag"><b>Both values work:</b> each line just touches its own circle. This is the answer we are about to find.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>What is \(a\)?</b> A constant: one fixed number we do not know yet. Each value of \(a\) gives a different circle and a different line.</p>
+      <p class="small frag"><b>The circle</b> has center \((6, -a)\) (the signs flip, Session 2) and radius \(\sqrt{18}\). <b>The line</b> \(y = 2a - x\) has gradient \(-1\) and crosses the \(y\)-axis at \(2a\).</p>
+      <p class="small frag"><b>The question:</b> for which values of \(a\) does the line just touch the circle (a tangent: exactly one meeting point)?</p>
+      <p class="small frag"><b>Why substitute first?</b> Meeting points make both equations true at once, so we put the line into the circle, as on slide 6. That gives a quadratic in \(x\) whose roots are the \(x\)-coordinates of the meeting points. A tangent meets once, so there is one repeated root: \(b^2 - 4ac = 0\) (Session 3). That gives an equation we can solve for \(a\).</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> this route worked best. Marks were lost expanding brackets, and some forgot the 18 on the right-hand side.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 18 · J24 Q7(a), the algebra -->
+<section class="slide">
+  <p class="eyebrow">June 2024, Paper 12, <span class="lit">Q7(a)</span> · 2 of 2 · the algebra</p>
+  <h2>Substitute, rearrange to \(\ldots = 0\), then set \(b^2 - 4ac = 0\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="math small frag"><span class="lbl">M1 · replace \(y\) with \(2a - x\). The bracket \((y + a)\) becomes</span> \((2a - x + a) = (3a - x)\): &nbsp;\((x - 6)^2 + (3a - x)^2 = 18\)</div>
+      <div class="math small frag"><span class="lbl">expand:</span> \((x - 6)^2 = x^2 - 12x + 36\) &nbsp;and&nbsp; \((3a - x)^2 = 9a^2 - 6ax + x^2\)</div>
+      <div class="math small frag"><span class="lbl">collect, and take 18 from both sides:</span> \(x^2 + x^2 = 2x^2\); &nbsp;\(-12x - 6ax = -(12 + 6a)x\); &nbsp;\(36 + 9a^2 - 18 = 9a^2 + 18\)</div>
+      <div class="math small result frag">A1 · \(2x^2 - (12 + 6a)x + 9a^2 + 18 = 0\)</div>
+      <p class="small frag">Call the coefficients \(A = 2\), \(B = -(12 + 6a)\), \(C = 9a^2 + 18\), so they are not mixed up with the \(a\) in the question.</p>
+    </div>
+    <div>
+      <div class="math small frag"><span class="lbl">DM1 · tangent, so \(B^2 - 4AC = 0\):</span> \((12 + 6a)^2 - 4(2)(9a^2 + 18) = 0\)</div>
+      <div class="math small frag"><span class="lbl">expand each part:</span> \((12 + 6a)^2 = 144 + 144a + 36a^2\) &nbsp;and&nbsp; \(4(2)(9a^2 + 18) = 72a^2 + 144\)</div>
+      <div class="math small frag"><span class="lbl">A1 · subtract:</span> \(144 + 144a + 36a^2 - 72a^2 - 144 = 0\), &nbsp;so \(-36a^2 + 144a = 0\)</div>
+      <div class="math small frag"><span class="lbl">factor out \(-36a\):</span> \(-36a(a - 4) = 0\). <span class="lbl">A product is 0 only when a factor is 0:</span> \(-36a = 0\) or \(a - 4 = 0\)</div>
+      <div class="math small result frag">A1 · \(a = 0\) or \(a = 4\)</div>
+      <p class="small frag"><b>Do both survive?</b> The question asks for two values and puts no condition on \(a\), so yes. Check \(a = 4\): \(2x^2 - 36x + 162 = 0\), \(\div 2\): \((x - 9)^2 = 0\), one point at \(x = 9\): a tangent.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19 · J24 Q7(b) -->
+<section class="slide duo">
+  <p class="eyebrow">If time, or Tuesday's review · June 2024, Paper 12, <span class="lit">Q7(b)</span> · 3 marks</p>
+  <h2>For the greater value of \(a\), find the equation of the diameter which is perpendicular to the given tangent.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-q7" aria-label="The circle with center 6, minus 4 and radius root 18, the tangent y equals 8 minus x touching at 9, minus 1, and the diameter y equals x minus 10 through the center and the touching point"></svg>
+      <p class="key"><span class="sw circ"></span>circle, \(a = 4\) &nbsp; <span class="sw ans"></span>tangent \(y = 8 - x\) &nbsp; <span class="sw gold"></span>the diameter</p>
+      <p class="small frag"><b>"The greater value":</b> part (a) gave two answers, \(a = 0\) and \(a = 4\). The greater (bigger) one is \(a = 4\).</p>
+      <p class="small frag bad"><b>What the examiners saw:</b> about 30% left this part out, and many worked out the touching point when the center was all they needed. Draw the picture first.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="math small frag"><span class="lbl">put \(a = 4\) into both:</span> circle \((x - 6)^2 + (y + 4)^2 = 18\); &nbsp;line \(y = 2(4) - x = 8 - x\)</div>
+      <p class="small frag"><b>Read the picture:</b> every diameter goes through the center. The one perpendicular to the tangent is the radius to the touching point, carried on across (tangent ⊥ radius, Session 2). So we need the center and a gradient.</p>
+      <div class="math small frag"><span class="lbl">B1 · center: \((x - 6)\) gives 6 and \((y + 4)\) gives \(-4\) (the signs flip):</span> \((6, -4)\)</div>
+      <div class="math small frag"><span class="lbl">B1 · write the tangent as \(y = -1x + 8\). The number in front of \(x\) is the gradient:</span> \(-1\). <span class="lbl">Flip and change the sign:</span> \(-\tfrac{1}{-1} = 1\). <span class="lbl">Check:</span> \((-1) \times 1 = -1\) ✓</div>
+      <div class="math small frag"><span class="lbl">line through \((6, -4)\), gradient 1:</span> \(y - (-4) = 1(x - 6)\), &nbsp;\(y + 4 = x - 6\)</div>
+      <div class="math small result frag">B1 · \(y = x - 10\)</div>
+      <p class="small frag"><b>Check:</b> the touching point \((9, -1)\) is on it: \(9 - 10 = -1\) ✓</p>
+    </div></div>
+  </div>
 </section>
 
 <!-- 15 · if time -->
@@ -345,20 +507,30 @@
     circles: [[1, 1, 4, W, '']],
     pts: [[-3, 1, 'P', CY, -18, -6], [1, 5, 'Q', CY, 8, -6], [5, 1, 'R', CY, 8, -6], [1, 1, '(1, 1)', GR, 6, 16]] };
   fig('fig-conv', conv, [{ seg: [-3, 1, 1, 5], col: CY }, { seg: [1, 5, 5, 1], col: CY }, { seg: [-3, 1, 5, 1], col: GR, dash: D }, { right: [1, 5, -3, 1, 5, 1], col: GO }]);
-  var R5 = 2.5 * Math.sqrt(5);
-  var q12 = { x: [-11, 11], y: [-9, 21], k: 9.6, step: 4, grid: 2, fs: 8,
-    circles: [[0, 2, 10, W, ''], [0, 14.5, R5, GO, '']],
-    lines: [[-0.75, 14.5, CY, '']],
-    pts: [[6, 10, 'A', CY, 8, 4], [0, 2, '', W, 0, 0], [0, 14.5, '', GO, 0, 0], [Math.sqrt(19), 11, '', GO, 0, 0], [-Math.sqrt(19), 11, '', GO, 0, 0]],
-    texts: [[-2.6, 3, 'P', W, 12], [6.6, 17, 'Q', GO, 12]] };
-  fig('fig-q12', q12);
-  var R20 = 2 * Math.sqrt(5);
+  var R5 = 2.5 * Math.sqrt(5), S19 = Math.sqrt(19), S5 = Math.sqrt(5), R18 = Math.sqrt(18);
+  var q10c = { x: [-8, 4], y: [-5, 7], k: 25, step: 1, grid: 1, fs: 8,
+    circles: [[-2, 1, 5, W, '']], lines: [[-7, 12, CY, '']],
+    pts: [[-2, 1, 'C', W, -14, 16], [1, 5, 'A (1, 5)', GO, 10, -2], [2, -2, 'B (2, -2)', GO, 8, 14]] };
+  fig('fig-q10c', q10c, [{ seg: [1, 0, 1, 5], col: GR, dash: D, w: 1.6 }, { seg: [2, 0, 2, -2], col: GR, dash: D, w: 1.6 }]);
+  var q12base = { x: [-11, 11], y: [-9, 21], k: 9.6, step: 4, grid: 2, fs: 8,
+    circles: [[0, 2, 10, W, ''], [0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']] };
+  function ext(o, more) { var r = {}; for (var p in o) r[p] = o[p]; for (var q in more) r[q] = more[q]; return r; }
+  fig('fig-q12s', ext(q12base, { pts: [[6, 10, 'A (6, 10)', CY, 8, -6], [0, 2, '(0, 2)', W, 6, 14], [0, 14.5, '', GO, 0, 0]],
+    texts: [[-6.5, -4.5, 'circle P', W, 12], [-7.5, 19.5, 'circle Q', GO, 12]] }));
+  fig('fig-q12', ext(q12base, { pts: [[6, 10, 'A', CY, 8, -6], [0, 2, '(0, 2)', W, 6, 14], [0, 14.5, '(0, 29/2)', GO, 8, -8], [S19, 11, '', GO, 0, 0], [-S19, 11, '', GO, 0, 0]],
+    texts: [[-6.5, -4.5, 'circle P', W, 12], [-7.5, 19.5, 'circle Q', GO, 12], [8.6, 11.6, 'y = 11', GR, 11]] }),
+    [{ seg: [-11, 11, 11, 11], col: GR, dash: D, w: 1.4 }]);
   var q12d = { x: [-7, 7], y: [8, 21], k: 19, step: 2, grid: 1, fs: 8, noxy: true,
     circles: [[0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']],
-    pts: [[0, 14.5, '', GO, 0, 0], [R20, 14.5 - 1.5 * Math.sqrt(5), '', CY, 0, 0], [-R20, 14.5 + 1.5 * Math.sqrt(5), '', CY, 0, 0]] };
+    pts: [[0, 14.5, 'Q (0, 29/2)', GO, 8, -8], [2 * S5, 14.5 - 1.5 * S5, 'D', CY, 8, 18], [-2 * S5, 14.5 + 1.5 * S5, 'E', CY, -18, -8]] };
   fig('fig-q12d', q12d);
+  var q7a = { x: [0, 12], y: [-10, 4], k: 22, step: 2, grid: 1, fs: 9,
+    circles: [[6, 0, R18, GR, '5 4'], [6, -4, R18, W, '']],
+    lines: [[-1, 0, GR, '5 4'], [-1, 8, CY, '']],
+    pts: [[3, -3, '(3, -3)', GR, -60, 14], [9, -1, '(9, -1)', CY, 12, 4], [6, 0, '', GR, 0, 0], [6, -4, '', W, 0, 0]] };
+  fig('fig-q7a', q7a);
   var q7 = { x: [0, 12], y: [-10, 2], k: 25, step: 2, grid: 1, fs: 9,
-    circles: [[6, -4, Math.sqrt(18), W, '']],
+    circles: [[6, -4, R18, W, '']],
     lines: [[-1, 8, CY, ''], [1, -10, GO, '']],
     pts: [[6, -4, '(6, -4)', W, 10, 18], [9, -1, '(9, -1)', CY, 16, 5]] };
   fig('fig-q7', q7, [{ right: [9, -1, 6, -4, 10, -2], col: GO }]);
