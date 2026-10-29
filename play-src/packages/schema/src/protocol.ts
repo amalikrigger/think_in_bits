@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Media, PointsLevel, QuizSettings, type QuizSettings as QuizSettingsType } from "./quiz";
+import { Media, PointsLevel, QuizSettings, type QuizMusic, type QuizSettings as QuizSettingsType } from "./quiz";
 
 // WebSocket contract shared by the Durable Object and the web app.
 // Client messages are validated at runtime on the server; server messages are typed here
@@ -144,6 +144,8 @@ export type HostView = {
   title: string;
   questionCount: number;
   settings: QuizSettingsType;
+  /** Music slots from the quiz (file names of uploaded media); silent when empty. */
+  music: QuizMusic;
   paused: boolean;
   players: LobbyPlayer[];
   timer: Timer | null;

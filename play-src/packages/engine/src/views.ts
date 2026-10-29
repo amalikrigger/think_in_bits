@@ -36,6 +36,7 @@ export function hostView(state: GameState, now: number): HostView {
     title: state.quiz.title,
     questionCount: state.quiz.questions.length,
     settings: state.settings,
+    music: state.quiz.music ?? {},
     paused: state.paused !== null,
     players: Object.values(state.players)
       .sort((a, b) => a.joinSeq - b.joinSeq)

@@ -132,6 +132,8 @@ export const QuizMusic = z.strictObject({
   podium: z.string().trim().min(1).optional(),
 });
 
+export type QuizMusic = z.infer<typeof QuizMusic>;
+
 export const QuizDefaults = z.strictObject({
   timeLimitSec: timeLimitSec.default(20),
   points: PointsLevel.default("standard"),

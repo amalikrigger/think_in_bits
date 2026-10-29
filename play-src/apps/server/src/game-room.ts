@@ -23,7 +23,7 @@ type Stored = { state: GameState; hostKeyHash: string; expiresAt: number };
 export type InitResult = { ok: true; hostKey: string } | { ok: false; reason: "in_use" };
 export type GameInfo =
   | { exists: false }
-  | { exists: true; title: string; phase: GameState["phase"]; joinable: boolean; locked: boolean };
+  | { exists: true; title: string; phase: GameState["phase"]; joinable: boolean; locked: boolean; generatedNicknames: boolean };
 
 export class GameRoom extends DurableObject<Env> {
   private stored: Stored | null = null;
@@ -57,7 +57,14 @@ export class GameRoom extends DurableObject<Env> {
     const { state } = game;
     const over = state.phase === "podium" || state.phase === "ended";
     const joinable = !over && !state.settings.locked && (state.phase === "lobby" || state.settings.lateJoin);
-    return { exists: true, title: state.quiz.title, phase: state.phase, joinable, locked: state.settings.locked };
+    return {
+      exists: true,
+      title: state.quiz.title,
+      phase: state.phase,
+      joinable,
+      locked: state.settings.locked,
+      generatedNicknames: state.settings.generatedNicknamesOnly,
+    };
   }
 
   async isHostKey(hostKey: string): Promise<boolean> {
