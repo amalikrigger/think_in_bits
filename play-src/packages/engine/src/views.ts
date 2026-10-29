@@ -1,0 +1,181 @@
+import type {
+  HostView,
+  LeaderboardEntry,
+  PlayerResult,
+  PlayerView,
+  PublicQuestion,
+  QuestionReview,
+  TeamEntry,
+  Timer,
+} from "@bitblitz/schema";
+import type { GameState, PlannedQuestion, PlayerState } from "./state";
+
+// What each role is allowed to see. This file is the answer-leak boundary: a player view
+// is built only from public question data until the question has been scored.
+
+const LEADERBOARD_SIZE = 10;
+
+/** Ranking order: score, then lower total response time, then earlier join (rule 9). */
+export function standings(state: GameState): PlayerState[] {
+  return Object.values(state.players).sort(
+    (a, b) => b.score - a.score || a.totalResponseMs - b.totalResponseMs || a.joinSeq - b.joinSeq,
+  );
+}
+
+export function hostView(state: GameState, now: number): HostView {
+  const { phase } = state;
+  const question = state.plan[state.questionIndex];
+  const showQuestion = phase === "countdown" || phase === "question" || phase === "reveal";
+  const scoredPhase = phase === "leaderboard" || phase === "podium" || phase === "ended";
+  const ranked = standings(state);
+
+  return {
+    role: "host",
+    code: state.code,
+    phase,
+    title: state.quiz.title,
+    questionCount: state.quiz.questions.length,
+    settings: state.settings,
+    paused: state.paused !== null,
+    players: Object.values(state.players)
+      .sort((a, b) => a.joinSeq - b.joinSeq)
+      .map((p) => ({ id: p.id, nickname: p.nickname, connected: p.connected, score: p.score, team: p.team })),
+    timer: timerView(state, now),
+    question: showQuestion && question ? publicQuestion(state, question, true) : null,
+    answered: phase === "question" ? answerProgress(state) : null,
+    reveal: phase === "reveal" && question ? revealView(state, question) : null,
+    leaderboard: scoredPhase ? ranked.slice(0, phase === "leaderboard" ? LEADERBOARD_SIZE : undefined).map(entry) : null,
+    teams: state.settings.teams.enabled && (scoredPhase || phase === "reveal") ? teamStandings(state) : null,
+    podium: phase === "podium" || phase === "ended" ? ranked.slice(0, 3).map(entry) : null,
+    review: phase === "podium" || phase === "ended" ? questionReview(state) : null,
+    hasMoreQuestions: state.questionIndex + 1 < state.plan.length,
+  };
+}
+
+export function playerView(state: GameState, playerId: string, now: number): PlayerView {
+  const player = state.players[playerId]!;
+  const { phase } = state;
+  const question = state.plan[state.questionIndex];
+  const showQuestion = phase === "countdown" || phase === "question" || phase === "reveal";
+  const ownAnswer = state.open?.answers[playerId];
+
+  return {
+    role: "player",
+    phase,
+    playerId,
+    nickname: player.nickname,
+    team: player.team,
+    score: player.score,
+    paused: state.paused !== null,
+    timer: timerView(state, now),
+    question: showQuestion && question ? publicQuestion(state, question, state.settings.showAnswersOnDevice) : null,
+    // The open question stays on state through the reveal, so the player sees what they picked.
+    answer: phase === "question" || phase === "reveal" ? (ownAnswer?.choice ?? null) : null,
+    result: phase === "reveal" || phase === "leaderboard" ? playerResult(state, player) : null,
+    rank: player.rank,
+    playerCount: Object.keys(state.players).length,
+    showAnswersOnDevice: state.settings.showAnswersOnDevice,
+  };
+}
+
+function publicQuestion(state: GameState, question: PlannedQuestion, withText: boolean): PublicQuestion {
+  return {
+    index: state.questionIndex,
+    total: state.plan.length,
+    type: question.type,
+    prompt: question.prompt,
+    media: question.media,
+    // True/false labels are not a secret, so they always show.
+    answers: question.answers.map((text) => ({ text: withText || question.type === "true_false" ? text : null })),
+    timeLimitMs: question.timeLimitMs,
+    points: question.points,
+  };
+}
+
+function timerView(state: GameState, now: number): Timer | null {
+  if (!state.timer) return null;
+  if (state.paused) return { msRemaining: state.paused.remainingMs ?? 0, totalMs: state.timer.totalMs };
+  // During a question the visible countdown ends at the time limit, not at the grace close.
+  const question = state.plan[state.questionIndex];
+  const at = state.phase === "question" && state.open && question ? state.open.openedAt + question.timeLimitMs : state.timer.at;
+  return { msRemaining: Math.max(0, at - now), totalMs: state.timer.totalMs };
+}
+
+function answerProgress(state: GameState): { count: number; total: number } {
+  const answers = state.open?.answers ?? {};
+  const expected = Object.values(state.players).filter((p) => p.connected || answers[p.id]);
+  return { count: expected.filter((p) => answers[p.id]).length, total: expected.length };
+}
+
+function revealView(state: GameState, question: PlannedQuestion): HostView["reveal"] {
+  const record = state.records.at(-1);
+  return {
+    correct: question.correct,
+    counts: record && !record.skipped ? record.counts : question.answers.map(() => 0),
+    explanation: state.settings.explanationSlide ? question.explanation : null,
+  };
+}
+
+function playerResult(state: GameState, player: PlayerState): PlayerResult | null {
+  const record = state.records.at(-1);
+  if (!record || record.index !== state.questionIndex) return null;
+  if (record.skipped) return null;
+  const score = record.results[player.id];
+  if (!score) return null;
+  const ranked = standings(state);
+  const position = ranked.findIndex((p) => p.id === player.id);
+  const above = position > 0 ? ranked[position - 1] : undefined;
+  return {
+    ...score,
+    score: player.score,
+    rank: position + 1,
+    behind: above ? { nickname: above.nickname, points: above.score - player.score } : null,
+  };
+}
+
+function entry(player: PlayerState): LeaderboardEntry {
+  return {
+    playerId: player.id,
+    nickname: player.nickname,
+    score: player.score,
+    rank: player.rank ?? 0,
+    previousRank: player.previousRank,
+    team: player.team,
+  };
+}
+
+/** Rule 10: team score is the members' average (default) or sum. */
+export function teamStandings(state: GameState): TeamEntry[] {
+  const teams = new Map<string, number[]>();
+  for (const p of Object.values(state.players)) {
+    if (!p.team) continue;
+    teams.set(p.team, [...(teams.get(p.team) ?? []), p.score]);
+  }
+  const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
+  return [...teams.entries()]
+    .map(([team, scores]) => ({
+      team,
+      members: scores.length,
+      score: state.settings.teams.scoring === "sum" ? sum(scores) : Math.round(sum(scores) / scores.length),
+    }))
+    .sort((a, b) => b.score - a.score || a.team.localeCompare(b.team))
+    .map((t, i) => ({ ...t, rank: i + 1 }));
+}
+
+/** The teacher's answer review: which questions were missed most. */
+export function questionReview(state: GameState): QuestionReview[] {
+  return state.records.map((record) => {
+    const question = state.plan[record.index]!;
+    const results = Object.values(record.results);
+    const answered = results.filter((r) => r.outcome !== "no_answer").length;
+    const correct = results.filter((r) => r.outcome === "correct").length;
+    return {
+      index: record.index,
+      prompt: question.prompt,
+      type: question.type,
+      correctRate: results.length ? correct / results.length : 0,
+      answeredRate: results.length ? answered / results.length : 0,
+      skipped: record.skipped,
+    };
+  });
+}

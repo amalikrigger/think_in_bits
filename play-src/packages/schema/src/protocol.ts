@@ -68,7 +68,13 @@ export type JoinRejection =
   | "nickname_inappropriate"
   | "unknown_token"
   | "kicked";
-export type CommandRejection = "not_allowed_in_phase" | "unknown_player" | "nickname_taken" | "invalid_settings";
+export type CommandRejection =
+  | "not_allowed_in_phase"
+  | "no_players"
+  | "unknown_player"
+  | "nickname_taken"
+  | "nickname_invalid"
+  | "invalid_settings";
 
 /** A question as players and the projector see it: never carries answer data. */
 export type PublicQuestion = {
@@ -199,6 +205,7 @@ export const REJECTION_TEXT: Record<AnswerRejection | JoinRejection | CommandRej
   unknown_token: "We couldn't find your place in this game. Join again.",
   kicked: "You were removed from this game.",
   not_allowed_in_phase: "That can't be done right now.",
+  no_players: "Wait for at least one player to join.",
   unknown_player: "That player isn't in the game.",
   invalid_settings: "Those settings aren't valid.",
 };
