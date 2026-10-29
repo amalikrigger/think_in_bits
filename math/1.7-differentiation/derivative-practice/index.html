@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Derivative Practice</title>
+  <meta name="description" content="Drill the derivatives you need for Cambridge 9709 Paper 1, with every other derivative as a labeled extra: flashcards, pick the derivative, type it, a 90-second sprint, pop quizzes and a printable derivatives sheet.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+<style>
+/* ============================================================
+   THINK IN BITS · 9709 tool system · Derivative Practice
+   Same tokens as the session decks, mirrored from www.thinkinbits.site.
+   Committed dark, single theme; the derivatives sheet is printed paper.
+   Shares the site's self-hosted KaTeX; everything else is its own.
+   ============================================================ */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-alt: #0f0f0f; --surface-lift: #2a2a2a;
+  --accent: #00e5ff; --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --ok: #4ADE80; --ok-soft: rgba(74,222,128,0.14);
+  --warn: #FF7A6B; --warn-soft: rgba(255,122,107,0.14);
+  --amber: #FFC46B; --amber-soft: rgba(255,196,107,0.12);
+  --violet: #C4A7FF; --violet-soft: rgba(196,167,255,0.12);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5); --shadow-glow: 0 8px 20px rgba(0,229,255,0.3);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 20px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed; min-height: 100vh;
+  color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased;
+  padding: clamp(14px, 3.5vw, 34px); padding-top: clamp(58px, 7vw, 64px); line-height: 1.55;
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+button { font: inherit; cursor: pointer; color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tib-back {
+  position: fixed; top: 14px; left: 16px; z-index: 30;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-family: var(--font); font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.82); border: 1px solid var(--hairline); border-radius: 50px; padding: 7px 15px 7px 12px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: color .15s ease, border-color .15s ease;
+}
+.tib-back:hover { color: var(--accent); border-color: var(--accent-line); }
+
+.kicker { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+h1 { font-family: var(--font); font-weight: 700; font-size: clamp(30px, 6vw, 44px); letter-spacing: -0.02em; line-height: 1.08; margin: 0 0 10px; color: var(--accent); }
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 { background-image: linear-gradient(100deg, var(--text) 0%, var(--accent) 62%, var(--accent-deep) 100%);
+       -webkit-background-clip: text; background-clip: text; color: transparent;
+       padding: 0.18em 0; margin: -0.18em 0 calc(10px - 0.18em); }
+}
+.sub { color: var(--text-2); margin: 0; font-size: 15px; max-width: 660px; }
+header { margin-bottom: 18px; }
+h2 { font-size: 19px; margin: 0 0 6px; }
+h3 { font-size: 15.5px; margin: 0 0 6px; }
+
+.card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius); box-shadow: var(--shadow-card); padding: 18px 20px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.lbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); }
+.muted { color: var(--text-2); }
+.small { font-size: 13.5px; }
+
+/* tier filter */
+.filter { margin: 4px 0 6px; }
+.chip {
+  font-size: 14px; font-weight: 500; color: var(--text-2); background: var(--surface);
+  border: 1px solid var(--hairline-strong); border-radius: 50px; padding: 9px 16px; min-height: 44px;
+}
+.chip[aria-pressed="true"] { color: var(--accent); background: var(--accent-wash); border-color: var(--accent-line); }
+.chip[data-tier="p3"][aria-pressed="true"] { color: var(--amber); background: var(--amber-soft); border-color: rgba(255,196,107,0.4); }
+.chip[data-tier="beyond"][aria-pressed="true"] { color: var(--violet); background: var(--violet-soft); border-color: rgba(196,167,255,0.4); }
+.chip:hover { border-color: var(--accent-line); }
+.chip:disabled { opacity: 0.5; cursor: default; }
+.count { font-family: var(--mono); font-size: 12.5px; color: var(--text-2); margin-top: 6px; }
+
+/* tier tags on cards */
+.tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 50px; padding: 2px 10px; border: 1px solid; }
+.tag.p1 { color: var(--accent); border-color: var(--accent-line); background: var(--accent-wash); }
+.tag.p3 { color: var(--amber); border-color: rgba(255,196,107,0.4); background: var(--amber-soft); }
+.tag.beyond { color: var(--violet); border-color: rgba(196,167,255,0.4); background: var(--violet-soft); }
+
+/* mode tabs */
+.tabs { display: flex; gap: 8px; margin: 14px 0 16px; flex-wrap: wrap; }
+.tab {
+  font-family: var(--font); font-size: 15px; font-weight: 500; color: var(--text-2); background: var(--surface);
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 10px 18px; min-height: 46px;
+}
+.tab[aria-selected="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+.tab.teacher { border-style: dashed; }
+
+/* buttons */
+.go { background: var(--accent); color: var(--ground); border: none; border-radius: 50px; padding: 12px 26px; font-size: 16px; font-weight: 600; min-height: 46px; }
+.go:hover { box-shadow: var(--shadow-glow); }
+.go:disabled { opacity: 0.4; box-shadow: none; cursor: default; }
+.ghost { background: transparent; color: var(--text-2); border: 1px solid var(--hairline-strong); border-radius: 50px; padding: 10px 18px; font-size: 14px; min-height: 44px; }
+.ghost:hover { color: var(--accent); border-color: var(--accent-line); }
+.seg { display: inline-flex; border: 1px solid var(--hairline-strong); border-radius: 50px; overflow: hidden; }
+.seg button { background: transparent; border: none; padding: 9px 14px; font-size: 13.5px; color: var(--text-2); min-height: 44px; }
+.seg button[aria-pressed="true"] { background: var(--accent-wash); color: var(--accent); }
+.kbd { font-family: var(--mono); font-size: 11px; color: var(--text-2); border: 1px solid var(--hairline-strong); border-radius: 6px; padding: 0 5px; margin-left: 6px; }
+.go .kbd { color: rgba(10,10,10,0.7); border-color: rgba(10,10,10,0.35); }
+
+/* question */
+.prompt { text-align: center; margin: 6px 0 14px; }
+.prompt .tagrow { margin-bottom: 8px; }
+.prompt .ask { color: var(--text-2); font-size: 14.5px; margin-bottom: 6px; }
+.prompt .eq { font-size: clamp(21px, 4.4vw, 28px); color: var(--text); overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.ans { text-align: center; font-size: clamp(19px, 4vw, 25px); margin: 6px 0 4px; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+
+/* options */
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px auto 0; max-width: 680px; }
+.opt { position: relative; min-height: 66px; padding: 14px 12px 12px 34px; background: var(--surface-alt); border: 2px solid var(--hairline-strong); border-radius: 14px; font-size: 18px; text-align: center; overflow-x: auto; overflow-y: hidden; }
+.opt:hover { border-color: var(--accent-line); }
+.opt .key { position: absolute; top: 8px; left: 10px; font-family: var(--mono); font-size: 12px; color: var(--text-2); pointer-events: none; }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.wrong { border-color: var(--warn); background: var(--warn-soft); }
+.opt.chosen { border-color: var(--accent); background: var(--accent-wash); }
+.done .opt { cursor: default; }
+
+/* feedback */
+.fb { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: var(--surface-lift); font-size: 14.5px; }
+.fb .v { font-weight: 600; }
+.fb .v.ok { color: var(--ok); } .fb .v.no { color: var(--warn); } .fb .v.hm { color: var(--amber); }
+.fb p { margin: 4px 0 0; }
+.fb .why { color: var(--text-2); }
+.mf { margin-top: 8px; font-size: 13px; color: var(--text-2); }
+.mf b { color: var(--amber); font-weight: 600; }
+.nextrow { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.tally { font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.empty { text-align: center; color: var(--text-2); padding: 18px 8px; }
+
+/* flashcards */
+.flash { min-height: 230px; display: flex; flex-direction: column; justify-content: center; }
+.flash .back { border-top: 1px dashed var(--hairline-strong); margin-top: 10px; padding-top: 10px; }
+.rule { text-align: center; color: var(--text); font-size: 14.5px; margin: 6px auto 0; max-width: 560px; }
+.note { text-align: center; color: var(--text-2); font-size: 13.5px; margin: 6px auto 0; max-width: 560px; }
+.bar { height: 6px; border-radius: 3px; background: var(--surface-lift); overflow: hidden; margin-top: 6px; }
+.bar > span { display: block; height: 100%; background: var(--ok); }
+
+/* type it */
+.typein { display: flex; gap: 8px; align-items: stretch; max-width: 640px; margin: 0 auto; }
+.typein input { flex: 1; min-width: 0; font-family: var(--mono); font-size: 18px; color: var(--text); background: var(--surface-alt); border: 2px solid var(--hairline-strong); border-radius: 14px; padding: 10px 14px; min-height: 52px; }
+.typein input:focus { border-color: var(--accent); outline: none; }
+.preview { max-width: 640px; margin: 8px auto 0; min-height: 50px; padding: 8px 12px; border-radius: 12px; background: var(--surface-alt); border: 1px dashed var(--hairline-strong); text-align: center; font-size: 19px; overflow-x: auto; overflow-y: hidden; }
+.preview .lbl { display: block; text-align: left; margin-bottom: 2px; }
+.preview .pv-err { font-family: var(--font); font-size: 13.5px; color: var(--amber); }
+.preview .pv-empty { font-family: var(--font); font-size: 13.5px; color: var(--text-2); }
+.keys { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 640px; margin: 10px auto 0; }
+.keys button { min-width: 48px; min-height: 44px; padding: 6px 10px; font-family: var(--mono); font-size: 15px; background: var(--surface-lift); border: 1px solid var(--hairline-strong); border-radius: 10px; }
+.keys button:hover { border-color: var(--accent-line); color: var(--accent); }
+.hint { text-align: center; color: var(--text-2); font-size: 13px; margin: 8px auto 0; max-width: 640px; }
+
+/* sprint */
+.clockrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.clocknum { font-family: var(--mono); font-size: 14px; color: var(--text-2); width: 40px; font-variant-numeric: tabular-nums; }
+.track { flex: 1; height: 7px; border-radius: 4px; background: var(--surface-lift); overflow: hidden; }
+.track > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); width: 100%; }
+.track > span.warn { background: var(--warn); }
+.score { font-weight: 700; font-size: 20px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.big { font-size: 48px; font-weight: 700; color: var(--accent); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.misslist { margin: 10px 0 0; padding-left: 0; list-style: none; font-size: 14px; color: var(--text-2); }
+.misslist li { margin: 0; padding: 8px 0; border-bottom: 1px solid var(--hairline); overflow-x: auto; overflow-y: hidden; }
+.misslist li:last-child { border-bottom: none; }
+.center { text-align: center; }
+
+/* forms (quiz, teacher) */
+label.fld { display: block; font-size: 14px; margin: 10px 0 4px; color: var(--text-2); }
+input[type="text"], select, textarea {
+  font-family: var(--font); font-size: 15px; color: var(--text); background: var(--surface-alt);
+  border: 1px solid var(--hairline-strong); border-radius: 12px; padding: 10px 12px; min-height: 44px;
+}
+textarea { width: 100%; font-family: var(--mono); font-size: 13px; min-height: 120px; resize: vertical; }
+input[type="text"].wide { width: 100%; }
+.checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.checks label { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; min-height: 44px; border: 1px solid var(--hairline-strong); border-radius: 12px; font-size: 14px; cursor: pointer; }
+.checks input { width: 18px; height: 18px; accent-color: var(--accent); }
+.spec { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+.spec > div { flex: 1 1 120px; background: var(--surface-lift); border-radius: 14px; padding: 10px 12px; }
+.spec .sv { font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; }
+.spec .sl { font-size: 11.5px; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; }
+.codebox { font-family: var(--mono); font-size: 13px; word-break: break-all; background: var(--surface-alt); border: 1px solid var(--accent-line); border-radius: 12px; padding: 10px 12px; user-select: all; }
+.okmsg { color: var(--ok); font-size: 13.5px; }
+.warnmsg { color: var(--amber); font-size: 13.5px; }
+.qnav { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 0; }
+.qnav button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--hairline-strong); background: var(--surface-alt); font-family: var(--mono); font-size: 12.5px; color: var(--text-2); }
+.qnav button.answered { border-color: var(--accent-line); color: var(--accent); }
+.qnav button.here { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+table.res { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+table.res th, table.res td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+table.res th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-2); font-weight: 500; }
+table.res td.num { font-variant-numeric: tabular-nums; }
+.bad { color: var(--warn); }
+.tablewrap { overflow-x: auto; }
+.rv { display: grid; grid-template-columns: 34px 1fr; gap: 6px 10px; padding: 10px 0; border-bottom: 1px solid var(--hairline); font-size: 14px; }
+.rv:last-child { border-bottom: none; }
+.rv .mark { font-weight: 700; font-size: 18px; text-align: center; }
+.rv .mark.ok { color: var(--ok); } .rv .mark.no { color: var(--warn); }
+.rv .q, .rv .a { overflow-x: auto; overflow-y: hidden; }
+.rv .a { color: var(--text-2); }
+.section { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline); }
+body.nofilter .filter, body.quizmode .tabs, body.quizmode .filter, body.quizmode footer .rs { display: none !important; }
+
+footer { margin: 22px 0 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-2); }
+footer a { color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------------------------------------------- the derivatives sheet (paper) */
+.sheet-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+.paper { background: #fff; color: #111; border-radius: 6px; box-shadow: var(--shadow-card); font-family: var(--font); font-size: 12px; line-height: 1.45; overflow-x: auto; }
+.paper .pg { padding: 30px 34px 22px; }
+.paper .pg + .pg { border-top: 2px dashed #bbb; }
+.paper .hd { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 2px solid #111; padding-bottom: 6px; margin-bottom: 10px; }
+.paper .hd h2 { font-size: 24px; margin: 0; letter-spacing: -0.01em; color: #111; }
+.paper .hd .meta { text-align: right; font-size: 10.5px; color: #333; line-height: 1.35; }
+.paper .hd .meta b { font-size: 11.5px; color: #111; }
+.paper .replaces { display: inline-block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; border: 1.5px solid #111; padding: 1px 7px; margin-top: 3px; }
+.paper .key3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.paper .key3 > div { border: 1px solid #111; padding: 6px 8px; font-size: 10.5px; }
+.paper .key3 b { display: block; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 2px; }
+.paper .key3 .k1 { border-width: 2.5px; }
+.paper .key3 .k3 { border-style: dashed; }
+.paper .sec { margin: 0 0 9px; }
+.paper .sh { display: flex; justify-content: space-between; align-items: baseline; background: #111; color: #fff; padding: 3px 8px; font-weight: 600; font-size: 12px; }
+.paper .sh .tier { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+.paper .sh.t3 { background: #fff; color: #111; border: 1.5px solid #111; }
+.paper .sh.tb { background: #fff; color: #111; border: 1.5px dashed #111; }
+.paper table { width: 100%; border-collapse: collapse; }
+.paper td { padding: 3px 8px; border-bottom: 1px dotted #999; vertical-align: middle; }
+.paper td.nm { width: 24%; font-weight: 500; }
+.paper td.sd { width: 26%; text-align: right; font-size: 10.5px; color: #333; font-style: italic; }
+.paper td.fx { width: 20%; }
+.paper .two td.fx { width: 48%; }
+.paper .mf { display: inline-block; font-family: var(--mono); font-style: normal; font-size: 9px; letter-spacing: 0.05em; border: 1px solid #111; padding: 0 5px; color: #111; margin: 0; }
+.paper .mf.no { background: #111; color: #fff; }
+.paper .say { font-size: 11px; margin: 4px 8px 0; color: #222; }
+.paper .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+.paper .box { border: 1.5px solid #111; padding: 6px 9px; margin: 8px 0; font-size: 11px; }
+.paper .box b { font-size: 11px; }
+.paper .box ol { margin: 3px 0 0; padding-left: 18px; }
+.paper .box li { margin: 1px 0; }
+.paper .ft { font-size: 9.5px; color: #444; text-align: right; border-top: 1px solid #111; padding-top: 4px; margin-top: 8px; }
+.paper .katex { font-size: 1.12em; }
+
+@media (max-width: 640px) {
+  .card { padding: 14px 12px; }
+  .opts { grid-template-columns: 1fr; }
+  .opt { font-size: 16px; min-height: 58px; padding-left: 28px; }
+  .tab { padding: 9px 13px; font-size: 14px; min-height: 44px; }
+  .chip { padding: 8px 12px; font-size: 13px; }
+  .paper .pg { padding: 18px 14px; }
+  .paper .key3, .paper .two { grid-template-columns: 1fr; }
+  .paper .hd { flex-direction: column; align-items: flex-start; }
+  .paper .hd .meta { text-align: left; }
+  .paper td.sd { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+@media print {
+  @page { size: letter; margin: 0.45in 0.5in; }
+  :root { color-scheme: light; }
+  html, body { background: #fff !important; background-image: none !important; color: #111; padding: 0 !important; margin: 0; }
+  .tib-back, header, .filter, .tabs, footer, .tabpanel, .sheet-actions { display: none !important; }
+  .wrap { max-width: none; }
+  #panel-sheet { display: block !important; padding: 0; background: none; border: 0; box-shadow: none; }
+  .paper { box-shadow: none; border-radius: 0; overflow: visible; font-size: 10.6px; line-height: 1.38; }
+  .paper td { padding: 2px 8px; }
+  .paper .say { margin-top: 3px; }
+  .paper .sec { margin-bottom: 7px; }
+  .paper .pg { padding: 0; }
+  .paper .pg + .pg { border-top: 0; break-before: page; page-break-before: always; }
+  .paper .sec, .paper .box, .paper tr { break-inside: avoid; }
+  .paper td.sd { display: table-cell !important; }
+  .paper .key3 { grid-template-columns: repeat(3, 1fr) !important; }
+  .paper .two { grid-template-columns: 1fr 1fr !important; }
+  .paper .hd { flex-direction: row !important; align-items: flex-end !important; }
+  .paper .hd .meta { text-align: right !important; }
+  .paper .sh { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .paper .mf.no { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+<div class="wrap">
+  <header>
+    <div class="kicker">Cambridge 9709 · 1.7 Differentiation</div>
+    <h1>Derivative Practice</h1>
+    <p class="sub">The derivatives you need for Paper 1, until they are automatic. Every other derivative is here too as a labeled extra, so you can learn them all.</p>
+  </header>
+
+  <div class="filter">
+    <div class="row" role="group" aria-label="Which derivatives" id="tiers"></div>
+    <div class="count" id="count" aria-live="polite"></div>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Modes" id="tabs">
+    <button class="tab" role="tab" id="tab-flash" aria-controls="panel-flash" aria-selected="true" type="button" data-tab="flash">Flashcards</button>
+    <button class="tab" role="tab" id="tab-pick" aria-controls="panel-pick" aria-selected="false" type="button" data-tab="pick">Pick the derivative</button>
+    <button class="tab" role="tab" id="tab-type" aria-controls="panel-type" aria-selected="false" type="button" data-tab="type">Type it</button>
+    <button class="tab" role="tab" id="tab-sprint" aria-controls="panel-sprint" aria-selected="false" type="button" data-tab="sprint">Sprint</button>
+    <button class="tab" role="tab" id="tab-quiz" aria-controls="panel-quiz" aria-selected="false" type="button" data-tab="quiz">Pop quiz</button>
+    <button class="tab" role="tab" id="tab-sheet" aria-controls="panel-sheet" aria-selected="false" type="button" data-tab="sheet">The sheet</button>
+    <button class="tab teacher" role="tab" id="tab-teacher" aria-controls="panel-teacher" aria-selected="false" type="button" data-tab="teacher" hidden>Teacher</button>
+  </div>
+
+  <section class="tabpanel card" id="panel-flash" role="tabpanel" aria-labelledby="tab-flash"><div id="flashBody"></div></section>
+  <section class="tabpanel card" id="panel-pick" role="tabpanel" aria-labelledby="tab-pick" hidden><div id="pickBody"></div></section>
+  <section class="tabpanel card" id="panel-type" role="tabpanel" aria-labelledby="tab-type" hidden><div id="typeBody"></div></section>
+  <section class="tabpanel card" id="panel-sprint" role="tabpanel" aria-labelledby="tab-sprint" hidden><div id="sprintBody"></div></section>
+  <section class="tabpanel card" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden><div id="quizBody"></div></section>
+  <section class="tabpanel" id="panel-sheet" role="tabpanel" aria-labelledby="tab-sheet" hidden>
+    <div class="sheet-actions">
+      <button type="button" class="go" id="printBtn">Print the sheet</button>
+      <span class="muted small">Two pages, US Letter. It replaces the Sep 14 sheet.</span>
+    </div>
+    <div class="paper" id="sheet">
+  <div class="pg">
+    <div class="hd">
+      <div><div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase">AS &amp; A Level Mathematics 9709 · topic 1.7</div><h2>Derivatives: the rules</h2></div>
+      <div class="meta"><b>Ms. Krigger</b> · Good Hope Country Day School<br>Page 1 of 2 · keep this in your folder all year<br><span class="replaces">Replaces the Sep 14 sheet</span></div>
+    </div>
+    <div class="key3">
+      <div class="k1"><b>Paper 1: you need these</b>Syllabus 1.7. All of it can be on your exam. Learn this page first.</div>
+      <div class="k2"><b>Paper 3 extra</b>Syllabus 3.4, for Paper 3 at full A Level. Paper 1 does not ask for these.</div>
+      <div class="k3"><b>Beyond 9709 extra</b>Outside the 9709 syllabus. For depth, and for the calculus you meet after this course.</div>
+    </div>
+
+    <div class="sec">
+      <div class="sh"><span>1 · What a derivative is</span><span class="tier">Paper 1 · understand it</span></div>
+      <table>
+        <tr><td class="nm">The idea</td><td colspan="2"><span data-t="f'(x) = \lim_{h \to 0} \dfrac{f(x+h) − f(x)}{h}"></span></td><td class="sd">gradient of a chord, as the chord shrinks</td></tr>
+        <tr><td class="nm">Notation</td><td colspan="2">first derivative <span data-t="f'(x),\ \dfrac{dy}{dx}"></span> &nbsp; second derivative <span data-t="f''(x),\ \dfrac{d^2y}{dx^2}"></span></td><td class="sd">the gradient function, then differentiate again</td></tr>
+      </table>
+      <p class="say"><b>In words:</b> the derivative is the gradient of the curve at one point. Take the chord between two points on the curve and slide the second point in toward the first; the chord’s gradient settles on the gradient of the curve. Cambridge expects an informal understanding of this. You will not be asked to differentiate from first principles. Cambridge uses all four symbols, so learn to read all of them.</p>
+    </div>
+
+    <div class="sec">
+      <div class="sh"><span>2 · The rules everything is built from</span><span class="tier">Paper 1</span></div>
+      <table>
+        <tr><td class="nm">Constant</td><td colspan="2"><span data-t="\dfrac{d}{dx}(c) = 0"></span></td><td class="sd">a flat line has no gradient</td></tr>
+        <tr><td class="nm">Constant multiple</td><td colspan="2"><span data-t="\big(c\,f(x)\big)' = c\,f'(x)"></span></td><td class="sd">the number comes along</td></tr>
+        <tr><td class="nm">Sum and difference</td><td colspan="2"><span data-t="\big(f(x) \pm g(x)\big)' = f'(x) \pm g'(x)"></span></td><td class="sd">term by term</td></tr>
+        <tr><td class="nm">Power rule</td><td colspan="2"><span data-t="\dfrac{d}{dx}(x^n) = nx^{n−1}"></span> &nbsp;<span class="mf">On MF19 p.3</span></td><td class="sd">any rational n</td></tr>
+        <tr><td class="nm">Chain rule</td><td colspan="2"><span data-t="\dfrac{dy}{dx} = \dfrac{dy}{du} \times \dfrac{du}{dx}"></span> &nbsp;<span class="mf no">Not on MF19</span></td><td class="sd">outside, then inside</td></tr>
+        <tr><td class="nm">The one you will use most</td><td colspan="2"><span data-t="\dfrac{d}{dx}\big[f(x)\big]^n = n\big[f(x)\big]^{n−1} f'(x)"></span></td><td class="sd">power rule and chain rule together</td></tr>
+      </table>
+      <p class="say"><b>MF19 page 3</b> prints the power rule as the first row of its table. It does not print the chain rule, so the chain rule is the one to memorize. Say it in words: bring the power down, take one off it, then multiply by the derivative of the inside.</p>
+    </div>
+
+    <div class="sec">
+      <div class="sh"><span>3 · Powers and roots: rewrite, then differentiate</span><span class="tier">Paper 1</span></div>
+      <div class="two">
+        <table>
+          <tr><td class="fx"><span data-t="x"></span></td><td><span data-t="1"></span></td></tr>
+          <tr><td class="fx"><span data-t="x^2"></span></td><td><span data-t="2x"></span></td></tr>
+          <tr><td class="fx"><span data-t="x^3"></span></td><td><span data-t="3x^2"></span></td></tr>
+          <tr><td class="fx"><span data-t="(ax+b)^n"></span></td><td><span data-t="an(ax+b)^{n−1}"></span></td></tr>
+        </table>
+        <table>
+          <tr><td class="fx"><span data-t="\sqrt{x} = x^{\frac12}"></span></td><td><span data-t="\tfrac12 x^{−\frac12} = \dfrac{1}{2\sqrt{x}}"></span></td></tr>
+          <tr><td class="fx"><span data-t="\dfrac1x = x^{−1}"></span></td><td><span data-t="−x^{−2} = −\dfrac{1}{x^2}"></span></td></tr>
+          <tr><td class="fx"><span data-t="\dfrac1{x^2} = x^{−2}"></span></td><td><span data-t="−2x^{−3} = −\dfrac{2}{x^3}"></span></td></tr>
+          <tr><td class="fx"><span data-t="\dfrac{5}{2x^4} = \tfrac52 x^{−4}"></span></td><td><span data-t="−10x^{−5}"></span></td></tr>
+        </table>
+      </div>
+      <p class="say">Every one of these is the power rule. Rewrite roots and fractions as powers first, and watch the denominator: in 5/(2x⁴) the 2 stays on the bottom, so it becomes ⁵⁄₂x⁻⁴. For a negative power, taking one off goes further from zero: −2 − 1 = −3.</p>
+    </div>
+
+    <div class="sec">
+      <div class="sh"><span>4 · What you use it for</span><span class="tier">Paper 1</span></div>
+      <table>
+        <tr><td class="nm">Gradient at a point</td><td colspan="2">Substitute the x-value into dy/dx.</td><td class="sd">a number from dy/dx</td></tr>
+        <tr><td class="nm">Tangent and normal</td><td colspan="2"><span data-t="y − y_1 = m(x − x_1)"></span>, with tangent gradient <span data-t="m"></span> and normal gradient <span data-t="−\tfrac{1}{m}"></span></td><td class="sd">normal: perpendicular</td></tr>
+        <tr><td class="nm">Increasing, decreasing</td><td colspan="2">Increasing where <span data-t="\tfrac{dy}{dx} &gt; 0"></span>, decreasing where <span data-t="\tfrac{dy}{dx} &lt; 0"></span></td><td class="sd"></td></tr>
+        <tr><td class="nm">Stationary points</td><td colspan="2"><span data-t="\tfrac{dy}{dx} = 0"></span>. Then <span data-t="\tfrac{d^2y}{dx^2} &gt; 0"></span> minimum, <span data-t="\tfrac{d^2y}{dx^2} &lt; 0"></span> maximum</td><td class="sd">points of inflexion are not in Paper 1</td></tr>
+        <tr><td class="nm">Connected rates of change</td><td colspan="2"><span data-t="\dfrac{dA}{dt} = \dfrac{dA}{dr} \times \dfrac{dr}{dt}"></span></td><td class="sd">the chain rule again</td></tr>
+      </table>
+    </div>
+
+    <div class="ft">9709 Paper 1 · topic 1.7 Differentiation · sources: 9709 syllabus for 2026–2027 (1.7 and 3.4) and MF19</div>
+  </div>
+
+  <div class="pg">
+    <div class="hd">
+      <div><div style="font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase">AS &amp; A Level Mathematics 9709 · topic 1.7</div><h2>Derivatives: the extras</h2></div>
+      <div class="meta"><b>Ms. Krigger</b> · Good Hope Country Day School<br>Page 2 of 2<br><span class="replaces">Replaces the Sep 14 sheet</span></div>
+    </div>
+
+    <div class="sec">
+      <div class="sh t3"><span>5 · Exponential, logarithm and trig</span><span class="tier">Paper 3 extra · on MF19 p.3</span></div>
+      <div class="two">
+        <table>
+          <tr><td class="fx"><span data-t="e^x"></span></td><td><span data-t="e^x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\ln x"></span></td><td><span data-t="\dfrac1x \quad (x &gt; 0)"></span></td></tr>
+          <tr><td class="fx"><span data-t="\tan^{−1} x"></span></td><td><span data-t="\dfrac{1}{1+x^2}"></span></td></tr>
+        </table>
+        <table>
+          <tr><td class="fx"><span data-t="\sin x"></span></td><td><span data-t="\cos x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\cos x"></span></td><td><span data-t="−\sin x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\tan x"></span></td><td><span data-t="\sec^2 x"></span></td></tr>
+        </table>
+      </div>
+      <p class="say">x must be in radians. With the chain rule: <span data-t="e^{f(x)} \to f'(x)e^{f(x)}"></span>, &nbsp;<span data-t="\ln f(x) \to \dfrac{f'(x)}{f(x)}"></span>, &nbsp;<span data-t="\sin f(x) \to f'(x)\cos f(x)"></span>. It is one fact used again and again: differentiate the outside, keep the inside, multiply by the derivative of the inside.</p>
+    </div>
+
+    <div class="sec">
+      <div class="sh t3"><span>6 · Products, quotients, parametric and implicit</span><span class="tier">Paper 3 extra · on MF19 p.3</span></div>
+      <table>
+        <tr><td class="nm">Product rule</td><td colspan="2"><span data-t="\dfrac{d}{dx}(uv) = v\dfrac{du}{dx} + u\dfrac{dv}{dx}"></span></td><td class="sd">both, one at a time</td></tr>
+        <tr><td class="nm">Quotient rule</td><td colspan="2"><span data-t="\dfrac{d}{dx}\left(\dfrac{u}{v}\right) = \dfrac{v\dfrac{du}{dx} − u\dfrac{dv}{dx}}{v^2}"></span></td><td class="sd">order matters: the minus sign</td></tr>
+        <tr><td class="nm">Parametric</td><td colspan="2">If <span data-t="x = f(t)"></span> and <span data-t="y = g(t)"></span>, then <span data-t="\dfrac{dy}{dx} = \dfrac{dy}{dt} \div \dfrac{dx}{dt}"></span></td><td class="sd"></td></tr>
+        <tr><td class="nm">Implicit</td><td colspan="2">Differentiate every term with respect to x: <span data-t="\dfrac{d}{dx}(y^2) = 2y\dfrac{dy}{dx}"></span></td><td class="sd">then make dy/dx the subject</td></tr>
+      </table>
+      <p class="say">Before reaching for the product or quotient rule, check whether you can multiply out or split the fraction. In Paper 1 you always can, and the power rule finishes it.</p>
+    </div>
+
+    <div class="sec">
+      <div class="sh tb"><span>7 · Beyond 9709</span><span class="tier">extra · not examined in 9709</span></div>
+      <div class="two">
+        <table>
+          <tr><td class="fx"><span data-t="\sec x"></span></td><td><span data-t="\sec x \tan x"></span> &nbsp;<span class="mf">MF19 p.3</span></td></tr>
+          <tr><td class="fx"><span data-t="\operatorname{cosec} x"></span></td><td><span data-t="−\operatorname{cosec} x \cot x"></span> &nbsp;<span class="mf">MF19 p.3</span></td></tr>
+          <tr><td class="fx"><span data-t="\cot x"></span></td><td><span data-t="−\operatorname{cosec}^2 x"></span> &nbsp;<span class="mf">MF19 p.3</span></td></tr>
+          <tr><td class="fx"><span data-t="\sin^{−1} x"></span></td><td><span data-t="\dfrac{1}{\sqrt{1−x^2}}"></span></td></tr>
+          <tr><td class="fx"><span data-t="\cos^{−1} x"></span></td><td><span data-t="−\dfrac{1}{\sqrt{1−x^2}}"></span></td></tr>
+          <tr><td class="fx"><span data-t="a^x"></span></td><td><span data-t="a^x \ln a"></span></td></tr>
+          <tr><td class="fx"><span data-t="\log_a x"></span></td><td><span data-t="\dfrac{1}{x \ln a}"></span></td></tr>
+        </table>
+        <table>
+          <tr><td class="fx"><span data-t="\sinh x"></span></td><td><span data-t="\cosh x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\cosh x"></span></td><td><span data-t="\sinh x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\tanh x"></span></td><td><span data-t="\operatorname{sech}^2 x"></span></td></tr>
+          <tr><td class="fx"><span data-t="\sinh^{−1} x"></span></td><td><span data-t="\dfrac{1}{\sqrt{1+x^2}}"></span></td></tr>
+          <tr><td class="fx"><span data-t="\cosh^{−1} x"></span></td><td><span data-t="\dfrac{1}{\sqrt{x^2−1}} \quad (x &gt; 1)"></span></td></tr>
+          <tr><td class="fx"><span data-t="\tanh^{−1} x"></span></td><td><span data-t="\dfrac{1}{1−x^2} \quad (|x| &lt; 1)"></span></td></tr>
+        </table>
+      </div>
+      <p class="say">sec, cosec and cot are printed on MF19 p.3 but are not in the 9709 syllabus. The pattern that makes them easy: every function starting with “co” picks up a minus sign. The inverse trig and hyperbolic derivatives are printed on MF19 p.6, in the Further Mathematics section. eˣ is the one function that is its own derivative: its gradient at every point equals its height there.</p>
+    </div>
+
+    <div class="box"><b>What changed from the Sep 14 sheet.</b> If you still have it, these are the three corrections.
+      <ol>
+        <li>It said MF19 does not give the power rule. It does: <span data-t="x^n \to nx^{n−1}"></span> is the first row of the table on MF19 p.3. The chain rule is the one MF19 leaves out.</li>
+        <li>It put the limit definition under “memorize”. Paper 1 asks you to understand the idea informally, and you will not be asked to differentiate from first principles.</li>
+        <li>It listed the product and quotient rules as Paper 1. They are syllabus 3.4, so they are now a Paper 3 extra (section 6).</li>
+      </ol>
+    </div>
+    <div class="box"><b>How to learn these.</b> Page 1, sections 2 and 3 first, until they are automatic. Write them from memory on a blank page every day for a week; reading feels like learning, and writing is what sticks. Say each rule in words before you use the symbols. Then test yourself backwards: cover the right-hand column and read the left, then cover the left. The Derivative Practice tool on the class site drills exactly this.</div>
+    <div class="box"><b>Self-test.</b> Cover the right-hand columns and write these from memory: the four notations, the constant, multiple and sum rules, the power rule, the chain rule in both forms, the derivatives of √x, 1/x, 1/x² and (ax + b)ⁿ. The first page pays; this page is for later.</div>
+    <div class="ft">9709 · topic 1.7 Differentiation · sources: 9709 syllabus for 2026–2027 (1.7 and 3.4) and MF19 pages 3 and 6</div>
+  </div>
+</div>
+
+  </section>
+  <section class="tabpanel card" id="panel-teacher" role="tabpanel" aria-labelledby="tab-teacher" hidden><div id="teacherBody"></div></section>
+
+  <footer>
+    <span id="keyhelp">Keys: <span class="kbd">1</span>–<span class="kbd">4</span> pick · <span class="kbd">Enter</span> check or next.</span>
+    <span class="rs"><span id="storeNote" class="small"></span> <button type="button" class="ghost" id="resetBtn">Start over</button></span>
+  </footer>
+</div>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script>
+/* Derivative Practice: a small math parser written for this page.
+   Reads what a student types (or a bank string), and can evaluate it,
+   render it as TeX, or write it out for sympy (build-time checks only).
+   Grammar, loosest to tightest:
+     sum      := product (('+' | '−') product)*
+     product  := unary (('*' | '/' | implicit) unary)*      left to right, so 1/2x is ½x
+     unary    := ('−' | '+') unary | power                   so −x² is −(x²)
+     power    := postfix ('^' unary)?                         right-associative, x^−2 allowed
+     postfix  := atom
+     atom     := number | x | y | t | e | π | (sum) | [sum] | func arg | √ atom | |sum|
+   A function's argument is a bracket, or else a run of number / letter / power
+   factors with no space-separated operator: sin 2x is sin(2x).                       */
+(function (root) {
+  'use strict';
+  var FUNCS = {
+    sin: 'sin', cos: 'cos', tan: 'tan', sec: 'sec', cosec: 'csc', csc: 'csc', cot: 'cot',
+    arcsin: 'asin', arccos: 'acos', arctan: 'atan', asin: 'asin', acos: 'acos', atan: 'atan',
+    acot: 'acot', asec: 'asec', acsc: 'acsc', arccot: 'acot', arcsec: 'asec', arccosec: 'acsc',
+    sinh: 'sinh', cosh: 'cosh', tanh: 'tanh', sech: 'sech', cosech: 'csch', csch: 'csch', coth: 'coth',
+    arsinh: 'asinh', arcosh: 'acosh', artanh: 'atanh', asinh: 'asinh', acosh: 'acosh', atanh: 'atanh',
+    arcsinh: 'asinh', arccosh: 'acosh', arctanh: 'atanh',
+    ln: 'ln', log: 'ln', sqrt: 'sqrt', exp: 'exp'
+  };
+  var INV = { sin: 'asin', cos: 'acos', tan: 'atan', cot: 'acot', sec: 'asec', csc: 'acsc',
+              sinh: 'asinh', cosh: 'acosh', tanh: 'atanh' };
+  var NAMES = Object.keys(FUNCS).sort(function (a, b) { return b.length - a.length; });
+  var VARS = { x: 1, y: 1, t: 1 };
+
+  function PErr(msg, pos) { this.msg = msg; this.pos = pos; }
+
+  /* ------------------------------------------------------------ tokens */
+  function clean(s) {
+    s = String(s);
+    var sup = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '−', '⁄': '/' };
+    s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, function (m) {
+      return '^(' + m.split('').map(function (c) { return sup[c]; }).join('') + ')';
+    });
+    s = s.replace(/½/g, '(1/2)').replace(/⅓/g, '(1/3)').replace(/¼/g, '(1/4)').replace(/¾/g, '(3/4)').replace(/⅔/g, '(2/3)');
+    s = s.replace(/[\u2212\u2012\u2013\u2014\u2010\uFE63\uFF0D]/g, '-').replace(/[×·∙⋅]/g, '*').replace(/÷/g, '/')
+         .replace(/\*\*/g, '^').replace(/π/g, 'pi').replace(/ /g, ' ').replace(/[{]/g, '(').replace(/[}]/g, ')');
+    // strip a leading "dy/dx =", "f'(x) =", "y' =", "d2y/dx2 =" or "="
+    s = s.replace(/^\s*(d\^?2?y\s*\/\s*dx\^?2?|f\s*['′″]+\s*\(\s*x\s*\)|y\s*['′″]+|dy\/dt)\s*=\s*/i, '');
+    s = s.replace(/^\s*=\s*/, '');
+    return s.toLowerCase();
+  }
+  function tokenize(src) {
+    var s = clean(src), i = 0, out = [];
+    while (i < s.length) {
+      var c = s[i];
+      if (c === ' ' || c === '\t' || c === '\n') { out.push({ t: 'sp', p: i }); i++; continue; }
+      if (/[0-9.]/.test(c)) {
+        var j = i; while (j < s.length && /[0-9.]/.test(s[j])) j++;
+        var str = s.slice(i, j);
+        if ((str.match(/\./g) || []).length > 1 || str === '.') throw new PErr('That number has too many decimal points.', i);
+        out.push({ t: 'num', v: parseFloat(str), s: str, p: i }); i = j; continue;
+      }
+      if ('+-*/^()[]|,'.indexOf(c) >= 0) { out.push({ t: c, p: i }); i++; continue; }
+      if (c === '√') { out.push({ t: 'fn', v: 'sqrt', p: i }); i++; continue; }
+      if (/[a-z]/.test(c)) {
+        if (s.slice(i, i + 4) === 'log_') {
+          var k = i + 4, b = '';
+          while (k < s.length && /[0-9.]/.test(s[k])) { b += s[k]; k++; }
+          if (!b) throw new PErr('Write log base 2 as log_2(x).', i);
+          out.push({ t: 'fn', v: 'logb', base: parseFloat(b), p: i }); i = k; continue;
+        }
+        var hit = null;
+        for (var n = 0; n < NAMES.length; n++) if (s.slice(i, i + NAMES[n].length) === NAMES[n]) { hit = NAMES[n]; break; }
+        if (hit) { out.push({ t: 'fn', v: FUNCS[hit], p: i }); i += hit.length; continue; }
+        if (s.slice(i, i + 2) === 'pi') { out.push({ t: 'const', v: 'pi', p: i }); i += 2; continue; }
+        if (c === 'e') { out.push({ t: 'const', v: 'e', p: i }); i++; continue; }
+        if (VARS[c]) { out.push({ t: 'var', v: c, p: i }); i++; continue; }
+        throw new PErr('“' + c + '” is not something this checker reads. Use x' + (c === 'd' ? ' (leave out dy/dx)' : '') + '.', i);
+      }
+      throw new PErr('“' + c + '” is not something this checker reads.', i);
+    }
+    return out;
+  }
+
+  /* ------------------------------------------------------------ parser */
+  function parse(src) {
+    var all = tokenize(src);
+    var opens = all.filter(function (k) { return k.t === '(' || k.t === '['; }).length;
+    var closes = all.filter(function (k) { return k.t === ')' || k.t === ']'; }).length;
+    try { return parseTokens(all); }
+    catch (e) {
+      if (e instanceof PErr && opens > closes) throw new PErr('Check your brackets: a “)” is missing.', e.pos);
+      if (e instanceof PErr && closes > opens && !/bracket/.test(e.msg)) throw new PErr('Check your brackets: there is an extra “)”.', e.pos);
+      throw e;
+    }
+  }
+  function parseTokens(all) {
+    if (!all.some(function (k) { return k.t !== 'sp'; })) throw new PErr('Type an answer first.', 0);
+    var toks = all.filter(function (k) { return k.t !== 'sp'; });
+    // remember where spaces were, for "sin x + 1" vs "sin x+1" (both mean (sin x) + 1 anyway)
+    var i = 0;
+    function peek() { return toks[i]; }
+    function eat(t) { var k = toks[i]; if (!k || k.t !== t) throw new PErr(t === ')' ? 'Check your brackets: a “)” is missing.' : 'Something is missing near the end.', k ? k.p : -1); i++; return k; }
+    function startsAtom(k) { return k && (k.t === 'num' || k.t === 'var' || k.t === 'const' || k.t === '(' || k.t === '[' || k.t === 'fn' || k.t === '|'); }
+
+    function sum() {
+      var a = product();
+      while (peek() && (peek().t === '+' || peek().t === '-')) {
+        var op = toks[i++].t, b = product();
+        a = { k: op === '+' ? 'add' : 'sub', a: a, b: b };
+      }
+      return a;
+    }
+    function product() {
+      var a = unary();
+      for (;;) {
+        var k = peek();
+        if (k && (k.t === '*' || k.t === '/')) { i++; var b = unary(); a = { k: k.t === '*' ? 'mul' : 'div', a: a, b: b }; continue; }
+        if (startsAtom(k) && !(k.t === '|' && inAbs > 0)) { var c = power(); a = { k: 'mul', a: a, b: c, imp: true }; continue; }
+        return a;
+      }
+    }
+    function unary() {
+      var k = peek();
+      if (k && k.t === '-') { i++; return { k: 'neg', a: unary() }; }
+      if (k && k.t === '+') { i++; return unary(); }
+      return power();
+    }
+    function power() {
+      var b = atom();
+      if (peek() && peek().t === '^') {
+        i++;
+        if (!peek()) throw new PErr('A power needs something after the ^.', -1);
+        var e = unary();
+        return { k: 'pow', a: b, b: e };
+      }
+      return b;
+    }
+    var inAbs = 0;
+    function fnArg() {
+      var k = peek();
+      if (!k) throw new PErr('A function needs something to act on, like sin(x).', -1);
+      if (k.t === '(' || k.t === '[') return atom();
+      // no bracket: a run of tight factors, e.g. sin 2x, ln x, cos x^2
+      var a = power();
+      while (peek() && (peek().t === 'num' || peek().t === 'var' || peek().t === 'const')) {
+        a = { k: 'mul', a: a, b: power(), imp: true };
+      }
+      return a;
+    }
+    function atom() {
+      var k = peek();
+      if (!k) throw new PErr('Something is missing at the end.', -1);
+      if (k.t === 'num') { i++; return { k: 'num', v: k.v, s: k.s }; }
+      if (k.t === 'var') { i++; return { k: 'var', v: k.v }; }
+      if (k.t === 'const') { i++; return { k: 'const', v: k.v }; }
+      if (k.t === '(' || k.t === '[') {
+        i++; var inner = sum(); eat(k.t === '(' ? ')' : ']'); return { k: 'grp', a: inner };
+      }
+      if (k.t === '|') { i++; inAbs++; var ab = sum(); inAbs--; eat('|'); return { k: 'fn', f: 'abs', a: ab }; }
+      if (k.t === 'fn') {
+        i++;
+        var f = k.v, p = null;
+        if (f === 'logb') return { k: 'fn', f: 'logb', base: k.base, a: fnArg() };
+        if (f === 'sqrt') return { k: 'fn', f: 'sqrt', a: f === 'sqrt' && peek() && peek().t !== '(' && peek().t !== '[' ? atomOnly() : fnArg() };
+        if (peek() && peek().t === '^') {        // sin^2 x, sin^-1 x
+          i++;
+          var neg = false;
+          if (peek() && peek().t === '-') { neg = true; i++; }
+          var pk = peek();
+          if (!pk || pk.t !== 'num') throw new PErr('Write powers of functions like sin^2(x) or (sin x)^2.', pk ? pk.p : -1);
+          i++;
+          if (neg && pk.v === 1) {
+            if (!INV[f]) throw new PErr('This checker does not read that inverse function.', pk.p);
+            return { k: 'fn', f: INV[f], a: fnArg() };
+          }
+          p = { k: 'num', v: neg ? -pk.v : pk.v, s: (neg ? '-' : '') + pk.s };
+        }
+        var node = { k: 'fn', f: f, a: fnArg() };
+        if (p) node = { k: 'pow', a: node, b: p, fpow: true };
+        return node;
+      }
+      if (k.t === ')' || k.t === ']') throw new PErr('Check your brackets: there is an extra “' + k.t + '”.', k.p);
+      if (k.t === '^') throw new PErr('A ^ needs something in front of it.', k.p);
+      throw new PErr('Something is missing before “' + k.t + '”.', k.p);
+    }
+    function atomOnly() {          // √x, √2, √(…) : the root covers one atom, then powers apply outside
+      var k = peek();
+      if (k && (k.t === 'num' || k.t === 'var' || k.t === 'const')) { i++; return k.t === 'num' ? { k: 'num', v: k.v, s: k.s } : { k: k.t, v: k.v }; }
+      return atom();
+    }
+    var tree = sum();
+    if (i < toks.length) {
+      var k = toks[i];
+      if (k.t === ')' || k.t === ']') throw new PErr('Check your brackets: there is an extra “' + k.t + '”.', k.p);
+      throw new PErr('Something does not fit near “' + (k.s || k.v || k.t) + '”.', k.p);
+    }
+    return tree;
+  }
+
+  /* ------------------------------------------------------------ evaluate */
+  var F = {
+    sin: Math.sin, cos: Math.cos, tan: Math.tan,
+    sec: function (u) { return 1 / Math.cos(u); }, csc: function (u) { return 1 / Math.sin(u); }, cot: function (u) { return Math.cos(u) / Math.sin(u); },
+    asin: Math.asin, acos: Math.acos, atan: Math.atan,
+    acot: function (u) { return Math.atan(1 / u); }, asec: function (u) { return Math.acos(1 / u); }, acsc: function (u) { return Math.asin(1 / u); },
+    sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+    sech: function (u) { return 1 / Math.cosh(u); }, csch: function (u) { return 1 / Math.sinh(u); }, coth: function (u) { return Math.cosh(u) / Math.sinh(u); },
+    asinh: Math.asinh, acosh: Math.acosh, atanh: Math.atanh,
+    ln: function (u) { return u > 0 ? Math.log(u) : NaN; }, sqrt: function (u) { return u >= 0 ? Math.sqrt(u) : NaN; },
+    exp: Math.exp, abs: Math.abs
+  };
+  function pw(b, e) {
+    if (b < 0 && Math.abs(e - Math.round(e)) > 1e-12) {
+      // odd-denominator roots of negatives (x^(1/3) at x < 0) are real
+      for (var q = 3; q <= 15; q += 2) {
+        var pq = e * q;
+        if (Math.abs(pq - Math.round(pq)) < 1e-9) {
+          var r = Math.pow(-b, e);
+          return Math.round(pq) % 2 === 0 ? r : -r;
+        }
+      }
+      return NaN;
+    }
+    return Math.pow(b, e);
+  }
+  function ev(n, env) {
+    switch (n.k) {
+      case 'num': return n.v;
+      case 'var': return env[n.v];
+      case 'const': return n.v === 'e' ? Math.E : Math.PI;
+      case 'grp': return ev(n.a, env);
+      case 'neg': return -ev(n.a, env);
+      case 'add': return ev(n.a, env) + ev(n.b, env);
+      case 'sub': return ev(n.a, env) - ev(n.b, env);
+      case 'mul': return ev(n.a, env) * ev(n.b, env);
+      case 'div': return ev(n.a, env) / ev(n.b, env);
+      case 'pow': return pw(ev(n.a, env), ev(n.b, env));
+      case 'fn':
+        if (n.f === 'logb') { var u = ev(n.a, env); return u > 0 ? Math.log(u) / Math.log(n.base) : NaN; }
+        return F[n.f](ev(n.a, env));
+    }
+    return NaN;
+  }
+  function vars(n, acc) {
+    acc = acc || {};
+    if (!n) return acc;
+    if (n.k === 'var') acc[n.v] = 1;
+    vars(n.a, acc); vars(n.b, acc);
+    return acc;
+  }
+
+  /* ------------------------------------------------------------ TeX */
+  var TEXF = { sin: '\\sin', cos: '\\cos', tan: '\\tan', sec: '\\sec', csc: '\\operatorname{cosec}', cot: '\\cot',
+    asin: '\\sin^{-1}', acos: '\\cos^{-1}', atan: '\\tan^{-1}', acot: '\\cot^{-1}', asec: '\\sec^{-1}', acsc: '\\operatorname{cosec}^{-1}',
+    sinh: '\\sinh', cosh: '\\cosh', tanh: '\\tanh', sech: '\\operatorname{sech}', csch: '\\operatorname{cosech}', coth: '\\coth',
+    asinh: '\\sinh^{-1}', acosh: '\\cosh^{-1}', atanh: '\\tanh^{-1}', ln: '\\ln', exp: '\\exp' };
+  var MINUS = '−';
+  function strip(n) { while (n && n.k === 'grp') n = n.a; return n; }
+  function isSimpleArg(n) {    // what can follow sin without brackets: x, 2x, x^2, 3x^2
+    n = strip(n);
+    if (n.k === 'var' || n.k === 'num') return true;
+    if (n.k === 'mul') return (n.a.k === 'num' || n.a.k === 'const') && isSimpleArg(n.b) && n.b.k !== 'mul';
+    return false;
+  }
+  function leadsNeg(n) { n = n; return n.k === 'neg' || (n.k === 'num' && n.v < 0); }
+  function needsParenInProduct(n) { var s = n; return s.k === 'add' || s.k === 'sub' || s.k === 'neg'; }
+  function startsWithDigit(tex) { return /^[0-9.]/.test(tex); }
+  function endsWithDigit(tex) { return /[0-9.]$/.test(tex) || /\\frac\{[^}]*\}\{[^}]*\}$/.test(tex); }
+  function paren(t) { return /\\d?frac|\\sqrt|\\int|\\sum/.test(t) ? '\\left(' + t + '\\right)' : '(' + t + ')'; }
+  function tex(n, ctx) {
+    ctx = ctx || '';
+    switch (n.k) {
+      case 'num': return n.s || String(n.v);
+      case 'var': return n.v;
+      case 'const': return n.v === 'e' ? 'e' : '\\pi';
+      case 'grp':
+        if (ctx === 'top' || ctx === 'frac' || ctx === 'exp' || ctx === 'root' || ctx === 'arg') return tex(n.a, ctx);
+        return paren(tex(n.a));
+      case 'neg': {
+        var inner = n.a.k === 'add' || n.a.k === 'sub' ? paren(tex(n.a)) : tex(n.a, 'neg');
+        return MINUS + inner;
+      }
+      case 'add': return tex(n.a, 'sum') + ' + ' + tex(n.b, 'sum');
+      case 'sub': {
+        var r = n.b.k === 'add' || n.b.k === 'sub' ? paren(tex(n.b)) : tex(n.b, 'sum');
+        return tex(n.a, 'sum') + ' ' + MINUS + ' ' + r;
+      }
+      case 'div':
+        if (n.a.k === 'neg') return MINUS + '\\frac{' + tex(n.a.a, 'frac') + '}{' + tex(n.b, 'frac') + '}';
+        return '\\frac{' + tex(n.a, 'frac') + '}{' + tex(n.b, 'frac') + '}';
+      case 'mul': {
+        var L = n.a.k === 'add' || n.a.k === 'sub' ? paren(tex(n.a)) : tex(n.a, 'mul');
+        var Rn = n.b;
+        var R = Rn.k === 'add' || Rn.k === 'sub' || Rn.k === 'neg' ? paren(tex(Rn)) : tex(Rn, 'mul');
+        if (!n.imp || (endsWithDigit(L) && startsWithDigit(R))) {
+          if (!n.imp && n.a.k === 'num' && Rn.k !== 'num') return L + R;  // 3*x shown as 3x
+          if (endsWithDigit(L) && startsWithDigit(R)) return L + ' \\times ' + R;
+          return L + R;
+        }
+        // a function followed by more: sin x cos x reads fine with a thin space
+        return L + R;
+      }
+      case 'pow': {
+        var b = n.a, e = strip(n.b);
+        var et = tex(n.b, 'exp');
+        if (n.fpow || (b.k === 'fn' && TEXF[b.f] && b.f.charAt(0) !== 'a' && strip(n.b).k === 'num' && strip(n.b).v > 0 && ctx !== 'nofpow')) {
+          // sin^2 x
+          var fa = b.a;
+          return TEXF[b.f] + '^{' + et + '}' + (isSimpleArg(fa) ? ' ' + tex(strip(fa), 'arg') : paren(tex(fa, 'arg')));
+        }
+        var bt;
+        var sb = b;
+        if (sb.k === 'num' || sb.k === 'var' || sb.k === 'const') bt = tex(sb);
+        else if (sb.k === 'grp') bt = paren(tex(sb.a));
+        else if (sb.k === 'fn' && sb.f === 'sqrt') bt = paren(tex(sb));
+        else bt = paren(tex(sb));
+        return bt + '^{' + et + '}';
+      }
+      case 'fn': {
+        if (n.f === 'sqrt') return '\\sqrt{' + tex(n.a, 'root') + '}';
+        if (n.f === 'abs') return '\\left|' + tex(n.a) + '\\right|';
+        if (n.f === 'exp') return 'e^{' + tex(n.a, 'exp') + '}';
+        if (n.f === 'logb') {
+          var lb = '\\log_{' + n.base + '}';
+          return isSimpleArg(n.a) ? lb + ' ' + tex(strip(n.a), 'arg') : lb + paren(tex(n.a, 'arg'));
+        }
+        var name = TEXF[n.f];
+        return isSimpleArg(n.a) ? name + ' ' + tex(strip(n.a), 'arg') : name + paren(tex(n.a, 'arg'));
+      }
+    }
+    return '?';
+  }
+  function toTex(n) { return tex(n, 'top'); }
+
+  /* ------------------------------------------------------------ sympy (build checks) */
+  var SYF = { sin: 'sin', cos: 'cos', tan: 'tan', sec: 'sec', csc: 'csc', cot: 'cot', asin: 'asin', acos: 'acos', atan: 'atan',
+    acot: 'acot', asec: 'asec', acsc: 'acsc', sinh: 'sinh', cosh: 'cosh', tanh: 'tanh', sech: 'sech', csch: 'csch', coth: 'coth',
+    asinh: 'asinh', acosh: 'acosh', atanh: 'atanh', ln: 'log', sqrt: 'sqrt', exp: 'exp', abs: 'Abs' };
+  function sy(n) {
+    switch (n.k) {
+      case 'num': return 'Rational("' + n.s + '")';
+      case 'var': return n.v;
+      case 'const': return n.v === 'e' ? 'E' : 'pi';
+      case 'grp': return '(' + sy(n.a) + ')';
+      case 'neg': return '(-(' + sy(n.a) + '))';
+      case 'add': return '(' + sy(n.a) + ' + ' + sy(n.b) + ')';
+      case 'sub': return '(' + sy(n.a) + ' - ' + sy(n.b) + ')';
+      case 'mul': return '(' + sy(n.a) + ' * ' + sy(n.b) + ')';
+      case 'div': return '(' + sy(n.a) + ' / ' + sy(n.b) + ')';
+      case 'pow': return '((' + sy(n.a) + ') ** (' + sy(n.b) + '))';
+      case 'fn':
+        if (n.f === 'logb') return '(log(' + sy(n.a) + ') / log(' + n.base + '))';
+        return SYF[n.f] + '(' + sy(n.a) + ')';
+    }
+  }
+
+  /* ------------------------------------------------------------ compare */
+  // Is the typed expression equal to the answer? Sample points in the item's domain.
+  function equivalent(typed, answer, opt) {
+    opt = opt || {};
+    var vs = opt.vars || ['x'];
+    var lo = opt.dom ? opt.dom[0] : 0.3, hi = opt.dom ? opt.dom[1] : 3;
+    var rnd = opt.rand || Math.random;
+    var used = vars(typed);
+    for (var v in used) if (vs.indexOf(v) < 0) return { ok: false, why: 'var', v: v };
+    var tested = 0, tries = 0;
+    while (tested < 14 && tries < 80) {
+      tries++;
+      var env = {};
+      vs.forEach(function (v) { env[v] = lo + (hi - lo) * rnd(); });
+      var a = ev(answer, env);
+      if (!isFinite(a)) continue;
+      var b = ev(typed, env);
+      if (!isFinite(b)) return { ok: false, why: 'domain' };
+      if (Math.abs(a - b) > 1e-7 * Math.max(1, Math.abs(a))) return { ok: false };
+      tested++;
+    }
+    return { ok: tested >= 8 };
+  }
+
+  var api = { parse: parse, evaluate: ev, toTex: toTex, toSympy: sy, equivalent: equivalent, vars: vars, PErr: PErr };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.DPParse = api;
+})(this);
+
+</script>
+<script id="dp-bank" type="application/json">[{"id":"p01","tier":"p1","topic":"power","kind":"d1","f":"x^5","d":"5x^4","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"5x^5","why":"the power was brought down but not reduced by 1"},{"t":"x^4","why":"the power was reduced but not brought down as a multiplier"},{"t":"4x^4","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p02","tier":"p1","topic":"power","kind":"d1","f":"4x^3","d":"12x^2","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"12x^3","why":"the power was brought down but not reduced by 1"},{"t":"4x^2","why":"the power was reduced but not brought down as a multiplier"},{"t":"8x^2","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p03","tier":"p1","topic":"power","kind":"d1","f":"3x^2 − 5x + 7","d":"6x − 5","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"6x^2 − 5x","why":"the power was brought down but not reduced by 1"},{"t":"3x − 5","why":"the power was reduced but not brought down as a multiplier"},{"t":"6x − 5 + 7","why":"the constant was kept; a constant differentiates to 0"}],"dom":[0.3,3.0]},{"id":"p04","tier":"p1","topic":"power","kind":"d1","f":"2x^4 − x^3 + 6x","d":"8x^3 − 3x^2 + 6","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"8x^4 − 3x^3 + 6x","why":"the power was brought down but not reduced by 1"},{"t":"2x^3 − x^2 + 6","why":"the power was reduced but not brought down as a multiplier"},{"t":"6x^3 − 2x^2","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p05","tier":"p1","topic":"power","kind":"d1","f":"1/3 x^3 − 4x","d":"x^2 − 4","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"x^3 − 4x","why":"the power was brought down but not reduced by 1"},{"t":"1/3 x^2 − 4","why":"the power was reduced but not brought down as a multiplier"},{"t":"2/3 x^2","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p06","tier":"p1","topic":"power","kind":"d1","f":"5 − 2x + x^2","d":"−2 + 2x","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"−2x + 2x^2","why":"the power was brought down but not reduced by 1"},{"t":"−2 + x","why":"the power was reduced but not brought down as a multiplier"},{"t":"−2 + 2x + 5","why":"the constant was kept; a constant differentiates to 0"}],"dom":[0.3,3.0]},{"id":"p07","tier":"p1","topic":"power","kind":"d1","f":"x^3 − 6x^2 + 9x − 2","d":"3x^2 − 12x + 9","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"3x^3 − 12x^2 + 9x","why":"the power was brought down but not reduced by 1"},{"t":"x^2 − 6x + 9","why":"the power was reduced but not brought down as a multiplier"},{"t":"3x^2 − 12x + 9 − 2","why":"the constant was kept; a constant differentiates to 0"}],"dom":[0.3,3.0]},{"id":"p08","tier":"p1","topic":"power","kind":"d1","f":"−x^4 + 8x","d":"−4x^3 + 8","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"−4x^4 + 8x","why":"the power was brought down but not reduced by 1"},{"t":"−x^3 + 8","why":"the power was reduced but not brought down as a multiplier"},{"t":"−3x^3","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p09","tier":"p1","topic":"power","kind":"d1","f":"1/x","d":"−x^(−2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"x^(−2)","why":"the minus sign from the negative power was dropped"},{"t":"−x^(−1)","why":"the power was brought down but not reduced by 1"},{"t":"−2x^(−2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p10","tier":"p1","topic":"power","kind":"d1","f":"1/x^2","d":"−2x^(−3)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−2x^(−1)","why":"the negative power went up by 1: −2 − 1 = −3"},{"t":"2x^(−3)","why":"the minus sign from the negative power was dropped"},{"t":"−2x^(−2)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p11","tier":"p1","topic":"power","kind":"d1","f":"4/x^3","d":"−12x^(−4)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−12x^(−2)","why":"the negative power went up by 1: −3 − 1 = −4"},{"t":"12x^(−4)","why":"the minus sign from the negative power was dropped"},{"t":"−12x^(−3)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p12","tier":"p1","topic":"power","kind":"d1","f":"x^2 + 1/x","d":"2x − x^(−2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"2x + x^(−2)","why":"the minus sign from the negative power was dropped"},{"t":"2x^2 − x^(−1)","why":"the power was brought down but not reduced by 1"},{"t":"x + x^(−2)","why":"the power was reduced but not brought down as a multiplier"}],"dom":[0.3,3.0]},{"id":"p13","tier":"p1","topic":"power","kind":"d1","f":"2x − 3/x^2","d":"2 + 6x^(−3)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"2 + 6x^(−1)","why":"the negative power went up by 1: −2 − 1 = −3"},{"t":"2 − 6x^(−3)","why":"the minus sign from the negative power was dropped"},{"t":"2x + 6x^(−2)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p14","tier":"p1","topic":"power","kind":"d1","f":"5/(2x^4)","d":"−10x^(−5)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−40x^(−5)","why":"the 2 in the denominator was moved up as a multiplier: 5/(2x⁴) is ⁵⁄₂x⁻⁴"},{"t":"−10x^(−3)","why":"the negative power went up by 1: −4 − 1 = −5"},{"t":"10x^(−5)","why":"the minus sign from the negative power was dropped"}],"dom":[0.3,3.0]},{"id":"p15","tier":"p1","topic":"power","kind":"d1","f":"1/(3x)","d":"−1/3 x^(−2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−3x^(−2)","why":"the 3 in the denominator was moved up: 1/(3x) is ⅓x⁻¹"},{"t":"1/3 x^(−2)","why":"the minus sign from the negative power was dropped"},{"t":"−1/3 x^(−1)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p16","tier":"p1","topic":"power","kind":"d1","f":"√x","d":"1/2 x^(−1/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"x^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"1/2 x^(1/2)","why":"the power was brought down but not reduced by 1"},{"t":"−1/2 x^(−1/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p17","tier":"p1","topic":"power","kind":"d1","f":"6√x","d":"3x^(−1/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"6x^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"3x^(1/2)","why":"the power was brought down but not reduced by 1"},{"t":"−3x^(−1/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p18","tier":"p1","topic":"power","kind":"d1","f":"x^(3/2)","d":"3/2 x^(1/2)","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"x^(1/2)","why":"the 3/2 was not brought down as a multiplier"},{"t":"3/2 x^(3/2)","why":"the power was brought down but not reduced by 1"},{"t":"1/2 x^(1/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p19","tier":"p1","topic":"power","kind":"d1","f":"4x^(5/2)","d":"10x^(3/2)","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"4x^(3/2)","why":"the 5/2 was not brought down as a multiplier"},{"t":"10x^(5/2)","why":"the power was brought down but not reduced by 1"},{"t":"6x^(3/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p20","tier":"p1","topic":"power","kind":"d1","f":"x^(1/3)","d":"1/3 x^(−2/3)","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"x^(−2/3)","why":"the 1/3 was not brought down as a multiplier"},{"t":"1/3 x^(1/3)","why":"the power was brought down but not reduced by 1"},{"t":"−2/3 x^(−2/3)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p21","tier":"p1","topic":"power","kind":"d1","f":"1/√x","d":"−1/2 x^(−3/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−1/2 x^(1/2)","why":"the negative power went up by 1: −1/2 − 1 = −3/2"},{"t":"1/2 x^(−3/2)","why":"the minus sign from the negative power was dropped"},{"t":"x^(−3/2)","why":"the −1/2 was not brought down as a multiplier"}],"dom":[0.3,3.0]},{"id":"p22","tier":"p1","topic":"power","kind":"d1","f":"8/√x","d":"−4x^(−3/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"−4x^(1/2)","why":"the negative power went up by 1: −1/2 − 1 = −3/2"},{"t":"4x^(−3/2)","why":"the minus sign from the negative power was dropped"},{"t":"8x^(−3/2)","why":"the −1/2 was not brought down as a multiplier"}],"dom":[0.3,3.0]},{"id":"p23","tier":"p1","topic":"power","kind":"d1","f":"x√x","d":"3/2 x^(1/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"1/2 x^(−1/2)","why":"only the √x was differentiated; x√x is x^(3/2)"},{"t":"x^(1/2)","why":"the 3/2 was not brought down as a multiplier"},{"t":"3/2 x^(3/2)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p24","tier":"p1","topic":"power","kind":"d1","f":"√x(x + 1)","d":"3/2 x^(1/2) + 1/2 x^(−1/2)","rule":"Multiply out or split the fraction first, then use the power rule term by term.","mf":"pow","opts":[{"t":"x^(1/2) + x^(−1/2)","why":"the 3/2 was not brought down as a multiplier"},{"t":"3/2 x^(3/2) + 1/2 x^(1/2)","why":"the power was brought down but not reduced by 1"},{"t":"1/2 x^(1/2) − 1/2 x^(−1/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p25","tier":"p1","topic":"power","kind":"d1","f":"(x^2 + 1)/x","d":"1 − x^(−2)","rule":"Multiply out or split the fraction first, then use the power rule term by term.","mf":"pow","opts":[{"t":"2x","why":"the top was differentiated and the bottom ignored"},{"t":"1 + x^(−2)","why":"the minus sign from the negative power was dropped"},{"t":"x − x^(−1)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p26","tier":"p1","topic":"power","kind":"d1","f":"x^2(x − 3)","d":"3x^2 − 6x","rule":"Multiply out or split the fraction first, then use the power rule term by term.","mf":"pow","opts":[{"t":"2x","why":"each bracket differentiated separately and multiplied: 2x × 1"},{"t":"3x^3 − 6x^2","why":"the power was brought down but not reduced by 1"},{"t":"x^2 − 3x","why":"the power was reduced but not brought down as a multiplier"}],"dom":[0.3,3.0]},{"id":"p27","tier":"p1","topic":"power","kind":"d1","f":"(3x^2 − 2)/x^2","d":"4x^(−3)","rule":"Multiply out or split the fraction first, then use the power rule term by term.","mf":"pow","opts":[{"t":"4x^(−1)","why":"the negative power went up by 1: −2 − 1 = −3"},{"t":"−4x^(−3)","why":"the minus sign from the negative power was dropped"},{"t":"4x^(−2)","why":"the power was brought down but not reduced by 1"}],"dom":[0.3,3.0]},{"id":"p28","tier":"p1","topic":"power","kind":"d1","f":"2x^3 + 3/x","d":"6x^2 − 3x^(−2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"6x^2 + 3x^(−2)","why":"the minus sign from the negative power was dropped"},{"t":"6x^3 − 3x^(−1)","why":"the power was brought down but not reduced by 1"},{"t":"2x^2 + 3x^(−2)","why":"the power was reduced but not brought down as a multiplier"}],"dom":[0.3,3.0]},{"id":"p29","tier":"p1","topic":"power","kind":"d1","f":"x^(4/3) − 6x^(1/3)","d":"4/3 x^(1/3) − 2x^(−2/3)","rule":"Power rule: bring the power down, then take 1 off the power.","mf":"pow","opts":[{"t":"x^(1/3) − 6x^(−2/3)","why":"the 4/3 was not brought down as a multiplier"},{"t":"4/3 x^(4/3) − 2x^(1/3)","why":"the power was brought down but not reduced by 1"},{"t":"1/3 x^(1/3) + 4x^(−2/3)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"p30","tier":"p1","topic":"power","kind":"d1","f":"3x − 4√x","d":"3 − 2x^(−1/2)","rule":"Rewrite as a power of x first, then use the power rule.","mf":"pow","opts":[{"t":"3 − 4x^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"3x − 2x^(1/2)","why":"the power was brought down but not reduced by 1"},{"t":"2x^(−1/2)","why":"multiplied by the new power; the multiplier is the old power"}],"dom":[0.3,3.0]},{"id":"c01","tier":"p1","topic":"chain","kind":"d1","f":"(2x + 1)^3","d":"6(2x + 1)^2","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"3(2x + 1)^2","why":"chain rule without the derivative of the inside"},{"t":"6(2x + 1)^3","why":"the power was not reduced by 1"},{"t":"2(2x + 1)^2","why":"the power was not brought down as a multiplier"}],"dom":[0.1,1.0]},{"id":"c02","tier":"p1","topic":"chain","kind":"d1","f":"(3 − 2x)^2","d":"−4(3 − 2x)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"2(3 − 2x)","why":"chain rule without the derivative of the inside"},{"t":"−4(3 − 2x)^2","why":"the power was not reduced by 1"},{"t":"−2(3 − 2x)","why":"the power was not brought down as a multiplier"}],"dom":[0.1,1.2],"note":"Forgetting the −2 from the inside is the slip here."},{"id":"c03","tier":"p1","topic":"chain","kind":"d1","f":"(5x − 1)^4","d":"20(5x − 1)^3","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"4(5x − 1)^3","why":"chain rule without the derivative of the inside"},{"t":"20(5x − 1)^4","why":"the power was not reduced by 1"},{"t":"5(5x − 1)^3","why":"the power was not brought down as a multiplier"}],"dom":[0.3,1.0]},{"id":"c04","tier":"p1","topic":"chain","kind":"d1","f":"(1 − x)^5","d":"−5(1 − x)^4","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"5(1 − x)^4","why":"chain rule without the derivative of the inside"},{"t":"−5(1 − x)^5","why":"the power was not reduced by 1"},{"t":"−(1 − x)^4","why":"the power was not brought down as a multiplier"}],"dom":[0.1,0.9]},{"id":"c05","tier":"p1","topic":"chain","kind":"d1","f":"√(3x + 1)","d":"3/2 (3x + 1)^(−1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"1/2 (3x + 1)^(−1/2)","why":"chain rule without the derivative of the inside"},{"t":"3(3x + 1)^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"3/2 (3x + 1)^(1/2)","why":"the power was not reduced by 1"}],"dom":[0.1,1.0]},{"id":"c06","tier":"p1","topic":"chain","kind":"d1","f":"√(2x^3 + 5)","d":"3x^2(2x^3 + 5)^(−1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"1/2 (2x^3 + 5)^(−1/2)","why":"chain rule without the derivative of the inside"},{"t":"6x^2(2x^3 + 5)^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"3x^2(2x^3 + 5)^(1/2)","why":"the power was not reduced by 1"}],"dom":[0.2,2.0],"note":"This is the example printed in the syllabus for 1.7."},{"id":"c07","tier":"p1","topic":"chain","kind":"d1","f":"(5 − 2x)^(3/2) + 5","d":"−3(5 − 2x)^(1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"3/2 (5 − 2x)^(1/2)","why":"chain rule without the derivative of the inside"},{"t":"−2(5 − 2x)^(1/2)","why":"the 3/2 was not brought down as a multiplier"},{"t":"−3(5 − 2x)^(3/2)","why":"the power was not reduced by 1"}],"dom":[0.1,2.3]},{"id":"c08","tier":"p1","topic":"chain","kind":"d1","f":"1/(2x − 1)","d":"−2(2x − 1)^(−2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−(2x − 1)^(−2)","why":"chain rule without the derivative of the inside"},{"t":"2(2x − 1)^(−2)","why":"the minus sign from the power was dropped"},{"t":"−2(2x − 1)^(−1)","why":"the power was not reduced by 1"}],"dom":[0.7,3.0]},{"id":"c09","tier":"p1","topic":"chain","kind":"d1","f":"2/(3 − 2x)^2","d":"8(3 − 2x)^(−3)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−4(3 − 2x)^(−3)","why":"the −2 from the inside was forgotten, the slip Cambridge reports for this function"},{"t":"8(3 − 2x)^(−1)","why":"the negative power went up by 1: −2 − 1 = −3"},{"t":"−8(3 − 2x)^(−3)","why":"the minus sign from the power was dropped"}],"dom":[-2.0,1.3],"note":"Cambridge's Paper 1 candidate responses list \"forgetting to multiply by −2 twice\" for this function."},{"id":"c10","tier":"p1","topic":"chain","kind":"d1","f":"6/(2x + 1)^3","d":"−36(2x + 1)^(−4)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−18(2x + 1)^(−4)","why":"chain rule without the derivative of the inside"},{"t":"−36(2x + 1)^(−2)","why":"the negative power went up by 1: −3 − 1 = −4"},{"t":"36(2x + 1)^(−4)","why":"the minus sign from the power was dropped"}],"dom":[0.1,1.0]},{"id":"c11","tier":"p1","topic":"chain","kind":"d1","f":"(x^2 + 3)^4","d":"8x(x^2 + 3)^3","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"4(x^2 + 3)^3","why":"chain rule without the derivative of the inside"},{"t":"8x(x^2 + 3)^4","why":"the power was not reduced by 1"},{"t":"2x(x^2 + 3)^3","why":"the power was not brought down as a multiplier"}],"dom":[0.2,1.5]},{"id":"c12","tier":"p1","topic":"chain","kind":"d1","f":"√(x^2 + 9)","d":"x(x^2 + 9)^(−1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"1/2 (x^2 + 9)^(−1/2)","why":"chain rule without the derivative of the inside"},{"t":"2x(x^2 + 9)^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"x(x^2 + 9)^(1/2)","why":"the power was not reduced by 1"}],"dom":[0.2,3.0]},{"id":"c13","tier":"p1","topic":"chain","kind":"d1","f":"(4 − x^2)^(3/2)","d":"−3x(4 − x^2)^(1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"3/2 (4 − x^2)^(1/2)","why":"chain rule without the derivative of the inside"},{"t":"−2x(4 − x^2)^(1/2)","why":"the 3/2 was not brought down as a multiplier"},{"t":"−3x(4 − x^2)^(3/2)","why":"the power was not reduced by 1"}],"dom":[0.1,1.8]},{"id":"c14","tier":"p1","topic":"chain","kind":"d1","f":"3/√(2x − 5)","d":"−3(2x − 5)^(−3/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−3/2 (2x − 5)^(−3/2)","why":"chain rule without the derivative of the inside"},{"t":"−3(2x − 5)^(1/2)","why":"the negative power went up by 1: −1/2 − 1 = −3/2"},{"t":"3(2x − 5)^(−3/2)","why":"the minus sign from the power was dropped"}],"dom":[2.7,6.0]},{"id":"c15","tier":"p1","topic":"chain","kind":"d1","f":"(x^3 − 2)^2","d":"6x^2(x^3 − 2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"2(x^3 − 2)","why":"chain rule without the derivative of the inside"},{"t":"6x^2(x^3 − 2)^2","why":"the power was not reduced by 1"},{"t":"3x^2(x^3 − 2)","why":"the power was not brought down as a multiplier"}],"dom":[0.3,1.5]},{"id":"c16","tier":"p1","topic":"chain","kind":"d1","f":"1/(x^2 + 1)","d":"−2x(x^2 + 1)^(−2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−(x^2 + 1)^(−2)","why":"chain rule without the derivative of the inside"},{"t":"2x(x^2 + 1)^(−2)","why":"the minus sign from the power was dropped"},{"t":"−2x(x^2 + 1)^(−1)","why":"the power was not reduced by 1"}],"dom":[0.2,2.0]},{"id":"c17","tier":"p1","topic":"chain","kind":"d1","f":"4(1 − 3x)^(1/2)","d":"−6(1 − 3x)^(−1/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"2(1 − 3x)^(−1/2)","why":"chain rule without the derivative of the inside"},{"t":"−12(1 − 3x)^(−1/2)","why":"the 1/2 was not brought down as a multiplier"},{"t":"−6(1 − 3x)^(1/2)","why":"the power was not reduced by 1"}],"dom":[0.02,0.3]},{"id":"c18","tier":"p1","topic":"chain","kind":"d1","f":"(2x + 3)^(−1/2)","d":"−(2x + 3)^(−3/2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−1/2 (2x + 3)^(−3/2)","why":"chain rule without the derivative of the inside"},{"t":"−(2x + 3)^(1/2)","why":"the negative power went up by 1: −1/2 − 1 = −3/2"},{"t":"(2x + 3)^(−3/2)","why":"the minus sign from the power was dropped"}],"dom":[0.1,3.0]},{"id":"c19","tier":"p1","topic":"chain","kind":"d1","f":"(x^2 − 5x)^3","d":"3(2x − 5)(x^2 − 5x)^2","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"3(x^2 − 5x)^2","why":"chain rule without the derivative of the inside"},{"t":"3(2x − 5)(x^2 − 5x)^3","why":"the power was not reduced by 1"},{"t":"(2x − 5)(x^2 − 5x)^2","why":"the power was not brought down as a multiplier"}],"dom":[0.2,1.5]},{"id":"c20","tier":"p1","topic":"chain","kind":"d1","f":"12/(3x − 2)","d":"−36(3x − 2)^(−2)","rule":"Chain rule: differentiate the outside, keep the inside, then multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−12(3x − 2)^(−2)","why":"chain rule without the derivative of the inside"},{"t":"36(3x − 2)^(−2)","why":"the minus sign from the power was dropped"},{"t":"−36(3x − 2)^(−1)","why":"the power was not reduced by 1"}],"dom":[1.0,3.0]},{"id":"s01","tier":"p1","topic":"second","kind":"d2","f":"x^4 − 2x^3","d":"12x^2 − 12x","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"pow","opts":[{"t":"4x^3 − 6x^2","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"12x^3 − 12x^2","why":"the power was not reduced on the second step"},{"t":"12x − 12","why":"differentiated three times"}],"dom":[0.3,3.0]},{"id":"s02","tier":"p1","topic":"second","kind":"d2","f":"6√x","d":"−3/2 x^(−3/2)","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"pow","opts":[{"t":"3x^(−1/2)","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"3/2 x^(−3/2)","why":"the minus sign from the power −½ was dropped"},{"t":"−3/2 x^(−1/2)","why":"the power was not reduced on the second step"}],"dom":[0.3,3.0]},{"id":"s03","tier":"p1","topic":"second","kind":"d2","f":"(2x − 1)^4","d":"48(2x − 1)^2","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"chain","opts":[{"t":"8(2x − 1)^3","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"24(2x − 1)^2","why":"the chain-rule factor of 2 was used only once"},{"t":"12(2x − 1)^2","why":"both chain-rule factors of 2 were missed"}],"dom":[0.6,2.0]},{"id":"s04","tier":"p1","topic":"second","kind":"d2","f":"1/x^2","d":"6x^(−4)","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"pow","opts":[{"t":"−2x^(−3)","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"−6x^(−4)","why":"the two minus signs make a plus"},{"t":"2x^(−1)","why":"the negative powers moved the wrong way"}],"dom":[0.3,3.0]},{"id":"s05","tier":"p1","topic":"second","kind":"d2","f":"x^3 − 3x^2 + 4","d":"6x − 6","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"pow","opts":[{"t":"3x^2 − 6x","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"6x − 6 + 4","why":"the constant was kept"},{"t":"6x","why":"the −3x² term was lost"}],"dom":[0.3,3.0]},{"id":"s06","tier":"p1","topic":"second","kind":"d2","f":"2x + 8/x","d":"16x^(−3)","rule":"Differentiate twice: find dy/dx, then differentiate that.","mf":"pow","opts":[{"t":"2 − 8x^(−2)","why":"that is dy/dx; d²y/dx² means differentiate again"},{"t":"−16x^(−3)","why":"the two minus signs make a plus"},{"t":"2 + 16x^(−3)","why":"the 2 was kept on the second step"}],"dom":[0.3,3.0]},{"id":"g01","tier":"p1","topic":"gradient","kind":"grad","f":"x^3 − 4x","d":"8","rule":"Find dy/dx, then substitute the x-value.","mf":"pow","opts":[{"t":"0","why":"that is the y-value at x = 2; the gradient comes from dy/dx"},{"t":"12","why":"the −4 was dropped"},{"t":"20","why":"the power was not reduced by 1: 3x³ − 4 at x = 2"}],"at":2},{"id":"g02","tier":"p1","topic":"gradient","kind":"grad","f":"4/x","d":"−1","rule":"Find dy/dx, then substitute the x-value.","mf":"pow","opts":[{"t":"2","why":"that is the y-value at x = 2; the gradient comes from dy/dx"},{"t":"1","why":"the minus sign from x⁻¹ was dropped"},{"t":"−4","why":"the power went up by 1: −4x⁰ = −4"}],"at":2},{"id":"g03","tier":"p1","topic":"gradient","kind":"grad","f":"√(2x + 5)","d":"1/3","rule":"Find dy/dx, then substitute the x-value.","mf":"chain","opts":[{"t":"3","why":"that is the y-value at x = 2; the gradient comes from dy/dx"},{"t":"1/6","why":"the 2 from the inside was forgotten"},{"t":"2/3","why":"the ½ was not brought down"}],"at":2},{"id":"g04","tier":"p1","topic":"gradient","kind":"grad","f":"(5 − 2x)^(3/2) + 5","d":"−3","rule":"Find dy/dx, then substitute the x-value.","mf":"chain","opts":[{"t":"6","why":"that is the y-value at x = 2; the gradient comes from dy/dx"},{"t":"3/2","why":"the −2 from the inside was forgotten"},{"t":"1/3","why":"that is the gradient of the normal, from −1 ÷ (−3)"}],"at":2},{"id":"g05","tier":"p1","topic":"gradient","kind":"grad","f":"2/(3 − 2x)^2","d":"8","rule":"Find dy/dx, then substitute the x-value.","mf":"chain","opts":[{"t":"2","why":"that is the y-value at x = 1; the gradient comes from dy/dx"},{"t":"−4","why":"the −2 from the inside was forgotten"},{"t":"−8","why":"a sign slip: −2 × −2 is +4"}],"at":1},{"id":"g06","tier":"p1","topic":"gradient","kind":"grad","f":"x^2 − 6√x","d":"13/2","rule":"Find dy/dx, then substitute the x-value.","mf":"pow","opts":[{"t":"4","why":"that is the y-value at x = 4; the gradient comes from dy/dx"},{"t":"5","why":"the ½ was dropped from the √x term"},{"t":"19/2","why":"the minus sign was lost on the √x term"}],"at":4},{"id":"e01","tier":"p3","topic":"exp","kind":"d1","f":"e^x","d":"e^x","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"p3","opts":[{"t":"xe^(x − 1)","why":"the power rule does not apply: the power is the variable"},{"t":"e^(x − 1)","why":"the power rule does not apply to eˣ"},{"t":"e","why":"eˣ is not a constant"}],"dom":[-1,2]},{"id":"e02","tier":"p3","topic":"exp","kind":"d1","f":"e^(3x)","d":"3e^(3x)","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"chain","opts":[{"t":"e^(3x)","why":"the 3 from the inside was forgotten"},{"t":"1/3 e^(3x)","why":"divided by 3: that is integrating"},{"t":"3xe^(3x − 1)","why":"the power rule does not apply to e^(3x)"}],"dom":[-1,1]},{"id":"e03","tier":"p3","topic":"exp","kind":"d1","f":"5e^(−2x)","d":"−10e^(−2x)","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"chain","opts":[{"t":"5e^(−2x)","why":"the −2 from the inside was forgotten"},{"t":"10e^(−2x)","why":"the minus sign from −2x was dropped"},{"t":"−5/2 e^(−2x)","why":"divided by −2: that is integrating"}],"dom":[-1,1]},{"id":"e04","tier":"p3","topic":"exp","kind":"d1","f":"e^(x^2)","d":"2xe^(x^2)","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"chain","opts":[{"t":"e^(x^2)","why":"the 2x from the inside was forgotten"},{"t":"2xe^(2x)","why":"the power was differentiated as well"},{"t":"x^2 e^(x^2 − 1)","why":"the power rule does not apply to e^(x²)"}],"dom":[-1,1.2]},{"id":"e05","tier":"p3","topic":"exp","kind":"d1","f":"4 − e^(−x)","d":"e^(−x)","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"chain","opts":[{"t":"−e^(−x)","why":"two minus signs: −e^(−x) × −1 is +e^(−x)"},{"t":"4 + e^(−x)","why":"the 4 was kept"},{"t":"e^x","why":"the inside −x was ignored"}],"dom":[-1,2]},{"id":"l01","tier":"p3","topic":"log","kind":"d1","f":"ln(x)","d":"1/x","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"p3","opts":[{"t":"ln(x)/x","why":"ln x is not a power of x"},{"t":"1","why":"ln x is not x"},{"t":"−1/x^2","why":"that is the derivative of 1/x"}],"dom":[0.3,3]},{"id":"l02","tier":"p3","topic":"log","kind":"d1","f":"ln(3x)","d":"1/x","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"chain","opts":[{"t":"3/x","why":"the 3 cancels: 3/(3x) = 1/x"},{"t":"1/(3x)","why":"the 3 from the inside was forgotten"},{"t":"3/(3x)^2","why":"ln is not a power"}],"dom":[0.3,3]},{"id":"l03","tier":"p3","topic":"log","kind":"d1","f":"ln(2x + 1)","d":"2/(2x + 1)","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"chain","opts":[{"t":"1/(2x + 1)","why":"the 2 from the inside was forgotten"},{"t":"2/(2x)","why":"the +1 does not disappear"},{"t":"1/2 ln(2x + 1)","why":"that is not the derivative of ln"}],"dom":[0.1,3]},{"id":"l04","tier":"p3","topic":"log","kind":"d1","f":"ln(x^2 + 1)","d":"2x/(x^2 + 1)","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"chain","opts":[{"t":"1/(x^2 + 1)","why":"the 2x from the inside was forgotten"},{"t":"2/x","why":"ln(x² + 1) is not 2 ln x"},{"t":"1/(2x)","why":"top and bottom swapped"}],"dom":[0.2,3]},{"id":"l05","tier":"p3","topic":"log","kind":"d1","f":"4ln(x)","d":"4/x","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"p3","opts":[{"t":"1/(4x)","why":"the 4 is a constant multiple: it stays on top"},{"t":"4","why":"ln x is not x"},{"t":"4ln(x)/x","why":"ln x is not a power"}],"dom":[0.3,3]},{"id":"l06","tier":"p3","topic":"log","kind":"d1","f":"ln(x^3)","d":"3/x","rule":"ln x → 1/x; with the chain rule, ln(f(x)) → f′(x)/f(x).","mf":"chain","opts":[{"t":"1/x^3","why":"the 3x² from the inside was forgotten"},{"t":"3x^2","why":"only the inside was differentiated"},{"t":"1/(3x)","why":"the 3 belongs on top"}],"dom":[0.3,3]},{"id":"t01","tier":"p3","topic":"trig","kind":"d1","f":"sin(x)","d":"cos(x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"p3","opts":[{"t":"−cos(x)","why":"the minus sign belongs to cos → −sin"},{"t":"−sin(x)","why":"that is the derivative of cos x"},{"t":"sec(x)^2","why":"that is the derivative of tan x"}],"dom":[0.1,1.4]},{"id":"t02","tier":"p3","topic":"trig","kind":"d1","f":"cos(x)","d":"−sin(x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"p3","opts":[{"t":"sin(x)","why":"cos x differentiates to −sin x"},{"t":"−cos(x)","why":"cos was kept"},{"t":"−sec(x)^2","why":"tan is not involved"}],"dom":[0.1,1.4]},{"id":"t03","tier":"p3","topic":"trig","kind":"d1","f":"tan(x)","d":"sec(x)^2","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"p3","opts":[{"t":"sec(x)","why":"the square on sec²x is missing"},{"t":"−sec(x)^2","why":"no minus sign for tan"},{"t":"tan(x)^2","why":"tan x differentiates to sec²x"}],"dom":[0.1,1.2]},{"id":"t04","tier":"p3","topic":"trig","kind":"d1","f":"sin(3x)","d":"3cos(3x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"cos(3x)","why":"the 3 from the inside was forgotten"},{"t":"3cos(x)","why":"the inside 3x was changed to x"},{"t":"−3cos(3x)","why":"sin → cos has no minus sign"}],"dom":[0.1,1.0]},{"id":"t05","tier":"p3","topic":"trig","kind":"d1","f":"cos(2x)","d":"−2sin(2x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−sin(2x)","why":"the 2 from the inside was forgotten"},{"t":"2sin(2x)","why":"cos → −sin: the minus sign was dropped"},{"t":"−1/2 sin(2x)","why":"divided by 2: that is integrating"}],"dom":[0.1,1.0]},{"id":"t06","tier":"p3","topic":"trig","kind":"d1","f":"tan(4x)","d":"4sec(4x)^2","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"sec(4x)^2","why":"the 4 from the inside was forgotten"},{"t":"4sec(x)^2","why":"the inside 4x was changed to x"},{"t":"4tan(4x)^2","why":"tan differentiates to sec²"}],"dom":[0.05,0.3]},{"id":"t07","tier":"p3","topic":"trig","kind":"d1","f":"sin(x)^2","d":"2sin(x)cos(x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside. sin²x means (sin x)²: power rule outside.","mf":"chain","opts":[{"t":"cos(x)^2","why":"sin²x is (sin x)²: bring the 2 down first"},{"t":"2sin(x)","why":"the derivative of the inside, cos x, is missing"},{"t":"2cos(x)","why":"the power rule and the chain rule were mixed up"}],"dom":[0.1,1.4]},{"id":"t08","tier":"p3","topic":"trig","kind":"d1","f":"3sin(x) − 2cos(x)","d":"3cos(x) + 2sin(x)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"p3","opts":[{"t":"3cos(x) − 2sin(x)","why":"−2 × (−sin x) is +2 sin x"},{"t":"−3cos(x) + 2sin(x)","why":"sin → cos has no minus sign"},{"t":"3cos(x) + 2cos(x)","why":"cos does not stay cos"}],"dom":[0.1,1.4]},{"id":"t09","tier":"p3","topic":"trig","kind":"d1","f":"cos(x^2)","d":"−2xsin(x^2)","rule":"sin → cos, cos → −sin, tan → sec². x must be in radians. Multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"−sin(x^2)","why":"the 2x from the inside was forgotten"},{"t":"−sin(2x)","why":"the inside was differentiated inside the function"},{"t":"2xsin(x^2)","why":"cos → −sin: the minus sign was dropped"}],"dom":[0.1,1.1]},{"id":"a01","tier":"p3","topic":"atan","kind":"d1","f":"atan(x)","d":"1/(1 + x^2)","rule":"tan⁻¹x → 1/(1 + x²) (on MF19 p.3); multiply by the derivative of the inside.","mf":"p3","opts":[{"t":"1/√(1 − x^2)","why":"that is the derivative of sin⁻¹x (not needed for 9709)"},{"t":"sec(x)^2","why":"tan⁻¹x is not tan x"},{"t":"−1/(1 + x^2)","why":"no minus sign for tan⁻¹x"}],"dom":[-1.5,1.5]},{"id":"a02","tier":"p3","topic":"atan","kind":"d1","f":"atan(2x)","d":"2/(1 + 4x^2)","rule":"tan⁻¹x → 1/(1 + x²) (on MF19 p.3); multiply by the derivative of the inside.","mf":"chain","opts":[{"t":"1/(1 + 4x^2)","why":"the 2 from the inside was forgotten"},{"t":"2/(1 + 2x^2)","why":"(2x)² is 4x²"},{"t":"2/(1 + x^2)","why":"the inside 2x was changed to x"}],"dom":[-1,1]},{"id":"r01","tier":"p3","topic":"product","kind":"d1","f":"xe^x","d":"e^x + xe^x","rule":"Product rule: (uv)′ = u′v + uv′ (on MF19 p.3).","mf":"p3","opts":[{"t":"e^x","why":"each factor differentiated and multiplied: 1 × eˣ"},{"t":"xe^x","why":"only eˣ was differentiated"},{"t":"2xe^x","why":"u′v + uv′ is not 2uv′"}],"dom":[-1,2]},{"id":"r02","tier":"p3","topic":"product","kind":"d1","f":"x^2sin(x)","d":"2xsin(x) + x^2cos(x)","rule":"Product rule: (uv)′ = u′v + uv′ (on MF19 p.3).","mf":"p3","opts":[{"t":"2xcos(x)","why":"each factor differentiated and multiplied"},{"t":"2xsin(x) − x^2cos(x)","why":"the product rule adds"},{"t":"x^2cos(x)","why":"only sin x was differentiated"}],"dom":[0.2,1.4]},{"id":"r03","tier":"p3","topic":"product","kind":"d1","f":"xln(x)","d":"ln(x) + 1","rule":"Product rule: (uv)′ = u′v + uv′ (on MF19 p.3).","mf":"p3","opts":[{"t":"1/x","why":"each factor differentiated and multiplied: 1 × 1/x"},{"t":"ln(x)","why":"the x × 1/x term was lost"},{"t":"ln(x) + x","why":"x × 1/x is 1"}],"dom":[0.3,3]},{"id":"r04","tier":"p3","topic":"product","kind":"d1","f":"x(2x − 1)^3","d":"(2x − 1)^3 + 6x(2x − 1)^2","rule":"Product rule: (uv)′ = u′v + uv′ (on MF19 p.3). The bracket needs the chain rule.","mf":"p3","opts":[{"t":"(2x − 1)^3 + 3x(2x − 1)^2","why":"the chain-rule factor 2 was forgotten"},{"t":"6(2x − 1)^2","why":"each factor differentiated and multiplied"},{"t":"3x(2x − 1)^2","why":"only the bracket was differentiated"}],"dom":[0.6,1.5]},{"id":"r05","tier":"p3","topic":"product","kind":"d1","f":"e^(2x)cos(x)","d":"2e^(2x)cos(x) − e^(2x)sin(x)","rule":"Product rule: (uv)′ = u′v + uv′ (on MF19 p.3).","mf":"p3","opts":[{"t":"−2e^(2x)sin(x)","why":"each factor differentiated and multiplied"},{"t":"2e^(2x)cos(x) + e^(2x)sin(x)","why":"cos → −sin: a sign slip"},{"t":"e^(2x)cos(x) − e^(2x)sin(x)","why":"the 2 from e^(2x) was forgotten"}],"dom":[0.1,1.3]},{"id":"q01","tier":"p3","topic":"quotient","kind":"d1","f":"sin(x)/x","d":"(xcos(x) − sin(x))/x^2","rule":"Quotient rule: (u/v)′ = (u′v − uv′)/v² (on MF19 p.3). Top first.","mf":"p3","opts":[{"t":"(sin(x) − xcos(x))/x^2","why":"the top is in the wrong order"},{"t":"cos(x)","why":"top and bottom differentiated separately"},{"t":"(xcos(x) − sin(x))/x","why":"the bottom is squared: v²"}],"dom":[0.2,1.4]},{"id":"q02","tier":"p3","topic":"quotient","kind":"d1","f":"ln(x)/x","d":"(1 − ln(x))/x^2","rule":"Quotient rule: (u/v)′ = (u′v − uv′)/v² (on MF19 p.3). Top first.","mf":"p3","opts":[{"t":"(ln(x) − 1)/x^2","why":"the top is in the wrong order"},{"t":"1/x","why":"top and bottom differentiated separately: (1/x) ÷ 1"},{"t":"(1 − ln(x))/x","why":"the bottom is squared: v²"}],"dom":[0.3,3]},{"id":"q03","tier":"p3","topic":"quotient","kind":"d1","f":"x/(x + 1)","d":"1/(x + 1)^2","rule":"Quotient rule: (u/v)′ = (u′v − uv′)/v² (on MF19 p.3). Top first.","mf":"p3","opts":[{"t":"−1/(x + 1)^2","why":"the top is in the wrong order"},{"t":"1","why":"top and bottom differentiated separately"},{"t":"(2x + 1)/(x + 1)^2","why":"the minus in u′v − uv′ became a plus"}],"dom":[0.1,3]},{"id":"q04","tier":"p3","topic":"quotient","kind":"d1","f":"e^x/(x^2)","d":"(x − 2)e^x/x^3","rule":"Quotient rule: (u/v)′ = (u′v − uv′)/v² (on MF19 p.3). Top first. Simplify by cancelling x.","mf":"p3","opts":[{"t":"(2 − x)e^x/x^3","why":"the top is in the wrong order"},{"t":"e^x/(2x)","why":"top and bottom differentiated separately"},{"t":"(x − 2)e^x/x^4","why":"the x was not cancelled correctly: x²eˣ − 2xeˣ over x⁴"}],"dom":[0.3,3]},{"id":"m01","tier":"p3","topic":"parametric","kind":"d1","f":"x = t^2, y = t^3","d":"3/2 t","rule":"Parametric: dy/dx = (dy/dt) ÷ (dx/dt) (on MF19 p.3).","mf":"p3","opts":[{"t":"2/3 t^(−1)","why":"upside down: (dx/dt) ÷ (dy/dt)"},{"t":"6t^3","why":"multiplied; dy/dx is dy/dt divided by dx/dt"},{"t":"3t^2","why":"that is dy/dt"}],"dom":[0.3,3],"vars":["t"],"given":"param"},{"id":"m02","tier":"p3","topic":"parametric","kind":"d1","f":"x = 2t + 1, y = t^2 − 3t","d":"(2t − 3)/2","rule":"Parametric: dy/dx = (dy/dt) ÷ (dx/dt) (on MF19 p.3).","mf":"p3","opts":[{"t":"2/(2t − 3)","why":"upside down: (dx/dt) ÷ (dy/dt)"},{"t":"2t − 3","why":"that is dy/dt"},{"t":"2(2t − 3)","why":"multiplied; dy/dx is dy/dt divided by dx/dt"}],"dom":[0.3,3],"vars":["t"],"given":"param"},{"id":"m03","tier":"p3","topic":"parametric","kind":"d1","f":"x = cos(t), y = sin(t)","d":"−cos(t)/sin(t)","rule":"Parametric: dy/dx = (dy/dt) ÷ (dx/dt) (on MF19 p.3).","mf":"p3","opts":[{"t":"−sin(t)/cos(t)","why":"upside down: (dx/dt) ÷ (dy/dt)"},{"t":"cos(t)/sin(t)","why":"cos → −sin: the minus sign was dropped"},{"t":"−cos(t)sin(t)","why":"multiplied; dy/dx is dy/dt divided by dx/dt"}],"dom":[0.2,1.4],"vars":["t"],"given":"param"},{"id":"i01","tier":"p3","topic":"implicit","kind":"d1","f":"x^2 + y^2 = 25","d":"−x/y","rule":"Implicit: differentiate every term with respect to x; y² gives 2y dy/dx. Then make dy/dx the subject.","mf":"none","opts":[{"t":"−y/x","why":"upside down"},{"t":"x/y","why":"the sign was lost moving 2x across"},{"t":"−2x","why":"y² was treated as a constant"}],"dom":[0.5,3],"vars":["x","y"],"given":"implicit"},{"id":"i02","tier":"p3","topic":"implicit","kind":"d1","f":"y^3 + 2x = 5","d":"−2/(3y^2)","rule":"Implicit: differentiate every term with respect to x; y² gives 2y dy/dx. Then make dy/dx the subject.","mf":"none","opts":[{"t":"−3y^2/2","why":"upside down"},{"t":"2/(3y^2)","why":"the sign was lost moving 2x across"},{"t":"−2/3","why":"y³ was treated like x³ with no dy/dx"}],"dom":[0.5,3],"vars":["x","y"],"given":"implicit"},{"id":"b01","tier":"beyond","topic":"recip","kind":"d1","f":"sec(x)","d":"sec(x)tan(x)","rule":"The \"co\" functions pick up a minus sign: cosec → −cosec cot, cot → −cosec².","mf":"p3","opts":[{"t":"−sec(x)tan(x)","why":"sec has no \"co\": no minus sign"},{"t":"sec(x)^2","why":"that is the derivative of tan x"},{"t":"tan(x)^2","why":"the derivative is sec x tan x"}],"dom":[0.1,1.3],"note":"Printed on MF19 p.3 but not in the 9709 syllabus."},{"id":"b02","tier":"beyond","topic":"recip","kind":"d1","f":"cosec(x)","d":"−cosec(x)cot(x)","rule":"The \"co\" functions pick up a minus sign: cosec → −cosec cot, cot → −cosec².","mf":"p3","opts":[{"t":"cosec(x)cot(x)","why":"cosec is a \"co\" function: minus sign"},{"t":"−cosec(x)^2","why":"that is the derivative of cot x"},{"t":"−cot(x)^2","why":"it is cosec x cot x"}],"dom":[0.2,1.4],"note":"Printed on MF19 p.3 but not in the 9709 syllabus."},{"id":"b03","tier":"beyond","topic":"recip","kind":"d1","f":"cot(x)","d":"−cosec(x)^2","rule":"The \"co\" functions pick up a minus sign: cosec → −cosec cot, cot → −cosec².","mf":"p3","opts":[{"t":"cosec(x)^2","why":"cot is a \"co\" function: minus sign"},{"t":"−sec(x)^2","why":"cot x differentiates to −cosec²x"},{"t":"−cosec(x)cot(x)","why":"that is the derivative of cosec x"}],"dom":[0.2,1.4],"note":"Printed on MF19 p.3 but not in the 9709 syllabus."},{"id":"b04","tier":"beyond","topic":"recip","kind":"d1","f":"sec(2x)","d":"2sec(2x)tan(2x)","rule":"The \"co\" functions pick up a minus sign: cosec → −cosec cot, cot → −cosec².","mf":"chain","opts":[{"t":"sec(2x)tan(2x)","why":"the 2 from the inside was forgotten"},{"t":"2sec(2x)^2","why":"sec → sec tan"},{"t":"−2sec(2x)tan(2x)","why":"sec has no minus sign"}],"dom":[0.05,0.6]},{"id":"b05","tier":"beyond","topic":"invtrig","kind":"d1","f":"asin(x)","d":"1/√(1 − x^2)","rule":"Inverse trig: learn the pattern of 1/√(1 − x²) and 1/(1 + x²).","mf":"p6","opts":[{"t":"1/(1 + x^2)","why":"that is the derivative of tan⁻¹x"},{"t":"−1/√(1 − x^2)","why":"that is the derivative of cos⁻¹x"},{"t":"cos(x)","why":"sin⁻¹x is not sin x"}],"dom":[-0.8,0.8],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b06","tier":"beyond","topic":"invtrig","kind":"d1","f":"acos(x)","d":"−1/√(1 − x^2)","rule":"Inverse trig: learn the pattern of 1/√(1 − x²) and 1/(1 + x²).","mf":"p6","opts":[{"t":"1/√(1 − x^2)","why":"cos⁻¹ carries the minus sign"},{"t":"−1/(1 + x^2)","why":"the denominator is √(1 − x²)"},{"t":"−sin(x)","why":"cos⁻¹x is not cos x"}],"dom":[-0.8,0.8],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b07","tier":"beyond","topic":"invtrig","kind":"d1","f":"asin(3x)","d":"3/√(1 − 9x^2)","rule":"Inverse trig: learn the pattern of 1/√(1 − x²) and 1/(1 + x²).","mf":"chain","opts":[{"t":"1/√(1 − 9x^2)","why":"the 3 from the inside was forgotten"},{"t":"3/√(1 − 3x^2)","why":"(3x)² is 9x²"},{"t":"3/√(1 − x^2)","why":"the inside 3x was changed to x"}],"dom":[-0.25,0.25]},{"id":"b08","tier":"beyond","topic":"invtrig","kind":"d1","f":"acot(x)","d":"−1/(1 + x^2)","rule":"Inverse trig: learn the pattern of 1/√(1 − x²) and 1/(1 + x²).","mf":"none","opts":[{"t":"1/(1 + x^2)","why":"cot⁻¹ carries the minus sign"},{"t":"−cosec(x)^2","why":"cot⁻¹x is not cot x"},{"t":"−1/√(1 − x^2)","why":"that is the derivative of cos⁻¹x"}],"dom":[0.2,2]},{"id":"b09","tier":"beyond","topic":"invtrig","kind":"d1","f":"asec(x)","d":"1/(x√(x^2 − 1))","rule":"Inverse trig: learn the pattern of 1/√(1 − x²) and 1/(1 + x²).","mf":"none","opts":[{"t":"−1/(x√(x^2 − 1))","why":"that is the derivative of cosec⁻¹x"},{"t":"sec(x)tan(x)","why":"sec⁻¹x is not sec x"},{"t":"1/√(x^2 − 1)","why":"the x in front of the root is missing"}],"dom":[1.2,3]},{"id":"b10","tier":"beyond","topic":"ax","kind":"d1","f":"2^x","d":"2^x ln(2)","rule":"aˣ → aˣ ln a, and logₐx → 1/(x ln a): they reduce to eˣ and ln x.","mf":"none","opts":[{"t":"x2^(x − 1)","why":"the power rule does not apply: the power is the variable"},{"t":"2^x","why":"only eˣ is its own derivative"},{"t":"2^x/ln(2)","why":"divided by ln 2: that is integrating"}],"dom":[-1,2]},{"id":"b11","tier":"beyond","topic":"ax","kind":"d1","f":"10^(3x)","d":"3ln(10) 10^(3x)","rule":"aˣ → aˣ ln a, and logₐx → 1/(x ln a): they reduce to eˣ and ln x.","mf":"chain","opts":[{"t":"ln(10) 10^(3x)","why":"the 3 from the inside was forgotten"},{"t":"3x 10^(3x − 1)","why":"the power rule does not apply"},{"t":"3 10^(3x)","why":"the ln 10 is missing"}],"dom":[-0.5,0.5]},{"id":"b12","tier":"beyond","topic":"ax","kind":"d1","f":"log_2(x)","d":"1/(x ln(2))","rule":"aˣ → aˣ ln a, and logₐx → 1/(x ln a): they reduce to eˣ and ln x.","mf":"none","opts":[{"t":"1/x","why":"that is ln x; log₂x needs the extra 1/ln 2"},{"t":"ln(2)/x","why":"ln 2 belongs on the bottom"},{"t":"1/(2x)","why":"the base 2 is not a multiplier"}],"dom":[0.3,3]},{"id":"b13","tier":"beyond","topic":"hyp","kind":"d1","f":"sinh(x)","d":"cosh(x)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"p6","opts":[{"t":"−cosh(x)","why":"no minus signs for sinh and cosh"},{"t":"cos(x)","why":"the derivative is cosh x (hyperbolic)"},{"t":"sinh(x)","why":"sinh → cosh"}],"dom":[-1,2],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b14","tier":"beyond","topic":"hyp","kind":"d1","f":"cosh(x)","d":"sinh(x)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"p6","opts":[{"t":"−sinh(x)","why":"unlike cos, cosh has no minus sign"},{"t":"−sin(x)","why":"the derivative is sinh x (hyperbolic)"},{"t":"cosh(x)","why":"cosh → sinh"}],"dom":[0.2,2],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b15","tier":"beyond","topic":"hyp","kind":"d1","f":"tanh(x)","d":"sech(x)^2","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"p6","opts":[{"t":"sec(x)^2","why":"the derivative is sech²x (hyperbolic)"},{"t":"−sech(x)^2","why":"no minus sign for tanh"},{"t":"cosech(x)^2","why":"the derivative is sech²x"}],"dom":[-1,1.5],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b16","tier":"beyond","topic":"hyp","kind":"d1","f":"sinh(3x)","d":"3cosh(3x)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"chain","opts":[{"t":"cosh(3x)","why":"the 3 from the inside was forgotten"},{"t":"−3cosh(3x)","why":"no minus sign"},{"t":"3cosh(x)","why":"the inside 3x was changed to x"}],"dom":[-0.5,0.8]},{"id":"b17","tier":"beyond","topic":"hyp","kind":"d1","f":"cosh(x^2)","d":"2xsinh(x^2)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"chain","opts":[{"t":"sinh(x^2)","why":"the 2x from the inside was forgotten"},{"t":"−2xsinh(x^2)","why":"cosh has no minus sign"},{"t":"sinh(2x)","why":"the inside was differentiated inside the function"}],"dom":[0.2,1.3]},{"id":"b18","tier":"beyond","topic":"hyp","kind":"d1","f":"sech(x)","d":"−sech(x)tanh(x)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"none","opts":[{"t":"sech(x)tanh(x)","why":"sech picks up a minus sign"},{"t":"sech(x)^2","why":"that is the derivative of tanh x"},{"t":"−sec(x)tan(x)","why":"the hyperbolic versions: sech x tanh x"}],"dom":[0.2,2]},{"id":"b19","tier":"beyond","topic":"hyp","kind":"d1","f":"cosech(x)","d":"−cosech(x)coth(x)","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"none","opts":[{"t":"cosech(x)coth(x)","why":"cosech picks up a minus sign"},{"t":"−cosech(x)^2","why":"that is the derivative of coth x"},{"t":"−cosec(x)cot(x)","why":"the hyperbolic versions: cosech x coth x"}],"dom":[0.2,2]},{"id":"b20","tier":"beyond","topic":"hyp","kind":"d1","f":"coth(x)","d":"−cosech(x)^2","rule":"sinh → cosh and cosh → sinh, with no minus signs. tanh → sech².","mf":"none","opts":[{"t":"cosech(x)^2","why":"coth picks up a minus sign"},{"t":"−cosec(x)^2","why":"the hyperbolic version: cosech²x"},{"t":"sech(x)^2","why":"that is tanh's derivative"}],"dom":[0.2,2]},{"id":"b21","tier":"beyond","topic":"ihyp","kind":"d1","f":"asinh(x)","d":"1/√(1 + x^2)","rule":"Inverse hyperbolic: like inverse trig, with the signs inside the root changed.","mf":"p6","opts":[{"t":"1/√(1 − x^2)","why":"that is sin⁻¹x"},{"t":"1/(1 + x^2)","why":"that is tan⁻¹x"},{"t":"cosh(x)","why":"sinh⁻¹x is not sinh x"}],"dom":[-1.5,1.5],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b22","tier":"beyond","topic":"ihyp","kind":"d1","f":"acosh(x)","d":"1/√(x^2 − 1)","rule":"Inverse hyperbolic: like inverse trig, with the signs inside the root changed.","mf":"p6","opts":[{"t":"−1/√(x^2 − 1)","why":"no minus sign"},{"t":"1/(x^2 − 1)","why":"the square root is missing"},{"t":"sinh(x)","why":"cosh⁻¹x is not cosh x"}],"dom":[1.2,3],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b23","tier":"beyond","topic":"ihyp","kind":"d1","f":"atanh(x)","d":"1/(1 − x^2)","rule":"Inverse hyperbolic: like inverse trig, with the signs inside the root changed.","mf":"p6","opts":[{"t":"1/(1 + x^2)","why":"that is tan⁻¹x"},{"t":"1/√(1 − x^2)","why":"no square root"},{"t":"sech(x)^2","why":"tanh⁻¹x is not tanh x"}],"dom":[-0.8,0.8],"note":"Not in the 9709 syllabus; printed on MF19 p.6 for Further Mathematics."},{"id":"b24","tier":"beyond","topic":"ax","kind":"d1","f":"e^(sin(x))","d":"cos(x)e^(sin(x))","rule":"eˣ is its own derivative; with the chain rule, e^(f(x)) → f′(x)e^(f(x)).","mf":"chain","opts":[{"t":"e^(sin(x))","why":"the cos x from the inside was forgotten"},{"t":"e^(cos(x))","why":"the inside was differentiated inside the function"},{"t":"sin(x)e^(sin(x) − 1)","why":"the power rule does not apply"}],"dom":[0.1,1.4]}]</script>
+<script>
+(function () {
+  'use strict';
+  var P = window.DPParse;
+  var BANK = JSON.parse(document.getElementById('dp-bank').textContent);
+  var BYID = {};
+  BANK.forEach(function (it, i) { it.n = i; BYID[it.id] = it; });
+
+  /* ================================================================ storage */
+  var KEY = 'tib-tool:derivative-practice';
+  function fresh() { return { v: 1, tiers: ['p1'], fc: {}, best: {}, quiz: {} }; }
+  var canStore = (function () { try { localStorage.setItem('tib-probe', '1'); localStorage.removeItem('tib-probe'); return true; } catch (e) { return false; } })();
+  var store = (function () {
+    try {
+      var raw = localStorage.getItem(KEY);
+      var o = raw ? JSON.parse(raw) : null;
+      if (o && o.v === 1) {
+        var f = fresh();
+        for (var k in f) if (!(k in o)) o[k] = f[k];
+        return o;
+      }
+    } catch (e) {}
+    return fresh();
+  })();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+
+  /* ================================================================ helpers */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function K(tex, disp) {
+    if (!window.katex) return '<span style="font-family:var(--mono)">' + esc(tex) + '</span>';
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: !!disp, output: 'htmlAndMathml' }); }
+    catch (e) { return esc(tex); }
+  }
+  function texOf(s) { try { return P.toTex(P.parse(s)); } catch (e) { return '\\text{' + s + '}'; } }
+  function shuffle(a, rnd) { rnd = rnd || Math.random; for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function mulberry(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function hashStr(s) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h >>> 0; }
+  function fmtTime(sec) { sec = Math.max(0, Math.round(sec)); var m = Math.floor(sec / 60), s = sec % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
+  function inField(e) { var t = e.target; return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); }
+
+  var TIERS = [
+    { id: 'p1', label: 'Paper 1: you need these', tag: 'Paper 1' },
+    { id: 'p3', label: 'Paper 3 extra', tag: 'Paper 3 extra' },
+    { id: 'beyond', label: 'Beyond 9709 extra', tag: 'Beyond 9709' }
+  ];
+  var TAG = {}; TIERS.forEach(function (t) { TAG[t.id] = t.tag; });
+  var MF = {
+    pow: '<b>MF19 p.3</b> prints xⁿ → nxⁿ⁻¹. Rewriting roots and fractions as powers is your job.',
+    chain: '<b>The chain rule is not on MF19.</b> Learn it.',
+    p3: '<b>Printed on MF19 p.3.</b>',
+    p6: '<b>Printed on MF19 p.6</b>, in the Further Mathematics section.',
+    none: '<b>Not on MF19.</b>'
+  };
+  function tagHtml(it) { return '<span class="tag ' + it.tier + '">' + TAG[it.tier] + '</span>'; }
+  function qTex(it) {
+    if (it.given === 'param') return it.f.split(',').map(function (p) { var s = p.split('='); return s[0].trim() + ' = ' + texOf(s[1]); }).join(',\\quad ');
+    if (it.given === 'implicit') { var q = it.f.split('='); return texOf(q[0]) + ' = ' + texOf(q[1]); }
+    return 'y = ' + texOf(it.f);
+  }
+  function askText(it) {
+    if (it.given === 'param') return 'Find dy/dx in terms of t.';
+    if (it.given === 'implicit') return 'Find dy/dx in terms of x and y.';
+    if (it.kind === 'd2') return 'Find d²y/dx².';
+    if (it.kind === 'grad') return 'Find the gradient of the curve at x = ' + it.at + '.';
+    return 'Find dy/dx.';
+  }
+  function lhs(it) { return it.kind === 'd2' ? '\\dfrac{d^2y}{dx^2} = ' : '\\dfrac{dy}{dx} = '; }
+  function aTex(it) { return lhs(it) + texOf(it.d) + (it.kind === 'grad' ? '\\ \\text{ at } x = ' + it.at : ''); }
+  function optTex(it, s) { return '\\displaystyle ' + texOf(s); }
+  function promptHtml(it, withTag) {
+    return '<div class="prompt">' + (withTag === false ? '' : '<div class="tagrow">' + tagHtml(it) + '</div>') +
+      '<div class="ask">' + askText(it) + '</div><div class="eq">' + K(qTex(it), true) + '</div></div>';
+  }
+  function mfHtml(it) { return '<div class="mf">' + MF[it.mf] + (it.note ? ' ' + esc(it.note) : '') + '</div>'; }
+
+  /* judge a typed answer: right, wrong, parse (unreadable) or var (wrong letter) */
+  function judge(it, text, rnd) {
+    var tree;
+    try { tree = P.parse(text); } catch (e) { return { state: 'parse', msg: e.msg || 'Check your brackets.' }; }
+    var vs = it.vars || ['x'];
+    var used = P.vars(tree);
+    if (it.kind === 'grad') {
+      if (Object.keys(used).length) return { state: 'var', msg: 'This one wants a number: put x = ' + it.at + ' into dy/dx.' };
+      var v = P.evaluate(tree, {}), a = P.evaluate(P.parse(it.d), {});
+      var okg = isFinite(v) && Math.abs(v - a) < 1e-6 * Math.max(1, Math.abs(a));
+      return { state: okg ? 'right' : 'wrong', slip: okg ? null : slipFor(it, tree) };
+    }
+    for (var u in used) if (vs.indexOf(u) < 0) return { state: 'var', msg: 'Write this answer in terms of ' + vs.join(' and ') + '.' };
+    var r = P.equivalent(tree, P.parse(it.d), { vars: vs, dom: it.dom, rand: rnd });
+    return { state: r.ok ? 'right' : 'wrong', slip: r.ok ? null : slipFor(it, tree) };
+  }
+  function slipFor(it, tree) {
+    for (var i = 0; i < it.opts.length; i++) {
+      var o = P.parse(it.opts[i].t);
+      if (it.kind === 'grad') { if (Math.abs(P.evaluate(o, {}) - P.evaluate(tree, {})) < 1e-6) return it.opts[i].why; continue; }
+      if (P.equivalent(tree, o, { vars: it.vars || ['x'], dom: it.dom }).ok) return it.opts[i].why;
+    }
+    return null;
+  }
+
+  /* ================================================================ tiers */
+  var busy = false;     // sprint running: tiers locked
+  function pool() { return BANK.filter(function (it) { return store.tiers.indexOf(it.tier) >= 0; }); }
+  function tierKey() { return store.tiers.slice().sort().join('+'); }
+  function drawTiers() {
+    var host = $('tiers');
+    host.innerHTML = TIERS.map(function (t) {
+      return '<button type="button" class="chip" data-tier="' + t.id + '" aria-pressed="' + (store.tiers.indexOf(t.id) >= 0) + '"' + (busy ? ' disabled' : '') + '>' + t.label + '</button>';
+    }).join('');
+    var n = pool().length;
+    $('count').textContent = n + ' derivative' + (n === 1 ? '' : 's') + ' in play' + (busy ? ' · locked during the sprint' : '');
+  }
+  $('tiers').addEventListener('click', function (e) {
+    var b = e.target.closest('.chip'); if (!b || busy) return;
+    var id = b.dataset.tier, i = store.tiers.indexOf(id);
+    if (i >= 0) { if (store.tiers.length === 1) { $('count').textContent = 'Keep at least one group on.'; return; } store.tiers.splice(i, 1); }
+    else store.tiers.push(id);
+    save(); drawTiers(); onTiers();
+  });
+  function onTiers() { fc.queue = null; pk.queue = null; ty.queue = null; renderTab(current, true); }
+
+  /* ================================================================ tabs */
+  var current = 'flash';
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function visibleTabs() { return tabs.filter(function (t) { return !t.hidden; }); }
+  function showTab(name, focus) {
+    if (busy && name !== 'sprint') return;
+    current = name;
+    tabs.forEach(function (t) {
+      var on = t.dataset.tab === name;
+      t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1;
+      $('panel-' + t.dataset.tab).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    document.body.classList.toggle('nofilter', name === 'quiz' || name === 'sheet' || name === 'teacher');
+    $('keyhelp').hidden = !(name === 'pick' || name === 'sprint' || name === 'flash' || name === 'type' || name === 'quiz');
+    renderTab(name, false);
+  }
+  $('tabs').addEventListener('click', function (e) { var t = e.target.closest('.tab'); if (t) showTab(t.dataset.tab); });
+  $('tabs').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var v = visibleTabs(), i = v.findIndex(function (t) { return t.dataset.tab === current; });
+    i = (i + (e.key === 'ArrowRight' ? 1 : -1) + v.length) % v.length;
+    showTab(v[i].dataset.tab, true); e.preventDefault();
+  });
+  function renderTab(name, reset) {
+    if (name === 'flash') renderFlash(reset);
+    else if (name === 'pick') renderPick(reset);
+    else if (name === 'type') renderType(reset);
+    else if (name === 'sprint') renderSprint();
+    else if (name === 'quiz') renderQuiz();
+    else if (name === 'teacher') renderTeacher();
+    else if (name === 'sheet') renderSheet();
+  }
+  function keyHelp(html) { $('keyhelp').innerHTML = html; }
+
+  /* queue: every item once, shuffled, before any repeat */
+  function nextFrom(state) {
+    var p = pool();
+    if (!state.queue || !state.queue.length) {
+      state.queue = shuffle(p.map(function (it) { return it.id; }));
+      if (state.cur && state.queue.length > 1 && state.queue[state.queue.length - 1] === state.cur.id) state.queue.unshift(state.queue.pop());
+    }
+    return BYID[state.queue.pop()];
+  }
+
+  /* ================================================================ flashcards */
+  var fc = { queue: null, cur: null, flipped: false };
+  function fcOrder() {
+    var p = pool();
+    var not = [], unseen = [], got = [];
+    p.forEach(function (it) { var s = store.fc[it.id]; (s === 'not' ? not : s === 'got' ? got : unseen).push(it.id); });
+    return shuffle(got).concat(shuffle(unseen)).concat(shuffle(not)); // popped from the end: not yet first
+  }
+  function renderFlash(reset) {
+    if (reset || !fc.queue || !fc.cur) { fc.queue = fcOrder(); fc.cur = BYID[fc.queue.pop()]; fc.flipped = false; }
+    var p = pool(), got = p.filter(function (it) { return store.fc[it.id] === 'got'; }).length;
+    var not = p.filter(function (it) { return store.fc[it.id] === 'not'; }).length;
+    var it = fc.cur;
+    var h = '<div class="nextrow" style="margin-top:0"><span class="tally">Got it: ' + got + ' of ' + p.length + (not ? ' · not yet: ' + not : '') + '</span>' +
+      '<span class="tally">' + (fc.flipped ? '' : 'Say the derivative out loud, then check.') + '</span></div>' +
+      '<div class="bar" aria-hidden="true"><span style="width:' + (p.length ? Math.round(100 * got / p.length) : 0) + '%"></span></div>' +
+      '<div class="flash">' + promptHtml(it);
+    if (fc.flipped) {
+      h += '<div class="back"><div class="ans">' + K(aTex(it), true) + '</div><p class="rule">' + esc(it.rule) + '</p>' +
+        '<div class="note">' + MF[it.mf] + (it.note ? ' ' + esc(it.note) : '') + '</div></div>';
+    }
+    h += '</div><div class="nextrow" style="justify-content:center">';
+    if (!fc.flipped) h += '<button type="button" class="go" id="fcFlip">Show the derivative<span class="kbd">Enter</span></button>';
+    else h += '<button type="button" class="ghost" id="fcNot">Not yet<span class="kbd">1</span></button><button type="button" class="go" id="fcGot">Got it<span class="kbd">2</span></button>';
+    h += '</div>';
+    $('flashBody').innerHTML = h;
+    keyHelp('Keys: <span class="kbd">Enter</span> show · <span class="kbd">1</span> not yet · <span class="kbd">2</span> got it.');
+    if (!fc.flipped) $('fcFlip').onclick = flipCard;
+    else { $('fcNot').onclick = function () { markCard('not'); }; $('fcGot').onclick = function () { markCard('got'); }; }
+  }
+  function flipCard() { fc.flipped = true; renderFlash(false); var b = $('fcGot'); if (b) b.focus(); }
+  function markCard(v) {
+    store.fc[fc.cur.id] = v; save();
+    if (!fc.queue.length) fc.queue = fcOrder();
+    var nx = fc.queue.pop();
+    if (nx === fc.cur.id && fc.queue.length) { var alt = fc.queue.pop(); fc.queue.push(nx); nx = alt; }
+    fc.cur = BYID[nx]; fc.flipped = false; renderFlash(false);
+    var f = $('fcFlip'); if (f) f.focus();
+  }
+
+  /* ================================================================ pick the derivative */
+  var pk = { queue: null, cur: null, opts: null, done: false, right: 0, total: 0, chosen: -1 };
+  function makeOpts(it, rnd) {
+    var o = [{ t: it.d, correct: true }].concat(it.opts.map(function (x) { return { t: x.t, why: x.why }; }));
+    return shuffle(o, rnd);
+  }
+  function optsHtml(it, opts, state) {
+    return '<div class="opts' + (state.done ? ' done' : '') + '" role="group" aria-label="Four options">' + opts.map(function (o, i) {
+      var cls = 'opt';
+      if (state.done) { if (o.correct) cls += ' right'; else if (i === state.chosen) cls += ' wrong'; }
+      else if (state.mark === i) cls += ' chosen';
+      return '<button type="button" class="' + cls + '" data-i="' + i + '" aria-label="Option ' + (i + 1) + '"><span class="key">' + (i + 1) + '</span>' + K(optTex(it, o.t)) + '</button>';
+    }).join('') + '</div>';
+  }
+  function renderPick(reset) {
+    if (reset || !pk.cur) { pk.cur = nextFrom(pk); pk.opts = makeOpts(pk.cur); pk.done = false; pk.chosen = -1; }
+    var it = pk.cur;
+    var h = '<div class="nextrow" style="margin-top:0"><span class="tally">' + (pk.total ? pk.right + ' of ' + pk.total + ' right this session' : 'Choose the derivative. The wrong ones are real slips.') + '</span></div>' +
+      promptHtml(it) + optsHtml(it, pk.opts, pk);
+    if (pk.done) {
+      var o = pk.opts[pk.chosen];
+      h += '<div class="fb" aria-live="polite">' + (o.correct ? '<span class="v ok">Right.</span>' : '<span class="v no">Not this one.</span> <span class="why">' + esc(o.why) + '.</span>') +
+        '<p>' + esc(it.rule) + '</p>' + mfHtml(it) + '</div>' +
+        '<div class="nextrow"><span></span><button type="button" class="go" id="pkNext">Next<span class="kbd">Enter</span></button></div>';
+    }
+    $('pickBody').innerHTML = h;
+    keyHelp('Keys: <span class="kbd">1</span>–<span class="kbd">4</span> pick · <span class="kbd">Enter</span> next.');
+    $('pickBody').querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { pickAnswer(+b.dataset.i); }; });
+    if (pk.done) $('pkNext').onclick = function () { renderPick(true); var f = $('pickBody').querySelector('.opt'); if (f) f.focus(); };
+  }
+  function pickAnswer(i) {
+    if (pk.done) return;
+    pk.done = true; pk.chosen = i; pk.total++; if (pk.opts[i].correct) pk.right++;
+    renderPick(false); var n = $('pkNext'); if (n) n.focus();
+  }
+
+  /* ================================================================ type it */
+  var ty = { queue: null, cur: null, done: false, right: 0, total: 0, res: null, text: '' };
+  var KEYS_BASE = [['x', 'x'], ['^', '^'], ['√', '√('], ['(', '('], [')', ')'], ['/', '/'], ['−', '−'], ['+', '+']];
+  var KEYS_EXTRA = [['e^', 'e^('], ['ln', 'ln('], ['sin', 'sin('], ['cos', 'cos('], ['tan', 'tan(']];
+  function previewHtml(text) {
+    if (!text.trim()) return '<span class="lbl">Preview</span><span class="pv-empty">Your answer shows here as you type.</span>';
+    try { return '<span class="lbl">Preview</span>' + K(P.toTex(P.parse(text))); }
+    catch (e) { return '<span class="lbl">Preview</span><span class="pv-err">' + esc(e.msg || 'Check your brackets.') + '</span>'; }
+  }
+  function typeHint(it) {
+    if (it.kind === 'grad') return 'Give the exact value. A fraction like 1/3 is fine.';
+    if (it.given === 'param') return 'Answer in terms of t. Any equivalent form counts.';
+    if (it.given === 'implicit') return 'Answer in terms of x and y. Any equivalent form counts.';
+    return 'Powers with ^, roots with √ or sqrt( ), fractions with /. Any equivalent form counts: x^(−1/2), 1/√x and 1/x^(1/2) all work.';
+  }
+  function keysHtml(it, id) {
+    var ks = KEYS_BASE.concat(it.tier === 'p1' ? [] : KEYS_EXTRA);
+    if (it.vars && it.vars.indexOf('t') >= 0) ks = [['t', 't']].concat(ks.slice(1));
+    if (it.vars && it.vars.indexOf('y') >= 0) ks = ks.concat([['y', 'y']]);
+    return '<div class="keys" id="' + id + '" aria-label="Math keys">' + ks.map(function (k) {
+      return '<button type="button" data-ins="' + esc(k[1]) + '" aria-label="insert ' + esc(k[1]) + '">' + esc(k[0]) + '</button>';
+    }).join('') + '<button type="button" data-ins="⌫" aria-label="delete">⌫</button></div>';
+  }
+  function wireKeys(hostId, input, onChange) {
+    $(hostId).addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      var ins = b.dataset.ins, s = input.selectionStart, en = input.selectionEnd, v = input.value;
+      if (ins === '⌫') {
+        if (s === en && s > 0) { input.value = v.slice(0, s - 1) + v.slice(en); s--; }
+        else input.value = v.slice(0, s) + v.slice(en);
+        input.setSelectionRange(s, s);
+      } else {
+        input.value = v.slice(0, s) + ins + v.slice(en);
+        input.setSelectionRange(s + ins.length, s + ins.length);
+      }
+      input.focus(); onChange();
+    });
+  }
+  function renderType(reset) {
+    if (reset || !ty.cur) { ty.cur = nextFrom(ty); ty.done = false; ty.res = null; ty.text = ''; }
+    var it = ty.cur;
+    var h = '<div class="nextrow" style="margin-top:0"><span class="tally">' + (ty.total ? ty.right + ' of ' + ty.total + ' right this session' : 'Type the derivative. It is checked by algebra, so any correct form counts.') + '</span></div>' +
+      promptHtml(it) +
+      '<div class="typein"><label class="sr" for="tyIn">Your answer</label><input id="tyIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" placeholder="' + (it.kind === 'grad' ? 'gradient' : 'dy/dx =') + '"' + (ty.done ? ' readonly' : '') + '>' +
+      '<button type="button" class="go" id="tyGo">' + (ty.done ? 'Next' : 'Check') + '<span class="kbd">Enter</span></button></div>' +
+      '<div class="preview" id="tyPv" aria-live="polite"></div>' + (ty.done ? '' : keysHtml(it, 'tyKeys')) +
+      '<p class="hint">' + typeHint(it) + '</p><div id="tyFb" aria-live="polite"></div>';
+    $('typeBody').innerHTML = h;
+    keyHelp('Keys: <span class="kbd">Enter</span> check, then <span class="kbd">Enter</span> again for the next one.');
+    var inp = $('tyIn'); inp.value = ty.text;
+    var upd = function () { ty.text = inp.value; $('tyPv').innerHTML = previewHtml(inp.value); };
+    upd();
+    inp.addEventListener('input', upd);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); typeGo(); } });
+    $('tyGo').onclick = typeGo;
+    if (!ty.done) wireKeys('tyKeys', inp, upd);
+    if (ty.res) showTypeFb();
+  }
+  function typeGo() {
+    if (ty.done) { renderType(true); $('tyIn').focus(); return; }
+    var it = ty.cur, text = $('tyIn').value;
+    var r = judge(it, text);
+    if (r.state === 'parse' || r.state === 'var') { ty.res = r; showTypeFb(); return; }
+    ty.res = r; ty.done = true; ty.total++; if (r.state === 'right') ty.right++;
+    renderType(false); $('tyGo').focus();
+  }
+  function showTypeFb() {
+    var it = ty.cur, r = ty.res, h;
+    if (r.state === 'parse') h = '<div class="fb"><span class="v hm">The checker can’t read that yet.</span> <span class="why">' + esc(r.msg) + ' Nothing has been marked.</span></div>';
+    else if (r.state === 'var') h = '<div class="fb"><span class="v hm">Almost.</span> <span class="why">' + esc(r.msg) + '</span></div>';
+    else {
+      h = '<div class="fb">' + (r.state === 'right' ? '<span class="v ok">Right.</span> <span class="why">The Cambridge way to write it:</span>' :
+        '<span class="v no">Not this one.</span>' + (r.slip ? ' <span class="why">That matches a common slip: ' + esc(r.slip) + '.</span>' : ' <span class="why">The answer:</span>')) +
+        '<div class="ans">' + K(aTex(it), true) + '</div><p>' + esc(it.rule) + '</p>' + mfHtml(it) + '</div>';
+    }
+    $('tyFb').innerHTML = h;
+  }
+
+  /* ================================================================ sprint */
+  var SPRINT_SECS = 90;
+  var sp = { state: 'start', score: 0, n: 0, missed: [], cur: null, opts: null, end: 0, timer: null, lock: false, queue: null, newBest: false };
+  function renderSprint() {
+    var host = $('sprintBody'), best = store.best[tierKey()];
+    keyHelp('Keys: <span class="kbd">1</span>–<span class="kbd">4</span> pick · <span class="kbd">Enter</span> start.');
+    if (sp.state === 'start') {
+      host.innerHTML = '<h2>90 seconds</h2><p class="muted">Pick the derivative, as many as you can. A wrong pick costs you the time it took. The groups you have on above are the ones in play.</p>' +
+        '<div class="spec"><div><div class="sv">90s</div><div class="sl">on the clock</div></div><div><div class="sv">' + pool().length + '</div><div class="sl">derivatives in play</div></div>' +
+        '<div><div class="sv">' + (best == null ? 'none yet' : best) + '</div><div class="sl">your best here</div></div></div>' +
+        '<button type="button" class="go" id="spGo">Start the clock<span class="kbd">Enter</span></button>';
+      $('spGo').onclick = sprintStart;
+      return;
+    }
+    if (sp.state === 'run') {
+      var left = Math.max(0, (sp.end - Date.now()) / 1000);
+      host.innerHTML = '<div class="clockrow"><span class="clocknum" id="spClock">' + Math.ceil(left) + 's</span><div class="track"><span id="spFill" style="width:' + (100 * left / SPRINT_SECS) + '%"></span></div><span class="score" id="spScore">' + sp.score + '</span></div>' +
+        promptHtml(sp.cur) + optsHtml(sp.cur, sp.opts, { done: sp.lock, chosen: sp.chosen });
+      host.querySelectorAll('.opt').forEach(function (b) { b.onclick = function () { sprintAnswer(+b.dataset.i); }; });
+      return;
+    }
+    // over
+    var h = '<div class="center"><div class="lbl">Clock stopped</div><div class="big">' + sp.score + '</div>' +
+      '<p class="muted">' + sp.score + ' right out of ' + sp.n + ' tried' + (sp.newBest ? ' · <b style="color:var(--ok)">a new best</b>' : best != null ? ' · your best here is ' + best : '') + '</p></div>';
+    if (sp.missed.length) {
+      h += '<h3>To look at again</h3><ul class="misslist">' + sp.missed.map(function (it) {
+        return '<li>' + tagHtml(it) + ' ' + K(qTex(it)) + ' &nbsp;→&nbsp; ' + K(texOf(it.d)) + '</li>';
+      }).join('') + '</ul>';
+    } else if (sp.n) h += '<p class="center" style="color:var(--ok)">No misses.</p>';
+    h += '<div class="nextrow" style="justify-content:center"><button type="button" class="go" id="spAgain">Run it again<span class="kbd">Enter</span></button></div>';
+    host.innerHTML = h;
+    $('spAgain').onclick = sprintStart;
+  }
+  function sprintStart() {
+    sp.state = 'run'; sp.score = 0; sp.n = 0; sp.missed = []; sp.lock = false; sp.queue = null; sp.newBest = false;
+    sp.cur = nextFrom(sp); sp.opts = makeOpts(sp.cur); sp.chosen = -1;
+    sp.end = Date.now() + SPRINT_SECS * 1000;
+    busy = true; drawTiers();
+    renderSprint();
+    clearInterval(sp.timer);
+    sp.timer = setInterval(tickSprint, 100);
+    var f = $('sprintBody').querySelector('.opt'); if (f) f.focus();
+  }
+  function tickSprint() {
+    var left = (sp.end - Date.now()) / 1000;
+    if (left <= 0) { sprintOver(); return; }
+    var c = $('spClock'), f = $('spFill');
+    if (c) c.textContent = Math.ceil(left) + 's';
+    if (f) { f.style.width = (100 * left / SPRINT_SECS) + '%'; f.classList.toggle('warn', left < 10); }
+  }
+  function sprintAnswer(i) {
+    if (sp.lock || sp.state !== 'run') return;
+    sp.lock = true; sp.chosen = i; sp.n++;
+    var ok = sp.opts[i].correct;
+    if (ok) sp.score++; else if (sp.missed.indexOf(sp.cur) < 0) sp.missed.push(sp.cur);
+    renderSprint();
+    setTimeout(function () {
+      if (sp.state !== 'run') return;
+      sp.cur = nextFrom(sp); sp.opts = makeOpts(sp.cur); sp.lock = false; sp.chosen = -1;
+      renderSprint(); var f = $('sprintBody').querySelector('.opt'); if (f) f.focus();
+    }, ok ? 350 : 1100);
+  }
+  function sprintOver() {
+    clearInterval(sp.timer); sp.state = 'over'; busy = false;
+    var k = tierKey(), b = store.best[k];
+    if (sp.score > 0 && (b == null || sp.score > b)) { store.best[k] = sp.score; sp.newBest = true; save(); }
+    else sp.newBest = false;
+    drawTiers(); renderSprint();
+    var a = $('spAgain'); if (a) a.focus();
+  }
+
+  /* ================================================================ pop quiz: shared */
+  var TIERBIT = { p1: 1, p3: 2, beyond: 4 };
+  function encodeQuiz(c) {
+    var mask = c.tiers.reduce(function (m, t) { return m | TIERBIT[t]; }, 0);
+    return ['1', mask, c.n, c.min, c.fmt, c.seed].join('.');
+  }
+  function decodeQuiz(s) {
+    var m = /^1\.([1-7])\.(\d{1,2})\.(\d{1,3})\.([mt])\.([0-9a-z]{4,10})$/.exec(String(s || ''));
+    if (!m) return null;
+    var mask = +m[1], tiers = TIERS.map(function (t) { return t.id; }).filter(function (t) { return mask & TIERBIT[t]; });
+    var n = +m[2], min = +m[3];
+    if (n < 1 || n > 30 || min < 1 || min > 120) return null;
+    return { id: s, tiers: tiers, n: n, min: min, fmt: m[4], seed: m[5] };
+  }
+  function quizItems(c) {     // the same questions for everyone with the link, in a fixed order
+    var p = BANK.filter(function (it) { return c.tiers.indexOf(it.tier) >= 0; });
+    var r = mulberry(hashStr(c.seed + '|' + c.id));
+    return shuffle(p.slice(), r).slice(0, Math.min(c.n, p.length));
+  }
+  var SALT = 'tib·dp·1.7·pop';
+  function b64e(str) { return btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+  function b64d(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return decodeURIComponent(escape(atob(s))); }
+  function check(payload) { return hashStr(SALT + payload).toString(36) + hashStr(payload + '|' + SALT + '|' + payload.length).toString(36); }
+  function makeCode(o) { var p = b64e(JSON.stringify(o)); return 'DP1.' + p + '.' + check(p); }
+  function readCodes(text) {
+    var re = /DP1\.([A-Za-z0-9_-]+)\.([0-9a-z]+)/g, m, out = [];
+    while ((m = re.exec(text))) {
+      var rec = { raw: m[0], valid: false };
+      try { rec.d = JSON.parse(b64d(m[1])); } catch (e) { rec.d = null; }
+      if (rec.d) {
+        var d = rec.d, r = String(d.r || '');
+        var ones = (r.match(/1/g) || []).length;
+        rec.valid = check(m[1]) === m[2] && /^[01]+$/.test(r) && ones === d.s && r.length === d.N;
+      }
+      out.push(rec);
+    }
+    return out;
+  }
+
+  /* ================================================================ pop quiz: student */
+  var params = (function () { try { return new URLSearchParams(location.search); } catch (e) { return null; } })();
+  var QZ = params ? decodeQuiz(params.get('quiz')) : null;
+  var QTITLE = params && params.get('title') ? params.get('title').slice(0, 80) : 'Derivatives pop quiz';
+  var qs = null;   // the running attempt
+  var qTimer = null;
+  function attempt() { return QZ ? store.quiz[QZ.id] : null; }
+  function renderQuiz() {
+    var host = $('quizBody');
+    keyHelp('Keys: <span class="kbd">1</span>–<span class="kbd">4</span> pick · <span class="kbd">Enter</span> next.');
+    if (!QZ) {
+      var bad = params && params.get('quiz');
+      host.innerHTML = '<h2>Pop quiz</h2>' + (bad ? '<p class="warnmsg">That quiz link looks damaged. Ask your teacher for the link again.</p>' : '') +
+        '<p class="muted">Pop quizzes come from your teacher as a link, usually in Schoology. Open the link and the quiz starts here: same questions as the rest of the class, timed, with your score and a review at the end.</p>' +
+        '<p class="muted">Until then, the Sprint is the best practice for it.</p>';
+      return;
+    }
+    var a = attempt();
+    if (a && a.st === 'done') return quizResult(a);
+    if (qs) return quizQuestion();
+    if (a && a.st === 'run') {   // came back mid-quiz on this browser: carry on with the same clock
+      qs = a; if (Date.now() >= qs.t0 + QZ.min * 60000) return quizFinish(true);
+      startQuizTimer(); return quizQuestion();
+    }
+    var items = quizItems(QZ);
+    host.innerHTML = '<div class="lbl">Pop quiz</div><h2>' + esc(QTITLE) + '</h2>' +
+      '<div class="spec"><div><div class="sv">' + items.length + '</div><div class="sl">questions</div></div><div><div class="sv">' + QZ.min + ' min</div><div class="sl">time limit</div></div>' +
+      '<div><div class="sv">' + (QZ.fmt === 'm' ? 'Pick' : 'Type') + '</div><div class="sl">' + (QZ.fmt === 'm' ? 'multiple choice' : 'typed answers') + '</div></div></div>' +
+      '<p class="muted small">From: ' + QZ.tiers.map(function (t) { return TAG[t]; }).join(', ') + '. You won’t see whether you are right until the end. One attempt on this browser.</p>' +
+      '<label class="fld" for="qzName">Your name, as it appears in Schoology</label><input type="text" id="qzName" class="wide" maxlength="40" autocomplete="name">' +
+      '<p class="warnmsg" id="qzNameMsg" hidden>Type your name first.</p>' +
+      (canStore ? '' : '<p class="warnmsg">This browser is blocking saved data, so if you reload, the quiz starts again.</p>') +
+      '<div class="nextrow"><span class="muted small">The clock starts when you press Start.</span><button type="button" class="go" id="qzStart">Start the quiz</button></div>';
+    $('qzStart').onclick = function () {
+      var nm = $('qzName').value.trim().replace(/\s+/g, ' ');
+      if (nm.length < 2) { $('qzNameMsg').hidden = false; $('qzName').focus(); return; }
+      var its = quizItems(QZ);
+      var order = shuffle(its.map(function (_, i) { return i; }));
+      var opts = {};
+      if (QZ.fmt === 'm') its.forEach(function (it, i) { opts[i] = shuffle([0, 1, 2, 3]); });
+      qs = { st: 'run', name: nm, order: order, opts: opts, ans: {}, t0: Date.now(), pos: 0 };
+      store.quiz[QZ.id] = qs; save();
+      startQuizTimer(); quizQuestion();
+    };
+    $('qzName').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('qzStart').click(); });
+  }
+  function startQuizTimer() { clearInterval(qTimer); qTimer = setInterval(tickQuiz, 250); document.body.classList.add('quizmode'); }
+  function tickQuiz() {
+    var left = (qs.t0 + QZ.min * 60000 - Date.now()) / 1000;
+    if (left <= 0) { quizFinish(true); return; }
+    var c = $('qzClock'), f = $('qzFill');
+    if (c) c.textContent = fmtTime(left);
+    if (f) { f.style.width = (100 * left / (QZ.min * 60)) + '%'; f.classList.toggle('warn', left < 30); }
+  }
+  function quizOptsFor(it, i) {   // fixed per student: stored option order
+    var all = [{ t: it.d, correct: true, k: 0 }].concat(it.opts.map(function (o, j) { return { t: o.t, k: j + 1 }; }));
+    return qs.opts[i].map(function (k) { return all[k]; });
+  }
+  function quizQuestion() {
+    var its = quizItems(QZ), N = its.length, pos = qs.pos, i = qs.order[pos], it = its[i];
+    var left = (qs.t0 + QZ.min * 60000 - Date.now()) / 1000;
+    var h = '<div class="clockrow"><span class="clocknum" id="qzClock">' + fmtTime(left) + '</span><div class="track"><span id="qzFill" style="width:' + (100 * left / (QZ.min * 60)) + '%"></span></div>' +
+      '<span class="tally">Q' + (pos + 1) + ' / ' + N + '</span></div>' + promptHtml(it);
+    if (QZ.fmt === 'm') {
+      var opts = quizOptsFor(it, i), mark = qs.ans[i] == null ? -1 : qs.ans[i];
+      h += optsHtml(it, opts, { done: false, mark: mark });
+    } else {
+      h += '<div class="typein"><label class="sr" for="qzIn">Your answer</label><input id="qzIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + (it.kind === 'grad' ? 'gradient' : 'dy/dx =') + '"></div>' +
+        '<div class="preview" id="qzPv" aria-live="polite"></div>' + keysHtml(it, 'qzKeys') + '<p class="hint">' + typeHint(it) + '</p>';
+    }
+    h += '<div class="nextrow"><button type="button" class="ghost" id="qzBack"' + (pos === 0 ? ' disabled' : '') + '>Back</button>' +
+      (pos < N - 1 ? '<button type="button" class="go" id="qzNext">Next<span class="kbd">Enter</span></button>' : '<button type="button" class="go" id="qzDone">Finish</button>') + '</div>' +
+      '<div class="qnav" aria-label="Jump to a question">' + qs.order.map(function (ix, p) {
+        var has = qs.ans[ix] != null && qs.ans[ix] !== '';
+        return '<button type="button" data-p="' + p + '" class="' + (has ? 'answered' : '') + (p === pos ? ' here' : '') + '" aria-label="Question ' + (p + 1) + (has ? ', answered' : '') + '">' + (p + 1) + '</button>';
+      }).join('') + '</div><div id="qzMsg" aria-live="polite"></div>';
+    $('quizBody').innerHTML = h;
+    var host = $('quizBody');
+    if (QZ.fmt === 'm') host.querySelectorAll('.opt').forEach(function (b) {
+      b.onclick = function () { qs.ans[i] = +b.dataset.i; save(); quizQuestion(); var f = $('qzNext') || $('qzDone'); if (f) f.focus(); };
+    });
+    else {
+      var inp = $('qzIn'); inp.value = qs.ans[i] || '';
+      var upd = function () { qs.ans[i] = inp.value; $('qzPv').innerHTML = previewHtml(inp.value); save(); };
+      $('qzPv').innerHTML = previewHtml(inp.value);
+      inp.addEventListener('input', upd);
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); var n = $('qzNext') || $('qzDone'); n.click(); } });
+      wireKeys('qzKeys', inp, upd);
+      setTimeout(function () { inp.focus(); }, 0);
+    }
+    $('qzBack').onclick = function () { qs.pos = Math.max(0, pos - 1); save(); quizQuestion(); };
+    if ($('qzNext')) $('qzNext').onclick = function () { qs.pos = pos + 1; save(); quizQuestion(); };
+    if ($('qzDone')) $('qzDone').onclick = function () { quizTryFinish(); };
+    host.querySelectorAll('.qnav button').forEach(function (b) { b.onclick = function () { qs.pos = +b.dataset.p; save(); quizQuestion(); }; });
+  }
+  var finishArmed = false;
+  function quizTryFinish() {
+    var its = quizItems(QZ), blank = 0, unread = 0;
+    its.forEach(function (it, i) {
+      var a = qs.ans[i];
+      if (a == null || a === '') blank++;
+      else if (QZ.fmt === 't') { try { P.parse(a); } catch (e) { unread++; } }
+    });
+    if ((blank || unread) && !finishArmed) {
+      finishArmed = true;
+      $('qzMsg').innerHTML = '<p class="warnmsg">' + (blank ? blank + ' question' + (blank > 1 ? 's have' : ' has') + ' no answer. ' : '') +
+        (unread ? unread + ' answer' + (unread > 1 ? 's' : '') + ' can’t be read (check the brackets); unread answers count as wrong. ' : '') +
+        'Press Finish again to hand it in anyway.</p>';
+      return;
+    }
+    quizFinish(false);
+  }
+  function quizFinish(timeUp) {
+    clearInterval(qTimer); finishArmed = false;
+    var its = quizItems(QZ), r = '', score = 0, review = [];
+    its.forEach(function (it, i) {
+      var a = qs.ans[i], ok = false, shown = null;
+      if (QZ.fmt === 'm') {
+        if (a != null) { var o = quizOptsFor(it, i)[a]; ok = !!o.correct; shown = o.t; }
+      } else if (a != null && a !== '') {
+        var j = judge(it, a, mulberry(hashStr(QZ.id + i)));
+        ok = j.state === 'right'; shown = a;
+      }
+      r += ok ? '1' : '0'; if (ok) score++;
+      review.push({ i: i, a: shown, ok: ok });
+    });
+    var secs = Math.min(QZ.min * 60, Math.round((Date.now() - qs.t0) / 1000));
+    var payload = { q: QZ.id, ti: QTITLE, n: qs.name, s: score, N: its.length, t: secs, r: r, at: Date.now() };
+    var done = { st: 'done', name: qs.name, score: score, N: its.length, time: secs, code: makeCode(payload), order: qs.order, review: review, timeUp: !!timeUp, at: payload.at };
+    store.quiz[QZ.id] = done; save(); qs = null;
+    document.body.classList.remove('quizmode');
+    quizResult(done);
+  }
+  function quizResult(a) {
+    var its = quizItems(QZ);
+    var h = '<div class="lbl">' + esc(QTITLE) + (a.timeUp ? ' · time ran out' : '') + '</div><h2>' + esc(a.name) + ', you scored ' + a.score + ' out of ' + a.N + '</h2>' +
+      '<div class="spec"><div><div class="sv">' + a.score + ' / ' + a.N + '</div><div class="sl">score</div></div><div><div class="sv">' + Math.round(100 * a.score / a.N) + '%</div><div class="sl">percent</div></div><div><div class="sv">' + fmtTime(a.time) + '</div><div class="sl">time</div></div></div>' +
+      '<h3>Hand it in</h3><p class="muted small">Copy this results code and paste it into the Schoology assignment. If copying does not work, download the file and upload it instead.</p>' +
+      '<div class="codebox" id="qzCode">' + esc(a.code) + '</div>' +
+      '<div class="nextrow"><span id="qzCopyMsg" class="okmsg" aria-live="polite"></span><span class="row"><button type="button" class="ghost" id="qzDl">Download results</button><button type="button" class="go" id="qzCopy">Copy the code</button></span></div>' +
+      '<div class="section"><h3>Review</h3>' + a.order.map(function (i, p) {
+        var it = its[i], rv = a.review[i];
+        var yours = rv.a == null || rv.a === '' ? '<i>no answer</i>' : (function () { try { return K(P.toTex(P.parse(rv.a))); } catch (e) { return '<span style="font-family:var(--mono)">' + esc(rv.a) + '</span> <span class="small">(could not be read)</span>'; } })();
+        return '<div class="rv"><div class="mark ' + (rv.ok ? 'ok' : 'no') + '" aria-label="' + (rv.ok ? 'right' : 'wrong') + '">' + (rv.ok ? '✓' : '✗') + '</div>' +
+          '<div><div class="q">' + (p + 1) + '. ' + askText(it) + ' ' + K(qTex(it)) + '</div>' +
+          '<div class="a">Yours: ' + yours + (rv.ok ? '' : ' &nbsp;·&nbsp; Answer: ' + K(texOf(it.d))) + '</div></div></div>';
+      }).join('') + '</div>' +
+      '<p class="muted small">This browser keeps your result, so the link brings you back here. To practice more, use the tabs above.</p>';
+    $('quizBody').innerHTML = h;
+    $('qzCopy').onclick = function () {
+      var done = function () { $('qzCopyMsg').textContent = 'Copied. Now paste it into Schoology.'; };
+      var fail = function () { var rng = document.createRange(); rng.selectNodeContents($('qzCode')); var s = getSelection(); s.removeAllRanges(); s.addRange(rng); $('qzCopyMsg').textContent = 'The code is selected: press Ctrl+C (or ⌘C) to copy it.'; };
+      try { navigator.clipboard.writeText(a.code).then(done, fail); } catch (e) { fail(); }
+    };
+    $('qzDl').onclick = function () {
+      var txt = QTITLE + '\nName: ' + a.name + '\nScore: ' + a.score + ' / ' + a.N + '\nTime: ' + fmtTime(a.time) + '\nFinished: ' + new Date(a.at).toLocaleString() + '\n\nResults code (paste this into Schoology):\n' + a.code + '\n';
+      download('derivatives-quiz-' + a.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase() + '.txt', txt, 'text/plain');
+    };
+  }
+  function download(name, text, type) {
+    var blob = new Blob([text], { type: type + ';charset=utf-8' });
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+  }
+
+  /* ================================================================ teacher */
+  var tc = { tiers: ['p1'], n: 10, min: 10, fmt: 'm', title: 'Derivatives pop quiz', link: null, cfg: null, read: null };
+  function renderTeacher() {
+    var host = $('teacherBody');
+    keyHelp('');
+    var maxN = BANK.filter(function (it) { return tc.tiers.indexOf(it.tier) >= 0; }).length;
+    var h = '<div class="lbl">Teacher</div><h2>Make a pop quiz link</h2>' +
+      '<p class="muted small">Everyone with the link gets the same questions, each in their own order. Nothing is sent anywhere: students paste a results code into a Schoology assignment (text submission), and you paste all the codes back here.</p>' +
+      '<label class="fld">Which derivatives</label><div class="checks" id="tcTiers">' + TIERS.map(function (t) {
+        return '<label><input type="checkbox" value="' + t.id + '"' + (tc.tiers.indexOf(t.id) >= 0 ? ' checked' : '') + '> ' + t.label + '</label>';
+      }).join('') + '</div>' +
+      '<div class="row" style="margin-top:6px"><div><label class="fld" for="tcN">Questions</label><select id="tcN">' + [5, 6, 8, 10, 12, 15, 20].map(function (n) {
+        return '<option' + (n === tc.n ? ' selected' : '') + (n > maxN ? ' disabled' : '') + '>' + n + '</option>';
+      }).join('') + '</select></div>' +
+      '<div><label class="fld" for="tcMin">Time limit (minutes)</label><select id="tcMin">' + [3, 5, 8, 10, 12, 15, 20, 30].map(function (n) {
+        return '<option' + (n === tc.min ? ' selected' : '') + '>' + n + '</option>';
+      }).join('') + '</select></div>' +
+      '<div><label class="fld">Answers</label><div class="seg" id="tcFmt"><button type="button" data-f="m" aria-pressed="' + (tc.fmt === 'm') + '">Multiple choice</button><button type="button" data-f="t" aria-pressed="' + (tc.fmt === 't') + '">Typed</button></div></div></div>' +
+      '<label class="fld" for="tcTitle">Title students see</label><input type="text" id="tcTitle" class="wide" maxlength="60" value="' + esc(tc.title) + '">' +
+      '<div class="nextrow"><span class="muted small">' + maxN + ' derivatives to draw from.</span><button type="button" class="go" id="tcMake">Make the link</button></div>' +
+      '<div id="tcLink"></div>' +
+      '<div class="section"><h2>Read the results</h2><p class="muted small">Paste everything students handed in: one code, a whole page of submissions, or the text of downloaded results files. The codes are found wherever they are.</p>' +
+      '<label class="sr" for="tcPaste">Results codes</label><textarea id="tcPaste" placeholder="DP1.…"></textarea>' +
+      '<div class="nextrow"><span class="muted small" id="tcReadMsg" aria-live="polite"></span><button type="button" class="go" id="tcRead">Read the codes</button></div><div id="tcOut"></div></div>';
+    host.innerHTML = h;
+    $('tcTiers').addEventListener('change', function () {
+      var t = Array.prototype.slice.call($('tcTiers').querySelectorAll('input:checked')).map(function (i) { return i.value; });
+      if (!t.length) { t = ['p1']; }
+      tc.tiers = t; tc.link = null; keepTeacherInputs(); renderTeacher();
+    });
+    $('tcFmt').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; tc.fmt = b.dataset.f; keepTeacherInputs(); tc.link = null; renderTeacher(); });
+    $('tcMake').onclick = function () {
+      keepTeacherInputs();
+      var seed = (Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36)).slice(-7);
+      var n = Math.min(tc.n, maxN);
+      tc.cfg = { tiers: tc.tiers.slice(), n: n, min: tc.min, fmt: tc.fmt, seed: seed };
+      var id = encodeQuiz(tc.cfg);
+      tc.cfg.id = id;
+      tc.link = location.href.split(/[?#]/)[0] + '?quiz=' + encodeURIComponent(id) + '&title=' + encodeURIComponent(tc.title || 'Derivatives pop quiz');
+      drawLink();
+    };
+    if (tc.link) drawLink();
+    $('tcRead').onclick = function () { tc.read = $('tcPaste').value; drawResults(); };
+    if (tc.read) { $('tcPaste').value = tc.read; drawResults(); }
+  }
+  function keepTeacherInputs() {
+    if ($('tcN')) tc.n = +$('tcN').value;
+    if ($('tcMin')) tc.min = +$('tcMin').value;
+    if ($('tcTitle')) tc.title = $('tcTitle').value.trim().slice(0, 60);
+  }
+  function drawLink() {
+    var its = quizItems(tc.cfg);
+    $('tcLink').innerHTML = '<label class="fld" for="tcUrl">The link to post in Schoology</label>' +
+      '<input type="text" id="tcUrl" class="wide" readonly value="' + esc(tc.link) + '">' +
+      '<div class="nextrow"><span id="tcCopyMsg" class="okmsg" aria-live="polite"></span><span class="row"><a class="ghost" style="text-decoration:none;display:inline-flex;align-items:center" href="' + esc(tc.link) + '" target="_blank" rel="noopener">Open as a student</a><button type="button" class="go" id="tcCopy">Copy the link</button></span></div>' +
+      '<p class="muted small">Quiz ' + esc(tc.cfg.id) + '. Opening it as a student on this browser uses up this browser’s one attempt, so try it in a private window.</p>' +
+      '<details><summary class="small" style="cursor:pointer">The ' + its.length + ' questions and answers</summary><ol class="small">' + its.map(function (it) {
+        return '<li style="margin:6px 0">' + tagHtml(it) + ' ' + askText(it) + ' ' + K(qTex(it)) + ' &nbsp;→&nbsp; ' + K(texOf(it.d)) + '</li>';
+      }).join('') + '</ol></details>';
+    $('tcUrl').onclick = function () { this.select(); };
+    $('tcCopy').onclick = function () {
+      var ok = function () { $('tcCopyMsg').textContent = 'Copied.'; };
+      try { navigator.clipboard.writeText(tc.link).then(ok, function () { $('tcUrl').select(); $('tcCopyMsg').textContent = 'Selected: press Ctrl+C (or ⌘C).'; }); }
+      catch (e) { $('tcUrl').select(); }
+    };
+  }
+  function drawResults() {
+    var recs = readCodes(tc.read || '');
+    if (!recs.length) { $('tcReadMsg').textContent = 'No results codes found in that text.'; $('tcOut').innerHTML = ''; return; }
+    var groups = {}, orderQ = [];
+    recs.forEach(function (r) {
+      var q = r.d && r.d.q ? r.d.q : '?';
+      if (!groups[q]) { groups[q] = []; orderQ.push(q); }
+      groups[q].push(r);
+    });
+    var nBad = recs.filter(function (r) { return !r.valid; }).length;
+    $('tcReadMsg').textContent = recs.length + ' code' + (recs.length > 1 ? 's' : '') + ' found' + (nBad ? ', ' + nBad + ' flagged' : '') + '.';
+    var h = '';
+    orderQ.forEach(function (q) {
+      var rows = groups[q], cfg = decodeQuiz(q), title = rows[0].d && rows[0].d.ti ? rows[0].d.ti : 'Unknown quiz';
+      var seen = {};
+      rows.forEach(function (r) { var k = r.d ? String(r.d.n).toLowerCase() : r.raw; r.dup = !!seen[k]; seen[k] = true; });
+      rows.sort(function (a, b) { return String(a.d ? a.d.n : '').localeCompare(String(b.d ? b.d.n : '')); });
+      var valid = rows.filter(function (r) { return r.valid; });
+      var avg = valid.length ? valid.reduce(function (s, r) { return s + r.d.s / r.d.N; }, 0) / valid.length : 0;
+      h += '<div class="section"><h3>' + esc(title) + '</h3><p class="muted small">Quiz ' + esc(q) + (cfg ? ' · ' + cfg.n + ' questions · ' + cfg.min + ' min · ' + (cfg.fmt === 'm' ? 'multiple choice' : 'typed') : '') +
+        ' · ' + valid.length + ' valid result' + (valid.length === 1 ? '' : 's') + (valid.length ? ' · class average ' + Math.round(100 * avg) + '%' : '') + '</p>' +
+        '<div class="tablewrap"><table class="res"><thead><tr><th>Name</th><th>Score</th><th>%</th><th>Time</th><th>Handed in</th><th>Check</th></tr></thead><tbody>' +
+        rows.map(function (r) {
+          var d = r.d;
+          if (!d) return '<tr><td colspan="6" class="bad">A code that could not be read at all: ' + esc(r.raw.slice(0, 40)) + '…</td></tr>';
+          return '<tr><td>' + esc(d.n) + '</td><td class="num">' + d.s + ' / ' + d.N + '</td><td class="num">' + (d.N ? Math.round(100 * d.s / d.N) : 0) + '%</td><td class="num">' + fmtTime(d.t) + '</td>' +
+            '<td class="num">' + (d.at ? new Date(d.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '') + '</td>' +
+            '<td>' + (r.valid ? (r.dup ? '<span class="warnmsg">ok · second code for this name</span>' : '<span class="okmsg">ok</span>') : '<span class="bad">edited: does not match its check</span>') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+      if (cfg && valid.length) {
+        var its = quizItems(cfg), wrong = its.map(function () { return 0; });
+        valid.forEach(function (r) { for (var i = 0; i < r.d.r.length && i < its.length; i++) if (r.d.r[i] === '0') wrong[i]++; });
+        var idx = its.map(function (_, i) { return i; }).filter(function (i) { return wrong[i] > 0; }).sort(function (a, b) { return wrong[b] - wrong[a]; }).slice(0, 6);
+        h += '<h3 style="margin-top:14px">Most missed</h3>' + (idx.length ? '<ul class="misslist">' + idx.map(function (i) {
+          var it = its[i];
+          return '<li><b>' + wrong[i] + ' of ' + valid.length + '</b> missed · ' + askText(it) + ' ' + K(qTex(it)) + ' &nbsp;→&nbsp; ' + K(texOf(it.d)) + '</li>';
+        }).join('') + '</ul>' : '<p class="okmsg">Nobody missed anything.</p>');
+      }
+      h += '</div>';
+    });
+    h += '<div class="nextrow"><span class="muted small">The CSV has every code, with a column saying whether it checked out.</span><button type="button" class="go" id="tcCsv">Download CSV</button></div>';
+    $('tcOut').innerHTML = h;
+    $('tcCsv').onclick = function () {
+      var lines = [['name', 'score', 'out_of', 'percent', 'time_seconds', 'quiz_title', 'quiz', 'handed_in', 'check'].join(',')];
+      recs.forEach(function (r) {
+        var d = r.d || {};
+        var cell = function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+        lines.push([cell(r.d ? d.n : '(unreadable code)'), d.s, d.N, d.N ? Math.round(100 * d.s / d.N) : '', d.t, cell(d.ti), cell(d.q), d.at ? new Date(d.at).toISOString() : '', r.valid ? (r.dup ? 'ok (second code for this name)' : 'ok') : 'edited'].join(','));
+      });
+      download('derivatives-quiz-results.csv', lines.join('\n') + '\n', 'text/csv');
+    };
+  }
+
+  /* ================================================================ sheet */
+  var sheetDone = false;
+  function renderSheet() {
+    if (sheetDone) return;
+    document.querySelectorAll('#panel-sheet [data-t]').forEach(function (el) { el.innerHTML = K(el.getAttribute('data-t'), el.hasAttribute('data-d')); });
+    sheetDone = true;
+  }
+  $('printBtn').onclick = function () { renderSheet(); window.print(); };
+  window.addEventListener('beforeprint', renderSheet);
+
+  /* ================================================================ keys */
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (inField(e)) return;
+    var k = e.key;
+    if (current === 'flash') {
+      if ((k === 'Enter' || k === ' ') && !fc.flipped && !(e.target.closest && e.target.closest('.tab, .chip, #resetBtn'))) { e.preventDefault(); flipCard(); }
+      else if (fc.flipped && k === '1') markCard('not');
+      else if (fc.flipped && k === '2') markCard('got');
+    } else if (current === 'pick') {
+      if (/^[1-4]$/.test(k) && !pk.done) pickAnswer(+k - 1);
+      else if (k === 'Enter' && pk.done && e.target.id !== 'pkNext') { e.preventDefault(); $('pkNext').click(); }
+    } else if (current === 'sprint') {
+      if (/^[1-4]$/.test(k) && sp.state === 'run') sprintAnswer(+k - 1);
+      else if (k === 'Enter' && sp.state !== 'run' && !(e.target.tagName === 'BUTTON')) { e.preventDefault(); sprintStart(); }
+    } else if (current === 'quiz' && qs && QZ && QZ.fmt === 'm') {
+      if (/^[1-4]$/.test(k)) { var b = $('quizBody').querySelectorAll('.opt')[+k - 1]; if (b) b.click(); }
+      else if (k === 'Enter' && e.target.tagName !== 'BUTTON') { var n = $('qzNext'); if (n) { e.preventDefault(); n.click(); } }
+    } else if (current === 'type') {
+      if (k === 'Enter' && ty.done && e.target.id !== 'tyGo') { e.preventDefault(); typeGo(); }
+    }
+  });
+
+  /* ================================================================ start over */
+  var armed = null;
+  $('resetBtn').onclick = function () {
+    var b = this;
+    if (!armed) { b.textContent = 'Tap again to clear flashcards and bests'; armed = setTimeout(function () { armed = null; b.textContent = 'Start over'; }, 4000); return; }
+    clearTimeout(armed); armed = null; b.textContent = 'Start over';
+    var quiz = store.quiz;                  // pop-quiz attempts stay: one attempt per quiz
+    store = fresh(); store.quiz = quiz; save();
+    fc.queue = null; pk = { queue: null, cur: null, right: 0, total: 0 }; ty = { queue: null, cur: null, right: 0, total: 0, text: '' };
+    drawTiers(); renderTab(current, true);
+  };
+  $('storeNote').textContent = canStore ? '' : 'This browser is blocking saved data, so progress lasts until you close the page.';
+
+  /* ================================================================ go */
+  if (location.hash === '#teacher') $('tab-teacher').hidden = false;
+  window.addEventListener('hashchange', function () {
+    if (location.hash === '#teacher') { $('tab-teacher').hidden = false; showTab('teacher'); }
+  });
+  drawTiers();
+  var startTab = QZ || (params && params.get('quiz')) ? 'quiz' : location.hash === '#teacher' ? 'teacher' :
+    { '#sheet': 'sheet', '#sprint': 'sprint', '#pick': 'pick', '#type': 'type' }[location.hash] || 'flash';
+  showTab(startTab);
+  window.__dp = { cur: function () { return { pk: pk.cur, ty: ty.cur, sp: sp.cur, fc: fc.cur }; }, BANK: BANK, judge: judge, readCodes: readCodes, decodeQuiz: decodeQuiz, quizItems: quizItems, makeCode: makeCode, store: function () { return store; } };
+})();
+</script>
+</body>
+</html>
