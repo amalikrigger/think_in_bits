@@ -21,6 +21,8 @@
     .rv { opacity: 0; transition: opacity .35s ease; }
     .slide:has(.r10c.on) .rv { opacity: 1; }
     .rv-a, .rv-b, .rv-c { opacity: 0; transition: opacity .35s ease; }
+    .rv-c2, .rv-d { opacity: 0; transition: opacity .35s ease; }
+    .slide:has(.r12a.on) .rv-c2, .slide:has(.r12b.on) .rv-d { opacity: 1; }
     .slide:has(.r9a.on) .rv-a, .slide:has(.r9b.on) .rv-b, .slide:has(.r9c.on) .rv-c { opacity: 1; }
     #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
     #cgZoom.on { display: flex; }
@@ -310,14 +312,14 @@
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
       <svg class="cg" id="fig-q12" aria-label="Circle P with center 0, 2, the tangent at A, and circle Q with center 0, 29 over 2; the two circles meet on the dashed line y equals 11"></svg>
-      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\) &nbsp; <span class="sw dash"></span>\(y = 11\)</p>
+      <p class="key"><span class="sw circ"></span>circle \(P\) &nbsp; <span class="sw ans"></span>tangent at \(A\) &nbsp; <span class="sw gold"></span>circle \(Q\) &nbsp; <span class="rv-d"><span class="sw dash"></span>\(y = 11\)</span></p>
       <p class="small"><b>From the last slide:</b> circle \(P\) is \(x^2 + (y - 2)^2 = 100\) and the tangent is \(y = -\tfrac{3}{4}x + \tfrac{29}{2}\). Circle \(Q\)'s center is where the tangent meets the \(y\)-axis; its radius is \(\tfrac{5}{2}\sqrt{5}\).</p>
     </div></div>
     <div><div class="card">
-      <div class="math small frag"><span class="lbl">M1 · every point on the \(y\)-axis has \(x = 0\), so put \(x = 0\) in the tangent:</span> \(y = \tfrac{29}{2}\). <span class="lbl">Center of \(Q\):</span> \(\left(0, \tfrac{29}{2}\right)\)</div>
+      <div class="math small frag r12a"><span class="lbl">M1 · every point on the \(y\)-axis has \(x = 0\), so put \(x = 0\) in the tangent:</span> \(y = \tfrac{29}{2}\). <span class="lbl">Center of \(Q\):</span> \(\left(0, \tfrac{29}{2}\right)\)</div>
       <div class="math small frag"><span class="lbl">radius squared (square the \(\tfrac{5}{2}\) and the \(\sqrt{5}\)):</span> \(\left(\tfrac{5}{2}\sqrt{5}\right)^2 = \tfrac{25}{4} \times 5 = \tfrac{125}{4}\)</div>
       <div class="math small result frag">A1 · circle \(Q\): \(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\)</div>
-      <p class="small frag"><b>B1 · verify.</b> If both meeting points have \(y = 11\), then \(y = 11\) in each circle must give the same \(x\) values.</p>
+      <p class="small frag r12b"><b>B1 · verify.</b> If both meeting points have \(y = 11\), then \(y = 11\) in each circle must give the same \(x\) values.</p>
       <div class="math small frag"><span class="lbl">\(P\):</span> \(x^2 + (11 - 2)^2 = 100\), &nbsp;\(x^2 + 81 = 100\), &nbsp;\(x^2 = 19\)<br><span class="lbl">\(Q\): \(11 - \tfrac{29}{2} = \tfrac{22}{2} - \tfrac{29}{2} = -\tfrac{7}{2}\), squared is \(\tfrac{49}{4}\):</span> \(x^2 + \tfrac{49}{4} = \tfrac{125}{4}\), &nbsp;\(x^2 = \tfrac{76}{4} = 19\)</div>
       <p class="small frag"><b>Why that verifies it:</b> with \(y = 11\), both circles give \(x = \pm\sqrt{19}\). So \(\left(\pm\sqrt{19}, 11\right)\) are on both circles: they are where the circles meet.</p>
       <p class="small frag bad"><b>What the examiners saw:</b> many did not use part (b) to get the center, and most skipped the verify.</p>
@@ -534,8 +536,15 @@
   fig('fig-q12s', ext(q12base, { pts: [[6, 10, 'A (6, 10)', CY, 8, -6], [0, 2, '(0, 2)', W, 6, 14], [0, 14.5, '', GO, 0, 0]],
     texts: [[-6.5, -4.5, 'circle P', W, 12], [-7.5, 19.5, 'circle Q', GO, 12]] }));
   fig('fig-q12', ext(q12base, { pts: [[6, 10, 'A', CY, 8, -6], [0, 2, '(0, 2)', W, 6, 14], [0, 14.5, '(0, 29/2)', GO, 8, -8], [S19, 11, '', GO, 0, 0], [-S19, 11, '', GO, 0, 0]],
-    texts: [[-6.5, -4.5, 'circle P', W, 12], [-7.5, 19.5, 'circle Q', GO, 12], [8.6, 11.6, 'y = 11', GR, 11]] }),
+    texts: [[-6.5, -4.5, 'circle P', W, 12], [-7.5, 19.5, 'circle Q', GO, 12], [8.8, 12.6, 'y = 11', GR, 11]] }),
     [{ seg: [-11, 11, 11, 11], col: GR, dash: D, w: 1.4 }]);
+  /* hide the answers: the center of Q waits for the M1 step, y = 11 and the two meeting points wait for "verify" */
+  [].slice.call(document.querySelectorAll('#fig-q12 > *')).forEach(function (e) {
+    var t = e.tagName, cy = parseFloat(e.getAttribute('cy')), gold = e.getAttribute('fill') === GO;
+    if (t === 'text' && e.textContent.indexOf('29/2') >= 0) e.classList.add('rv-c2');
+    else if (t === 'circle' && gold && Math.abs(cy - 86.4) < 1) e.classList.add('rv-c2');
+    else if ((t === 'circle' && gold && Math.abs(cy - 120) < 1) || (t === 'text' && e.textContent === 'y = 11') || (t === 'line' && e.getAttribute('stroke-dasharray'))) e.classList.add('rv-d');
+  });
   var q12d = { x: [-7, 7], y: [8, 21], k: 19, step: 2, grid: 1, fs: 8, noxy: true,
     circles: [[0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']],
     pts: [[0, 14.5, 'Q (0, 29/2)', GO, 8, -8], [2 * S5, 14.5 - 1.5 * S5, 'D', CY, 8, 18], [-2 * S5, 14.5 + 1.5 * S5, 'E', CY, -18, -8]] };
