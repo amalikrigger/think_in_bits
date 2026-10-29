@@ -8,6 +8,7 @@
   <link rel="icon" type="image/png" href="../../../images/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/marks.css">
 <style>
 /* ============================================================
    THINK IN BITS · 9709 tool system · Derivative Practice
@@ -211,6 +212,38 @@ table.res td.num { font-variant-numeric: tabular-nums; }
 .section { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline); }
 body.nofilter .filter, body.quizmode .tabs, body.quizmode .filter, body.quizmode footer .rs { display: none !important; }
 
+/* find the error and Cambridge questions */
+.picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.picker button { min-width: 44px; min-height: 44px; padding: 6px 12px; border-radius: 12px; border: 1px solid var(--hairline-strong); background: var(--surface-alt); font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+.picker button[aria-current="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-wash); }
+.picker button.done { border-color: rgba(74,222,128,0.5); color: var(--ok); }
+.picker button.done[aria-current="true"] { color: var(--accent); }
+.srcline { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.qtext { font-size: 15.5px; line-height: 1.75; }
+.qtext p { margin: 0 0 8px; }
+.qtext .katex { font-size: 1.08em; }
+.wlines { display: grid; gap: 8px; margin: 12px 0 0; }
+.wline { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; text-align: left; padding: 10px 12px; min-height: 52px; border-radius: 14px; border: 2px solid var(--hairline-strong); background: #f7f5ef; color: #141414; font-size: 16px; overflow-x: auto; }
+.wline .ln { font-family: var(--mono); font-size: 12px; color: #6b6b6b; }
+.wline:hover:not(:disabled) { border-color: var(--accent); }
+.wline:disabled { cursor: default; }
+.wline.ok { border-color: var(--ok); }
+.wline.bad { border-color: var(--warn); background: #ffe9e5; }
+.wline.later { opacity: 0.55; }
+.costs { display: grid; gap: 6px; margin-top: 8px; }
+.cost { display: grid; grid-template-columns: 74px 1fr; gap: 10px; align-items: baseline; font-size: 14px; }
+.cost .why { color: var(--text-2); }
+.selfmark { margin-top: 14px; }
+.selfmark .row button { min-width: 44px; }
+.selfmark button[aria-pressed="true"] { background: var(--accent-wash); color: var(--accent); border-color: var(--accent); }
+.erbox { margin-top: 12px; padding: 12px 14px; border-left: 3px solid var(--amber); background: var(--amber-soft); border-radius: 0 12px 12px 0; font-size: 14px; }
+.erbox b { color: var(--amber); }
+.tib-mk .tib-mk-earn { font-size: 15.5px; color: var(--text); }
+.tib-mk .tib-mk-earn .g { display: block; color: var(--text-2); font-size: 13px; margin-top: 3px; }
+.tib-mk > .tib-mk-line { overflow-x: auto; }
+.tib-mk .tib-mk-btn { font: inherit; font-size: 14px; border-radius: 50px; padding: 9px 16px; min-height: 44px; border: 1px solid var(--hairline-strong); background: transparent; color: var(--text-2); }
+.tib-mk .tib-mk-btn.go { background: var(--accent); color: var(--ground); border: none; font-weight: 600; }
+
 footer { margin: 22px 0 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-2); }
 footer a { color: var(--accent); }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -308,6 +341,8 @@ footer a { color: var(--accent); }
     <button class="tab" role="tab" id="tab-flash" aria-controls="panel-flash" aria-selected="true" type="button" data-tab="flash">Flashcards</button>
     <button class="tab" role="tab" id="tab-pick" aria-controls="panel-pick" aria-selected="false" type="button" data-tab="pick">Pick the derivative</button>
     <button class="tab" role="tab" id="tab-type" aria-controls="panel-type" aria-selected="false" type="button" data-tab="type">Type it</button>
+    <button class="tab" role="tab" id="tab-error" aria-controls="panel-error" aria-selected="false" type="button" data-tab="error">Find the error</button>
+    <button class="tab" role="tab" id="tab-cam" aria-controls="panel-cam" aria-selected="false" type="button" data-tab="cam">Cambridge questions</button>
     <button class="tab" role="tab" id="tab-sprint" aria-controls="panel-sprint" aria-selected="false" type="button" data-tab="sprint">Sprint</button>
     <button class="tab" role="tab" id="tab-quiz" aria-controls="panel-quiz" aria-selected="false" type="button" data-tab="quiz">Pop quiz</button>
     <button class="tab" role="tab" id="tab-sheet" aria-controls="panel-sheet" aria-selected="false" type="button" data-tab="sheet">The sheet</button>
@@ -317,6 +352,8 @@ footer a { color: var(--accent); }
   <section class="tabpanel card" id="panel-flash" role="tabpanel" aria-labelledby="tab-flash"><div id="flashBody"></div></section>
   <section class="tabpanel card" id="panel-pick" role="tabpanel" aria-labelledby="tab-pick" hidden><div id="pickBody"></div></section>
   <section class="tabpanel card" id="panel-type" role="tabpanel" aria-labelledby="tab-type" hidden><div id="typeBody"></div></section>
+  <section class="tabpanel card" id="panel-error" role="tabpanel" aria-labelledby="tab-error" hidden><div id="errorBody"></div></section>
+  <section class="tabpanel card" id="panel-cam" role="tabpanel" aria-labelledby="tab-cam" hidden><div id="camBody"></div></section>
   <section class="tabpanel card" id="panel-sprint" role="tabpanel" aria-labelledby="tab-sprint" hidden><div id="sprintBody"></div></section>
   <section class="tabpanel card" id="panel-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden><div id="quizBody"></div></section>
   <section class="tabpanel" id="panel-sheet" role="tabpanel" aria-labelledby="tab-sheet" hidden>
@@ -472,6 +509,283 @@ footer a { color: var(--accent); }
 </div>
 
 <script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/marks.js"></script>
+<script>
+/* Derivative Practice, Chat 2 content: real Cambridge 1.7 questions with their mark
+   schemes, and "Find the error" scripts written for practice on those questions.
+   Text uses $…$ for inline math (TeX) and $$…$$ for display math.
+   Every number here is checked in claude/tools/derivative-practice/chat2-checks.py.
+   Sources (verified on the PDF pages):
+     June 2024 9709/12: question paper 06_9709_I2_P1_QP.pdf pp.10, 16, 18, 19; mark scheme 07_9709_I2_P1_MS.pdf
+       pp.14, 22, 24, 25; examiner report 12_9709_I2_PERT.pdf pp.3 to 4.
+     June 2023 9709/11: 9709_s23_qp_11.pdf pp.12 to 16; mark scheme MS 11 pp.16, 18, 19; examiner report (9709/11 section).
+     Specimen Paper 1 (2020 on): question paper pp.12, 20 to 21; Specimen Paper Answers Paper 1 pp.14, 15, 23, 24.
+   Held back for Test 1 and not used: Specimen Q5, Q11(b)(c); June 2024 /12 Q4; June 2023 /11 Q3. Sealed /12 2023 not used. */
+(function (root) {
+  'use strict';
+  var R = String.raw;
+  var J24 = { paper: 'Cambridge 9709/12, May/June 2024', ms: 'Mark scheme 9709/12 June 2024', er: 'Examiner report, June 2024 (9709/12)' };
+  var S23 = { paper: 'Cambridge 9709/11, May/June 2023', ms: 'Mark scheme 9709/11 June 2023', er: 'Examiner report, June 2023 (9709/11)' };
+  var SPEC = { paper: 'Cambridge 9709 Specimen Paper 1 (for 2020 on)', ms: 'Marks as shown in Cambridge’s Specimen Paper Answers, Paper 1', er: 'Examiner comment, Specimen Paper Answers' };
+
+  /* -------------------------------------------------------------- Cambridge questions */
+  var CAM = [
+    { id: 'j24-6a', src: J24, q: 'Q6(a)', marks: 4, msPage: 'p.14',
+      text: R`The curve with equation $y = 2x − 8x^{\frac12}$ has a minimum point at $A$ and intersects the positive $x$-axis at $B$.`,
+      parts: [R`(a) Find the coordinates of $A$ and $B$. [4]`],
+      scheme: [
+        { c: 'B1', w: R`$\dfrac{dy}{dx} = 2 − \tfrac12 \times 8x^{−\frac12}$` },
+        { c: 'M1', w: R`$2 − 4x^{−\frac12} = 0$`, g: 'Equating their two-term dy/dx, with at least one term correct, to 0.' },
+        { c: 'A1', w: R`[$A$ is] $(4, −8)$` },
+        { c: 'B1', w: R`[$B$ is] $(16, 0)$` }
+      ],
+      note: 'Correct answers without use of dy/dx can be awarded 4/4.',
+      er: 'Very well done: most candidates differentiated to find the minimum point. Some who completed the square got confused and took x = 2 when what they had found was √x = 2.' },
+
+    { id: 'j24-9a', src: J24, q: 'Q9(a)', marks: 4, msPage: 'p.22',
+      text: R`A function f is such that $f'(x) = 6(2x − 3)^2 − 6x$ for $x \in \mathbb{R}$.`,
+      parts: [R`(a) Determine the set of values of $x$ for which $f(x)$ is decreasing. [4]`],
+      scheme: [
+        { c: 'B1*', w: R`$6(2x − 3)^2 − 6x < 0$ or $= 0$`, g: 'Condone ⩽ 0.' },
+        { c: 'M1', w: R`$24x^2 − 78x + 54$ or $4x^2 − 13x + 9$ or $(x − 1)(4x − 9)$`, g: 'Expanding brackets and collecting terms to arrive at a three-term quadratic; only condone sign errors.' },
+        { c: 'B1', w: R`$x = 1,\ \tfrac94$` },
+        { c: 'DB1FT', w: R`$1 < x < \tfrac94$`, g: 'Do not allow x > 1 or x < 9/4. FT on their values coming from a correct initial statement.' }
+      ],
+      er: 'A small but significant number left out the −6x and only considered the first part of the function, and could score nothing in (a). If the answer is given as two separate inequalities, they must be joined with “and”.' },
+
+    { id: 'j24-10a', src: J24, q: 'Q10(a)', marks: 4, msPage: 'p.24',
+      text: R`The equation of a curve is $y = (5 − 2x)^{\frac32} + 5$ for $x < \tfrac52$.`,
+      parts: [R`(a) A point $P$ is moving along the curve in such a way that the $y$-coordinate of point $P$ is decreasing at 5 units per second. Find the rate at which the $x$-coordinate of point $P$ is increasing when $y = 32$. [4]`],
+      scheme: [
+        { c: 'B1', w: R`[$x =$] $−2$` },
+        { c: 'M1*', w: R`$\dfrac{dy}{dx} = k(5 − 2x)^{\frac12}\ \left[= −2 \times \tfrac32(5 − 2x)^{\frac12}\right]$`, g: R`OE. Differentiating to get $k(5 − 2x)^{\frac12}$ only.` },
+        { c: 'DM1', w: R`$\left[\dfrac{dy}{dx} = \dfrac{dy}{dt} \times \dfrac{dt}{dx}\right]$ leading to $−9 = \pm 5 \times \dfrac{dt}{dx}$`, g: 'Correct statement linking their numerical expression for dy/dx with dt/dx and ±5.' },
+        { c: 'A1', w: R`$\tfrac59$ or $0.556$`, g: 'AWRT' }
+      ],
+      er: 'Most candidates knew how to start and the differentiation was generally done well. Many seemed unsure how to find the x-value they needed, so could make no further progress.' },
+
+    { id: 'j24-10b', src: J24, q: 'Q10(b)', marks: 6, msPage: 'p.25',
+      text: R`The equation of a curve is $y = (5 − 2x)^{\frac32} + 5$ for $x < \tfrac52$.`,
+      parts: [R`(b) Point $A$ on the curve has $y$-coordinate 32. Point $B$ on the curve is such that the gradient of the curve at $B$ is $−3$. Find the equation of the perpendicular bisector of $AB$. Give your answer in the form $ax + by + c = 0$, where $a$, $b$ and $c$ are integers. [6]`],
+      scheme: [
+        { c: 'M1', w: R`$k(5 − 2x)^{\frac12} = −3$`, g: R`Equating their $\dfrac{dy}{dx}$ of the form $k(5 − 2x)^{\frac12}$ to $−3$.` },
+        { c: 'A1', w: R`[$B$ is] $(2, 6)$` },
+        { c: 'M1*', w: R`Gradient $AB = m_1 = \dfrac{32 − 6}{−2 − 2}$, gradient of perpendicular $= −\dfrac{1}{m_1} = \dfrac{4}{26}$`, g: 'For A, y must be 32. Clear use of difference in y over difference in x for A and B, and m₁m₂ = −1.' },
+        { c: 'M1*', w: R`Midpoint is $\left(\dfrac{2 − 2}{2}, \dfrac{6 + 32}{2}\right) = (0, 19)$`, g: 'Finding the midpoint of AB using A and B.' },
+        { c: 'DM1', w: R`$y − 19 = \tfrac{2}{13}(x − 0)$`, g: 'The perpendicular bisector through their midpoint with their perpendicular gradient. Depends on both M1* marks.' },
+        { c: 'A1', w: R`$2x − 13y + 247 = 0$`, g: 'Or ± integer multiples of this.' }
+      ],
+      er: 'This part was left out by 20% of candidates. Some assumed the perpendicular bisector’s gradient would be 1/3 because the curve’s gradient was −3, or did not find the midpoint of AB. About half of those with the right line lost the last mark by not giving it in the form asked for.' },
+
+    { id: 's23-9a', src: S23, q: 'Q9(a)', marks: 3, msPage: 'p.16',
+      text: R`Water is poured into a tank at a constant rate of $500\ \text{cm}^3$ per second. The depth of water in the tank, $t$ seconds after filling starts, is $h$ cm. When the depth of water in the tank is $h$ cm, the volume, $V\ \text{cm}^3$, of water in the tank is given by the formula $V = \tfrac43(25 + h)^3 − \tfrac{62\,500}{3}$.`,
+      parts: [R`(a) Find the rate at which $h$ is increasing at the instant when $h = 10$ cm. [3]`],
+      scheme: [
+        { c: 'B1', w: R`$\dfrac{dV}{dh} = \tfrac43 \times 3(25 + h)^2\ \ [= 4900 \text{ when } h = 10]$`, g: 'Correct expression for dV/dh.' },
+        { c: 'M1', w: R`$\dfrac{dV}{dh} \times \dfrac{dh}{dt} = \dfrac{dV}{dt}$, so their $4(25 + 10)^2 \times \dfrac{dh}{dt} = 500$, $\dfrac{dh}{dt} = \dfrac{500}{4900}$`, g: 'Use the chain rule correctly to find a numerical expression for dh/dt.' },
+        { c: 'A1', w: R`$\dfrac{dh}{dt} = 0.102\ \text{cm s}^{−1}$`, g: 'AWRT. OE, e.g. 5/49. ISW.' }
+      ],
+      er: 'Most candidates did not see that this rates-of-change question needed differentiation, so could score nothing. A common error was to put h = 10 into the volume formula.' },
+
+    { id: 's23-9b', src: S23, q: 'Q9(b)', marks: 3, msPage: 'p.16',
+      text: R`Water is poured into a tank at a constant rate of $500\ \text{cm}^3$ per second. When the depth of water is $h$ cm, the volume is $V = \tfrac43(25 + h)^3 − \tfrac{62\,500}{3}$.`,
+      parts: [R`(b) At another instant, the rate at which $h$ is increasing is 0.075 cm per second. Find the value of $V$ at this instant. [3]`],
+      scheme: [
+        { c: '*M1', w: R`$\dfrac{dV}{dt} = \dfrac{dV}{dh} \times \dfrac{dh}{dt}$, so $500 =$ their $4(25 + h)^2 \times 0.075$`, g: 'SOI. Use the chain rule correctly to form an equation in h.' },
+        { c: 'DM1', w: R`$(25 + h)^2 = \dfrac{5000}{3}$, so $h = 15.8248\ldots$`, g: 'Solve the quadratic to find h.' },
+        { c: 'A1', w: R`$V = 69\,900\ \text{cm}^3$`, g: 'AWRT. ISW. Look for 698(88.5).' }
+      ],
+      er: 'Only the strongest candidates used their dh/dt from (a) to form an equation in h with the chain rule. The most common error was to substitute h = 0.075.' },
+
+    { id: 's23-10b', src: S23, q: 'Q10(b)', marks: 6, msPage: 'p.18',
+      text: R`A curve has equation $y = \dfrac{4}{(2x − 1)^2}$. It passes through the points $A(1, 4)$ and $B\left(\tfrac32, 1\right)$. (The paper shows a diagram of the curve; you do not need it for this part.)`,
+      parts: [R`(b) A triangle is formed from the tangent to the curve at $B$, the normal to the curve at $B$ and the $x$-axis. Find the area of this triangle. [6]`],
+      scheme: [
+        { c: 'B2', n: 2, w: R`$\left[\dfrac{dy}{dx} =\right] \left\{−8(2x − 1)^{−3}\right\}\left\{\times 2\right\}$`, g: 'B2, 1, 0. OE. B1 for each correct element in { }.' },
+        { c: 'B1', w: R`At $B$, gradient $= −2$` },
+        { c: 'M1', w: R`Tangent: $y − 1 =$ their $−2\left(x − \tfrac32\right)$, or normal: $y − 1 =$ their $\tfrac12\left(x − \tfrac32\right)$`, g: 'SOI, following differentiation. Must use m(normal) = −1/m(tangent) for the normal.' },
+        { c: 'A1', w: R`Tangent crosses the $x$-axis at 2, or normal crosses at $−\tfrac12$`, g: 'At least one intercept correct.' },
+        { c: 'A1', w: R`Area $= \tfrac54$`, g: 'From intercepts: ½ × 5/2 × 1.' }
+      ],
+      er: 'Many candidates left out the chain rule when differentiating, and power errors were common. Some found the side lengths of the triangle when they did not need to: its height is 1, the y-coordinate of B.' },
+
+    { id: 's23-11ab', src: S23, q: 'Q11(a)(b)', marks: 4, msPage: 'pp.18–19',
+      text: R`The equation of a curve is such that $\dfrac{dy}{dx} = 6x^2 − 30x + 6a$, where $a$ is a positive constant. The curve has a stationary point at $(a, −15)$.`,
+      parts: [R`(a) Find the value of $a$. [2]`, R`(b) Determine the nature of this stationary point. [2]`],
+      scheme: [
+        { c: 'B1', w: R`(a) $6a^2 − 30a + 6a = 0\ \ [\Rightarrow 6a(a − 4) = 0]$`, g: 'Substitute x = a into dy/dx = 0.' },
+        { c: 'B1', w: R`$a = 4$ only` },
+        { c: 'M1', w: R`(b) $\dfrac{d^2y}{dx^2} = 12x − 30$, or correct values of $\dfrac{dy}{dx}$ either side of $x = 4$`, g: 'Differentiate dy/dx. M0 if there are no values of dy/dx, only signs.' },
+        { c: 'A1', w: R`At $x = 4$, $\dfrac{d^2y}{dx^2} = 18 > 0$, so minimum`, g: 'Must see “minimum”. WWW.' }
+      ],
+      er: 'In (a), some did not read the question carefully and set dy/dx = −15. In (b), most found d²y/dx² = 12x − 30 correctly; some then had no value of a to substitute, or made arithmetic slips that led to the wrong conclusion.' },
+
+    { id: 'sp-8', src: SPEC, q: 'Q8', marks: 6, msPage: 'pp.14–15',
+      text: R`A curve has equation $y = \dfrac{12}{3 − 2x}$.`,
+      parts: [R`(a) Find $\dfrac{dy}{dx}$. [2]`, R`A point moves along this curve. As the point passes through $A$, the $x$-coordinate is increasing at a rate of 0.15 units per second and the $y$-coordinate is increasing at a rate of 0.4 units per second.`, R`(b) Find the possible $x$-coordinates of $A$. [4]`],
+      scheme: [
+        { c: 'B1', w: R`(a) $y = 12(3 − 2x)^{−1}$, $\dfrac{dy}{dx} = −12(3 − 2x)^{−2}$` },
+        { c: 'B1', w: R`$\times(−2)$, so $\dfrac{dy}{dx} = 24(3 − 2x)^{−2}$` },
+        { c: 'M1', w: R`(b) $\dfrac{dy}{dx} = \dfrac{dy}{dt} \div \dfrac{dx}{dt} = 0.4 \div 0.15 = \tfrac83$`, g: 'Their dy/dx equated to their number from the chain rule, with a method for solving the quadratic seen.' },
+        { c: 'M1', w: R`$24(3 − 2x)^{−2} = \tfrac83$, so $9 = (3 − 2x)^2$`, g: 'Equating their (a) to their number and solving a quadratic. No follow-through.' },
+        { c: 'A1', w: R`$x = 0$` },
+        { c: 'A1', w: R`$x = 3$` }
+      ],
+      er: 'Working is not required in (a) for full marks. In (b) the first two lines show the expected thought process, but full marks can be awarded without them.' },
+
+    { id: 'sp-12bd', src: SPEC, q: 'Q12(b) and (d)', marks: 8, msPage: 'pp.23–24',
+      text: R`The diagram in the paper shows the curve with equation $y = x(x − 2)^2$. The minimum point on the curve has coordinates $(a, 0)$ and the $x$-coordinate of the maximum point is $b$, where $a$ and $b$ are constants. Part (a) gives $a = 2$.`,
+      parts: [R`(b) Calculate the value of $b$. [4]`, R`(d) The gradient, $\dfrac{dy}{dx}$, of the curve has a minimum value $m$. Calculate the value of $m$. [4]`],
+      scheme: [
+        { c: 'B1', w: R`(b) $y = x(x^2 − 4x + 4) = x^3 − 4x^2 + 4x$` },
+        { c: 'B1 B1', n: 2, w: R`$\dfrac{dy}{dx} = 3x^2 − 8x + 4$`, g: 'The two B marks for the differentiation follow through from the candidate’s expansion.' },
+        { c: 'B1', w: R`$0 = (x − 2)(3x − 2)$, so $b = \tfrac23$`, g: 'Depends on clear evidence of a method of solution of a quadratic equation.' },
+        { c: 'M1', w: R`(d) The minimum of $\dfrac{dy}{dx}$ is where $\dfrac{d^2y}{dx^2} = 0$: $6x − 8 = 0$` },
+        { c: 'A1', w: R`$x = \tfrac43$` },
+        { c: 'DM1', w: R`When $x = \tfrac43$, $\dfrac{dy}{dx} = 3\left(\tfrac43\right)^2 − 8\left(\tfrac43\right) + 4$` },
+        { c: 'A1', w: R`$m = −\tfrac43$` }
+      ],
+      er: 'In (d), finding where d²y/dx² = 0 is the thought process expected of the candidate.' }
+  ];
+
+  /* -------------------------------------------------------------- find the error
+     Each script is written for practice on a real question above. Exactly one line is
+     the first wrong line; later lines follow correctly from it. The marks are the
+     published scheme's, applied by us to this working. */
+  var FE = [
+    { id: 'fe-1', on: 'j24-6a', slip: 'The power was not reduced.',
+      lines: [
+        R`$y = 2x − 8x^{\frac12}$`,
+        R`$\dfrac{dy}{dx} = 2 − 4x^{\frac12}$`,
+        R`$2 − 4x^{\frac12} = 0$`,
+        R`$x^{\frac12} = \tfrac12$, so $x = \tfrac14$`,
+        R`$y = 2\left(\tfrac14\right) − 8\left(\tfrac14\right)^{\frac12} = −\tfrac72$, so $A\left(\tfrac14, −\tfrac72\right)$`,
+        R`$0 = 2x − 8x^{\frac12} = 2x^{\frac12}\left(x^{\frac12} − 4\right)$, so $x^{\frac12} = 4$ and $B(16, 0)$`
+      ], wrong: 1,
+      fix: R`$\tfrac12 \times 8x^{−\frac12} = 4x^{−\frac12}$: bring the ½ down and take 1 off the power. So $\dfrac{dy}{dx} = 2 − 4x^{−\frac12}$, which gives $x = 4$ and $A(4, −8)$.`,
+      costs: [
+        { c: 'B1', got: false, why: 'dy/dx is wrong.' },
+        { c: 'M1', got: true, why: 'Their two-term dy/dx has one correct term (the 2) and is set equal to 0.' },
+        { c: 'A1', got: false, why: 'A comes from the wrong derivative.' },
+        { c: 'B1', got: true, why: 'B(16, 0) does not depend on dy/dx.' }
+      ] },
+
+    { id: 'fe-2', on: 'j24-10a', slip: 'The chain rule was used without the derivative of the inside.',
+      lines: [
+        R`When $y = 32$: $(5 − 2x)^{\frac32} = 27$, $5 − 2x = 9$, $x = −2$`,
+        R`$\dfrac{dy}{dx} = \tfrac32(5 − 2x)^{\frac12}$`,
+        R`At $x = −2$: $\dfrac{dy}{dx} = \tfrac32 \times 3 = \tfrac92$`,
+        R`$\dfrac{dy}{dt} = \dfrac{dy}{dx} \times \dfrac{dx}{dt}$: $\ −5 = \tfrac92 \times \dfrac{dx}{dt}$`,
+        R`$\dfrac{dx}{dt} = −\tfrac{10}{9}$`
+      ], wrong: 1,
+      fix: R`The inside is $5 − 2x$, whose derivative is $−2$: $\dfrac{dy}{dx} = \tfrac32(5 − 2x)^{\frac12} \times (−2) = −3(5 − 2x)^{\frac12}$. That is $−9$ at $x = −2$, so $\dfrac{dx}{dt} = \tfrac59$. A negative “rate of increase” was a clue: here $x$ must go up while $y$ goes down.`,
+      costs: [
+        { c: 'B1', got: true, why: 'x = −2 is right.' },
+        { c: 'M1*', got: true, why: R`The scheme accepts any $k(5 − 2x)^{\frac12}$, so the form is right even with the $−2$ missing.` },
+        { c: 'DM1', got: true, why: 'Their 9/2 is linked correctly with dx/dt and ±5.' },
+        { c: 'A1', got: false, why: 'The final answer is wrong.' }
+      ] },
+
+    { id: 'fe-3', on: 's23-9a', slip: 'The power was not brought down.',
+      lines: [
+        R`$\dfrac{dV}{dh} = \tfrac43(25 + h)^2$`,
+        R`At $h = 10$: $\dfrac{dV}{dh} = \tfrac43 \times 35^2 = \tfrac{4900}{3}$`,
+        R`$\dfrac{dV}{dt} = \dfrac{dV}{dh} \times \dfrac{dh}{dt}$: $\ 500 = \tfrac{4900}{3} \times \dfrac{dh}{dt}$`,
+        R`$\dfrac{dh}{dt} = \tfrac{1500}{4900} = 0.306$ cm per second`
+      ], wrong: 0,
+      fix: R`The 3 comes down: $\dfrac{dV}{dh} = \tfrac43 \times 3(25 + h)^2 = 4(25 + h)^2$, which is 4900 at $h = 10$, so $\dfrac{dh}{dt} = \tfrac{500}{4900} = 0.102$ cm per second.`,
+      costs: [
+        { c: 'B1', got: false, why: 'dV/dh is wrong.' },
+        { c: 'M1', got: true, why: 'Their dV/dh is used correctly in the chain rule.' },
+        { c: 'A1', got: false, why: 'The answer is wrong.' }
+      ] },
+
+    { id: 'fe-4', on: 's23-10b', slip: 'The ×2 from the inside was left out. The examiner report says many candidates did this.',
+      lines: [
+        R`$y = 4(2x − 1)^{−2}$`,
+        R`$\dfrac{dy}{dx} = −8(2x − 1)^{−3}$`,
+        R`At $B\left(\tfrac32, 1\right)$: $\dfrac{dy}{dx} = \dfrac{−8}{2^3} = −1$`,
+        R`Tangent: $y − 1 = −1\left(x − \tfrac32\right)$, which meets the $x$-axis at $x = \tfrac52$`,
+        R`Normal: gradient 1, $y − 1 = x − \tfrac32$, which meets the $x$-axis at $x = \tfrac12$`,
+        R`Area $= \tfrac12 \times 2 \times 1 = 1$`
+      ], wrong: 1,
+      fix: R`$\dfrac{dy}{dx} = −8(2x − 1)^{−3} \times 2 = −16(2x − 1)^{−3}$, which is $−2$ at $B$. The tangent meets the $x$-axis at 2, the normal at $−\tfrac12$, and the area is $\tfrac12 \times \tfrac52 \times 1 = \tfrac54$.`,
+      costs: [
+        { c: 'B1', got: true, why: R`The first element of B2, $−8(2x − 1)^{−3}$, is right.` },
+        { c: 'B1', got: false, why: 'The second element of B2, the ×2, is missing.' },
+        { c: 'B1', got: false, why: 'The gradient at B should be −2.' },
+        { c: 'M1', got: true, why: 'The tangent equation uses their gradient correctly.' },
+        { c: 'A1', got: false, why: 'Neither intercept is correct.' },
+        { c: 'A1', got: false, why: 'The area is wrong.' }
+      ] },
+
+    { id: 'fe-5', on: 'sp-8', part: '(a) only', marksOutOf: 2, slip: 'The −2 from the inside was forgotten.',
+      lines: [
+        R`$y = \dfrac{12}{3 − 2x}$`,
+        R`$y = 12(3 − 2x)^{−1}$`,
+        R`$\dfrac{dy}{dx} = −12(3 − 2x)^{−2}$`
+      ], wrong: 2,
+      fix: R`Multiply by the derivative of the inside, $−2$: $\dfrac{dy}{dx} = −12(3 − 2x)^{−2} \times (−2) = 24(3 − 2x)^{−2}$.`,
+      costs: [
+        { c: 'B1', got: true, why: R`$−12(3 − 2x)^{−2}$ is the first mark.` },
+        { c: 'B1', got: false, why: 'The second mark is for the ×(−2).' }
+      ] },
+
+    { id: 'fe-6', on: 'sp-12bd', part: '(d) only', marksOutOf: 4, slip: 'This finds where the gradient is zero. The question asks where the gradient is smallest.',
+      lines: [
+        R`$y = x^3 − 4x^2 + 4x$`,
+        R`$\dfrac{dy}{dx} = 3x^2 − 8x + 4$`,
+        R`The minimum of the gradient is where $\dfrac{dy}{dx} = 0$`,
+        R`$3x^2 − 8x + 4 = (3x − 2)(x − 2) = 0$, so $x = \tfrac23$ or $2$`,
+        R`$m = 0$`
+      ], wrong: 2,
+      fix: R`$\dfrac{dy}{dx}$ is itself a function. Its minimum is where its own derivative is zero: $\dfrac{d^2y}{dx^2} = 6x − 8 = 0$, $x = \tfrac43$, and $m = 3\left(\tfrac43\right)^2 − 8\left(\tfrac43\right) + 4 = −\tfrac43$.`,
+      costs: [
+        { c: 'M1', got: false, why: 'd²y/dx² = 0 is never set up.' },
+        { c: 'A1', got: false, why: 'x = 4/3 is not found.' },
+        { c: 'DM1', got: false, why: 'It depends on the M1.' },
+        { c: 'A1', got: false, why: 'm is wrong.' }
+      ] },
+
+    { id: 'fe-7', on: 'j24-10b', slip: '−3 is the gradient of the curve at B. The perpendicular bisector needs the gradient of the line AB.',
+      lines: [
+        R`$−3(5 − 2x)^{\frac12} = −3$, so $5 − 2x = 1$, $x = 2$ and $B(2, 6)$`,
+        R`$A$ has $y = 32$, so $A(−2, 32)$`,
+        R`Gradient of the perpendicular bisector $= \tfrac13$`,
+        R`Midpoint of $AB = (0, 19)$`,
+        R`$y − 19 = \tfrac13 x$, so $x − 3y + 57 = 0$`
+      ], wrong: 2,
+      fix: R`Gradient $AB = \dfrac{32 − 6}{−2 − 2} = −\tfrac{13}{2}$, so the perpendicular gradient is $\tfrac{2}{13}$ and the line is $2x − 13y + 247 = 0$. The examiner report names this exact trap.`,
+      costs: [
+        { c: 'M1', got: true, why: 'Their dy/dx is set equal to −3.' },
+        { c: 'A1', got: true, why: 'B(2, 6) is right.' },
+        { c: 'M1*', got: false, why: 'The gradient of AB was never found.' },
+        { c: 'M1*', got: true, why: 'The midpoint is right.' },
+        { c: 'DM1', got: false, why: 'It depends on both M1* marks, and one was lost.' },
+        { c: 'A1', got: false, why: 'The equation is wrong.' }
+      ] },
+
+    { id: 'fe-8', on: 'sp-12bd', part: '(b) only', marksOutOf: 4, slip: '(x − 2)² was written as x² − 4.',
+      lines: [
+        R`$y = x(x − 2)^2 = x(x^2 − 4) = x^3 − 4x$`,
+        R`$\dfrac{dy}{dx} = 3x^2 − 4$`,
+        R`$3x^2 − 4 = 0$, so $x = \pm\dfrac{2}{\sqrt3}$`,
+        R`$b = \dfrac{2}{\sqrt3}$`
+      ], wrong: 0,
+      fix: R`$(x − 2)^2 = x^2 − 4x + 4$, so $y = x^3 − 4x^2 + 4x$, $\dfrac{dy}{dx} = 3x^2 − 8x + 4 = (3x − 2)(x − 2)$, and $b = \tfrac23$.`,
+      costs: [
+        { c: 'B1', got: false, why: 'The expansion is wrong.' },
+        { c: 'B1', got: true, why: 'Follow-through: their x³ − 4x is differentiated correctly.' },
+        { c: 'B1', got: true, why: 'Follow-through: both terms are right for their expansion.' },
+        { c: 'B1', got: false, why: 'b = 2/3 is not found.' }
+      ] }
+  ];
+
+  root.DP_CAM = CAM;
+  root.DP_FE = FE;
+})(this);
+
+</script>
 <script>
 /* Derivative Practice: a small math parser written for this page.
    Reads what a student types (or a bank string), and can evaluate it,
@@ -494,7 +808,7 @@ footer a { color: var(--accent); }
     sinh: 'sinh', cosh: 'cosh', tanh: 'tanh', sech: 'sech', cosech: 'csch', csch: 'csch', coth: 'coth',
     arsinh: 'asinh', arcosh: 'acosh', artanh: 'atanh', asinh: 'asinh', acosh: 'acosh', atanh: 'atanh',
     arcsinh: 'asinh', arccosh: 'acosh', arctanh: 'atanh',
-    ln: 'ln', log: 'ln', sqrt: 'sqrt', exp: 'exp'
+    ln: 'ln', log: 'ln', sqrt: 'sqrt', exp: 'exp', cbrt: 'cbrt'
   };
   var INV = { sin: 'asin', cos: 'acos', tan: 'atan', cot: 'acot', sec: 'asec', csc: 'acsc',
               sinh: 'asinh', cosh: 'acosh', tanh: 'atanh' };
@@ -506,6 +820,15 @@ footer a { color: var(--accent); }
   /* ------------------------------------------------------------ tokens */
   function clean(s) {
     s = String(s);
+    // strip a leading "dy/dx =", "d²y/dx² =", "f'(x) =", "y' =" or "=" before anything else
+    s = s.replace(/^\s*(d[\^]?[2²]?y\s*\/\s*dx[\^]?[2²]?|f\s*['′″]+\s*\(\s*x\s*\)|y\s*['′″]+|dy\/dt)\s*=\s*/i, '');
+    s = s.replace(/^\s*=\s*/, '');
+    s = s.replace(/∛\s*/g, 'cbrt');
+    // sec²x, sin²(x), tan⁻¹x: a superscript straight after a function name stays a plain number
+    s = s.replace(/([a-z])([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/gi, function (m, f, sup) {
+      var map = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
+      return /[nshtcg]/i.test(f) && /(sin|cos|tan|sec|csc|cot|sinh|cosh|tanh|sech|csch|coth|cosec|ln)$/i.test(s.slice(0, s.indexOf(m) + 1)) ? f + '^' + sup.split('').map(function (c) { return map[c]; }).join('') : m;
+    });
     var sup = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '−', '⁄': '/' };
     s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, function (m) {
       return '^(' + m.split('').map(function (c) { return sup[c]; }).join('') + ')';
@@ -513,9 +836,6 @@ footer a { color: var(--accent); }
     s = s.replace(/½/g, '(1/2)').replace(/⅓/g, '(1/3)').replace(/¼/g, '(1/4)').replace(/¾/g, '(3/4)').replace(/⅔/g, '(2/3)');
     s = s.replace(/[\u2212\u2012\u2013\u2014\u2010\uFE63\uFF0D]/g, '-').replace(/[×·∙⋅]/g, '*').replace(/÷/g, '/')
          .replace(/\*\*/g, '^').replace(/π/g, 'pi').replace(/ /g, ' ').replace(/[{]/g, '(').replace(/[}]/g, ')');
-    // strip a leading "dy/dx =", "f'(x) =", "y' =", "d2y/dx2 =" or "="
-    s = s.replace(/^\s*(d\^?2?y\s*\/\s*dx\^?2?|f\s*['′″]+\s*\(\s*x\s*\)|y\s*['′″]+|dy\/dt)\s*=\s*/i, '');
-    s = s.replace(/^\s*=\s*/, '');
     return s.toLowerCase();
   }
   function tokenize(src) {
@@ -611,8 +931,9 @@ footer a { color: var(--accent); }
       if (!k) throw new PErr('A function needs something to act on, like sin(x).', -1);
       if (k.t === '(' || k.t === '[') return atom();
       // no bracket: a run of tight factors, e.g. sin 2x, ln x, cos x^2
-      var a = power();
-      while (peek() && (peek().t === 'num' || peek().t === 'var' || peek().t === 'const')) {
+      var a = power(), sawNum = a.k === 'num';
+      while (peek() && (peek().t === 'var' || peek().t === 'const' || (peek().t === 'num' && !sawNum))) {
+        if (peek().t === 'num') sawNum = true;
         a = { k: 'mul', a: a, b: power(), imp: true };
       }
       return a;
@@ -631,14 +952,20 @@ footer a { color: var(--accent); }
         i++;
         var f = k.v, p = null;
         if (f === 'logb') return { k: 'fn', f: 'logb', base: k.base, a: fnArg() };
-        if (f === 'sqrt') return { k: 'fn', f: 'sqrt', a: f === 'sqrt' && peek() && peek().t !== '(' && peek().t !== '[' ? atomOnly() : fnArg() };
+        if (f === 'sqrt' || f === 'cbrt') return { k: 'fn', f: f, a: peek() && peek().t !== '(' && peek().t !== '[' ? atomOnly() : fnArg() };
         if (peek() && peek().t === '^') {        // sin^2 x, sin^-1 x
           i++;
           var neg = false;
           if (peek() && peek().t === '-') { neg = true; i++; }
+          var grp = false;
+          if (peek() && peek().t === '(' && toks[i + 1] && (toks[i + 1].t === 'num' || toks[i + 1].t === '-')) {
+            grp = true; i++;
+            if (peek() && peek().t === '-') { neg = !neg; i++; }
+          }
           var pk = peek();
           if (!pk || pk.t !== 'num') throw new PErr('Write powers of functions like sin^2(x) or (sin x)^2.', pk ? pk.p : -1);
           i++;
+          if (grp) eat(')');
           if (neg && pk.v === 1) {
             if (!INV[f]) throw new PErr('This checker does not read that inverse function.', pk.p);
             return { k: 'fn', f: INV[f], a: fnArg() };
@@ -677,7 +1004,7 @@ footer a { color: var(--accent); }
     sech: function (u) { return 1 / Math.cosh(u); }, csch: function (u) { return 1 / Math.sinh(u); }, coth: function (u) { return Math.cosh(u) / Math.sinh(u); },
     asinh: Math.asinh, acosh: Math.acosh, atanh: Math.atanh,
     ln: function (u) { return u > 0 ? Math.log(u) : NaN; }, sqrt: function (u) { return u >= 0 ? Math.sqrt(u) : NaN; },
-    exp: Math.exp, abs: Math.abs
+    exp: Math.exp, abs: Math.abs, cbrt: Math.cbrt
   };
   function pw(b, e) {
     if (b < 0 && Math.abs(e - Math.round(e)) > 1e-12) {
@@ -788,6 +1115,7 @@ footer a { color: var(--accent); }
       }
       case 'fn': {
         if (n.f === 'sqrt') return '\\sqrt{' + tex(n.a, 'root') + '}';
+        if (n.f === 'cbrt') return '\\sqrt[3]{' + tex(n.a, 'root') + '}';
         if (n.f === 'abs') return '\\left|' + tex(n.a) + '\\right|';
         if (n.f === 'exp') return 'e^{' + tex(n.a, 'exp') + '}';
         if (n.f === 'logb') {
@@ -805,7 +1133,7 @@ footer a { color: var(--accent); }
   /* ------------------------------------------------------------ sympy (build checks) */
   var SYF = { sin: 'sin', cos: 'cos', tan: 'tan', sec: 'sec', csc: 'csc', cot: 'cot', asin: 'asin', acos: 'acos', atan: 'atan',
     acot: 'acot', asec: 'asec', acsc: 'acsc', sinh: 'sinh', cosh: 'cosh', tanh: 'tanh', sech: 'sech', csch: 'csch', coth: 'coth',
-    asinh: 'asinh', acosh: 'acosh', atanh: 'atanh', ln: 'log', sqrt: 'sqrt', exp: 'exp', abs: 'Abs' };
+    asinh: 'asinh', acosh: 'acosh', atanh: 'atanh', ln: 'log', sqrt: 'sqrt', exp: 'exp', abs: 'Abs', cbrt: 'cbrt' };
   function sy(n) {
     switch (n.k) {
       case 'num': return 'Rational("' + n.s + '")';
@@ -865,21 +1193,55 @@ footer a { color: var(--accent); }
 
   /* ================================================================ storage */
   var KEY = 'tib-tool:derivative-practice';
-  function fresh() { return { v: 1, tiers: ['p1'], fc: {}, best: {}, quiz: {} }; }
+  function fresh() { return { v: 1, tiers: ['p1'], fc: {}, best: {}, quiz: {}, fe: {}, cq: {}, made: [] }; }
   var canStore = (function () { try { localStorage.setItem('tib-probe', '1'); localStorage.removeItem('tib-probe'); return true; } catch (e) { return false; } })();
   var store = (function () {
     try {
       var raw = localStorage.getItem(KEY);
       var o = raw ? JSON.parse(raw) : null;
-      if (o && o.v === 1) {
-        var f = fresh();
-        for (var k in f) if (!(k in o)) o[k] = f[k];
-        return o;
-      }
+      if (o && o.v === 1) return clean(o);
     } catch (e) {}
     return fresh();
   })();
   function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+  /* saved data is untrusted: keep only known shapes, plain numbers and short strings */
+  function isObj(v) { return v !== null && typeof v === 'object' && !Array.isArray(v); }
+  function clean(o) {
+    var f = fresh();
+    var tiers = Array.isArray(o.tiers) ? o.tiers.filter(function (t) { return t === 'p1' || t === 'p3' || t === 'beyond'; }) : [];
+    f.tiers = tiers.length ? tiers.filter(function (t, i) { return tiers.indexOf(t) === i; }) : ['p1'];
+    var num = function (v, lo, hi) { return typeof v === 'number' && isFinite(v) && v >= lo && v <= hi && Math.floor(v) === v; };
+    if (isObj(o.fc)) Object.keys(o.fc).forEach(function (k) { if (/^[a-z0-9-]{1,12}$/.test(k) && (o.fc[k] === 'got' || o.fc[k] === 'not')) f.fc[k] = o.fc[k]; });
+    if (isObj(o.best)) Object.keys(o.best).forEach(function (k) { if (/^(p1|p3|beyond)(\+(p1|p3|beyond)){0,2}$/.test(k) && num(o.best[k], 0, 10000)) f.best[k] = o.best[k]; });
+    if (isObj(o.fe)) Object.keys(o.fe).forEach(function (k) { if (/^fe-\d{1,3}$/.test(k) && num(o.fe[k], 1, 100)) f.fe[k] = o.fe[k]; });
+    if (isObj(o.cq)) Object.keys(o.cq).forEach(function (k) { if (/^[a-z0-9-]{1,20}$/.test(k) && num(o.cq[k], 0, 30)) f.cq[k] = o.cq[k]; });
+    if (Array.isArray(o.made)) f.made = o.made.filter(function (q) { return typeof q === 'string' && /^1\.[1-7]\.\d{1,2}\.\d{1,3}\.[mt]\.[0-9a-z]{4,10}$/.test(q); }).slice(-200);
+    if (isObj(o.quiz)) Object.keys(o.quiz).forEach(function (k) { var a = cleanAttempt(o.quiz[k]); if (a && /^1\.[1-7]\.\d{1,2}\.\d{1,3}\.[mt]\.[0-9a-z]{4,10}$/.test(k)) f.quiz[k] = a; });
+    return f;
+  }
+  function cleanAttempt(a) {
+    if (!isObj(a)) return null;
+    var nm = typeof a.name === 'string' ? a.name.slice(0, 40) : '';
+    var ints = function (arr, max) { return Array.isArray(arr) && arr.length <= 40 && arr.every(function (v) { return typeof v === 'number' && Math.floor(v) === v && v >= 0 && v < max; }); };
+    if (a.st === 'run') {
+      if (!ints(a.order, 40) || typeof a.t0 !== 'number' || !isFinite(a.t0) || !isObj(a.ans) || !isObj(a.opts)) return null;
+      var ans = {}; Object.keys(a.ans).forEach(function (k) { var v = a.ans[k]; if (/^\d{1,2}$/.test(k) && ((typeof v === 'number' && v >= 0 && v < 4 && Math.floor(v) === v) || (typeof v === 'string' && v.length <= 200))) ans[k] = v; });
+      var opts = {}; Object.keys(a.opts).forEach(function (k) { if (/^\d{1,2}$/.test(k) && ints(a.opts[k], 4) && a.opts[k].length === 4) opts[k] = a.opts[k]; });
+      return { st: 'run', name: nm, order: a.order, opts: opts, ans: ans, t0: a.t0, pos: typeof a.pos === 'number' && a.pos >= 0 && a.pos < a.order.length ? Math.floor(a.pos) : 0 };
+    }
+    if (a.st === 'done') {
+      var okn = function (v) { return typeof v === 'number' && isFinite(v) && v >= 0 && v <= 100000 && Math.floor(v) === v; };
+      if (!okn(a.score) || !okn(a.N) || !okn(a.time) || typeof a.code !== 'string' || !/^DP1\.[A-Za-z0-9_-]+\.[0-9a-z]+$/.test(a.code) || !ints(a.order, 40) || !Array.isArray(a.review)) return null;
+      var review = a.review.slice(0, 40).map(function (r) { return isObj(r) ? { i: typeof r.i === 'number' ? r.i : 0, a: r.a == null ? null : (typeof r.a === 'number' ? r.a : String(r.a).slice(0, 200)), ok: r.ok === true } : { i: 0, a: null, ok: false }; });
+      return { st: 'done', name: nm, score: a.score, N: a.N, time: a.time, code: a.code, order: a.order, review: review, timeUp: a.timeUp === true, at: typeof a.at === 'number' && isFinite(a.at) ? a.at : 0 };
+    }
+    return null;
+  }
+  /* re-read this quiz's attempt from storage (another tab may have started or finished it) */
+  function freshAttempt(id) {
+    try { var raw = localStorage.getItem(KEY); var o = raw ? JSON.parse(raw) : null; if (o && isObj(o.quiz)) return cleanAttempt(o.quiz[id]); } catch (e) {}
+    return null;
+  }
 
   /* ================================================================ helpers */
   function $(id) { return document.getElementById(id); }
@@ -940,7 +1302,7 @@ footer a { color: var(--accent); }
     if (it.kind === 'grad') {
       if (Object.keys(used).length) return { state: 'var', msg: 'This one wants a number: put x = ' + it.at + ' into dy/dx.' };
       var v = P.evaluate(tree, {}), a = P.evaluate(P.parse(it.d), {});
-      var okg = isFinite(v) && Math.abs(v - a) < 1e-6 * Math.max(1, Math.abs(a));
+      var okg = isFinite(v) && Math.abs(v - a) < 1e-9 * Math.max(1, Math.abs(a));
       return { state: okg ? 'right' : 'wrong', slip: okg ? null : slipFor(it, tree) };
     }
     for (var u in used) if (vs.indexOf(u) < 0) return { state: 'var', msg: 'Write this answer in terms of ' + vs.join(' and ') + '.' };
@@ -990,7 +1352,7 @@ footer a { color: var(--accent); }
       $('panel-' + t.dataset.tab).hidden = !on;
       if (on && focus) t.focus();
     });
-    document.body.classList.toggle('nofilter', name === 'quiz' || name === 'sheet' || name === 'teacher');
+    document.body.classList.toggle('nofilter', name === 'quiz' || name === 'sheet' || name === 'teacher' || name === 'error' || name === 'cam');
     $('keyhelp').hidden = !(name === 'pick' || name === 'sprint' || name === 'flash' || name === 'type' || name === 'quiz');
     renderTab(name, false);
   }
@@ -1006,6 +1368,8 @@ footer a { color: var(--accent); }
     else if (name === 'pick') renderPick(reset);
     else if (name === 'type') renderType(reset);
     else if (name === 'sprint') renderSprint();
+    else if (name === 'error') renderError();
+    else if (name === 'cam') renderCam();
     else if (name === 'quiz') renderQuiz();
     else if (name === 'teacher') renderTeacher();
     else if (name === 'sheet') renderSheet();
@@ -1141,7 +1505,7 @@ footer a { color: var(--accent); }
     var it = ty.cur;
     var h = '<div class="nextrow" style="margin-top:0"><span class="tally">' + (ty.total ? ty.right + ' of ' + ty.total + ' right this session' : 'Type the derivative. It is checked by algebra, so any correct form counts.') + '</span></div>' +
       promptHtml(it) +
-      '<div class="typein"><label class="sr" for="tyIn">Your answer</label><input id="tyIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" placeholder="' + (it.kind === 'grad' ? 'gradient' : 'dy/dx =') + '"' + (ty.done ? ' readonly' : '') + '>' +
+      '<div class="typein"><label class="sr" for="tyIn">Your answer</label><input id="tyIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" placeholder="' + (it.kind === 'grad' ? 'gradient' : it.kind === 'd2' ? 'd²y/dx² =' : 'dy/dx =') + '"' + (ty.done ? ' readonly' : '') + '>' +
       '<button type="button" class="go" id="tyGo">' + (ty.done ? 'Next' : 'Check') + '<span class="kbd">Enter</span></button></div>' +
       '<div class="preview" id="tyPv" aria-live="polite"></div>' + (ty.done ? '' : keysHtml(it, 'tyKeys')) +
       '<p class="hint">' + typeHint(it) + '</p><div id="tyFb" aria-live="polite"></div>';
@@ -1185,7 +1549,7 @@ footer a { color: var(--accent); }
     if (sp.state === 'start') {
       host.innerHTML = '<h2>90 seconds</h2><p class="muted">Pick the derivative, as many as you can. A wrong pick costs you the time it took. The groups you have on above are the ones in play.</p>' +
         '<div class="spec"><div><div class="sv">90s</div><div class="sl">on the clock</div></div><div><div class="sv">' + pool().length + '</div><div class="sl">derivatives in play</div></div>' +
-        '<div><div class="sv">' + (best == null ? 'none yet' : best) + '</div><div class="sl">your best here</div></div></div>' +
+        '<div><div class="sv">' + (best == null ? 'none yet' : String(+best)) + '</div><div class="sl">your best here</div></div></div>' +
         '<button type="button" class="go" id="spGo">Start the clock<span class="kbd">Enter</span></button>';
       $('spGo').onclick = sprintStart;
       return;
@@ -1199,7 +1563,7 @@ footer a { color: var(--accent); }
     }
     // over
     var h = '<div class="center"><div class="lbl">Clock stopped</div><div class="big">' + sp.score + '</div>' +
-      '<p class="muted">' + sp.score + ' right out of ' + sp.n + ' tried' + (sp.newBest ? ' · <b style="color:var(--ok)">a new best</b>' : best != null ? ' · your best here is ' + best : '') + '</p></div>';
+      '<p class="muted">' + sp.score + ' right out of ' + sp.n + ' tried' + (sp.newBest ? ' · <b style="color:var(--ok)">a new best</b>' : best != null ? ' · your best here is ' + String(+best) : '') + '</p></div>';
     if (sp.missed.length) {
       h += '<h3>To look at again</h3><ul class="misslist">' + sp.missed.map(function (it) {
         return '<li>' + tagHtml(it) + ' ' + K(qTex(it)) + ' &nbsp;→&nbsp; ' + K(texOf(it.d)) + '</li>';
@@ -1210,6 +1574,7 @@ footer a { color: var(--accent); }
     $('spAgain').onclick = sprintStart;
   }
   function sprintStart() {
+    clearTimeout(sp.next); sp.run = (sp.run || 0) + 1;
     sp.state = 'run'; sp.score = 0; sp.n = 0; sp.missed = []; sp.lock = false; sp.queue = null; sp.newBest = false;
     sp.cur = nextFrom(sp); sp.opts = makeOpts(sp.cur); sp.chosen = -1;
     sp.end = Date.now() + SPRINT_SECS * 1000;
@@ -1232,14 +1597,16 @@ footer a { color: var(--accent); }
     var ok = sp.opts[i].correct;
     if (ok) sp.score++; else if (sp.missed.indexOf(sp.cur) < 0) sp.missed.push(sp.cur);
     renderSprint();
-    setTimeout(function () {
-      if (sp.state !== 'run') return;
+    clearTimeout(sp.next);
+    var run = sp.run;
+    sp.next = setTimeout(function () {
+      if (sp.state !== 'run' || sp.run !== run) return;
       sp.cur = nextFrom(sp); sp.opts = makeOpts(sp.cur); sp.lock = false; sp.chosen = -1;
       renderSprint(); var f = $('sprintBody').querySelector('.opt'); if (f) f.focus();
     }, ok ? 350 : 1100);
   }
   function sprintOver() {
-    clearInterval(sp.timer); sp.state = 'over'; busy = false;
+    clearInterval(sp.timer); clearTimeout(sp.next); sp.state = 'over'; busy = false;
     var k = tierKey(), b = store.best[k];
     if (sp.score > 0 && (b == null || sp.score > b)) { store.best[k] = sp.score; sp.newBest = true; save(); }
     else sp.newBest = false;
@@ -1259,7 +1626,8 @@ footer a { color: var(--accent); }
     var mask = +m[1], tiers = TIERS.map(function (t) { return t.id; }).filter(function (t) { return mask & TIERBIT[t]; });
     var n = +m[2], min = +m[3];
     if (n < 1 || n > 30 || min < 1 || min > 120) return null;
-    return { id: s, tiers: tiers, n: n, min: min, fmt: m[4], seed: m[5] };
+    var c = { id: s, tiers: tiers, n: n, min: min, fmt: m[4], seed: m[5] };
+    return encodeQuiz(c) === s ? c : null;      // only the exact form the Teacher tab writes
   }
   function quizItems(c) {     // the same questions for everyone with the link, in a fixed order
     var p = BANK.filter(function (it) { return c.tiers.indexOf(it.tier) >= 0; });
@@ -1271,15 +1639,27 @@ footer a { color: var(--accent); }
   function b64d(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return decodeURIComponent(escape(atob(s))); }
   function check(payload) { return hashStr(SALT + payload).toString(36) + hashStr(payload + '|' + SALT + '|' + payload.length).toString(36); }
   function makeCode(o) { var p = b64e(JSON.stringify(o)); return 'DP1.' + p + '.' + check(p); }
+  /* a pasted code is untrusted: every field must be the right type, or the code is unreadable */
+  function normCode(d) {
+    if (!isObj(d)) return null;
+    var str = function (v, max) { return typeof v === 'string' && v.length <= max ? v : null; };
+    var int = function (v, max) { return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= 0 && v <= max ? v : null; };
+    var o = { q: str(d.q, 40), ti: str(d.ti, 80), n: str(d.n, 40), s: int(d.s, 40), N: int(d.N, 40), t: int(d.t, 7200), r: str(d.r, 40),
+              at: typeof d.at === 'number' && isFinite(d.at) && isFinite(new Date(d.at).getTime()) ? d.at : null };
+    if (o.q == null || o.n == null || o.s == null || o.N == null || o.t == null || o.r == null) return null;
+    if (o.ti == null) o.ti = '';
+    return o;
+  }
   function readCodes(text) {
     var re = /DP1\.([A-Za-z0-9_-]+)\.([0-9a-z]+)/g, m, out = [];
     while ((m = re.exec(text))) {
       var rec = { raw: m[0], valid: false };
-      try { rec.d = JSON.parse(b64d(m[1])); } catch (e) { rec.d = null; }
+      var d = null;
+      try { d = JSON.parse(b64d(m[1])); } catch (e) { d = null; }
+      rec.d = normCode(d);
       if (rec.d) {
-        var d = rec.d, r = String(d.r || '');
-        var ones = (r.match(/1/g) || []).length;
-        rec.valid = check(m[1]) === m[2] && /^[01]+$/.test(r) && ones === d.s && r.length === d.N;
+        var r = rec.d.r, ones = (r.match(/1/g) || []).length;
+        rec.valid = check(m[1]) === m[2] && /^[01]{1,40}$/.test(r) && ones === rec.d.s && r.length === rec.d.N;
       }
       out.push(rec);
     }
@@ -1320,6 +1700,8 @@ footer a { color: var(--accent); }
       (canStore ? '' : '<p class="warnmsg">This browser is blocking saved data, so if you reload, the quiz starts again.</p>') +
       '<div class="nextrow"><span class="muted small">The clock starts when you press Start.</span><button type="button" class="go" id="qzStart">Start the quiz</button></div>';
     $('qzStart').onclick = function () {
+      var other = freshAttempt(QZ.id);
+      if (other) { store.quiz[QZ.id] = other; qs = null; renderQuiz(); return; }   // started or finished in another tab
       var nm = $('qzName').value.trim().replace(/\s+/g, ' ');
       if (nm.length < 2) { $('qzNameMsg').hidden = false; $('qzName').focus(); return; }
       var its = quizItems(QZ);
@@ -1332,6 +1714,15 @@ footer a { color: var(--accent); }
     };
     $('qzName').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('qzStart').click(); });
   }
+  window.addEventListener('storage', function (e) {
+    if (e.key !== KEY || !QZ) return;
+    var other = freshAttempt(QZ.id);
+    if (!other) return;
+    if (other.st === 'done' || (qs && other.t0 !== qs.t0) || (!qs && other.st === 'run')) {
+      clearInterval(qTimer); qs = null; store.quiz[QZ.id] = other; document.body.classList.remove('quizmode');
+      if (current === 'quiz') renderQuiz();
+    }
+  });
   function startQuizTimer() { clearInterval(qTimer); qTimer = setInterval(tickQuiz, 250); document.body.classList.add('quizmode'); }
   function tickQuiz() {
     var left = (qs.t0 + QZ.min * 60000 - Date.now()) / 1000;
@@ -1353,7 +1744,7 @@ footer a { color: var(--accent); }
       var opts = quizOptsFor(it, i), mark = qs.ans[i] == null ? -1 : qs.ans[i];
       h += optsHtml(it, opts, { done: false, mark: mark });
     } else {
-      h += '<div class="typein"><label class="sr" for="qzIn">Your answer</label><input id="qzIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + (it.kind === 'grad' ? 'gradient' : 'dy/dx =') + '"></div>' +
+      h += '<div class="typein"><label class="sr" for="qzIn">Your answer</label><input id="qzIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + (it.kind === 'grad' ? 'gradient' : it.kind === 'd2' ? 'd²y/dx² =' : 'dy/dx =') + '"></div>' +
         '<div class="preview" id="qzPv" aria-live="polite"></div>' + keysHtml(it, 'qzKeys') + '<p class="hint">' + typeHint(it) + '</p>';
     }
     h += '<div class="nextrow"><button type="button" class="ghost" id="qzBack"' + (pos === 0 ? ' disabled' : '') + '>Back</button>' +
@@ -1400,6 +1791,12 @@ footer a { color: var(--accent); }
   }
   function quizFinish(timeUp) {
     clearInterval(qTimer); finishArmed = false;
+    var other = freshAttempt(QZ.id);
+    if (other && (other.st === 'done' || other.t0 !== qs.t0)) {      // another tab got there first: keep that one
+      store.quiz[QZ.id] = other; qs = null; document.body.classList.remove('quizmode');
+      if (other.st === 'done') return quizResult(other);
+      qs = other; startQuizTimer(); return quizQuestion();
+    }
     var its = quizItems(QZ), r = '', score = 0, review = [];
     its.forEach(function (it, i) {
       var a = qs.ans[i], ok = false, shown = null;
@@ -1490,6 +1887,7 @@ footer a { color: var(--accent); }
       tc.cfg = { tiers: tc.tiers.slice(), n: n, min: tc.min, fmt: tc.fmt, seed: seed };
       var id = encodeQuiz(tc.cfg);
       tc.cfg.id = id;
+      if (store.made.indexOf(id) < 0) { store.made.push(id); store.made = store.made.slice(-200); save(); }
       tc.link = location.href.split(/[?#]/)[0] + '?quiz=' + encodeURIComponent(id) + '&title=' + encodeURIComponent(tc.title || 'Derivatives pop quiz');
       drawLink();
     };
@@ -1521,9 +1919,9 @@ footer a { color: var(--accent); }
   function drawResults() {
     var recs = readCodes(tc.read || '');
     if (!recs.length) { $('tcReadMsg').textContent = 'No results codes found in that text.'; $('tcOut').innerHTML = ''; return; }
-    var groups = {}, orderQ = [];
+    var groups = Object.create(null), orderQ = [];
     recs.forEach(function (r) {
-      var q = r.d && r.d.q ? r.d.q : '?';
+      var q = r.d ? String(r.d.q) : '(unreadable)';
       if (!groups[q]) { groups[q] = []; orderQ.push(q); }
       groups[q].push(r);
     });
@@ -1531,21 +1929,27 @@ footer a { color: var(--accent); }
     $('tcReadMsg').textContent = recs.length + ' code' + (recs.length > 1 ? 's' : '') + ' found' + (nBad ? ', ' + nBad + ' flagged' : '') + '.';
     var h = '';
     orderQ.forEach(function (q) {
-      var rows = groups[q], cfg = decodeQuiz(q), title = rows[0].d && rows[0].d.ti ? rows[0].d.ti : 'Unknown quiz';
-      var seen = {};
+      var rows = groups[q], cfg = decodeQuiz(q), title = rows[0].d && rows[0].d.ti ? rows[0].d.ti : (rows[0].d ? 'Untitled quiz' : 'Codes that could not be read');
+      var nItems = cfg ? quizItems(cfg).length : 0;
+      rows.forEach(function (r) { if (r.valid && (!cfg || r.d.N !== nItems)) { r.valid = false; r.mismatch = true; } });
+      var mine = store.made.indexOf(q) >= 0;
+      var seen = Object.create(null);
       rows.forEach(function (r) { var k = r.d ? String(r.d.n).toLowerCase() : r.raw; r.dup = !!seen[k]; seen[k] = true; });
       rows.sort(function (a, b) { return String(a.d ? a.d.n : '').localeCompare(String(b.d ? b.d.n : '')); });
       var valid = rows.filter(function (r) { return r.valid; });
       var avg = valid.length ? valid.reduce(function (s, r) { return s + r.d.s / r.d.N; }, 0) / valid.length : 0;
-      h += '<div class="section"><h3>' + esc(title) + '</h3><p class="muted small">Quiz ' + esc(q) + (cfg ? ' · ' + cfg.n + ' questions · ' + cfg.min + ' min · ' + (cfg.fmt === 'm' ? 'multiple choice' : 'typed') : '') +
+      h += '<div class="section"><h3>' + esc(title) + '</h3>' +
+        (cfg && !mine ? '<p class="warnmsg">This browser did not make quiz ' + esc(q) + '. If you made it on another device that is fine; otherwise a student may have edited the link.</p>' : '') +
+        '<p class="muted small">Quiz ' + esc(q) + (cfg ? ' · ' + cfg.n + ' questions · ' + cfg.min + ' min · ' + (cfg.fmt === 'm' ? 'multiple choice' : 'typed') : '') +
         ' · ' + valid.length + ' valid result' + (valid.length === 1 ? '' : 's') + (valid.length ? ' · class average ' + Math.round(100 * avg) + '%' : '') + '</p>' +
         '<div class="tablewrap"><table class="res"><thead><tr><th>Name</th><th>Score</th><th>%</th><th>Time</th><th>Handed in</th><th>Check</th></tr></thead><tbody>' +
         rows.map(function (r) {
           var d = r.d;
-          if (!d) return '<tr><td colspan="6" class="bad">A code that could not be read at all: ' + esc(r.raw.slice(0, 40)) + '…</td></tr>';
-          return '<tr><td>' + esc(d.n) + '</td><td class="num">' + d.s + ' / ' + d.N + '</td><td class="num">' + (d.N ? Math.round(100 * d.s / d.N) : 0) + '%</td><td class="num">' + fmtTime(d.t) + '</td>' +
-            '<td class="num">' + (d.at ? new Date(d.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '') + '</td>' +
-            '<td>' + (r.valid ? (r.dup ? '<span class="warnmsg">ok · second code for this name</span>' : '<span class="okmsg">ok</span>') : '<span class="bad">edited: does not match its check</span>') + '</td></tr>';
+          if (!d) return '<tr><td colspan="6" class="bad">A code that could not be read: ' + esc(r.raw.slice(0, 40)) + '…</td></tr>';
+          return '<tr><td>' + esc(d.n) + '</td><td class="num">' + String(d.s) + ' / ' + String(d.N) + '</td><td class="num">' + (d.N ? Math.round(100 * d.s / d.N) : 0) + '%</td><td class="num">' + fmtTime(d.t) + '</td>' +
+            '<td class="num">' + (d.at != null ? esc(new Date(d.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) : '') + '</td>' +
+            '<td>' + (r.valid ? (r.dup ? '<span class="warnmsg">ok · second code for this name</span>' : '<span class="okmsg">ok</span>') :
+              r.mismatch ? '<span class="bad">does not match this quiz’s questions</span>' : '<span class="bad">edited: does not match its check</span>') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
       if (cfg && valid.length) {
         var its = quizItems(cfg), wrong = its.map(function () { return 0; });
@@ -1564,11 +1968,130 @@ footer a { color: var(--accent); }
       var lines = [['name', 'score', 'out_of', 'percent', 'time_seconds', 'quiz_title', 'quiz', 'handed_in', 'check'].join(',')];
       recs.forEach(function (r) {
         var d = r.d || {};
-        var cell = function (v) { v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
-        lines.push([cell(r.d ? d.n : '(unreadable code)'), d.s, d.N, d.N ? Math.round(100 * d.s / d.N) : '', d.t, cell(d.ti), cell(d.q), d.at ? new Date(d.at).toISOString() : '', r.valid ? (r.dup ? 'ok (second code for this name)' : 'ok') : 'edited'].join(','));
+        var cell = function (v) {
+          v = v == null ? '' : String(v);
+          if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;           // stop spreadsheets reading it as a formula
+          return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+        };
+        var when = d.at != null ? new Date(d.at) : null;
+        var status = !r.d ? 'unreadable' : r.valid ? (r.dup ? 'ok (second code for this name)' : 'ok') : r.mismatch ? 'does not match the quiz' : 'edited';
+        lines.push([r.d ? d.n : '(unreadable code)', d.s, d.N, d.N ? Math.round(100 * d.s / d.N) : '', d.t, d.ti, d.q,
+          when && isFinite(when.getTime()) ? when.toISOString() : '', status].map(cell).join(','));
       });
       download('derivatives-quiz-results.csv', lines.join('\n') + '\n', 'text/csv');
     };
+  }
+
+
+  /* ================================================================ rich text: $…$ inline, $$…$$ display */
+  function rich(s) {
+    return String(s).split(/(\$\$[^$]+\$\$|\$[^$]+\$)/).map(function (part) {
+      if (/^\$\$/.test(part)) return K(part.slice(2, -2), true);
+      if (/^\$/.test(part)) return K(part.slice(1, -1));
+      return esc(part);
+    }).join('');
+  }
+  var CAM = window.DP_CAM || [], FE = window.DP_FE || [];
+  var CAMBY = {}; CAM.forEach(function (c) { CAMBY[c.id] = c; });
+  function chip(code, lost) { return window.TIBMarks ? TIBMarks.chip(code, lost ? 'lost' : '') : '<b>' + esc(code) + '</b>'; }
+  function picker(list, cur, doneFn, label) {
+    return '<div class="picker" role="group" aria-label="' + label + '">' + list.map(function (x, i) {
+      return '<button type="button" data-i="' + i + '" aria-current="' + (i === cur) + '" class="' + (doneFn(x) ? 'done' : '') + '" aria-label="' + label + ' ' + (i + 1) + (doneFn(x) ? ', done' : '') + '">' + (i + 1) + '</button>';
+    }).join('') + '</div>';
+  }
+  function questionHtml(c) {
+    return '<div class="qtext"><p>' + rich(c.text) + '</p>' + c.parts.map(function (p) { return '<p>' + rich(p) + '</p>'; }).join('') + '</div>';
+  }
+
+  /* ================================================================ find the error */
+  var fe = { i: 0, picks: [], done: false };
+  function renderError() {
+    keyHelp('');
+    if (!FE.length) { $('errorBody').innerHTML = '<p class="empty">Nothing here yet.</p>'; return; }
+    var it = FE[fe.i], c = CAMBY[it.on];
+    var total = it.marksOutOf || c.marks;
+    var h = '<div class="nextrow" style="margin-top:0"><span class="tally">One line in each answer is wrong. Find the first wrong line, then see what it costs.</span><span class="tally">' +
+      FE.filter(function (x) { return store.fe[x.id]; }).length + ' of ' + FE.length + ' found</span></div>' +
+      picker(FE, fe.i, function (x) { return !!store.fe[x.id]; }, 'Answer') +
+      '<div class="srcline">Written for practice on ' + esc(c.src.paper) + ' ' + esc(c.q) + (it.part ? ', ' + esc(it.part) : '') + ' · ' + total + ' marks</div>' +
+      questionHtml(c) +
+      '<div class="lbl" style="margin-top:12px">A student’s answer</div><div class="wlines" role="group" aria-label="Lines of working">' +
+      it.lines.map(function (l, j) {
+        var cls = 'wline';
+        if (fe.picks.indexOf(j) >= 0 && j !== it.wrong) cls += ' ok';
+        if (fe.done && j === it.wrong) cls += ' bad';
+        if (fe.done && j > it.wrong) cls += ' later';
+        return '<button type="button" class="' + cls + '" data-j="' + j + '"' + (fe.done ? ' disabled' : '') + ' aria-label="Line ' + (j + 1) + '"><span class="ln">' + (j + 1) + '</span><span>' + rich(l) + '</span></button>';
+      }).join('') + '</div><div id="feFb" aria-live="polite"></div>';
+    $('errorBody').innerHTML = h;
+    var last = fe.picks[fe.picks.length - 1];
+    if (fe.done) {
+      var got = it.costs.filter(function (x) { return x.got; }).length;
+      $('feFb').innerHTML = '<div class="fb">' + (fe.picks.length === 1 ? '<span class="v ok">Found it, first try.</span> ' : '<span class="v ok">That’s the one.</span> ') +
+        '<span class="why">Line ' + (it.wrong + 1) + ': ' + esc(it.slip) + '</span><p>' + rich(it.fix) + '</p></div>' +
+        '<h3 style="margin-top:14px">What it costs: ' + got + ' of ' + total + ' marks</h3><div class="costs">' + it.costs.map(function (x) {
+          return '<div class="cost"><span>' + chip(x.c, !x.got) + '</span><span><b style="color:' + (x.got ? 'var(--ok)' : 'var(--warn)') + '">' + (x.got ? 'kept' : 'lost') + '.</b> <span class="why">' + rich(x.why) + '</span></span></div>';
+        }).join('') + '</div><p class="muted small" style="margin-top:10px">Marked by us with ' + esc(c.src.ms) + (c.msPage ? ' (' + c.msPage + ')' : '') + '. The full scheme is in Cambridge questions, number ' + (CAM.indexOf(c) + 1) + '.</p>' +
+        '<div class="nextrow"><span></span><button type="button" class="go" id="feNext">' + (fe.i < FE.length - 1 ? 'Next answer' : 'Back to the first') + '</button></div>';
+      $('feNext').onclick = function () { feGo((fe.i + 1) % FE.length); var f = $('errorBody').querySelector('.wline'); if (f) f.focus(); };
+    } else if (last != null) {
+      $('feFb').innerHTML = '<div class="fb"><span class="v hm">Line ' + (last + 1) + ' is right.</span> <span class="why">' + (last > it.wrong ? 'It follows correctly from the line before it. Look earlier.' : 'Keep going: the mistake comes later.') + '</span></div>';
+    }
+    $('errorBody').querySelectorAll('.picker button').forEach(function (b) { b.onclick = function () { feGo(+b.dataset.i); }; });
+    $('errorBody').querySelectorAll('.wline').forEach(function (b) { b.onclick = function () { fePick(+b.dataset.j); }; });
+  }
+  function feGo(i) { fe = { i: i, picks: [], done: false }; renderError(); }
+  function fePick(j) {
+    if (fe.done || fe.picks.indexOf(j) >= 0) return;
+    var it = FE[fe.i];
+    fe.picks.push(j);
+    if (j === it.wrong) { fe.done = true; store.fe[it.id] = fe.picks.length; save(); }
+    renderError();
+    var f = fe.done ? $('feNext') : $('errorBody').querySelector('.wline[data-j="' + j + '"]'); if (f) f.focus();
+  }
+
+  /* ================================================================ Cambridge questions */
+  var cq = { i: 0, shown: false };
+  function renderCam() {
+    keyHelp('');
+    var c = CAM[cq.i];
+    var mine = store.cq[c.id];
+    var totalGot = 0, totalMax = 0;
+    CAM.forEach(function (x) { if (store.cq[x.id] != null) { totalGot += store.cq[x.id]; totalMax += x.marks; } });
+    var h = '<div class="nextrow" style="margin-top:0"><span class="tally">Real Paper 1 questions. Do it on paper first, then light up the mark scheme one mark at a time.</span><span class="tally" id="cqTally">' +
+      (totalMax ? 'Your marks: ' + totalGot + ' of ' + totalMax : '') + '</span></div>' +
+      picker(CAM, cq.i, function (x) { return store.cq[x.id] != null; }, 'Question') +
+      '<div class="srcline">' + esc(c.src.paper) + ' · ' + esc(c.q) + ' · ' + c.marks + ' marks</div>' + questionHtml(c);
+    if (!cq.shown) {
+      h += '<div class="nextrow"><span class="muted small">Write your answer down before you look.</span><button type="button" class="go" id="cqShow">Show the mark scheme</button></div>';
+    } else {
+      h += '<h3 style="margin-top:14px">' + esc(c.src.ms) + (c.msPage ? ' (' + esc(c.msPage) + ')' : '') + '</h3>' +
+        '<div class="tib-mk" id="cqMk">' + c.scheme.map(function (m) {
+          return '<div class="tib-mk-line" data-code="' + esc(m.c) + '" data-n="' + (m.n || 1) + '"><div class="tib-mk-earn">' + rich(m.w) + (m.g ? '<span class="g">' + rich(m.g) + '</span>' : '') + '</div></div>';
+        }).join('') + '</div>' +
+        (c.note ? '<p class="muted small" style="margin-top:8px">' + esc(c.note) + '</p>' : '') +
+        '<div class="erbox"><b>' + esc(c.src.er) + ':</b> ' + esc(c.er) + '</div>' +
+        '<div class="selfmark"><div class="lbl" style="margin-bottom:6px">How many marks did you get?</div><div class="row" role="group" aria-label="Your marks">' +
+        Array.apply(null, Array(c.marks + 1)).map(function (_, k) {
+          return '<button type="button" class="ghost" data-k="' + k + '" aria-pressed="' + (mine === k) + '">' + k + '</button>';
+        }).join('') + '</div></div>' +
+        '<div class="nextrow"><button type="button" class="ghost" id="cqHide">Hide the scheme</button><button type="button" class="go" id="cqNext">' + (cq.i < CAM.length - 1 ? 'Next question' : 'Back to the first') + '</button></div>';
+    }
+    $('camBody').innerHTML = h;
+    $('camBody').querySelectorAll('.picker button').forEach(function (b) { b.onclick = function () { cq = { i: +b.dataset.i, shown: false }; renderCam(); }; });
+    if (!cq.shown) $('cqShow').onclick = function () { cq.shown = true; renderCam(); var g = $('cqMk').querySelector('.tib-mk-btn.go'); if (g) g.focus(); };
+    else {
+      if (window.TIBMarks) TIBMarks.ladder($('cqMk'));
+      $('cqHide').onclick = function () { cq.shown = false; renderCam(); };
+      $('cqNext').onclick = function () { cq = { i: (cq.i + 1) % CAM.length, shown: false }; renderCam(); };
+      $('camBody').querySelectorAll('.selfmark button').forEach(function (b) { b.onclick = function () {
+        store.cq[c.id] = +b.dataset.k; save();
+        $('camBody').querySelectorAll('.selfmark button').forEach(function (o) { o.setAttribute('aria-pressed', o === b); });
+        var tg = 0, tm = 0; CAM.forEach(function (x) { if (store.cq[x.id] != null) { tg += store.cq[x.id]; tm += x.marks; } });
+        $('cqTally').textContent = 'Your marks: ' + tg + ' of ' + tm;
+        var pb = $('camBody').querySelector('.picker button[data-i="' + cq.i + '"]'); if (pb) pb.classList.add('done');
+      }; });
+    }
   }
 
   /* ================================================================ sheet */
@@ -1624,9 +2147,9 @@ footer a { color: var(--accent); }
   });
   drawTiers();
   var startTab = QZ || (params && params.get('quiz')) ? 'quiz' : location.hash === '#teacher' ? 'teacher' :
-    { '#sheet': 'sheet', '#sprint': 'sprint', '#pick': 'pick', '#type': 'type' }[location.hash] || 'flash';
+    { '#sheet': 'sheet', '#sprint': 'sprint', '#pick': 'pick', '#type': 'type', '#error': 'error', '#cambridge': 'cam' }[location.hash] || 'flash';
   showTab(startTab);
-  window.__dp = { cur: function () { return { pk: pk.cur, ty: ty.cur, sp: sp.cur, fc: fc.cur }; }, BANK: BANK, judge: judge, readCodes: readCodes, decodeQuiz: decodeQuiz, quizItems: quizItems, makeCode: makeCode, store: function () { return store; } };
+  window.__dp = { FE: FE, CAM: CAM, cur: function () { return { pk: pk.cur, ty: ty.cur, sp: sp.cur, fc: fc.cur }; }, BANK: BANK, judge: judge, readCodes: readCodes, decodeQuiz: decodeQuiz, quizItems: quizItems, makeCode: makeCode, store: function () { return store; } };
 })();
 </script>
 </body>
