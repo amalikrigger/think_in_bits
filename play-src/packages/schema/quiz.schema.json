@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "settings": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "autoplay": {
+          "default": false,
+          "type": "boolean"
+        },
+        "revealSec": {
+          "default": 6,
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 60
+        },
+        "leaderboardSec": {
+          "default": 6,
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 60
+        },
+        "timeLimitOverrideSec": {
+          "default": null,
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 240
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pointsMultiplier": {
+          "default": 1,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "showAnswersOnDevice": {
+          "default": true,
+          "type": "boolean"
+        },
+        "shuffleQuestions": {
+          "default": false,
+          "type": "boolean"
+        },
+        "shuffleAnswers": {
+          "default": false,
+          "type": "boolean"
+        },
+        "generatedNicknamesOnly": {
+          "default": false,
+          "type": "boolean"
+        },
+        "profanityFilter": {
+          "default": true,
+          "type": "boolean"
+        },
+        "lateJoin": {
+          "default": true,
+          "type": "boolean"
+        },
+        "streaks": {
+          "default": true,
+          "type": "boolean"
+        },
+        "fastestFinger": {
+          "default": true,
+          "type": "boolean"
+        },
+        "multiPenalty": {
+          "default": false,
+          "type": "boolean"
+        },
+        "teams": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean"
+            },
+            "size": {
+              "default": 4,
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 10
+            },
+            "scoring": {
+              "default": "average",
+              "type": "string",
+              "enum": [
+                "average",
+                "sum"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "lobbyCapacity": {
+          "default": 100,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300
+        },
+        "locked": {
+          "default": false,
+          "type": "boolean"
+        },
+        "sound": {
+          "default": true,
+          "type": "boolean"
+        },
+        "music": {
+          "default": true,
+          "type": "boolean"
+        },
+        "leaderboardEvery": {
+          "default": 1,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "explanationSlide": {
+          "default": true,
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "music": {
+      "type": "object",
+      "properties": {
+        "lobby": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "podium": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "defaults": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "timeLimitSec": {
+          "default": 20,
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 240
+        },
+        "points": {
+          "default": "standard",
+          "type": "string",
+          "enum": [
+            "standard",
+            "double",
+            "none"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "questions": {
+      "minItems": 1,
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "single"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "media": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "image"
+                      },
+                      "src": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "alt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "src",
+                      "alt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "code"
+                      },
+                      "language": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                      },
+                      "source": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "language",
+                      "source"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "timeLimitSec": {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 240
+              },
+              "points": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "double",
+                  "none"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "answers": {
+                "minItems": 2,
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 150
+                    },
+                    "correct": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "answers"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "multi"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "media": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "image"
+                      },
+                      "src": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "alt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "src",
+                      "alt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "code"
+                      },
+                      "language": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                      },
+                      "source": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "language",
+                      "source"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "timeLimitSec": {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 240
+              },
+              "points": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "double",
+                  "none"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "answers": {
+                "minItems": 2,
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 150
+                    },
+                    "correct": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "text"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "answers"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "true_false"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "media": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "image"
+                      },
+                      "src": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "alt": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "src",
+                      "alt"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "code"
+                      },
+                      "language": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 30
+                      },
+                      "source": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2000
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "language",
+                      "source"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "timeLimitSec": {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 240
+              },
+              "points": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "double",
+                  "none"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "maxLength": 600
+              },
+              "correct": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "correct"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "title",
+    "questions"
+  ],
+  "additionalProperties": false,
+  "$id": "https://thinkinbits.site/play/quiz.schema.json",
+  "title": "BitBlitz quiz v1",
+  "description": "A BitBlitz quiz. Also enforced but not expressible here: single needs exactly one correct answer; multi needs at least one."
+}
