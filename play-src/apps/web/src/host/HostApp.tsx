@@ -13,6 +13,10 @@ export function HostApp() {
     return saved && saved.expiresAt > Date.now() ? saved.token : null;
   });
   const [game, setGame] = useState<HostGame | null>(() => hostSession.game());
+  const [loginMessage, setLoginMessage] = useState<string | null>(() => {
+    const saved = hostSession.token();
+    return saved && saved.expiresAt <= Date.now() ? "Your login has expired. Please log in again." : null;
+  });
 
   if (game) {
     return (
@@ -29,9 +33,11 @@ export function HostApp() {
   if (!token) {
     return (
       <LoginScreen
+        message={loginMessage}
         onLoggedIn={(value) => {
           hostSession.setToken(value);
           setToken(value.token);
+          setLoginMessage(null);
         }}
       />
     );
@@ -43,6 +49,7 @@ export function HostApp() {
       onLoggedOut={() => {
         hostSession.setToken(null);
         setToken(null);
+        setLoginMessage("Your login has expired. Please log in again, then create the game.");
       }}
       onCreated={(created) => {
         hostSession.setGame(created);

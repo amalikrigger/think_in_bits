@@ -7,11 +7,13 @@ import { Media, PointsLevel, QuizSettings, type QuizMusic, type QuizSettings as 
 
 export const NICKNAME_MAX_CHARS = 20;
 
+// The limit counts code points, like the engine does, so a name of 20 emoji is allowed.
 export const Nickname = z
   .string()
   .trim()
   .min(1, "pick a nickname")
-  .max(NICKNAME_MAX_CHARS, `nicknames are at most ${NICKNAME_MAX_CHARS} characters`);
+  .max(NICKNAME_MAX_CHARS * 2, `nicknames are at most ${NICKNAME_MAX_CHARS} characters`)
+  .refine((s) => [...s].length <= NICKNAME_MAX_CHARS, `nicknames are at most ${NICKNAME_MAX_CHARS} characters`);
 
 // ---------- client → server ----------
 
@@ -191,7 +193,8 @@ export type ServerMessage =
   /** Sent to the host on connect: uploaded media file names, so empty music slots stay silent. */
   | { type: "media"; names: string[] }
   | { type: "ping"; id: number }
-  | { type: "error"; code: "bad_message" | "auth_failed" | "not_authenticated" | "game_not_found"; message: string };
+  /** `rate_limited` and an oversized `bad_message` are followed by the server closing the socket. */
+  | { type: "error"; code: "bad_message" | "auth_failed" | "not_authenticated" | "game_not_found" | "rate_limited"; message: string };
 
 /** Plain-language text for every rejection, shared so server logs and UI agree. */
 export const REJECTION_TEXT: Record<AnswerRejection | JoinRejection | CommandRejection, string> = {

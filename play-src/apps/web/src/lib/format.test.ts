@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { splitMath } from "../components/MathText";
 import { formatPoints, ordinal, spacedCode } from "./format";
+import { hasMath, splitMath } from "./math";
 import { TILES, tile } from "./tiles";
 
 describe("ordinal", () => {
@@ -31,6 +31,12 @@ describe("splitMath", () => {
 
   it("handles several formulas and math-only text", () => {
     expect(splitMath("$a$ and $b$").filter((s) => s.math).map((s) => s.text)).toEqual(["a", "b"]);
+  });
+
+  it("knows when KaTeX is needed at all, so plain quizzes never download it", () => {
+    expect(hasMath("Which is a prime?")).toBe(false);
+    expect(hasMath("costs $5")).toBe(false);
+    expect(hasMath("Solve $x^2=4$")).toBe(true);
   });
 });
 

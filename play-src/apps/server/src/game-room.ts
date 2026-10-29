@@ -3,6 +3,7 @@ import { createGame, nextDeadline, resultsCsv, step, type EngineEvent, type Game
 import { ClientMessage, type Quiz, type ServerMessage } from "@bitblitz/schema";
 import { constantTimeEqualText, randomToken, sha256 } from "./auth";
 import type { Env } from "./env";
+import { spendMessage, type MessageBudget } from "./rate-limit";
 
 // The shell around the pure engine, one instance per game. It owns everything the engine
 // must not: sockets, the clock, persistence, alarms, random tokens and latency pings.
@@ -12,6 +13,14 @@ const IDLE_EXPIRY_MS = 6 * 60 * 60 * 1000;
 const MEDIA_MAX_BYTES = 1024 * 1024;
 const MEDIA_MAX_FILES = 40;
 const MEDIA_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml"]);
+/** The largest legitimate client message (a settings patch) is a few hundred bytes. */
+const MESSAGE_MAX_BYTES = 8 * 1024;
+
+/** WebSocket close codes. The web app treats 4000–4003 as final and does not reconnect after them. */
+const CLOSE = { expired: 4000, authFailed: 4001, kicked: 4003, flooding: 4008, tooBig: 1009 } as const;
+
+/** Events caused by a person's message. Only these count as activity for the 6 h idle expiry. */
+const ACTIVITY_EVENTS = new Set<EngineEvent["type"]>(["join", "resume", "answer", "latency", "host_connected", "host_command"]);
 
 type Attachment =
   | { role: "pending"; connectionId: string }
@@ -29,24 +38,34 @@ export class GameRoom extends DurableObject<Env> {
   private stored: Stored | null = null;
   /** Ping id → send time, per connection. In memory only: losing it just skips a sample. */
   private pings = new Map<string, Map<number, number>>();
-  private pingSeq = 0;
+  /** Starts at a random offset so a pong from before a hibernation cannot match a fresh ping. */
+  private pingSeq = crypto.getRandomValues(new Uint32Array(1))[0]! % 1_000_000_000;
+  /** Per-connection message budget. In memory only: waking from hibernation simply refills it. */
+  private budgets = new Map<string, MessageBudget>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => {
       this.stored = (await ctx.storage.get<Stored>("game")) ?? null;
+      await this.reconcileConnections();
     });
   }
 
   // ---------- RPC from the Worker ----------
 
   async init(quiz: Quiz, code: string): Promise<InitResult> {
+    // The slow work comes first so that the in-use check and the claim below run with no await
+    // between them: two create requests that drew the same code cannot both claim it.
+    const hostKey = randomToken();
+    const hostKeyHash = await sha256(hostKey);
+    const seed = crypto.getRandomValues(new Uint32Array(1))[0]!;
     const now = Date.now();
     if (this.stored && this.stored.expiresAt > now) return { ok: false, reason: "in_use" };
+    for (const ws of this.ctx.getWebSockets()) ws.close(CLOSE.expired, "game expired");
+    this.pings.clear();
+    this.budgets.clear();
+    this.stored = { state: createGame(quiz, { code, seed }), hostKeyHash, expiresAt: now + IDLE_EXPIRY_MS };
     await this.ctx.storage.deleteAll();
-    const hostKey = randomToken();
-    const seed = crypto.getRandomValues(new Uint32Array(1))[0]!;
-    this.stored = { state: createGame(quiz, { code, seed }), hostKeyHash: await sha256(hostKey), expiresAt: now + IDLE_EXPIRY_MS };
     await this.persist();
     return { ok: true, hostKey };
   }
@@ -105,6 +124,24 @@ export class GameRoom extends DurableObject<Env> {
 
   override async webSocketMessage(ws: WebSocket, raw: string | ArrayBuffer): Promise<void> {
     const attachment = ws.deserializeAttachment() as Attachment;
+
+    // Cheapest checks first: every accepted message costs an engine step and a storage write.
+    const spent = spendMessage(this.budgets.get(attachment.connectionId), Date.now());
+    this.budgets.set(attachment.connectionId, spent.budget);
+    if (!spent.allowed) {
+      sendTo(ws, { type: "error", code: "rate_limited", message: "too many messages; slow down" });
+      return ws.close(CLOSE.flooding, "too many messages");
+    }
+    const size = typeof raw === "string" ? raw.length : raw.byteLength;
+    if (size > MESSAGE_MAX_BYTES) {
+      sendTo(ws, { type: "error", code: "bad_message", message: "message too large" });
+      return ws.close(CLOSE.tooBig, "message too large");
+    }
+    if (!this.live()) {
+      sendTo(ws, { type: "error", code: "game_not_found", message: "this game has ended" });
+      return ws.close(CLOSE.expired, "game expired");
+    }
+
     let parsed: ReturnType<typeof ClientMessage.safeParse>;
     try {
       parsed = ClientMessage.safeParse(JSON.parse(typeof raw === "string" ? raw : new TextDecoder().decode(raw)));
@@ -116,9 +153,11 @@ export class GameRoom extends DurableObject<Env> {
 
     switch (message.type) {
       case "host_auth": {
+        // A socket that is already a player keeps its seat: it cannot be rebound as the host.
+        if (attachment.role === "player") return;
         if (!(await this.isHostKey(message.key))) {
           sendTo(ws, { type: "error", code: "auth_failed", message: "host key not accepted" });
-          return ws.close(4001, "auth failed");
+          return ws.close(CLOSE.authFailed, "auth failed");
         }
         ws.serializeAttachment({ role: "host", connectionId: attachment.connectionId } satisfies Attachment);
         await this.apply({ type: "host_connected" });
@@ -158,9 +197,12 @@ export class GameRoom extends DurableObject<Env> {
     const game = this.stored;
     if (!game) return;
     if (Date.now() >= game.expiresAt) {
-      for (const ws of this.ctx.getWebSockets()) ws.close(4000, "game expired");
+      for (const ws of this.ctx.getWebSockets()) ws.close(CLOSE.expired, "game expired");
       this.stored = null;
+      this.pings.clear();
+      this.budgets.clear();
       await this.ctx.storage.deleteAll();
+      await this.ctx.storage.deleteAlarm();
       return;
     }
     await this.apply({ type: "tick" });
@@ -171,19 +213,28 @@ export class GameRoom extends DurableObject<Env> {
   private async apply(event: EngineEvent): Promise<void> {
     const game = this.live();
     if (!game) return;
+    const now = Date.now();
     const before = game.state.phase;
-    const { state, messages } = step(game.state, event, Date.now());
+    const { state, messages } = step(game.state, event, now);
     game.state = state;
-    game.expiresAt = Date.now() + IDLE_EXPIRY_MS;
+    // A timer firing or a socket dropping must not keep a forgotten game alive.
+    if (ACTIVITY_EVENTS.has(event.type)) game.expiresAt = now + IDLE_EXPIRY_MS;
     await this.persist();
-    this.deliver(messages);
-    // Fresh latency samples right before answers open and after each reveal.
+    const orphans = this.deliver(messages);
+    // Fresh latency samples for everyone right before answers open and after each reveal, and
+    // for a newcomer alone on join or resume: pinging the whole room on every join would turn a
+    // class arriving together into an n² storm of pongs.
     if (state.phase !== before && (state.phase === "countdown" || state.phase === "reveal")) this.pingPlayers();
-    if (event.type === "join" || event.type === "resume") this.pingPlayers();
+    if (event.type === "join" || event.type === "resume") this.pingPlayers(event.connectionId);
+    // A player whose socket went away before its welcome could be delivered starts offline,
+    // instead of counting as "connected" and holding up "everyone has answered".
+    for (const playerId of orphans) await this.apply({ type: "disconnect", playerId });
   }
 
-  private deliver(messages: OutgoingMessage[]): void {
+  /** Sends each message to its sockets; returns players welcomed on a socket that no longer exists. */
+  private deliver(messages: OutgoingMessage[]): string[] {
     const sockets = this.ctx.getWebSockets().map((ws) => ({ ws, a: ws.deserializeAttachment() as Attachment }));
+    const orphans: string[] = [];
     for (const { to, message } of messages) {
       if (to.kind === "connection" && message.type === "welcome") {
         // The engine accepted this socket as a player: remember who it is.
@@ -191,6 +242,8 @@ export class GameRoom extends DurableObject<Env> {
         if (target) {
           target.a = { role: "player", connectionId: to.connectionId, playerId: message.playerId };
           target.ws.serializeAttachment(target.a);
+        } else {
+          orphans.push(message.playerId);
         }
       }
       for (const { ws, a } of sockets) {
@@ -200,16 +253,19 @@ export class GameRoom extends DurableObject<Env> {
           (to.kind === "connection" && a.connectionId === to.connectionId);
         if (!match) continue;
         sendTo(ws, message);
-        if (message.type === "kicked") ws.close(4003, "removed by the teacher");
+        if (message.type === "kicked") ws.close(CLOSE.kicked, "removed by the teacher");
       }
     }
+    return orphans;
   }
 
-  private pingPlayers(): void {
+  /** Pings every player socket, or only the one with `onlyConnectionId`. */
+  private pingPlayers(onlyConnectionId?: string): void {
     const now = Date.now();
     for (const ws of this.ctx.getWebSockets()) {
       const a = ws.deserializeAttachment() as Attachment;
       if (a.role !== "player") continue;
+      if (onlyConnectionId !== undefined && a.connectionId !== onlyConnectionId) continue;
       const id = ++this.pingSeq;
       const pending = this.pings.get(a.connectionId) ?? new Map<number, number>();
       pending.set(id, now);
@@ -222,13 +278,31 @@ export class GameRoom extends DurableObject<Env> {
     const a = ws.deserializeAttachment() as Attachment | null;
     if (!a) return;
     this.pings.delete(a.connectionId);
+    this.budgets.delete(a.connectionId);
     if (a.role !== "player") return;
-    // Only mark the player offline if no other socket (a newer tab) still holds them.
-    const stillHere = this.ctx
-      .getWebSockets()
-      .some((other) => other !== ws && (other.deserializeAttachment() as Attachment).role === "player" &&
-        (other.deserializeAttachment() as { playerId?: string }).playerId === a.playerId);
-    if (!stillHere) await this.apply({ type: "disconnect", playerId: a.playerId });
+    if (!this.playerHasSocket(a.playerId, ws)) await this.apply({ type: "disconnect", playerId: a.playerId });
+  }
+
+  /** Whether any socket other than `except` (a newer tab, say) still holds this player. */
+  private playerHasSocket(playerId: string, except?: WebSocket): boolean {
+    return this.ctx.getWebSockets().some((other) => {
+      if (other === except) return false;
+      const a = other.deserializeAttachment() as Attachment | null;
+      return a?.role === "player" && a.playerId === playerId;
+    });
+  }
+
+  /**
+   * After an eviction or a restart the saved state may still say "connected" for players whose
+   * sockets are gone (hibernated sockets survive and are listed; evicted ones are not). Left
+   * alone, such a player would hold up "everyone has answered" until the clock ran out.
+   */
+  private async reconcileConnections(): Promise<void> {
+    const game = this.live();
+    if (!game) return;
+    for (const player of Object.values(game.state.players)) {
+      if (player.connected && !this.playerHasSocket(player.id)) await this.apply({ type: "disconnect", playerId: player.id });
+    }
   }
 
   private live(): Stored | null {

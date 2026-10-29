@@ -18,7 +18,8 @@ export { LoginLimiter } from "./login-limiter";
 //   GET  /api/games/:code/results.csv    X-Host-Key
 
 const CODE_PATTERN = /^\d{6}$/;
-const MEDIA_NAME_PATTERN = /^[\w.-]{1,80}$/;
+/** A plain file name as teachers have them ("circle 1.png"); it is a storage key, never a path. */
+const MEDIA_NAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{N} _().-]{0,79}$/u;
 const QUIZ_MAX_BYTES = 512 * 1024;
 
 export default {
@@ -53,12 +54,13 @@ async function route(request: Request, env: Env): Promise<Response> {
     if (rest.length === 0 && request.method === "GET") return json(await room.info());
     if (rest[0] === "ws" && rest.length === 1) return room.fetch(request);
 
-    if (rest[0] === "media" && rest[1] && MEDIA_NAME_PATTERN.test(rest[1]) && rest.length === 2) {
-      if (request.method === "GET") return serveMedia(await room.getMedia(rest[1]));
+    const mediaName = rest[0] === "media" && rest.length === 2 ? decodeMediaName(rest[1]!) : null;
+    if (mediaName) {
+      if (request.method === "GET") return serveMedia(await room.getMedia(mediaName));
       if (request.method === "PUT") {
         if (!(await room.isHostKey(request.headers.get("X-Host-Key") ?? ""))) return json({ error: "not the host" }, 401);
         const contentType = (request.headers.get("Content-Type") ?? "").split(";")[0]!.trim();
-        const result = await room.putMedia(rest[1], contentType, await request.arrayBuffer());
+        const result = await room.putMedia(mediaName, contentType, await request.arrayBuffer());
         return result === "ok" ? json({ ok: true }) : json({ error: result }, result === "too_large" ? 413 : 400);
       }
     }
@@ -83,8 +85,10 @@ async function login(request: Request, env: Env): Promise<Response> {
   if (!env.HOST_PASSPHRASE_HASH || !env.SESSION_SECRET || env.SESSION_SECRET.length < 32) {
     return json({ error: "host login is not configured on this server" }, 503);
   }
+  // The attempt is counted before the slow hash check, so a burst of parallel guesses
+  // cannot all pass the limit at once; a correct passphrase clears the count.
   const limiter = env.LOGIN_LIMITER.get(env.LOGIN_LIMITER.idFromName(clientIp(request)));
-  const decision = await limiter.check();
+  const decision = await limiter.reserve();
   if (!decision.allowed) {
     return json({ error: "too many attempts, try again later" }, 429, { "Retry-After": String(decision.retryAfterSec) });
   }
@@ -92,7 +96,6 @@ async function login(request: Request, env: Env): Promise<Response> {
   const body = await readJson(request, 4096);
   const passphrase = typeof body === "object" && body && "passphrase" in body ? String(body.passphrase) : "";
   if (!(await verifyPassphrase(passphrase, env.HOST_PASSPHRASE_HASH))) {
-    await limiter.fail();
     return json({ error: "that passphrase isn't right" }, 401);
   }
   await limiter.succeed();
@@ -133,12 +136,25 @@ function serveMedia(media: { contentType: string; bytes: ArrayBuffer } | null): 
 }
 
 async function readJson(request: Request, maxBytes: number): Promise<unknown> {
+  // Refuse by the declared length first, so an oversized upload is not buffered before being rejected.
+  const declared = Number(request.headers.get("Content-Length") ?? 0);
+  if (declared > maxBytes) return undefined;
   const text = await request.text();
   if (text.length > maxBytes) return undefined;
   try {
     return JSON.parse(text);
   } catch {
     return undefined;
+  }
+}
+
+/** The media path segment arrives percent-encoded (the web app encodes `file.name`). */
+function decodeMediaName(segment: string): string | null {
+  try {
+    const name = decodeURIComponent(segment);
+    return MEDIA_NAME_PATTERN.test(name) ? name : null;
+  } catch {
+    return null;
   }
 }
 

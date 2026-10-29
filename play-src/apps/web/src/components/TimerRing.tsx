@@ -1,53 +1,42 @@
+import { isUrgent, secondsLeft, type TimerSnapshot } from "../lib/countdown";
 import { useCountdown } from "../lib/useGameSocket";
 
-// The question clock as a ring. Colour shifts to coral in the last 5 seconds; there is
-// no flashing, only a steady colour change (accessibility rule: no flashing).
+// The question clock as a ring. It is sized by CSS (a width class) so the same component
+// serves a phone and a projector, with the number scaling via container units. Colour
+// shifts to coral in the last 5 seconds: a steady colour change, never a flash
+// (accessibility rule: no flashing).
 
-export function TimerRing({
-  timer,
-  paused,
-  size = 120,
-}: {
-  timer: { msRemaining: number; totalMs: number } | null;
-  paused: boolean;
-  size?: number;
-}) {
+const RADIUS = 43;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+export function TimerRing({ timer, paused, className = "w-16" }: { timer: TimerSnapshot | null; paused: boolean; className?: string }) {
   const countdown = useCountdown(timer, paused);
   if (!countdown) return null;
-  const seconds = Math.ceil(countdown.msRemaining / 1000);
-  const stroke = Math.max(6, size / 14);
-  const radius = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const urgent = seconds <= 5;
-  const color = urgent ? "var(--bb-tile-2)" : "var(--bb-tile-1)";
+  const seconds = secondsLeft(countdown.msRemaining);
+  const color = isUrgent(countdown.msRemaining) ? "var(--bb-tile-2)" : "var(--bb-tile-1)";
 
   return (
     <div
-      className="relative shrink-0"
-      style={{ width: size, height: size }}
+      className={`bb-ring relative aspect-square shrink-0 ${className}`}
       role="timer"
       aria-label={paused ? `Paused with ${seconds} seconds left` : `${seconds} seconds left`}
     >
-      <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--tib-surface-light)" strokeWidth={stroke} />
+      <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90" aria-hidden="true">
+        <circle cx="50" cy="50" r={RADIUS} fill="none" stroke="var(--tib-surface-light)" strokeWidth="7" />
         <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
+          cx="50"
+          cy="50"
+          r={RADIUS}
           fill="none"
           stroke={color}
-          strokeWidth={stroke}
+          strokeWidth="7"
           strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference * (1 - countdown.fraction)}
-          style={{ filter: `drop-shadow(0 0 ${size / 12}px ${color})`, transition: "stroke 0.3s" }}
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={CIRCUMFERENCE * (1 - countdown.fraction)}
+          style={{ filter: `drop-shadow(0 0 4px ${color})`, transition: "stroke 0.3s" }}
         />
       </svg>
-      <span
-        className="absolute inset-0 flex items-center justify-center font-extrabold tabular-nums"
-        style={{ fontSize: size * 0.36, color }}
-        aria-hidden="true"
-      >
+      <span className="absolute inset-0 flex items-center justify-center font-extrabold tabular-nums" style={{ color }} aria-hidden="true">
         {paused ? "❚❚" : seconds}
       </span>
     </div>

@@ -13,6 +13,8 @@ export const LIMITS = {
   answerMaxChars: 150,
   explanationMaxChars: 600,
   titleMaxChars: 120,
+  // A URL or an uploaded file name; a data: URL would be copied into every state update and view.
+  mediaSrcMaxChars: 2000,
 } as const;
 
 export const POINTS_LEVELS = ["standard", "double", "none"] as const;
@@ -28,7 +30,11 @@ const timeLimitSec = z
 export const ImageMedia = z.strictObject({
   type: z.literal("image"),
   // An https URL, or the file name of an image uploaded alongside the quiz.
-  src: z.string().trim().min(1, "image src is required"),
+  src: z
+    .string()
+    .trim()
+    .min(1, "image src is required")
+    .max(LIMITS.mediaSrcMaxChars, `image src must be a URL or file name of at most ${LIMITS.mediaSrcMaxChars} characters`),
   alt: z.string().trim().min(1, "image alt text is required, so screen readers can describe it").max(200),
 });
 
@@ -126,10 +132,11 @@ export type QuizSettings = z.infer<typeof QuizSettings>;
 export type QuizSettingsInput = z.input<typeof QuizSettings>;
 
 // Music is a slot list for now: Amali supplies the files later.
+const musicFile = z.string().trim().min(1).max(200);
 export const QuizMusic = z.strictObject({
-  lobby: z.string().trim().min(1).optional(),
-  question: z.string().trim().min(1).optional(),
-  podium: z.string().trim().min(1).optional(),
+  lobby: musicFile.optional(),
+  question: musicFile.optional(),
+  podium: musicFile.optional(),
 });
 
 export type QuizMusic = z.infer<typeof QuizMusic>;

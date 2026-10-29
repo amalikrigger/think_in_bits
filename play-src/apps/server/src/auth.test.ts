@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { hashPassphrase, signSession, verifyPassphrase, verifySession } from "./auth";
-import { decideLogin, LOGIN_MAX_FAILURES, LOGIN_WINDOW_MS, recordFailure, type LoginAttempts } from "./rate-limit";
+import {
+  decideLogin,
+  LOGIN_MAX_FAILURES,
+  LOGIN_WINDOW_MS,
+  recordFailure,
+  reserveLoginAttempt,
+  SOCKET_BURST,
+  SOCKET_REFILL_PER_SEC,
+  spendMessage,
+  type LoginAttempts,
+  type MessageBudget,
+} from "./rate-limit";
 
 const SECRET = "s".repeat(43);
 
@@ -74,5 +85,50 @@ describe("login rate limit", () => {
   it("forgets failures older than the window", () => {
     expect(decideLogin(failuresAt(0, 1, 2, 3, 4), LOGIN_WINDOW_MS + 10)).toEqual({ allowed: true });
     expect(recordFailure(failuresAt(0, 1), LOGIN_WINDOW_MS + 5).failures).toEqual([LOGIN_WINDOW_MS + 5]);
+  });
+
+  it("counts an attempt the moment it is admitted, so a parallel burst cannot slip past the limit", () => {
+    // Simulates N requests arriving before any passphrase check has finished.
+    let attempts: LoginAttempts = { failures: [] };
+    const outcomes: boolean[] = [];
+    for (let i = 0; i < LOGIN_MAX_FAILURES + 3; i++) {
+      const reserved = reserveLoginAttempt(attempts, 1000);
+      attempts = reserved.attempts;
+      outcomes.push(reserved.decision.allowed);
+    }
+    expect(outcomes.filter(Boolean)).toHaveLength(LOGIN_MAX_FAILURES);
+    expect(outcomes.slice(LOGIN_MAX_FAILURES).every((allowed) => !allowed)).toBe(true);
+  });
+});
+
+describe("per-connection message budget", () => {
+  const drain = (count: number, now: number, start?: MessageBudget) => {
+    let budget = start;
+    const allowed: boolean[] = [];
+    for (let i = 0; i < count; i++) {
+      const spent = spendMessage(budget, now);
+      budget = spent.budget;
+      allowed.push(spent.allowed);
+    }
+    return { allowed, budget: budget! };
+  };
+
+  it(`allows a burst of ${SOCKET_BURST} and refuses the next one`, () => {
+    const { allowed } = drain(SOCKET_BURST + 1, 0);
+    expect(allowed.filter(Boolean)).toHaveLength(SOCKET_BURST);
+    expect(allowed.at(-1)).toBe(false);
+  });
+
+  it(`refills at ${SOCKET_REFILL_PER_SEC} per second, never above the burst`, () => {
+    const empty = drain(SOCKET_BURST, 0).budget;
+    expect(spendMessage(empty, 50).allowed).toBe(false);
+    const afterSecond = drain(SOCKET_REFILL_PER_SEC + 1, 1000, empty).allowed;
+    expect(afterSecond.filter(Boolean)).toHaveLength(SOCKET_REFILL_PER_SEC);
+    expect(drain(SOCKET_BURST + 1, 60_000, empty).allowed.filter(Boolean)).toHaveLength(SOCKET_BURST);
+  });
+
+  it("does not go backwards if the clock does", () => {
+    const empty = drain(SOCKET_BURST, 1000).budget;
+    expect(spendMessage(empty, 500).budget.tokens).toBeGreaterThanOrEqual(0);
   });
 });

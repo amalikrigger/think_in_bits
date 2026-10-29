@@ -1,7 +1,9 @@
-import { REJECTION_TEXT } from "@bitblitz/schema";
+import { NICKNAME_MAX_CHARS, REJECTION_TEXT } from "../lib/rejection-text";
 import { useEffect, useState, type FormEvent } from "react";
 import { BrandBar } from "../components/BrandBar";
+import { CenteredCard, Screen } from "../components/Screen";
 import { fetchGameInfo, type GameInfo } from "../lib/api";
+import { spacedCode } from "../lib/format";
 import { lastNickname, playerSeat } from "../lib/storage";
 import { PlayerGame } from "./PlayerGame";
 
@@ -12,6 +14,8 @@ type Step =
   | { kind: "code"; error?: string }
   | { kind: "nickname"; code: string; info: Extract<GameInfo, { exists: true }>; error?: string }
   | { kind: "playing"; code: string; nickname: string };
+
+const OFFLINE_TEXT = "Can't reach the game. Check your Wi-Fi and try again.";
 
 function initialStep(): Step {
   const code = new URLSearchParams(window.location.search).get("c");
@@ -27,11 +31,21 @@ export function PlayerApp() {
   const urlCode = new URLSearchParams(window.location.search).get("c");
 
   async function openGame(code: string) {
-    const info = await fetchGameInfo(code).catch(() => ({ exists: false }) as const);
-    if (!info.exists) return setStep({ kind: "code", error: `No game with code ${code}. Check the screen.` });
-    if (playerSeat.get(code)) return setStep({ kind: "playing", code, nickname: playerSeat.get(code)!.nickname });
+    let info: GameInfo;
+    try {
+      info = await fetchGameInfo(code);
+    } catch {
+      return setStep({ kind: "code", error: OFFLINE_TEXT });
+    }
+    if (!info.exists) return setStep({ kind: "code", error: `No game with code ${spacedCode(code)}. Check the screen.` });
+    const seat = playerSeat.get(code);
+    if (seat) return setStep({ kind: "playing", code, nickname: seat.nickname });
     if (!info.joinable) {
-      const reason = info.locked ? REJECTION_TEXT.room_locked : info.phase === "podium" || info.phase === "ended" ? REJECTION_TEXT.game_over : REJECTION_TEXT.game_started;
+      const reason = info.locked
+        ? REJECTION_TEXT.room_locked
+        : info.phase === "podium" || info.phase === "ended"
+          ? REJECTION_TEXT.game_over
+          : REJECTION_TEXT.game_started;
       return setStep({ kind: "code", error: reason });
     }
     setStep({ kind: "nickname", code, info });
@@ -53,14 +67,14 @@ export function PlayerApp() {
           if (info.exists && info.joinable && reason !== "kicked") setStep({ kind: "nickname", code: step.code, info, error: REJECTION_TEXT[reason] });
           else setStep({ kind: "code", error: REJECTION_TEXT[reason] });
         }}
+        onLeave={() => setStep({ kind: "code" })}
       />
     );
   }
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <BrandBar />
-      <main className="flex flex-1 items-center justify-center px-4 pb-16">
+    <Screen header={<BrandBar />}>
+      <CenteredCard>
         {step.kind === "code" ? (
           <CodeForm error={step.error} initial={urlCode ?? ""} onSubmit={openGame} />
         ) : (
@@ -75,26 +89,29 @@ export function PlayerApp() {
             onBack={() => setStep({ kind: "code" })}
           />
         )}
-      </main>
-    </div>
+      </CenteredCard>
+    </Screen>
   );
 }
 
-function CodeForm({ error, initial, onSubmit }: { error?: string; initial: string; onSubmit: (code: string) => void }) {
+function CodeForm({ error, initial, onSubmit }: { error?: string; initial: string; onSubmit: (code: string) => Promise<void> }) {
   const [code, setCode] = useState(initial.replace(/\D/g, "").slice(0, 6));
   const [busy, setBusy] = useState(false);
   const valid = /^\d{6}$/.test(code);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    if (!valid) return;
+    if (!valid || busy) return;
     setBusy(true);
-    await onSubmit(code);
-    setBusy(false);
+    try {
+      await onSubmit(code);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
-    <form onSubmit={submit} className="bb-card w-full max-w-sm p-6 text-center sm:p-8">
+    <form onSubmit={submit} className="bb-card w-full p-6 text-center sm:p-8">
       <h1 className="mb-1 text-3xl font-extrabold">
         Bit<span className="text-primary">Blitz</span>
       </h1>
@@ -106,7 +123,8 @@ function CodeForm({ error, initial, onSubmit }: { error?: string; initial: strin
         id="code"
         className="bb-input mb-4 text-center font-mono text-4xl tracking-[0.3em]"
         inputMode="numeric"
-        autoComplete="off"
+        enterKeyHint="go"
+        autoComplete="one-time-code"
         pattern="\d{6}"
         maxLength={6}
         placeholder="000000"
@@ -114,6 +132,7 @@ function CodeForm({ error, initial, onSubmit }: { error?: string; initial: strin
         onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
         autoFocus
         aria-describedby={error ? "code-error" : undefined}
+        aria-invalid={error ? true : undefined}
       />
       {error && (
         <p id="code-error" role="alert" className="mb-4 font-semibold text-coral">
@@ -149,39 +168,42 @@ function NicknameForm({
         e.preventDefault();
         if (generated || trimmed) onSubmit(generated ? "player" : trimmed);
       }}
-      className="bb-card w-full max-w-sm p-6 text-center sm:p-8"
+      className="bb-card w-full p-6 text-center sm:p-8"
     >
       <p className="mb-1 text-sm font-semibold uppercase tracking-widest text-muted">Joining</p>
-      <h1 className="mb-6 text-2xl font-extrabold">{title}</h1>
+      <h1 className="mb-5 text-2xl font-extrabold [overflow-wrap:anywhere]">{title}</h1>
       {generated ? (
         <p className="mb-6 text-muted">Your teacher has turned on generated nicknames. You'll get a fun one when you join.</p>
       ) : (
         <>
-          <label htmlFor="nickname" className="mb-2 block text-left font-semibold">
+          <label htmlFor="nickname" className="mb-1 block text-left font-semibold">
             Nickname
           </label>
           <p className="mb-3 text-left text-sm text-muted">Not your real name. Keep it friendly.</p>
           <input
             id="nickname"
             className="bb-input mb-4"
-            maxLength={20}
+            maxLength={NICKNAME_MAX_CHARS}
             autoComplete="off"
             autoCapitalize="words"
+            enterKeyHint="go"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             autoFocus
+            aria-describedby={error ? "nickname-error" : undefined}
+            aria-invalid={error ? true : undefined}
           />
         </>
       )}
       {error && (
-        <p role="alert" className="mb-4 font-semibold text-coral">
+        <p id="nickname-error" role="alert" className="mb-4 font-semibold text-coral">
           {error}
         </p>
       )}
       <button type="submit" className="bb-btn bb-btn-primary mb-3 w-full text-lg" disabled={!generated && !trimmed}>
         Join game
       </button>
-      <button type="button" className="text-sm text-muted underline" onClick={onBack}>
+      <button type="button" className="bb-btn bb-btn-sm text-muted underline" onClick={onBack}>
         Different code
       </button>
     </form>

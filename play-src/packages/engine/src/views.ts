@@ -47,6 +47,7 @@ export function hostView(state: GameState, now: number): HostView {
     reveal: phase === "reveal" && question ? revealView(state, question) : null,
     leaderboard: scoredPhase ? ranked.slice(0, phase === "leaderboard" ? LEADERBOARD_SIZE : undefined).map(entry) : null,
     teams: state.settings.teams.enabled && (scoredPhase || phase === "reveal") ? teamStandings(state) : null,
+    // Both slices start at the top, so the array index is the live rank.
     podium: phase === "podium" || phase === "ended" ? ranked.slice(0, 3).map(entry) : null,
     review: phase === "podium" || phase === "ended" ? questionReview(state) : null,
     hasMoreQuestions: state.questionIndex + 1 < state.plan.length,
@@ -73,7 +74,8 @@ export function playerView(state: GameState, playerId: string, now: number): Pla
     // The open question stays on state through the reveal, so the player sees what they picked.
     answer: phase === "question" || phase === "reveal" ? (ownAnswer?.choice ?? null) : null,
     result: phase === "reveal" || phase === "leaderboard" ? playerResult(state, player) : null,
-    rank: player.rank,
+    // Live position, so a kick above this player moves them up; null until they have been scored once.
+    rank: player.rank === null ? null : standings(state).findIndex((p) => p.id === playerId) + 1,
     playerCount: Object.keys(state.players).length,
     showAnswersOnDevice: state.settings.showAnswersOnDevice,
   };
@@ -95,11 +97,15 @@ function publicQuestion(state: GameState, question: PlannedQuestion, withText: b
 
 function timerView(state: GameState, now: number): Timer | null {
   if (!state.timer) return null;
-  if (state.paused) return { msRemaining: state.paused.remainingMs ?? 0, totalMs: state.timer.totalMs };
   // During a question the visible countdown ends at the time limit, not at the grace close.
   const question = state.plan[state.questionIndex];
-  const at = state.phase === "question" && state.open && question ? state.open.openedAt + question.timeLimitMs : state.timer.at;
-  return { msRemaining: Math.max(0, at - now), totalMs: state.timer.totalMs };
+  const visibleEnd = state.phase === "question" && state.open && question ? state.open.openedAt + question.timeLimitMs : null;
+  if (state.paused) {
+    const frozenAt = state.paused.at;
+    const remaining = visibleEnd !== null ? visibleEnd - frozenAt : (state.paused.remainingMs ?? 0);
+    return { msRemaining: Math.max(0, remaining), totalMs: state.timer.totalMs };
+  }
+  return { msRemaining: Math.max(0, (visibleEnd ?? state.timer.at) - now), totalMs: state.timer.totalMs };
 }
 
 function answerProgress(state: GameState): { count: number; total: number } {
@@ -134,12 +140,13 @@ function playerResult(state: GameState, player: PlayerState): PlayerResult | nul
   };
 }
 
-function entry(player: PlayerState): LeaderboardEntry {
+/** `position` is the index in the current standings: the stored rank goes stale after a kick or a late join. */
+function entry(player: PlayerState, position: number): LeaderboardEntry {
   return {
     playerId: player.id,
     nickname: player.nickname,
     score: player.score,
-    rank: player.rank ?? 0,
+    rank: position + 1,
     previousRank: player.previousRank,
     team: player.team,
   };

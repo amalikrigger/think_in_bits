@@ -8,7 +8,7 @@ import {
   type QuizSettings as Settings,
   type SettingsPatch,
 } from "@bitblitz/schema";
-import { checkNickname, cleanNickname, generateNickname, sameNickname } from "./nicknames";
+import { checkNickname, generateNickname } from "./nicknames";
 import { seededRandom, shuffled } from "./random";
 import { oneWayLatencyMs, responseTimeMs, scoreQuestion } from "./scoring";
 import {
@@ -126,7 +126,9 @@ class Step {
       connected: true,
       score: 0,
       streak: 0,
-      totalResponseMs: 0,
+      // A late joiner missed the questions already scored, so they carry the same time penalty
+      // as any other miss; otherwise rule 9's tie-break would rank them above a player who tried.
+      totalResponseMs: this.missedTimeMs(),
       correctCount: 0,
       rttSamplesMs: [],
       team: this.state.phase === "lobby" ? null : this.smallestTeam(),
@@ -327,12 +329,19 @@ class Step {
   }
 
   private resumeGame(): CommandRejection | null {
-    const { paused, timer, open } = this.state;
+    const { paused, timer, open, phase } = this.state;
     if (!paused) return "not_allowed_in_phase";
     const pausedFor = this.now - paused.at;
-    if (timer && paused.remainingMs !== null) this.state.timer = { ...timer, at: this.now + paused.remainingMs };
-    if (open && this.state.phase === "question") open.openedAt += pausedFor;
     this.state.paused = null;
+    if (phase === "reveal" || phase === "leaderboard") {
+      // Autoplay may have been switched while paused: the waiting timer follows the current setting.
+      if (!this.state.settings.autoplay) this.state.timer = null;
+      else if (timer && paused.remainingMs !== null) this.state.timer = { ...timer, at: this.now + paused.remainingMs };
+      else this.setAutoplayTimer();
+    } else if (timer && paused.remainingMs !== null) {
+      this.state.timer = { ...timer, at: this.now + paused.remainingMs };
+    }
+    if (open && phase === "question") open.openedAt += pausedFor;
     this.broadcast();
     return null;
   }
@@ -359,8 +368,8 @@ class Step {
     this.state.bannedTokens.push(player.token);
     delete this.state.players[playerId];
     if (this.state.open) delete this.state.open.answers[playerId];
-    this.sendHostView();
-    if (this.state.phase === "lobby") this.sendAllPlayerViews();
+    // Everyone's head count and rank can change, so every screen is refreshed.
+    this.broadcast();
     if (this.state.phase === "question") this.closeIfEveryoneAnswered();
     return null;
   }
@@ -368,12 +377,11 @@ class Step {
   private rename(playerId: string, requested: string): CommandRejection | null {
     const player = this.state.players[playerId];
     if (!player) return "unknown_player";
-    const nickname = cleanNickname(requested);
-    if (nickname.length === 0) return "nickname_invalid";
-    // The teacher is trusted, so no profanity filter; uniqueness still applies.
-    const clash = this.activePlayers().some((p) => p.id !== playerId && sameNickname(p.nickname, nickname));
-    if (clash) return "nickname_taken";
-    player.nickname = nickname;
+    // The teacher is trusted, so no profanity filter; the length, visibility and uniqueness rules still apply.
+    const others = this.activePlayers().filter((p) => p.id !== playerId).map((p) => p.nickname);
+    const check = checkNickname(requested, others, false);
+    if (!check.ok) return check.reason === "nickname_taken" ? "nickname_taken" : "nickname_invalid";
+    player.nickname = check.nickname;
     this.sendPlayerView(playerId);
     this.sendHostView();
     return null;
@@ -419,6 +427,8 @@ class Step {
     this.state.phase = "countdown";
     this.state.questionIndex = index;
     this.state.open = null;
+    // An explicit advance (Next, Skip) while paused ends the pause: a paused countdown would never fire.
+    this.state.paused = null;
     this.state.timer = { at: this.now + COUNTDOWN_MS, totalMs: COUNTDOWN_MS };
     this.broadcast();
   }
@@ -495,6 +505,7 @@ class Step {
     const every = this.state.settings.leaderboardEvery;
     if ((index + 1) % every === 0) {
       this.state.phase = "leaderboard";
+      this.state.paused = null;
       this.state.timer = null;
       if (this.state.settings.autoplay) this.setAutoplayTimer();
       return this.broadcast();
@@ -560,6 +571,16 @@ class Step {
 
   private currentQuestion(): PlannedQuestion | undefined {
     return this.state.plan[this.state.questionIndex];
+  }
+
+  /** Total time a player who missed every scored question so far would have been charged. */
+  private missedTimeMs(): number {
+    let total = 0;
+    for (const record of this.state.records) {
+      const question = this.state.plan[record.index];
+      if (!record.skipped && question && question.points !== "none") total += question.timeLimitMs;
+    }
+    return total;
   }
 
   private answerProgress(): { count: number; total: number } {

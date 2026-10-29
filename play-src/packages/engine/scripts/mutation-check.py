@@ -12,11 +12,17 @@ mutations = [
   ("streak not reset on miss", "src/scoring.ts", "streak: counts ? 0 : streakBefore,", "streak: streakBefore,"),
   ("tie-break ignores response time", "src/views.ts", "b.score - a.score || a.totalResponseMs - b.totalResponseMs || a.joinSeq - b.joinSeq", "b.score - a.score || a.joinSeq - b.joinSeq"),
   ("answer key leaks into public question", "src/views.ts", "    timeLimitMs: question.timeLimitMs,\n    points: question.points,\n  };", "    timeLimitMs: question.timeLimitMs,\n    points: question.points,\n    ...({ correct: question.correct } as object),\n  };"),
-  ("pause time counted against student", "src/engine.ts", "if (open && this.state.phase === \"question\") open.openedAt += pausedFor;", ""),
+  ("pause time counted against student", "src/engine.ts", "if (open && phase === \"question\") open.openedAt += pausedFor;", ""),
   ("double answers allowed", "src/engine.ts", "if (open.answers[player.id]) return \"already_answered\";", ""),
   ("late answers accepted", "src/engine.ts", "if (responseMs > question.timeLimitMs) {", "if (responseMs > question.timeLimitMs + 5000) {"),
   ("kicked token can resume", "src/engine.ts", "if (this.state.bannedTokens.includes(token)) return this.rejectJoin(connectionId, \"kicked\");", ""),
   ("CSV formula guard removed", "src/export.ts", "const safe = /^[=+\\-@\\t\\r]/.test(value) ? `'${value}` : value;", "const safe = value;"),
+  ("Next while paused leaves the game paused", "src/engine.ts", "    this.state.paused = null;\n    this.state.timer = { at: this.now + COUNTDOWN_MS, totalMs: COUNTDOWN_MS };", "    this.state.timer = { at: this.now + COUNTDOWN_MS, totalMs: COUNTDOWN_MS };"),
+  ("late joiner owes no time on the tie-break", "src/engine.ts", "totalResponseMs: this.missedTimeMs(),", "totalResponseMs: 0,"),
+  ("blank-looking nicknames accepted", "src/nicknames.ts", "if (!VISIBLE.test(nickname) ||", "if (nickname.length === 0 ||"),
+  ("look-alike folding removed", "src/nicknames.ts", "    .normalize(\"NFKC\")\n", ""),
+  ("leaderboard rank from the stale stored value", "src/views.ts", "    rank: position + 1,\n    previousRank: player.previousRank,", "    rank: player.rank ?? 0,\n    previousRank: player.previousRank,"),
+  ("paused timer shows the grace close, not the visible clock", "src/views.ts", "const remaining = visibleEnd !== null ? visibleEnd - frozenAt : (state.paused.remainingMs ?? 0);", "const remaining = state.paused.remainingMs ?? 0;"),
 ]
 for name, rel, old, new in mutations:
   path = root / rel
@@ -26,8 +32,12 @@ for name, rel, old, new in mutations:
   path.write_text(original.replace(old, new, 1))
   try:
     r = subprocess.run(["npx", "vitest", "run"], cwd=root, capture_output=True, text=True)
-    caught = r.returncode != 0
-    failed = [l.strip() for l in r.stdout.splitlines() if "Tests" in l and "failed" in l]
-    print(f"{'CAUGHT ' if caught else 'MISSED!'} {name}  {failed[0] if failed else ''}")
+    summary = [l.strip() for l in r.stdout.splitlines() if l.strip().startswith("Tests")]
+    # A run that never reached a summary line (a crash, a hung runner) proves nothing either way.
+    if not summary:
+      tail = (r.stderr or r.stdout).strip().splitlines()[-3:]
+      print(f"ERROR   {name}  no test summary (exit {r.returncode}): {' | '.join(tail)}"); continue
+    caught = r.returncode != 0 and "failed" in summary[-1]
+    print(f"{'CAUGHT ' if caught else 'MISSED!'} {name}  {summary[-1]}")
   finally:
     path.write_text(original)

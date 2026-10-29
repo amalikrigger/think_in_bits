@@ -124,6 +124,13 @@ describe("validateQuiz: rejects with plain-language problems", () => {
     expect(problemsFor(quiz)).toContain("Question 1: image alt text is missing");
   });
 
+  it("an image src that is a whole data: URL rather than a link or file name", () => {
+    const quiz = validQuiz();
+    const src = `data:image/png;base64,${"A".repeat(5000)}`;
+    quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src, alt: "big" } };
+    expect(problemsFor(quiz)).toContain("Question 1: image src must be a URL or file name of at most 2000 characters");
+  });
+
   it("a missing title, a wrong schema version and no questions", () => {
     const problems = problemsFor({ schemaVersion: 2, questions: [] });
     expect(problems).toEqual(

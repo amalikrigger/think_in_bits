@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "title": "Stress test: long prompts, six answers, code and an image for the layout sweep",
+  "description": "Not a real quiz. Exercises the worst layouts: 300-character prompts, six long answers, KaTeX fractions, a code block and an image.",
+  "settings": { "autoplay": false, "revealSec": 6, "leaderboardSec": 6 },
+  "defaults": { "timeLimitSec": 30, "points": "standard" },
+  "questions": [
+    {
+      "type": "single",
+      "prompt": "A circle has the equation $x^2 + y^2 - 6x + 4y - 12 = 0$. After completing the square in both $x$ and $y$, which of the following statements about its centre and radius is correct, and what is the length of the tangent drawn from the external point $(10, 7)$ to this circle? Give the exact value, not a decimal approximation.",
+      "answers": [
+        { "text": "Centre $(3, -2)$, radius $5$, and the tangent length from $(10, 7)$ is $\\sqrt{130 - 25} = \\sqrt{105}$", "correct": true },
+        { "text": "Centre $(-3, 2)$, radius $5$, and the tangent length from $(10, 7)$ is $\\sqrt{194 - 25} = 13$" },
+        { "text": "Centre $(3, -2)$, radius $25$, and the tangent length cannot be found because the point lies inside the circle" },
+        { "text": "Centre $(6, -4)$, radius $\\sqrt{12}$, and the tangent length from $(10, 7)$ is $\\sqrt{137 - 12}$" },
+        { "text": "Centre $(3, -2)$, radius $\\sqrt{12}$, and the tangent length is $\\sqrt{130 - 12}$" },
+        { "text": "None of these, because the equation does not describe a circle at all" }
+      ],
+      "explanation": "$(x-3)^2 + (y+2)^2 = 25$, so the centre is $(3,-2)$ and $r = 5$. The distance from $(10,7)$ to the centre is $\\sqrt{49 + 81} = \\sqrt{130}$, so the tangent length is $\\sqrt{130 - 25} = \\sqrt{105}$."
+    },
+    {
+      "type": "multi",
+      "points": "double",
+      "prompt": "Which of these are equal to $\\dfrac{3}{4}$? Select all that apply.",
+      "answers": [
+        { "text": "$\\dfrac{6}{8}$", "correct": true },
+        { "text": "$0.75$", "correct": true },
+        { "text": "$\\dfrac{9}{16}$" },
+        { "text": "$75\\%$", "correct": true },
+        { "text": "$\\dfrac{3}{4} \\times \\dfrac{4}{3}$" },
+        { "text": "$1 - \\dfrac{1}{4}$", "correct": true }
+      ],
+      "explanation": "$\\dfrac{6}{8}$, $0.75$, $75\\%$ and $1 - \\dfrac{1}{4}$ are all $\\dfrac{3}{4}$."
+    },
+    {
+      "type": "single",
+      "prompt": "What does this function print?",
+      "media": {
+        "type": "code",
+        "language": "python",
+        "source": "def f(n):\n    total = 0\n    for i in range(1, n + 1):\n        if i % 2 == 1:\n            total += i * i\n    return total\n\nprint(f(5))"
+      },
+      "answers": [{ "text": "35", "correct": true }, { "text": "55" }, { "text": "25" }, { "text": "15" }],
+      "explanation": "The odd numbers up to 5 are 1, 3 and 5; their squares sum to $1 + 9 + 25 = 35$."
+    },
+    {
+      "type": "true_false",
+      "prompt": "The perpendicular bisector of any chord of a circle passes through the centre of the circle, which is why finding where the perpendicular bisectors of two different chords meet is a valid construction for locating the centre of a circle drawn on paper.",
+      "correct": true,
+      "timeLimitSec": 15
+    },
+    {
+      "type": "single",
+      "prompt": "The circle shown has centre $(1, 2)$ and passes through $(4, 6)$. Which equation describes it?",
+      "media": {
+        "type": "image",
+        "src": "circle.svg",
+        "alt": "A circle on coordinate axes with centre (1, 2) and a dashed radius to the point (4, 6)"
+      },
+      "answers": [
+        { "text": "$(x-1)^2 + (y-2)^2 = 25$", "correct": true },
+        { "text": "$(x+1)^2 + (y+2)^2 = 25$" },
+        { "text": "$(x-1)^2 + (y-2)^2 = 5$" },
+        { "text": "$(x-4)^2 + (y-6)^2 = 25$" },
+        { "text": "$x^2 + y^2 = 25$" }
+      ],
+      "explanation": "Radius $= \\sqrt{3^2 + 4^2} = 5$, so $r^2 = 25$."
+    }
+  ]
+}

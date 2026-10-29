@@ -13,9 +13,14 @@ export type GameInfo =
   | { exists: false }
   | { exists: true; title: string; phase: string; joinable: boolean; locked: boolean; generatedNicknames: boolean };
 
+/**
+ * `exists: false` means the server answered and has no such game. A network failure or a
+ * server error throws instead, so callers can tell "wrong code" from "no Wi-Fi".
+ */
 export async function fetchGameInfo(code: string): Promise<GameInfo> {
   const response = await fetch(`${API_BASE}/api/games/${code}`);
-  if (!response.ok) return { exists: false };
+  if (response.status === 404) return { exists: false };
+  if (!response.ok) throw new Error(`game info unavailable (${response.status})`);
   return (await response.json()) as GameInfo;
 }
 
@@ -69,13 +74,18 @@ export async function createGame(token: string, quiz: unknown): Promise<CreateRe
   }
 }
 
+/** Never throws: a failed upload is reported, the game still runs with the image's alt text. */
 export async function uploadMedia(code: string, hostKey: string, file: File): Promise<boolean> {
-  const response = await fetch(`${API_BASE}/api/games/${code}/media/${encodeURIComponent(file.name)}`, {
-    method: "PUT",
-    headers: { "X-Host-Key": hostKey, "Content-Type": file.type || "application/octet-stream" },
-    body: file,
-  });
-  return response.ok;
+  try {
+    const response = await fetch(`${API_BASE}/api/games/${code}/media/${encodeURIComponent(file.name)}`, {
+      method: "PUT",
+      headers: { "X-Host-Key": hostKey, "Content-Type": file.type || "application/octet-stream" },
+      body: file,
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
 
 export function mediaUrl(code: string, src: string): string {
@@ -89,6 +99,9 @@ export async function downloadResults(code: string, hostKey: string): Promise<vo
   if (!response.ok) throw new Error(`results unavailable (${response.status})`);
   const url = URL.createObjectURL(await response.blob());
   const link = Object.assign(document.createElement("a"), { href: url, download: `bitblitz-${code}-results.csv` });
+  document.body.append(link);
   link.click();
-  URL.revokeObjectURL(url);
+  link.remove();
+  // Revoking synchronously cancels the download in Safari; give the browser a moment to start it.
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }

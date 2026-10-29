@@ -85,6 +85,23 @@ export class Connection {
     this.socket.send(JSON.stringify(message));
   }
 
+  /** Sends text as-is, for testing how the server treats input that is not a valid message. */
+  sendRaw(text: string): void {
+    this.socket.send(text);
+  }
+
+  /** Resolves with the close code once the socket closes. */
+  whenClosed(timeoutMs = 10_000): Promise<number> {
+    if (this.closed) return Promise.resolve(this.closeCode ?? -1);
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error(`socket still open after ${timeoutMs} ms`)), timeoutMs);
+      this.onClose((code) => {
+        clearTimeout(timer);
+        resolve(code);
+      });
+    });
+  }
+
   command(command: HostCommand): void {
     this.send({ type: "command", command });
   }

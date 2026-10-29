@@ -151,15 +151,18 @@
       "properties": {
         "lobby": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "maxLength": 200
         },
         "question": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "maxLength": 200
         },
         "podium": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "maxLength": 200
         }
       },
       "additionalProperties": false
@@ -215,7 +218,8 @@
                       },
                       "src": {
                         "type": "string",
-                        "minLength": 1
+                        "minLength": 1,
+                        "maxLength": 2000
                       },
                       "alt": {
                         "type": "string",
@@ -327,7 +331,8 @@
                       },
                       "src": {
                         "type": "string",
-                        "minLength": 1
+                        "minLength": 1,
+                        "maxLength": 2000
                       },
                       "alt": {
                         "type": "string",
@@ -439,7 +444,8 @@
                       },
                       "src": {
                         "type": "string",
-                        "minLength": 1
+                        "minLength": 1,
+                        "maxLength": 2000
                       },
                       "alt": {
                         "type": "string",

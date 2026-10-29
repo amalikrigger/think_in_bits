@@ -34,10 +34,20 @@ export function isInappropriate(nickname: string): boolean {
   return BLOCKED_ROOTS.some((root) => normalised.includes(root));
 }
 
-/** Trim and collapse inner whitespace; control characters are dropped. */
+/**
+ * Folds compatibility look-alikes (fullwidth "Ａda", ligatures) to plain text, drops control,
+ * format (zero-width), private-use and unassigned characters, then trims and collapses whitespace.
+ */
 export function cleanNickname(raw: string): string {
-  return raw.replace(/[\p{Cc}\p{Cf}]/gu, "").replace(/\s+/g, " ").trim();
+  return raw
+    .normalize("NFKC")
+    .replace(/[\p{Cc}\p{Cf}\p{Co}\p{Cn}]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
+
+/** A name must show something: a letter, a digit or an emoji. Braille blanks and bare accents render as nothing. */
+const VISIBLE = /[\p{L}\p{N}\p{Extended_Pictographic}]/u;
 
 export function sameNickname(a: string, b: string): boolean {
   return a.localeCompare(b, undefined, { sensitivity: "base" }) === 0;
@@ -47,7 +57,7 @@ export type NicknameCheck = { ok: true; nickname: string } | { ok: false; reason
 
 export function checkNickname(raw: string, taken: readonly string[], profanityFilter: boolean): NicknameCheck {
   const nickname = cleanNickname(raw);
-  if (nickname.length < 1 || [...nickname].length > NICKNAME_MAX_CHARS) return { ok: false, reason: "nickname_invalid" };
+  if (!VISIBLE.test(nickname) || [...nickname].length > NICKNAME_MAX_CHARS) return { ok: false, reason: "nickname_invalid" };
   if (profanityFilter && isInappropriate(nickname)) return { ok: false, reason: "nickname_inappropriate" };
   if (taken.some((t) => sameNickname(t, nickname))) return { ok: false, reason: "nickname_taken" };
   return { ok: true, nickname };
