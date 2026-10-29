@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "title": "1.4 Radians, arcs and sectors: practice",
+  "description": "Converting between degrees and radians, arc length and sector area. Public practice sample.",
+  "settings": { "autoplay": false },
+  "defaults": { "timeLimitSec": 20, "points": "standard" },
+  "questions": [
+    { "type": "single", "prompt": "$\\pi$ radians is how many degrees?",
+      "answers": [ {"text": "$180^\\circ$", "correct": true}, {"text": "$360^\\circ$"}, {"text": "$90^\\circ$"}, {"text": "$57.3^\\circ$"} ],
+      "explanation": "A full turn is $2\\pi$ radians, so half a turn, $\\pi$, is $180^\\circ$." },
+    { "type": "single", "prompt": "$60^\\circ$ in radians is…",
+      "answers": [ {"text": "$\\frac{\\pi}{6}$"}, {"text": "$\\frac{\\pi}{3}$", "correct": true}, {"text": "$\\frac{\\pi}{4}$"}, {"text": "$\\frac{2\\pi}{3}$"} ],
+      "explanation": "Multiply by $\\frac{\\pi}{180}$: $60 \\times \\frac{\\pi}{180} = \\frac{\\pi}{3}$." },
+    { "type": "true_false", "prompt": "One radian is about $57.3^\\circ$.", "correct": true, "timeLimitSec": 10,
+      "explanation": "$\\frac{180}{\\pi} \\approx 57.3$." },
+    { "type": "single", "prompt": "With $\\theta$ in radians, the arc length is…",
+      "answers": [ {"text": "$s=r^2\\theta$"}, {"text": "$s=\\frac12 r^2\\theta$"}, {"text": "$s=r\\theta$", "correct": true}, {"text": "$s=2\\pi r\\theta$"} ],
+      "explanation": "$s=r\\theta$; the $\\frac12 r^2\\theta$ formula is for sector area." },
+    { "type": "single", "prompt": "Arc length when $r=6$ and $\\theta=\\frac{\\pi}{3}$?", "timeLimitSec": 30,
+      "answers": [ {"text": "$2\\pi$", "correct": true}, {"text": "$6\\pi$"}, {"text": "$\\frac{\\pi}{2}$"}, {"text": "$12\\pi$"} ],
+      "explanation": "$s = 6 \\times \\frac{\\pi}{3} = 2\\pi$." },
+    { "type": "single", "prompt": "Sector area when $r=4$ and $\\theta=\\frac{\\pi}{2}$?", "timeLimitSec": 30, "points": "double",
+      "answers": [ {"text": "$8\\pi$"}, {"text": "$2\\pi$"}, {"text": "$16\\pi$"}, {"text": "$4\\pi$", "correct": true} ],
+      "explanation": "$A=\\frac12 \\times 16 \\times \\frac{\\pi}{2} = 4\\pi$." },
+    { "type": "true_false", "prompt": "$A=\\frac12 r^2\\theta$ works with $\\theta$ in degrees.", "correct": false, "timeLimitSec": 10,
+      "explanation": "Only in radians. In degrees the area is $\\frac{\\theta}{360}\\pi r^2$." },
+    { "type": "multi", "prompt": "Which are equal to $\\frac{3\\pi}{2}$? Select all that apply.", "timeLimitSec": 30,
+      "answers": [ {"text": "$270^\\circ$", "correct": true}, {"text": "$135^\\circ$"}, {"text": "$4.71$ radians (3 s.f.)", "correct": true}, {"text": "$1.5$ radians"} ],
+      "explanation": "$\\frac{3\\pi}{2} \\times \\frac{180}{\\pi} = 270^\\circ$ and $\\frac{3\\pi}{2} \\approx 4.712$." }
+  ]
+}

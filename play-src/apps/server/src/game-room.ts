@@ -121,7 +121,9 @@ export class GameRoom extends DurableObject<Env> {
           return ws.close(4001, "auth failed");
         }
         ws.serializeAttachment({ role: "host", connectionId: attachment.connectionId } satisfies Attachment);
-        return this.apply({ type: "host_connected" });
+        await this.apply({ type: "host_connected" });
+        const media = await this.ctx.storage.list({ prefix: "media:" });
+        return sendTo(ws, { type: "media", names: [...media.keys()].map((k) => k.slice("media:".length)) });
       }
       case "join":
         if (attachment.role !== "pending") return;

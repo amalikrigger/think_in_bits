@@ -141,3 +141,16 @@ describe("validateQuiz: rejects with plain-language problems", () => {
     if (!result.ok) expect(result.problems[0]!.message).toMatch(/^this is not valid JSON/);
   });
 });
+
+describe("committed samples", () => {
+  it("all validate, so the practice quizzes on the upload screen always load", async () => {
+    const { readdirSync, readFileSync } = await import("node:fs");
+    const dir = new URL("../../../samples/", import.meta.url);
+    const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
+    expect(files.length).toBeGreaterThanOrEqual(3);
+    for (const file of files) {
+      const result = validateQuizText(readFileSync(new URL(file, dir), "utf8"));
+      expect(result.ok ? [] : formatProblems(result.problems), file).toEqual([]);
+    }
+  });
+});

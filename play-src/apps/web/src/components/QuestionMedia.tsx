@@ -7,7 +7,7 @@ export function QuestionMedia({ media, code, large = false }: { media: Media; co
       <img
         src={mediaUrl(code, media.src)}
         alt={media.alt}
-        className={`mx-auto rounded-2xl bg-white/5 object-contain ${large ? "max-h-[38vh]" : "max-h-48"}`}
+        className={`mx-auto rounded-2xl bg-white/5 object-contain ${large ? "max-h-[30vh]" : "max-h-48"}`}
       />
     );
   }

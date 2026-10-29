@@ -11,12 +11,15 @@ type Props = {
   count?: number;
   onPress?: () => void;
   disabled?: boolean;
-  size?: "projector" | "device";
+  /** "projector-compact" keeps tiles short when an image shares the screen. */
+  size?: "projector" | "projector-compact" | "device";
   multi?: boolean;
 };
 
-export function AnswerTile({ index, text, correct, selected, count, onPress, disabled, size = "device", multi }: Props) {
+export function AnswerTile({ index, text, correct, selected, count, onPress, disabled, size: requested = "device", multi }: Props) {
   const style = tile(index);
+  const compact = requested === "projector-compact";
+  const size = compact ? "projector" : requested;
   const revealed = correct !== undefined;
   const dim = revealed && !correct;
   const label = `Answer ${index + 1}, ${style.colorName} ${style.shapeName}${text ? `: ${text}` : ""}${
@@ -27,12 +30,12 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
     <>
       <span
         aria-hidden="true"
-        className={`flex shrink-0 items-center justify-center rounded-xl bg-black/20 ${size === "projector" ? "h-14 w-14 text-3xl lg:h-20 lg:w-20 lg:text-5xl" : "h-11 w-11 text-2xl"}`}
+        className={`flex shrink-0 items-center justify-center rounded-xl bg-black/20 ${size === "projector" ? (compact ? "h-12 w-12 text-2xl" : "h-14 w-14 text-3xl lg:h-20 lg:w-20 lg:text-5xl") : "h-11 w-11 text-2xl"}`}
       >
         {style.shape}
       </span>
       {text !== null && (
-        <span className={`min-w-0 flex-1 break-words text-left font-bold leading-tight ${size === "projector" ? "text-2xl lg:text-5xl" : "text-lg"}`}>
+        <span className={`min-w-0 flex-1 break-words text-left font-bold leading-tight ${size === "projector" ? (compact ? "text-2xl lg:text-3xl" : "text-2xl lg:text-5xl") : "text-lg"}`}>
           <MathText text={text} />
         </span>
       )}
@@ -58,7 +61,7 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
   );
 
   const className = `relative flex w-full items-center gap-3 rounded-2xl p-3 text-[#0a0a0a] transition-[opacity,transform,box-shadow] ${
-    size === "projector" ? "min-h-24 px-5 lg:min-h-36" : text === null ? "min-h-28 justify-center" : "min-h-20"
+    size === "projector" ? (compact ? "min-h-20 px-5" : "min-h-24 px-5 lg:min-h-36") : text === null ? "min-h-28 justify-center" : "min-h-20"
   } ${dim ? "opacity-30" : ""} ${selected ? "ring-4 ring-white" : ""} ${revealed && correct ? "bb-glow" : ""}`;
 
   const background = { background: style.color };

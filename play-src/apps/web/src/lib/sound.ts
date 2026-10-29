@@ -13,13 +13,22 @@ const SLOT_FOR_PHASE: Partial<Record<Phase, keyof QuizMusic>> = {
   podium: "podium",
 };
 
-export function useSound(code: string, phase: Phase | null, music: QuizMusic | null, soundOn: boolean, musicOn: boolean) {
+export function useSound(
+  code: string,
+  phase: Phase | null,
+  music: QuizMusic | null,
+  uploaded: readonly string[],
+  soundOn: boolean,
+  musicOn: boolean,
+) {
   const audio = useRef<HTMLAudioElement | null>(null);
   const current = useRef<string | null>(null);
 
   useEffect(() => {
     const slot = phase ? SLOT_FOR_PHASE[phase] : undefined;
-    const file = slot && music ? music[slot] : undefined;
+    const named = slot && music ? music[slot] : undefined;
+    // A slot naming a file that was never uploaded is a placeholder: stay silent.
+    const file = named && (/^https?:\/\//.test(named) || uploaded.includes(named)) ? named : undefined;
     const src = soundOn && musicOn && file ? mediaUrl(code, file) : null;
     if (src === current.current) return;
     audio.current?.pause();
@@ -32,7 +41,7 @@ export function useSound(code: string, phase: Phase | null, music: QuizMusic | n
     // Browsers block autoplay until the teacher has clicked something; that's fine.
     element.play().catch(() => undefined);
     audio.current = element;
-  }, [code, phase, music, soundOn, musicOn]);
+  }, [code, phase, music, uploaded, soundOn, musicOn]);
 
   useEffect(() => () => audio.current?.pause(), []);
 }

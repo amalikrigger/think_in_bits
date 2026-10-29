@@ -188,6 +188,8 @@ export type ServerMessage =
   | { type: "join_rejected"; reason: JoinRejection }
   | { type: "command_rejected"; command: HostCommandKind; reason: CommandRejection }
   | { type: "kicked" }
+  /** Sent to the host on connect: uploaded media file names, so empty music slots stay silent. */
+  | { type: "media"; names: string[] }
   | { type: "ping"; id: number }
   | { type: "error"; code: "bad_message" | "auth_failed" | "not_authenticated" | "game_not_found"; message: string };
 

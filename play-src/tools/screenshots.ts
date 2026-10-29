@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 
@@ -70,6 +70,10 @@ async function runScheme(browser: Browser, scheme: "dark" | "light"): Promise<vo
   await host.getByRole("heading", { name: "Upload a quiz" }).waitFor();
   await host.getByRole("button", { name: SAMPLE, exact: true }).click();
   await host.getByRole("button", { name: "Create game" }).waitFor();
+  if (await host.getByText("Images this quiz uses").isVisible()) {
+    const mediaDir = fileURLToPath(new URL("../samples/media/", import.meta.url));
+    await host.locator('input[type="file"][multiple]').setInputFiles(readdirSync(mediaDir).map((f) => `${mediaDir}${f}`));
+  }
   await hostSizes(host, scheme, "upload-preview");
   await host.getByRole("button", { name: "Create game" }).click();
   const codeLabel = await host.getByLabel(/^Game code \d/).first().getAttribute("aria-label");
@@ -109,7 +113,8 @@ async function runScheme(browser: Browser, scheme: "dark" | "light"): Promise<vo
   for (;;) {
     await host.getByRole("timer").waitFor({ timeout: 10_000 });
     const isMulti = await host.getByText("Select all that apply", { exact: true }).isVisible();
-    if (question === 0 || isMulti) {
+    const hasMedia = await host.getByRole("img", { name: /circle on coordinate axes/i }).isVisible();
+    if (question === 0 || isMulti || hasMedia) {
       await hostSizes(host, scheme, `question-${question + 1}`);
       for (const p of players) await snap(p.page, scheme, `player-question-${question + 1}-${p.name}`);
     }

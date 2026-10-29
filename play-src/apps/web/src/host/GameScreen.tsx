@@ -17,9 +17,11 @@ import { Stage } from "./Stage";
 export function GameScreen({ game, onLeave }: { game: HostGame; onLeave: () => void }) {
   const [notice, setNotice] = useState<string | null>(null);
   const [answered, setAnswered] = useState<{ count: number; total: number } | null>(null);
+  const [uploaded, setUploaded] = useState<string[]>([]);
 
   const onMessage = useCallback((message: ServerMessage) => {
     if (message.type === "command_rejected") setNotice(REJECTION_TEXT[message.reason]);
+    if (message.type === "media") setUploaded(message.names);
     if (message.type === "answer_progress") setAnswered({ count: message.count, total: message.total });
     if (message.type === "view" && message.view.role === "host") setAnswered(message.view.answered);
   }, []);
@@ -32,7 +34,7 @@ export function GameScreen({ game, onLeave }: { game: HostGame; onLeave: () => v
   });
 
   const command = useCallback((c: HostCommand) => send({ type: "command", command: c }), [send]);
-  useSound(game.code, view?.phase ?? null, view?.music ?? null, view?.settings.sound ?? false, view?.settings.music ?? false);
+  useSound(game.code, view?.phase ?? null, view?.music ?? null, uploaded, view?.settings.sound ?? false, view?.settings.music ?? false);
 
   useEffect(() => {
     if (!notice) return;
@@ -164,7 +166,7 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {phase !== "ended" && phase !== "lobby" && (
+          {phase !== "ended" && phase !== "lobby" && phase !== "podium" && (
             confirmEnd ? (
               <>
                 <span className="text-sm text-muted">End the game now?</span>

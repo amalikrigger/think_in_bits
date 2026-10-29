@@ -40,13 +40,13 @@ export function Stage({ view, code, answered }: { view: HostView; code: string; 
       {phase === "countdown" && <CountdownNumber view={view} />}
 
       {showAnswers && (
-        <div role="list" className={`grid flex-1 content-start gap-4 ${question.answers.length > 2 ? "md:grid-cols-2" : "md:grid-cols-2"}`}>
+        <div role="list" className="grid flex-1 content-start gap-4 md:grid-cols-2">
           {question.answers.map((answer, i) => (
             <AnswerTile
               key={i}
               index={i}
               text={answer.text}
-              size="projector"
+              size={question.media ? "projector-compact" : "projector"}
               correct={reveal ? reveal.correct.includes(i) : undefined}
               count={reveal ? reveal.counts[i] : undefined}
             />

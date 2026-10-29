@@ -193,7 +193,12 @@ function AnswerScreen({ view, code, send }: { view: PlayerView; code: string; se
         ))}
       </div>
       {multi && (
-        <button type="button" className="bb-btn bb-btn-primary min-h-14 text-lg" disabled={picked.length === 0 || view.paused} onClick={() => send(picked)}>
+        <button
+          type="button"
+          className="bb-btn bb-btn-primary sticky bottom-3 min-h-14 text-lg"
+          disabled={picked.length === 0 || view.paused}
+          onClick={() => send(picked)}
+        >
           Submit {picked.length > 0 ? `(${picked.length})` : ""}
         </button>
       )}
