@@ -18,6 +18,8 @@
     .key .sw.dash { border-top-style: dashed; border-color: #b0b0b0; }
     .key .sw.ans { border-color: #00e5ff; }
     .key .sw.gold { border-color: #ffc46b; }
+    .rv { opacity: 0; transition: opacity .35s ease; }
+    .slide:has(.r10c.on) .rv { opacity: 1; }
     #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
     #cgZoom.on { display: flex; }
     #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
@@ -159,7 +161,7 @@
     <div><div class="card">
       <p class="small"><b>What we are looking for.</b> \(A\) and \(B\) are the two points where the line \(y = -7x + 12\) from part (b) crosses the circle \(x^2 + y^2 + 4x - 2y - 20 = 0\).</p>
       <svg class="cg" id="fig-q10c" aria-label="The circle with center minus 2, 1, the line y equals minus 7x plus 12 crossing it at A 1, 5 and B 2, minus 2, with dashed lines from A and B down to x equals 1 and x equals 2"></svg>
-      <p class="key"><span class="sw circ"></span>circle &nbsp; <span class="sw ans"></span>\(y = -7x + 12\) &nbsp; <span class="sw dash"></span>down to \(x = 1\) and \(x = 2\)</p>
+      <p class="key"><span class="sw circ"></span>circle &nbsp; <span class="sw ans"></span>\(y = -7x + 12\) &nbsp; <span class="rv"><span class="sw dash"></span>down to \(x = 1\) and \(x = 2\)</span></p>
       <p class="small frag"><b>Why substitute?</b> \(A\) is on the line <i>and</i> on the circle, so one pair \(x, y\) makes both equations true at once. On the line, \(y\) is always \(-7x + 12\). So we write \(-7x + 12\) in place of \(y\) in the circle's equation. What is left has only \(x\) in it, and it is true only at the \(x\)-values where the line meets the circle.</p>
     </div></div>
     <div><div class="card">
@@ -167,7 +169,7 @@
       <div class="math small frag"><span class="lbl">expand:</span> \((-7x + 12)^2 = 49x^2 - 168x + 144\) <span class="lbl">(middle term \(2 \times (-7x) \times 12\))</span> and \(-2(-7x + 12) = 14x - 24\)</div>
       <div class="math small frag"><span class="lbl">collect:</span> \(x^2\): \(1 + 49 = 50\); &nbsp;\(x\): \(-168 + 4 + 14 = -150\); &nbsp;numbers: \(144 - 24 - 20 = 100\)</div>
       <div class="math small frag"><span class="lbl">A1:</span> \(50x^2 - 150x + 100 = 0\) &nbsp;<span class="lbl">÷ 50:</span> \(x^2 - 3x + 2 = 0\), &nbsp;\((x - 1)(x - 2) = 0\)</div>
-      <div class="math small result frag">A1 · \(x = 1\) or \(x = 2\)</div>
+      <div class="math small result frag r10c">A1 · \(x = 1\) or \(x = 2\)</div>
       <p class="small frag"><b>What \(x = 1\) and \(x = 2\) tell us:</b> they are the \(x\)-coordinates of \(A\) and \(B\), the two crossing points (the dashed lines on the graph). There are two because a line can cross a circle at most twice, and a quadratic has at most two roots.</p>
       <div class="math small frag"><span class="lbl">\(y\) from the line:</span> \(-7(1) + 12 = 5\) and \(-7(2) + 12 = -2\), so \((1, 5)\) and \((2, -2)\). <span class="lbl">Midpoint:</span> \(\left(\tfrac{1 + 2}{2}, \tfrac{5 - 2}{2}\right) = \left(1\tfrac{1}{2}, 1\tfrac{1}{2}\right) = D\) ✓</div>
       <p class="small frag bad"><b>Show the method.</b> The factoring must be on the page. A calculator answer alone loses the last mark.</p>
@@ -510,8 +512,13 @@
   var R5 = 2.5 * Math.sqrt(5), S19 = Math.sqrt(19), S5 = Math.sqrt(5), R18 = Math.sqrt(18);
   var q10c = { x: [-8, 4], y: [-5, 7], k: 25, step: 1, grid: 1, fs: 8,
     circles: [[-2, 1, 5, W, '']], lines: [[-7, 12, CY, '']],
-    pts: [[-2, 1, 'C', W, -14, 16], [1, 5, 'A (1, 5)', GO, 10, -2], [2, -2, 'B (2, -2)', GO, 8, 14]] };
+    pts: [[-2, 1, 'C', W, -14, 16], [1, 5, 'A', GO, 10, -2], [2, -2, 'B', GO, 8, 14]],
+    texts: [[2.7, 5.5, '(1, 5)', GO, 8], [3.0, -3.3, '(2, \u22122)', GO, 8]] };
   fig('fig-q10c', q10c, [{ seg: [1, 0, 1, 5], col: GR, dash: D, w: 1.6 }, { seg: [2, 0, 2, -2], col: GR, dash: D, w: 1.6 }]);
+  /* the answer stays hidden until the "x = 1 or x = 2" step is revealed (see .rv in the page CSS) */
+  [].slice.call(document.querySelectorAll('#fig-q10c line[stroke-dasharray], #fig-q10c text')).forEach(function (e) {
+    if (e.tagName === 'line' || /^\(/.test(e.textContent)) e.classList.add('rv');
+  });
   var q12base = { x: [-11, 11], y: [-9, 21], k: 9.6, step: 4, grid: 2, fs: 8,
     circles: [[0, 2, 10, W, ''], [0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']] };
   function ext(o, more) { var r = {}; for (var p in o) r[p] = o[p]; for (var q in more) r[q] = more[q]; return r; }
