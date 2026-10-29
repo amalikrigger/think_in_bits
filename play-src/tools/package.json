@@ -1,0 +1,19 @@
+{
+  "name": "@bitblitz/tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "tsx e2e-smoke.ts",
+    "botload": "tsx botload.ts",
+    "screenshots": "tsx screenshots.ts",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@bitblitz/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

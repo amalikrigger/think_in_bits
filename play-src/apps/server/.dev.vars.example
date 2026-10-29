@@ -1,0 +1,3 @@
+# Copy to .dev.vars (gitignored), or run: pnpm --filter @bitblitz/server setup:dev
+HOST_PASSPHRASE_HASH="pbkdf2-sha256$100000$<salt>$<hash>"
+SESSION_SECRET="<at least 32 random characters>"

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "title": "Smoke test",
+  "description": "Three tiny questions used by tools/e2e-smoke.ts. Answers are public by design.",
+  "settings": { "autoplay": false },
+  "defaults": { "timeLimitSec": 20, "points": "standard" },
+  "questions": [
+    { "type": "single", "prompt": "What is $2 + 2$?", "answers": [ {"text": "4", "correct": true}, {"text": "3"}, {"text": "5"}, {"text": "22"} ], "explanation": "Two pairs make four." },
+    { "type": "true_false", "prompt": "A square has four equal sides.", "correct": true, "timeLimitSec": 10 },
+    { "type": "multi", "prompt": "Which are even? Select all that apply.", "answers": [ {"text": "2", "correct": true}, {"text": "8", "correct": true}, {"text": "3"}, {"text": "7"} ] }
+  ]
+}

@@ -1,0 +1,26 @@
+# BitBlitz game server: a Worker in front of one Durable Object per game.
+# Local development only for now (`pnpm dev`); no account, no deploy, no routes.
+name = "bitblitz"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Browser origins allowed to call the API. Requests without an Origin header (bots,
+# scripts) are allowed; production would list https://thinkinbits.site only.
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173"
+
+# Secrets, never committed: HOST_PASSPHRASE_HASH and SESSION_SECRET.
+# Locally they come from the untracked .dev.vars (`pnpm --filter @bitblitz/server setup:dev`).
+
+[[durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+[[durable_objects.bindings]]
+name = "LOGIN_LIMITER"
+class_name = "LoginLimiter"
+
+# SQLite-backed Durable Objects are the ones available on the free plan.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GameRoom", "LoginLimiter"]
