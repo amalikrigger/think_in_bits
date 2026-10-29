@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+*.tsbuildinfo
+test-results/
+playwright-report/
+
+# Real quizzes carry answers and this repo is public: keep them out of git.
+quizzes-private/*
+!quizzes-private/README.md

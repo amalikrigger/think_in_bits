@@ -1,0 +1,23 @@
+{
+  "name": "bitblitz",
+  "private": true,
+  "description": "BitBlitz: live classroom quiz game for thinkinbits.site/play",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @bitblitz/server --filter @bitblitz/web dev",
+    "build": "pnpm --filter @bitblitz/web build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "schema:json": "pnpm --filter @bitblitz/schema emit-json-schema",
+    "validate": "pnpm --filter @bitblitz/schema validate",
+    "botload": "pnpm --filter @bitblitz/tools botload",
+    "screenshots": "pnpm --filter @bitblitz/tools screenshots"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^5.9.3"
+  }
+}

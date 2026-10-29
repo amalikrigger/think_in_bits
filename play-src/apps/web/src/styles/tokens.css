@@ -1,0 +1,33 @@
+/*
+  BitBlitz design tokens.
+  The site's own tokens are imported, not copied, so a brand change on thinkinbits.site
+  flows into the game. Only game-specific roles are defined here, and every one of them
+  is expressed in terms of a --tib-* token where the site already has a value.
+*/
+@import "../../../../../templates/base/variables.css";
+
+:root {
+  /* Answer tiles: colour is never the only cue, each slot also has a shape (see tiles.ts). */
+  --bb-tile-1: var(--tib-primary-color);   /* cyan   ▲ */
+  --bb-tile-2: var(--tib-accent-game);     /* coral  ◆ */
+  --bb-tile-3: var(--tib-accent-website);  /* teal   ● */
+  --bb-tile-4: var(--tib-accent-animation);/* violet ■ */
+  /* Questions may carry up to six answers; the site has no 5th/6th accent, so these are new. */
+  --bb-tile-5: #ffd166;                    /* amber  ★ */
+  --bb-tile-6: #f472b6;                    /* pink   ⬢ */
+
+  --bb-bg: linear-gradient(160deg, var(--tib-bg-color) 0%, var(--tib-bg-gradient-end) 100%);
+  --bb-surface: var(--tib-surface-color);
+  --bb-surface-raised: var(--tib-surface-light);
+  --bb-text: var(--tib-text-color);
+  /* --tib-text-muted (#666) fails WCAG AA on the dark surfaces at body size, so game text
+     uses the site's secondary grey; #666 is kept for decorative strokes only. */
+  --bb-text-muted: var(--tib-secondary-color);
+  --bb-stroke: var(--tib-text-muted);
+  --bb-glow: 0 0 24px rgba(0, 229, 255, 0.45);
+  --bb-good: var(--tib-accent-website);
+  --bb-bad: var(--tib-accent-game);
+  --bb-radius-card: var(--tib-border-radius-card);
+  --bb-radius-pill: var(--tib-border-radius-btn);
+  --bb-font: var(--tib-font-family);
+}
