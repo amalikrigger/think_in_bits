@@ -1,0 +1,42 @@
+/* ============================================================
+   THINK IN BITS · MARKS (shared). Pairs with marks.js.
+   Mark-scheme lines lighting up one at a time, and code chips.
+   Uses the page's tokens (booklet.css and examiners-desk.css define them); fallbacks match the site.
+   Class names start with tib-mk so they never meet deck.css's own .marks rule.
+   ============================================================ */
+.tib-mk > .tib-mk-line {
+  display: grid; grid-template-columns: 62px 1fr; gap: 6px 14px; align-items: start; padding: 12px 14px; border-radius: 14px;
+  border: 1px solid var(--hairline, rgba(255,255,255,0.08)); background: var(--surface-deep, #0f0f0f);
+  opacity: 0.28; filter: grayscale(1); transition: opacity .35s ease, border-color .35s ease, filter .35s ease;
+}
+.tib-mk > .tib-mk-line + .tib-mk-line { margin-top: 8px; }
+.tib-mk > .tib-mk-line.lit { opacity: 1; filter: none; border-color: var(--accent-line, rgba(0,229,255,0.30)); }
+.tib-mk .tib-mk-code {
+  font-family: var(--mono, 'JetBrains Mono', ui-monospace, monospace); font-weight: 700; font-size: 17px; color: var(--accent, #00e5ff);
+  background: var(--accent-wash, rgba(0,229,255,0.10)); border: 1px solid var(--accent-line, rgba(0,229,255,0.30)); border-radius: 10px; text-align: center; padding: 4px 0;
+}
+.tib-mk .tib-mk-line.lit .tib-mk-code { box-shadow: var(--shadow-glow, 0 8px 20px rgba(0,229,255,0.3)); }
+.tib-mk .tib-mk-earn { grid-column: 2; font-size: 15px; color: var(--text-2, #b0b0b0); }
+.tib-mk .tib-mk-tot { margin-top: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--mono, ui-monospace, monospace); color: var(--text-2, #b0b0b0); }
+.tib-mk .tib-mk-tot b { color: var(--accent, #00e5ff); }
+.tib-mk .tib-mk-tot button:disabled { opacity: 0.5; }
+
+/* a code chip, e.g. M1*, DM1, A1FT */
+.tib-mk-chip {
+  display: inline-block; font-family: var(--mono, 'JetBrains Mono', ui-monospace, monospace); font-weight: 700; font-size: 0.92em; line-height: 1.2;
+  color: var(--accent, #00e5ff); background: var(--accent-wash, rgba(0,229,255,0.10)); border: 1px solid var(--accent-line, rgba(0,229,255,0.30));
+  border-radius: 8px; padding: 2px 7px; white-space: nowrap;
+}
+button.tib-mk-chip { cursor: pointer; }
+.tib-mk-chip.lost { color: var(--warn, #ff6b6b); background: rgba(255,107,107,0.10); border-color: rgba(255,107,107,0.4); text-decoration: line-through; }
+
+@media (max-width: 720px) {
+  .tib-mk > .tib-mk-line { grid-template-columns: 52px 1fr; padding: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tib-mk > .tib-mk-line { transition: none; }
+}
+@media print {
+  .tib-mk .tib-mk-tot button { display: none !important; }
+  .tib-mk > .tib-mk-line { opacity: 1 !important; filter: none !important; }
+}

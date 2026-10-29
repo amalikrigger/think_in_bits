@@ -179,16 +179,7 @@ section.bsec > * + * { margin-top: 18px; }
 .exam .qtext { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; line-height: 1.6; }
 .exam .mk { float: right; font-family: var(--mono); font-size: 14px; color: var(--text-2); }
 
-/* marks lighting up line by line */
-.marks > .mline { display: grid; grid-template-columns: 62px 1fr; gap: 6px 14px; align-items: start; padding: 12px 14px; border-radius: 14px;
-  border: 1px solid var(--hairline); background: var(--surface-deep); opacity: 0.28; filter: grayscale(1); transition: opacity .35s ease, border-color .35s ease, filter .35s ease; }
-.marks > .mline + .mline { margin-top: 8px; }
-.marks > .mline.lit { opacity: 1; filter: none; border-color: var(--accent-line); }
-.marks .code { font-family: var(--mono); font-weight: 700; font-size: 17px; color: var(--accent); background: var(--accent-wash); border: 1px solid var(--accent-line); border-radius: 10px; text-align: center; padding: 4px 0; }
-.marks .mline.lit .code { box-shadow: var(--shadow-glow); }
-.marks .earn { grid-column: 2; font-size: 15px; color: var(--text-2); }
-.marks .tot { margin-top: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--mono); color: var(--text-2); }
-.marks .tot b { color: var(--accent); }
+/* marks lighting up line by line: moved to marks.css (shared with the Examiner's Desk) */
 
 /* check yourself */
 .try { border: 1px solid var(--hairline); border-radius: 20px; background: var(--surface); padding: 18px 20px; }
@@ -267,22 +258,20 @@ footer.bk-foot { max-width: var(--col); margin: 0 auto; padding: 0 20px 60px; co
   .bk-bar { gap: 8px; padding: 8px 12px; }
   .bk-bar .bk-name { display: none; }
   .bk-bar .bk-meter { flex: 1 1 auto; }
-  .marks > .mline { grid-template-columns: 52px 1fr; padding: 10px; }
   .exam .mk { float: none; display: block; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .steps > .step.on, .predict.done .why-it, .try.open .sol { animation: none; }
-  .marks > .mline, .bk-bar .bk-fill { transition: none; }
+  .bk-bar .bk-fill { transition: none; }
 }
 
 /* ---------- print: every step, answer and mark shown ---------- */
 @media print {
   body { background: #fff; color: #111; }
-  .bk-bar, .bk-toc, .acts, .self, .steps .more, .predict .opts, .marks .tot button, .lab input, .picks, .lab .toggle, .pr-hint, #cgZoom { display: none !important; }
+  .bk-bar, .bk-toc, .acts, .self, .steps .more, .predict .opts, .lab input, .picks, .lab .toggle, .pr-hint, #cgZoom { display: none !important; }
   .steps > .step, .try .sol, .predict .why-it { display: block !important; animation: none !important; }
   .steps > .step.pair { display: grid !important; }
-  .marks > .mline { opacity: 1 !important; filter: none !important; }
   h1 { background: none !important; color: #111 !important; -webkit-text-fill-color: #111; }
   h2, .eyebrow, .sec-head .num { color: #00607a !important; }
   .card, .try, .predict, .exam, .idea, .why, .ghost, .local, .lab, .cover, .next, .m { background: #fff !important; color: #111 !important; border-color: #bbb !important; box-shadow: none !important; break-inside: avoid; }

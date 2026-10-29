@@ -6,7 +6,8 @@
    Pieces it wires up:
      .steps     step-by-step reveal (children .step, button added)
      .predict   choose first, then see why (buttons in .opts; the right one has data-ok; data-say = feedback)
-     .marks     mark-scheme lines (.mline with data-code and data-n) that light up one at a time
+     .marks     mark-scheme lines (.mline with data-code and data-n) that light up one at a time;
+                this lives in marks.js + marks.css, which the page loads before booklet.js
      .try       check-yourself question (.q then .sol); students mark Got it / Not yet, saved per browser
      .tally     running count of check-yourself results
    Progress (sections read, questions marked) is kept in localStorage only, wrapped in try/catch,
@@ -128,22 +129,8 @@
     });
   });
 
-  /* ---------- marks lighting up one at a time ---------- */
-  [].slice.call(document.querySelectorAll('.marks')).forEach(function (box) {
-    var lines = [].slice.call(box.querySelectorAll(':scope > .mline')), i = 0;
-    var total = lines.reduce(function (s, l) { return s + (+(l.getAttribute('data-n') || 1)); }, 0);
-    lines.forEach(function (l) { if (!l.querySelector('.code')) l.insertBefore(el('div', 'code', l.getAttribute('data-code')), l.firstChild); });
-    var tot = el('div', 'tot'), go = btn('Award the next mark', 'go'), reset = btn('Start again');
-    var txt = el('span'); tot.appendChild(go); tot.appendChild(reset); tot.appendChild(txt); box.appendChild(tot);
-    function upd() {
-      var got = 0; lines.forEach(function (l, j) { l.classList.toggle('lit', j < i); if (j < i) got += +(l.getAttribute('data-n') || 1); });
-      txt.innerHTML = '<b>' + got + '</b> of ' + total + ' marks';
-      go.disabled = i >= lines.length; go.style.opacity = go.disabled ? 0.5 : 1;
-    }
-    go.addEventListener('click', function () { i = Math.min(lines.length, i + 1); upd(); });
-    reset.addEventListener('click', function () { i = 0; upd(); });
-    upd();
-  });
+  /* ---------- marks lighting up one at a time (shared: marks.js, loaded before this file) ---------- */
+  if (window.TIBMarks) TIBMarks.ladderAll(document.querySelector('main.bk') || body);
 
   /* ---------- check yourself ---------- */
   function setTry(t, v) {

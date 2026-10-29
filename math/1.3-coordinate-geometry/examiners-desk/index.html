@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Examiner's Desk: 1.3 Coordinate Geometry | Think In Bits</title>
+  <meta name="description" content="Learn what every Cambridge 9709 mark code means, then mark real and practice scripts for coordinate geometry the way an examiner would.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/marks.css">
+  <link rel="stylesheet" href="../../assets/examiners-desk.css">
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+<main class="wrap" id="desk">
+  <noscript><p>The Examiner's Desk needs JavaScript.</p></noscript>
+</main>
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/marks.js"></script>
+<script src="../../assets/examiners-desk.js"></script>
+<script>
+/* 1.3 Coordinate geometry pack. Every code and guidance line was read on its mark-scheme PDF page
+   (pages in each credit line); every number in the scripts and model answers is checked with sympy
+   (claude/tools/examiners-desk-checks.py). Real candidate work is retyped, never scanned. */
+(function () {
+  var R = String.raw;
+  TIBDesk.start({
+    topic: '1.3',
+    kicker: 'Cambridge 9709 \u00b7 1.3 Coordinate geometry',
+    intro: 'Learn what every mark code means, then mark coordinate geometry scripts the way a Cambridge examiner does: real student answers and practice ones, against the real mark schemes.',
+    known: ['M', 'A', 'B'],
+    scripts: [
+      /* ---------------------------------------------------------------- 1 */
+      { id: 'j24q7', title: 'June 2024 9709/12 Q7 \u00b7 Tangent to a circle',
+        kind: 'Real student answer \u00b7 Script A',
+        who: 'Real candidate response \u00b7 Cambridge I2 training pack, June 2024 9709/12, Script A (retyped)',
+        q: R`The equation of a circle is \((x - 6)^2 + (y + a)^2 = 18\). The line with equation \(y = 2a - x\) is a tangent to the circle.<br>(a) Find the two possible values of the constant \(a\). <span class="mk">[5]</span><br>(b) For the greater value of \(a\), find the equation of the diameter which is perpendicular to the given tangent. <span class="mk">[3]</span>`,
+        marks: 8,
+        lines: [
+          { p: '(a)', t: R`\((x - 6)^2 + (2a - x + a)^2 = 18\)` },
+          { t: R`\((x - 6)^2 + (3a - x)^2 = 18\)` },
+          { t: R`\(x^2 - 12x + 36 + 9a^2 - 6ax + x^2 - 18 = 0\)` },
+          { t: R`\(2x^2 - 12x - 6ax + 36 + 9a^2 - 18 = 0\)` },
+          { t: R`\(2x^2 - x(12 + 6a) + (18 + 9a^2) = 0\)` },
+          { t: R`\(b^2 - 4ac = 0\)` },
+          { t: R`\((12 + 6a)^2 - 4 \times 2 \times (18 + 9a^2) = 0\)` },
+          { t: R`\(144 + 144a + 36a^2 - 144 - 72a^2 = 0\)` },
+          { t: R`\(-36a^2 + 144a = 0\)` },
+          { t: R`\(36a^2 - 144a = 0\)` },
+          { t: R`\(a^2 - 4a = 0\)` },
+          { t: R`\(a(a - 4) = 0\)` },
+          { t: R`\(a = 0 \qquad a = 4\)` },
+          { p: '(b)', t: R`\(y = 2(4) - x \qquad y = 8 - x \qquad\) gradient \(= -1\)` },
+          { t: R`gradient of diameter \(= 1\)` },
+          { t: R`\(18 = r^2 \qquad \sqrt{18} = r \qquad 2\sqrt{18} = \) diameter` },
+          { t: R`\(y = mx + c \qquad (6, -4)\)` },
+          { t: R`\(y = x + c\)` },
+          { t: R`\(-4 = 6 + c\)` },
+          { t: R`\(2 = c\)` },
+          { t: R`\(y = x + 2\)` }
+        ],
+        wrong: 19,
+        wrongNote: R`From \(-4 = 6 + c\), subtract 6 from both sides: \(c = -10\). Writing \(c = 2\) is an arithmetic slip.`,
+        spotHint: 'Part (a) is long. Check each line, then follow (b) to the end.',
+        scheme: [
+          { c: 'M1*', on: 0, d: R`Replace \(y\) with \(2a - x\) in the circle equation.`, a: true, why: 'The first line does exactly this.' },
+          { c: 'A1', on: 3, d: R`All terms collected on one side: \(2x^2 - 12x - 6ax + 9a^2 + 36 - 18\ [=0]\).`, a: true, dep: [0], why: 'The fourth line matches the scheme term for term.' },
+          { c: 'DM1', on: 6, d: R`Correct use of \(b^2 - 4ac\) on their 3-term quadratic in \(x\), with an \(x\) term of the form \((m + na)x\).`, a: true, dep: [0], why: R`\(b = -(12 + 6a)\), \(a = 2\), \(c = 18 + 9a^2\), all used correctly. The starred M1 was earned, so the DM1 can be.` },
+          { c: 'A1', on: 8, d: R`\(-36a^2 + 144a\ [=0]\)`, a: true, dep: [2], why: 'Correct expansion and collection.' },
+          { c: 'A1', on: 12, d: R`\(a = 0,\ a = 4\)`, a: true, dep: [2], why: 'Both values, both right.' },
+          { c: 'B1', on: 16, d: R`Center \((6, -4)\), or the touching point \((9, -1)\).`, a: true, why: R`They use \((6, -4)\), the center when \(a = 4\).` },
+          { c: 'B1', on: 14, d: 'Gradient of the diameter is 1.', a: true, why: R`Tangent gradient \(-1\), so the perpendicular gradient is 1.` },
+          { c: 'B1FT', on: 20, d: R`\(y + 4 = x - 6\) or \(y + 1 = x - 9\), leading to \(y = x - 10\). FT on their point with an \(x\)-coordinate of \(\pm 6\) and gradient 1.`, a: false,
+            why: R`Their center and gradient are right, so the correct line is \(y = x - 10\). The FT forgives an earlier wrong point. It does not forgive a slip in this step, and \(c = 2\) is that slip.` }
+        ],
+        fix: { o: [R`\(-4 = 6 + c \Rightarrow c = -10\)`, R`\(-4 = 6 + c \Rightarrow c = 10\)`, R`\(-4 = 6 + c \Rightarrow c = -2\)`], ok: 0,
+          why: R`Then \(y = x - 10\). Check: the center \((6, -4)\) gives \(-4 = 6 - 10\).`,
+          no: [null, 'Subtracting 6 from −4 gives a negative number.', 'That is −4 + 6 with the sign changed. Start at −4 and take away 6.'] },
+        whyWrong: R`Everything hard was right: the substitution, the discriminant and the perpendicular gradient. The marks went on one subtraction. A five-second check catches it: put the center back into the answer. \((6, -4)\) in \(y = x + 2\) gives \(-4 = 8\), which is false.`,
+        model: [
+          { t: R`\((x - 6)^2 + (2a - x + a)^2 = 18\)`, c: 'M1*' },
+          { t: R`\(2x^2 - 12x - 6ax + 9a^2 + 36 - 18 = 0\)`, c: 'A1' },
+          { t: R`\((12 + 6a)^2 - 4 \times 2 \times (9a^2 + 18) = 0\)`, c: 'DM1' },
+          { t: R`\(-36a^2 + 144a = 0\)`, c: 'A1' },
+          { t: R`\(a = 0,\ a = 4\)`, c: 'A1' },
+          { t: R`\(a = 4\): center \((6, -4)\)`, c: 'B1' },
+          { t: R`tangent gradient \(-1\), so diameter gradient \(1\)`, c: 'B1' },
+          { t: R`\(y + 4 = 1(x - 6) \Rightarrow y = x - 10\)`, c: 'B1FT' }
+        ],
+        note: 'The June 2024 examiner report says the most successful method in (a) was to replace y with 2a − x and use the discriminant. Errors came from expanding brackets and collecting terms, and the 18 on the right-hand side was sometimes forgotten. About 30% of candidates left out (b); many spent time finding where the tangent meets the circle when the center was all they needed. A quick diagram helps.',
+        credit: 'Question and mark scheme: Cambridge 9709/12 June 2024 Q7 (mark scheme p.18). Script A: Cambridge I2 training pack, retyped. The pack gives no examiner marks for this script; these marks apply the published scheme. Rough working at the foot of the page is left out.' },
+
+      /* ---------------------------------------------------------------- 2 */
+      { id: 'j24q10b', title: 'June 2024 9709/12 Q10(b) \u00b7 Perpendicular bisector',
+        kind: 'Real student answer \u00b7 Script C',
+        who: 'Real candidate response \u00b7 Cambridge I2 training pack, June 2024 9709/12, Script C (retyped)',
+        q: R`The equation of a curve is \(y = (5 - 2x)^{\frac32} + 5\) for \(x < \tfrac52\).<br>(b) Point \(A\) on the curve has \(y\)-coordinate 32. Point \(B\) on the curve is such that the gradient of the curve at \(B\) is \(-3\). Find the equation of the perpendicular bisector of \(AB\). Give your answer in the form \(ax + by + c = 0\), where \(a\), \(b\) and \(c\) are integers. <span class="mk">[6]</span>`,
+        marks: 6,
+        lines: [
+          { p: '(b)', t: R`when \(y = 32\)` },
+          { t: R`\(32 = (5 - 2x)^{\frac32} + 5\)` },
+          { t: R`\(5 - 2x = (32 - 5)^{\frac23}\)` },
+          { t: R`\(5 - 2x = 9\)` },
+          { t: R`\(\therefore x = -2 \qquad A(-2, 32)\)` },
+          { t: R`\(\dfrac{dy}{dx} \Rightarrow -3(5 - 2x)^{\frac12} = -3\)` },
+          { t: R`\(\Rightarrow 5 - 2x = \pm 1\)`, loose: R`Loose but harmless: a square root equal to 1 means \(5 - 2x = 1\) only. The student rejects \(x = 3\) on the next lines, so nothing is lost here. Keep looking.` },
+          { t: R`\(x = 3 \ ;\ x = 2\)` },
+          { t: R`\(x \ne 3 \ \therefore x = 2\)` },
+          { t: R`when \(x = 2\): \(y = (5 - 2(2))^{\frac32} + 5 = 6 \qquad B(2, 6)\)` },
+          { t: R`\(M = (0, 19)\)` },
+          { t: R`\(m_{AB} = \dfrac{32 - 6}{-2 - 2} = -\dfrac{13}{2}\)` },
+          { t: R`\(m_\perp = -\dfrac{2}{13}\)` },
+          { t: R`\(y - 19 = -\dfrac{2}{13}(x - 0)\)` },
+          { t: R`\(\Rightarrow y = -\dfrac{2}{13}x + 19\)` },
+          { t: R`\(\Rightarrow 13y = -2x + 247\)` },
+          { t: R`\(\Rightarrow 13y + 2x - 247 = 0\)` },
+          { t: R`\(\therefore a = 13,\ b = 2,\ c = -247\)` }
+        ],
+        wrong: 12,
+        wrongNote: R`The perpendicular gradient is \(-\dfrac{1}{m}\): flip and change the sign. \(-\dfrac{1}{-13/2} = \dfrac{2}{13}\). Here the sign was kept.`,
+        scheme: [
+          { c: 'M1', on: 5, d: R`Equate their \(\dfrac{dy}{dx}\), of the form \(k(5 - 2x)^{\frac12}\), to \(-3\).`, a: true, why: R`\(-3(5 - 2x)^{\frac12} = -3\) is exactly this, and the derivative is right.` },
+          { c: 'A1', on: 9, d: R`\([B \text{ is}]\ (2, 6)\)`, a: true, dep: [0], why: 'Correct, and they rightly rejected x = 3 (outside x < 5/2).' },
+          { c: 'M1*', on: 12, d: R`Gradient \(AB\) by difference in \(y\) over difference in \(x\), then the perpendicular gradient using \(m_1 m_2 = -1\).`, a: false,
+            why: R`\(m_{AB}\) is right, but \(-\tfrac{13}{2} \times -\tfrac{2}{13} = +1\). The perpendicular step was not done with \(m_1 m_2 = -1\).` },
+          { c: 'M1*', on: 10, d: R`Midpoint of \(AB\) using \(A\) and \(B\).`, a: true, why: R`\(\left(\tfrac{-2 + 2}{2}, \tfrac{32 + 6}{2}\right) = (0, 19)\).` },
+          { c: 'DM1', on: 13, d: 'Equation of the perpendicular bisector using their midpoint and their perpendicular gradient.', a: false, dep: [2, 3],
+            why: 'This DM1 depends on the starred marks before it, and the gradient M1* was not earned. (We read the DM1 as needing both stars, as in the 1.3 Session 1 deck.)' },
+          { c: 'A1', on: 16, d: R`\(2x - 13y + 247 = 0\) or \(\pm\) integer multiples of this.`, a: false, dep: [4], why: 'Their line has the wrong gradient.' }
+        ],
+        fix: { o: [R`\(m_\perp = \dfrac{2}{13}\)`, R`\(m_\perp = \dfrac{13}{2}\)`, R`\(m_\perp = -\dfrac{13}{2}\)`], ok: 0,
+          why: R`\(-\tfrac{13}{2} \times \tfrac{2}{13} = -1\). Then \(y - 19 = \tfrac{2}{13}x\), so \(2x - 13y + 247 = 0\).`,
+          no: [null, 'That is the gradient with only its sign changed. Flip it too.', 'That is the gradient of AB itself.'] },
+        whyWrong: R`"Flip and change the sign" has two moves, and only one was made. A fast check: multiply the two gradients. Perpendicular means the product is \(-1\); here it is \(+1\). The rest of the working was strong: the right derivative, the rejected root, and a correct midpoint.`,
+        model: [
+          { t: R`\(\dfrac{dy}{dx} = -3(5 - 2x)^{\frac12} = -3\)`, c: 'M1' },
+          { t: R`\(B(2, 6)\), and \(A(-2, 32)\) from part (a)`, c: 'A1' },
+          { t: R`\(m_{AB} = \dfrac{32 - 6}{-2 - 2} = -\dfrac{13}{2}\), so \(m_\perp = \dfrac{2}{13}\)`, c: 'M1*' },
+          { t: R`midpoint \(\left(\dfrac{-2 + 2}{2}, \dfrac{32 + 6}{2}\right) = (0, 19)\)`, c: 'M1*' },
+          { t: R`\(y - 19 = \dfrac{2}{13}(x - 0)\)`, c: 'DM1' },
+          { t: R`\(2x - 13y + 247 = 0\)`, c: 'A1' }
+        ],
+        note: R`The June 2024 examiner report says 20% of candidates left out (b). Many did not see the link with (a) and found \(x = -2\) again. Others took the perpendicular gradient to be \(\tfrac13\) because the curve's gradient was \(-3\), or did not find the midpoint. About half found the correct equation, and about half of those lost the last mark by not giving it in the form asked.`,
+        credit: 'Question and mark scheme: Cambridge 9709/12 June 2024 Q10(b) (mark scheme p.25). Script C: Cambridge I2 training pack, retyped. The pack gives no examiner marks for this script; these marks apply the published scheme.' },
+
+      /* ---------------------------------------------------------------- 3 */
+      { id: 'n20q9', title: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 Circle and tangent',
+        kind: 'Real student answer \u00b7 middle, with the examiner\u2019s marks',
+        who: 'Real candidate response \u00b7 Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, middle response (retyped)',
+        q: R`A circle has center at the point \(B(5, 1)\). The point \(A(-1, -2)\) lies on the circle.<br>(a) Find the equation of the circle. <span class="mk">[3]</span><br>Point \(C\) is such that \(AC\) is a diameter of the circle. Point \(D\) has coordinates \((5, 16)\).<br>(b) Show that \(DC\) is a tangent to the circle. <span class="mk">[4]</span>`,
+        marks: 7,
+        lines: [
+          { p: '(a)', t: R`\(5 - (-1) = 6 = r\)` },
+          { t: R`\((x - 5)^2 + (y - 1)^2 = 6^2\)` },
+          { t: R`\((x - 5)^2 + (y - 1)^2 = 36\)` },
+          { p: '(b)', t: R`\(\dfrac{x + (-1)}{2} = 5 \qquad 10 = x - 1 \qquad x = 11\)` },
+          { t: R`\(\dfrac{y - 2}{2} = 1 \qquad y - 2 = 2 \qquad y = 4\)` },
+          { t: R`\(C(11, 4)\)` },
+          { t: R`\(m = \dfrac{4 - (-2)}{11 - (-1)} = \dfrac12\)` },
+          { t: R`\(m_\perp = -2\)` },
+          { t: R`\(m_{DC} = \dfrac{16 - 4}{5 - 11} = \dfrac{12}{-6} = -2\)` }
+        ],
+        wrong: 0,
+        wrongNote: R`The radius is the distance from \(A\) to \(B\), which needs both differences: \(\sqrt{6^2 + 3^2} = \sqrt{45}\). Using only the \(x\)-difference gives 6.`,
+        spotHint: 'Start at the very first line.',
+        scheme: [
+          { c: '1 mark', on: 0, d: R`A correct radius: \(r = \sqrt{45}\), or \(r^2 = 45\).`, a: false, why: R`The examiner: "The candidate uses an incorrect method for finding the radius." \(r = 6\) ignores the \(y\)-difference.` },
+          { c: 'M1', on: 2, d: 'An equation of a circle with the given center (5, 1) and their radius.', a: true,
+            why: 'The examiner: "uses the given center and what they think that the radius is, so is awarded the method mark."' },
+          { c: '1 mark', on: 2, d: R`\((x - 5)^2 + (y - 1)^2 = 45\)`, a: false, why: 'Their right-hand side is 36. Mark for (a): 1 out of 3.' },
+          { c: '1 mark', on: 5, d: R`Point \(C(11, 4)\).`, a: true, why: 'Correct, from the midpoint of AC being B.' },
+          { c: '1 mark', on: 6, d: R`Gradient of a radius (\(AB\), \(BC\) or \(AC\)): \(\tfrac12\).`, a: true, why: R`They find the gradient of \(AC\), a diameter, so it is also the gradient of the radius \(BC\): \(\tfrac12\).` },
+          { c: '1 mark', on: 8, d: R`Gradient of \(DC\): \(-2\).`, a: true, why: 'Correct.' },
+          { c: 'A1', on: 8, d: R`Conclusion: the product of the gradients is \(-1\), so \(DC\) is perpendicular to the radius at \(C\), so \(DC\) is a tangent.`, a: false,
+            why: 'The examiner: "All of the working out is correct but the candidate does not explain the implications of their answers." Mark for (b): 3 out of 4.' }
+        ],
+        fix: { o: [R`\(r = \sqrt{(5 + 1)^2 + (1 + 2)^2} = \sqrt{45}\), so \(r^2 = 45\)`, R`\(r = 5 - (-2) = 7\)`, R`\(r = 6\), so \(r^2 = 12\)`], ok: 0,
+          why: R`Then \((x - 5)^2 + (y - 1)^2 = 45\). Notice the equation needs \(r^2 = 45\), and \(\sqrt{45}\) never has to be worked out.`,
+          no: [null, 'That mixes an x-value with a y-value. Use the distance formula.', 'Squaring 6 gives 36, and 6 is still the wrong radius.'] },
+        whyWrong: R`A radius is a distance between two points, so it needs Pythagoras on both differences. In (b) every number was right, but "show that" questions are marked on the reasoning: the student needed to write that the gradients multiply to \(-1\), so \(DC\) is perpendicular to the radius, so \(DC\) is a tangent.`,
+        model: [
+          { t: R`\(r^2 = (5 + 1)^2 + (1 + 2)^2 = 45\)` },
+          { t: R`\((x - 5)^2 + (y - 1)^2 = 45\)` },
+          { t: R`\(B\) is the midpoint of \(AC\), so \(C = (11, 4)\)` },
+          { t: R`gradient \(BC = \dfrac{4 - 1}{11 - 5} = \dfrac12\); gradient \(DC = \dfrac{16 - 4}{5 - 11} = -2\)` },
+          { t: R`\(\dfrac12 \times (-2) = -1\), so \(DC\) is perpendicular to the radius \(BC\) at \(C\), so \(DC\) is a tangent.` }
+        ],
+        note: R`The Example Candidate Responses list these common mistakes: using a straight-line equation in (a); thinking the radius was 45, when it is \(\sqrt{45}\); writing \(\sqrt{45}\) on the right-hand side; and not explaining what a product of \(-1\) means in (b). Even the high response lost the last mark in (b) for that.`,
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q9), pp.31 to 35. There is no separate Nov 2020 mark scheme in our collection, so the marks are the examiner\u2019s part totals and comments; where the codes are not printed we write "1 mark". Examiner quotes are Americanized (\u201ccenter\u201d).' },
+
+      /* ---------------------------------------------------------------- 4 */
+      { id: 's23q5', title: 'June 2023 9709/11 Q5 \u00b7 Tangent to a curve',
+        kind: 'Written for practice \u00b7 based on the examiner report',
+        who: 'Written for practice: a student answer showing the error the June 2023 examiner report describes',
+        q: R`The line with equation \(y = kx - k\), where \(k\) is a positive constant, is a tangent to the curve with equation \(y = -\dfrac{1}{2x}\).<br>Find, in either order, the value of \(k\) and the coordinates of the point where the tangent meets the curve. <span class="mk">[5]</span>`,
+        marks: 5,
+        lines: [
+          { t: R`\(kx - k = -\dfrac{1}{2x}\)` },
+          { t: R`\(kx - k = -\tfrac12 x\)` },
+          { t: R`\(kx + \tfrac12 x = k\)` },
+          { t: R`\(x\left(k + \tfrac12\right) = k \Rightarrow x = \dfrac{2k}{2k + 1}\)` },
+          { t: 'For a tangent there is one point, and there is one x for every k, so k cannot be found.' }
+        ],
+        wrong: 1,
+        wrongNote: R`\(-\dfrac{1}{2x}\) means \(-1 \div 2x\), with \(x\) on the bottom. \(-\tfrac12 x\) puts \(x\) on top. Multiplying both sides by \(2x\) clears the fraction.`,
+        scheme: [
+          { c: '*M1', on: 1, d: R`Equate line and curve to form a 3-term quadratic, all terms on one side: \(2kx^2 - 2kx + 1\ [=0]\) OE.`, a: false, why: 'The misread turns the equation into a linear one. No 3-term quadratic is ever formed.' },
+          { c: 'DM1', on: null, d: R`Use the discriminant correctly with their \(a, b, c\).`, a: false, dep: [0], why: 'There is no quadratic to use it on, and it depends on the *M1.' },
+          { c: 'A1', on: null, d: R`\(k = 2\) only.`, a: false, dep: [1], why: 'Never reached.' },
+          { c: 'B1', on: null, d: R`\(4x^2 - 4x + 1 = 0 \Rightarrow x = \tfrac12\)`, a: false, why: 'Never reached.' },
+          { c: 'B1', on: null, d: R`\(y = 2 \times \tfrac12 - 2 = -1\)`, a: false, why: 'Never reached. Score: 0 out of 5, all from one line.' }
+        ],
+        fix: { o: [R`multiply by \(2x\): \(2kx^2 - 2kx = -1\), so \(2kx^2 - 2kx + 1 = 0\)`, R`\(kx - k = -2x\)`, R`multiply by \(2x\): \(2kx^2 - 2kx = -2x\)`], ok: 0,
+          why: R`Now \(b^2 - 4ac = 4k^2 - 8k = 0\), so \(k = 0\) or \(2\). \(k\) is positive, so \(k = 2\). Then \(4x^2 - 4x + 1 = 0\), \(x = \tfrac12\), \(y = -1\).`,
+          no: [null, 'That moves the 2 to the top as well. Only multiplying both sides by 2x is safe.', 'The right-hand side times 2x is −1, because the 2x cancels.'] },
+        whyWrong: R`One misread fraction took the whole question. The scheme starts with *M1 for forming the quadratic, and everything else depends on it. When an equation has \(x\) in a denominator, multiply through by that denominator first. Then check the answer to the question: \(k\) must be positive, so \(k = 0\) is rejected.`,
+        model: [
+          { t: R`\(kx - k = -\dfrac{1}{2x} \Rightarrow 2kx^2 - 2kx + 1 = 0\)`, c: '*M1' },
+          { t: R`\((-2k)^2 - 4(2k)(1) = 0 \Rightarrow 4k(k - 2) = 0\)`, c: 'DM1' },
+          { t: R`\(k = 2\) only (\(k\) is positive)`, c: 'A1' },
+          { t: R`\(4x^2 - 4x + 1 = 0 \Rightarrow (2x - 1)^2 = 0 \Rightarrow x = \tfrac12\)`, c: 'B1' },
+          { t: R`\(y = 2 \times \tfrac12 - 2 = -1\)`, c: 'B1' }
+        ],
+        note: R`The June 2023 examiner report: "It was common to see \(-\tfrac{1}{2x}\) becoming \(-\tfrac12 x\) in the working, leading to incorrect equations, in many cases not quadratic equations." It adds that some candidates did not reject \(k = 0\), and that when a quadratic gives two answers, candidates should check that both make sense in the question.`,
+        credit: 'Question and mark scheme: Cambridge 9709/11 June 2023 Q5 (mark scheme p.9). Script: written for practice from the June 2023 examiner report (Paper 11, Q5); not a real student\u2019s work.' },
+
+      /* ---------------------------------------------------------------- 5 */
+      { id: 's23q12', title: 'June 2023 9709/11 Q12(a)(b)(c) \u00b7 Two circles',
+        kind: 'Written for practice \u00b7 based on the examiner report',
+        who: 'Written for practice: a student answer showing errors the June 2023 examiner report describes',
+        q: R`The diagram shows a circle \(P\) with center \((0, 2)\) and radius 10 and the tangent to the circle at the point \(A\) with coordinates \((6, 10)\). It also shows a second circle \(Q\) with center at the point where this tangent meets the \(y\)-axis and with radius \(\tfrac52\sqrt5\). (Diagram not shown here.)<br>(a) Write down the equation of circle \(P\). <span class="mk">[1]</span><br>(b) Find the equation of the tangent to the circle \(P\) at \(A\). <span class="mk">[2]</span><br>(c) Find the equation of circle \(Q\) and hence verify that the \(y\)-coordinates of both of the points of intersection of the two circles are 11. <span class="mk">[3]</span>`,
+        marks: 6,
+        lines: [
+          { p: '(a)', t: R`\(x^2 + (y - 2)^2 = 10\)` },
+          { p: '(b)', t: R`gradient of radius \(= \dfrac{10 - 2}{6 - 0} = \dfrac43\)` },
+          { t: R`tangent: \(y - 10 = \dfrac43(x - 6)\)` },
+          { t: R`\(y = \dfrac43 x + 2\)` },
+          { p: '(c)', t: R`the tangent meets the \(y\)-axis at \((0, 2)\), so \(Q\) has center \((0, 2)\)` },
+          { t: R`\(Q:\ x^2 + (y - 2)^2 = \dfrac{125}{4}\)` },
+          { t: R`\(y = 11\) in \(P\): \(x^2 + 81 = 10 \Rightarrow x^2 = -71\), so the circles do not meet.` }
+        ],
+        wrong: 0,
+        wrongNote: R`The right-hand side is \(r^2\): \(10^2 = 100\).`,
+        scheme: [
+          { c: 'B1', on: 0, d: R`\(x^2 + (y - 2)^2 = 100\) OE ISW.`, a: false, why: R`"= 10" is the first error the examiner report lists for (a).` },
+          { c: 'M1', on: 1, d: R`Use coordinates to find the gradient of the radius, or differentiate to find the tangent gradient (OE SOI).`, a: true, why: R`The radius gradient \(\tfrac43\) is found correctly from the coordinates. That is this M1.` },
+          { c: 'A1', on: 2, d: R`\(y - 10 = -\tfrac34(x - 6)\) OE ISW.`, a: false, dep: [1], why: R`They used the radius gradient for the tangent. The tangent is perpendicular to the radius, so its gradient is \(-\tfrac34\).` },
+          { c: 'M1', on: 4, d: R`Center of \(Q\) is \(\left(0, their\ \tfrac{29}{2}\right)\), SOI, from a linear equation in (b).`, a: true, why: R`Their tangent meets the \(y\)-axis at \((0, 2)\). The method is right for their line.` },
+          { c: 'A1FT', on: 5, d: R`\(x^2 + \left(y - their\ \tfrac{29}{2}\right)^2 = \left(\tfrac{5\sqrt5}{2}\right)^2\ \left[= \tfrac{125}{4}\right]\) OE ISW.`, a: true, dep: [3],
+            why: R`Follow through: their center \((0, 2)\) with the correct \(r^2 = \tfrac{125}{4}\) is exactly what the FT allows.` },
+          { c: 'B1', on: 6, d: R`Correct argument that both \(y\)-coordinates are 11 (e.g. \(x^2 = 19\) from both circles).`, a: false, why: 'This B1 has no FT. Their circles cannot give y = 11.' }
+        ],
+        fix: { o: [R`\(x^2 + (y - 2)^2 = 100\)`, R`\(x^2 + (y + 2)^2 = 100\)`, R`\(x^2 + (y - 2)^2 = \sqrt{10}\)`], ok: 0,
+          why: R`Check: \(A(6, 10)\) gives \(36 + 64 = 100\). It works.`,
+          no: [null, 'The center is (0, 2), so the bracket is y − 2.', 'The right-hand side is the radius squared, 10² = 100.'] },
+        whyWrong: R`Two separate habits cost three marks. In (a), the right-hand side of a circle equation is \(r^2\). In (b), the tangent is perpendicular to the radius, so flip and change the sign of the radius gradient. Notice what the scheme still gave: the M1 for the radius gradient and, through FT, the circle \(Q\) built from their own tangent.`,
+        model: [
+          { t: R`(a) \(x^2 + (y - 2)^2 = 100\)`, c: 'B1' },
+          { t: R`(b) gradient of radius \(= \dfrac{10 - 2}{6 - 0} = \dfrac43\)`, c: 'M1' },
+          { t: R`\(y - 10 = -\dfrac34(x - 6) \Rightarrow y = -\dfrac34 x + \dfrac{29}{2}\)`, c: 'A1' },
+          { t: R`(c) center of \(Q\) is \(\left(0, \tfrac{29}{2}\right)\)`, c: 'M1' },
+          { t: R`\(x^2 + \left(y - \tfrac{29}{2}\right)^2 = \tfrac{125}{4}\)`, c: 'A1FT' },
+          { t: R`\(y = 11\): \(P\) gives \(x^2 + 81 = 100\), \(Q\) gives \(x^2 + \tfrac{49}{4} = \tfrac{125}{4}\); both \(x^2 = 19\)`, c: 'B1' }
+        ],
+        note: R`The June 2023 examiner report: in (a), "= 10" or "= \(\sqrt{10}\)" were common, with unsquared brackets, swapped \(x\) and \(y\), and sign errors. In (b), some inverted the gradient or forgot to find the perpendicular gradient, and those who differentiated were generally less successful. In (c), many did not link it to (b).`,
+        credit: 'Question and mark scheme: Cambridge 9709/11 June 2023 Q12 (question paper p.18, mark scheme p.20). Script: written for practice from the June 2023 examiner report (Paper 11, Q12); not a real student\u2019s work.' },
+
+      /* ---------------------------------------------------------------- 6 */
+      { id: 'specq10', title: 'Specimen Paper 1 Q10(a)(b) \u00b7 Chord of a circle',
+        kind: 'Written for practice',
+        who: 'Written for practice: a student answer with a common slip',
+        q: R`The circle \(x^2 + y^2 + 4x - 2y - 20 = 0\) has center \(C\) and passes through points \(A\) and \(B\).<br>(a) State the coordinates of \(C\). <span class="mk">[1]</span><br>It is given that the midpoint, \(D\), of \(AB\) has coordinates \(\left(1\tfrac12, 1\tfrac12\right)\).<br>(b) Find the equation of \(AB\), giving your answer in the form \(y = mx + c\). <span class="mk">[4]</span>`,
+        marks: 5,
+        lines: [
+          { p: '(a)', t: R`\((x + 2)^2 + (y - 1)^2 = 25\), so \(C\) is \((-2, 1)\)` },
+          { p: '(b)', t: R`gradient \(CD = \dfrac{1\frac12 - 1}{1\frac12 - (-2)} = \dfrac{\frac12}{3\frac12} = \dfrac17\)` },
+          { t: R`gradient \(AB = \dfrac17\)` },
+          { t: R`\(y - 1\tfrac12 = \dfrac17\left(x - 1\tfrac12\right)\)` },
+          { t: R`\(y = \dfrac17 x + \dfrac97\)` }
+        ],
+        wrong: 2,
+        wrongNote: R`\(CD\) joins the center to the midpoint of the chord, so it is perpendicular to \(AB\). The gradient of \(AB\) is \(-7\).`,
+        scheme: [
+          { c: 'B1', on: 0, d: R`\(C\) is \((-2, 1)\).`, a: true, why: 'Correct.' },
+          { c: 'B1', on: 1, d: R`Gradient \(CD = \dfrac17\).`, a: true, why: 'Correct.' },
+          { c: 'M1', on: 2, d: R`Gradient \(AB = -7\) (perpendicular to \(CD\)).`, a: false, why: R`They used \(CD\)'s gradient for \(AB\), with no perpendicular step.` },
+          { c: 'M1', on: 3, d: R`Equation of a line through \(D\) with their gradient.`, a: true, why: 'The line-equation method through D is right for their gradient.' },
+          { c: 'A1', on: 4, d: R`\(y = -7x + 12\)`, a: false, why: 'Wrong gradient, so the wrong line.' }
+        ],
+        fix: { o: [R`gradient \(AB = -7\)`, R`gradient \(AB = 7\)`, R`gradient \(AB = -\dfrac17\)`], ok: 0,
+          why: R`Then \(y - 1\tfrac12 = -7\left(x - 1\tfrac12\right)\), so \(y = -7x + 12\). Check: \(D\) gives \(1\tfrac12 = -10\tfrac12 + 12\).`,
+          no: [null, 'Flip it, and change the sign as well.', 'Change the sign, and flip it as well.'] },
+        whyWrong: R`The key fact in this question is that the line from the center to the midpoint of a chord is perpendicular to the chord. Draw a quick sketch: it shows \(CD\) and \(AB\) meeting at a right angle.`,
+        model: [
+          { t: R`(a) \((x + 2)^2 + (y - 1)^2 = 25\), \(C(-2, 1)\)`, c: 'B1' },
+          { t: R`(b) gradient \(CD = \dfrac{1\frac12 - 1}{1\frac12 + 2} = \dfrac17\)`, c: 'B1' },
+          { t: R`gradient \(AB = -7\)`, c: 'M1' },
+          { t: R`\(y - 1\tfrac12 = -7\left(x - 1\tfrac12\right)\)`, c: 'M1' },
+          { t: R`\(y = -7x + 12\)`, c: 'A1' }
+        ],
+        note: R`Cambridge's Specimen Paper Answers: the point-gradient form used for \(AB\) earns the M1. If \(y = mx + c\) is used directly, that mark is not awarded until the attempt at finding \(c\) is completed.`,
+        credit: 'Question: Cambridge 9709 Specimen Paper 1 (2020) Q10. Marks: Cambridge Specimen Paper Answers, Paper 1, p.18. Script: written for practice; not a real student\u2019s work.' }
+    ]
+  });
+})();
+</script>
+</body>
+</html>
