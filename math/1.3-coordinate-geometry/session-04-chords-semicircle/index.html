@@ -20,6 +20,8 @@
     .key .sw.gold { border-color: #ffc46b; }
     .rv { opacity: 0; transition: opacity .35s ease; }
     .slide:has(.r10c.on) .rv { opacity: 1; }
+    .rv-a, .rv-b, .rv-c { opacity: 0; transition: opacity .35s ease; }
+    .slide:has(.r9a.on) .rv-a, .slide:has(.r9b.on) .rv-b, .slide:has(.r9c.on) .rv-c { opacity: 1; }
     #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
     #cgZoom.on { display: flex; }
     #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
@@ -231,14 +233,14 @@
     <div><div class="card">
       <p class="small">\(P(-3, 1)\), \(Q(1, 5)\) and \(R(5, 1)\) lie on a circle. Show that \(PR\) is a diameter, and find the equation of the circle.</p>
       <svg class="cg" id="fig-conv" aria-label="Points P minus 3, 1, Q 1, 5 and R 5, 1 on a circle with center 1, 1 and radius 4; the angle at Q is a right angle"></svg>
-      <p class="key"><span class="sw ans"></span>\(PQ\), \(QR\) &nbsp; <span class="sw dash"></span>diameter \(PR\)</p>
+      <p class="key"><span class="sw ans"></span>\(PQ\), \(QR\) &nbsp; <span class="rv-b"><span class="sw dash"></span>diameter \(PR\)</span></p>
       <p class="small frag"><b>Why this helps:</b> once we know a diameter, its midpoint is the center and half its length is the radius. That is everything the circle's equation needs.</p>
     </div></div>
     <div><div class="card">
       <div class="math small frag"><span class="lbl">gradient \(PQ\):</span>&nbsp; \(\dfrac{5 - 1}{1 - (-3)} = \dfrac{4}{4} = 1\) &nbsp;<span class="lbl">gradient \(QR\):</span>&nbsp; \(\dfrac{1 - 5}{5 - 1} = \dfrac{-4}{4} = -1\)</div>
-      <div class="math small frag"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so \(PQ \perp QR\): angle \(PQR = 90^\circ\)</span></div>
-      <p class="small frag"><b>Which pair is the diameter?</b> The two points that are <i>not</i> the right-angle corner. The corner is at \(Q\), so the diameter is \(PR\), the side opposite the right angle.</p>
-      <div class="math small frag"><span class="lbl">center = midpoint of \(PR\):</span>&nbsp; \(\left(\tfrac{-3 + 5}{2}, \tfrac{1 + 1}{2}\right) = (1, 1)\)</div>
+      <div class="math small frag r9a"><span class="lbl">product</span> \(1 \times (-1) = -1\), <span class="lbl">so \(PQ \perp QR\): angle \(PQR = 90^\circ\)</span></div>
+      <p class="small frag r9b"><b>Which pair is the diameter?</b> The two points that are <i>not</i> the right-angle corner. The corner is at \(Q\), so the diameter is \(PR\), the side opposite the right angle.</p>
+      <div class="math small frag r9c"><span class="lbl">center = midpoint of \(PR\):</span>&nbsp; \(\left(\tfrac{-3 + 5}{2}, \tfrac{1 + 1}{2}\right) = (1, 1)\)</div>
       <div class="math small frag"><span class="lbl">radius = half of \(PR\). \(P\) and \(R\) both have \(y = 1\), so \(PR\) is flat and its length is the change in \(x\):</span> \(5 - (-3) = 8\), <span class="lbl">so</span> \(r = \tfrac{8}{2} = 4\)</div>
       <div class="math small frag"><span class="lbl">check with \(Q\), from the center \((1, 1)\) to \(Q(1, 5)\). Change in \(x\):</span> \(1 - 1 = 0\); <span class="lbl">change in \(y\):</span> \(5 - 1 = 4\); &nbsp;\(\sqrt{0^2 + 4^2} = \sqrt{16} = 4\) ✓</div>
       <div class="math small result frag">center \((1, 1)\), \(r^2 = 4^2 = 16\): &nbsp;\((x - 1)^2 + (y - 1)^2 = 16\)</div>
@@ -509,6 +511,13 @@
     circles: [[1, 1, 4, W, '']],
     pts: [[-3, 1, 'P', CY, -18, -6], [1, 5, 'Q', CY, 8, -6], [5, 1, 'R', CY, 8, -6], [1, 1, '(1, 1)', GR, 6, 16]] };
   fig('fig-conv', conv, [{ seg: [-3, 1, 1, 5], col: CY }, { seg: [1, 5, 5, 1], col: CY }, { seg: [-3, 1, 5, 1], col: GR, dash: D }, { right: [1, 5, -3, 1, 5, 1], col: GO }]);
+  /* hide the answer: the right-angle box waits for "angle PQR = 90", the diameter for "which pair", the center for "center = midpoint" */
+  [].slice.call(document.querySelectorAll('#fig-conv > *')).forEach(function (e) {
+    var t = e.tagName, f = e.getAttribute('fill');
+    if (t === 'polyline') e.classList.add('rv-a');
+    else if (t === 'line' && e.getAttribute('stroke-dasharray')) e.classList.add('rv-b');
+    else if ((t === 'circle' && f === GR && e.getAttribute('r') === '4.5') || (t === 'text' && e.textContent === '(1, 1)')) e.classList.add('rv-c');
+  });
   var R5 = 2.5 * Math.sqrt(5), S19 = Math.sqrt(19), S5 = Math.sqrt(5), R18 = Math.sqrt(18);
   var q10c = { x: [-8, 4], y: [-5, 7], k: 25, step: 1, grid: 1, fs: 8,
     circles: [[-2, 1, 5, W, '']], lines: [[-7, 12, CY, '']],
