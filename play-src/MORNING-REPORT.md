@@ -4,25 +4,21 @@ Overnight build of the prototype in `PLAN.md`, 28–29 Oct 2026, on `feat/bitbli
 `think_in_bits.worktrees/bitblitz` worktree. Nothing pushed, deployed or created on Cloudflare.
 No existing site page was touched.
 
-## First, one thing that needs your decision
+## Git incident (resolved with your approval)
 
-**Git lost track of this worktree partway through the night.** The main repo's
-`.git/worktrees/` folder disappeared around 00:43 on 29 Oct, while the main checkout moved
-from `ba4828d` to `bbf8435`. I didn't do either, and neither review agent touched git. Since
-then, `git` inside this folder says `fatal: not a git repository`.
+The main repo's `.git/worktrees/` folder disappeared around 00:43 on 29 Oct, while the main
+checkout moved from `ba4828d` to `bbf8435`. I didn't do either, and neither review agent
+touched git. Git then stopped recognising this worktree. With your go-ahead I recreated
+`think_in_bits/.git/worktrees/bitblitz/` (HEAD, commondir, gitdir) and ran a mixed
+`git reset` to rebuild the index, which changes no files. Then I committed the review work as
+`38846ad`. The main checkout's files and status were not touched.
 
-- **Safe:** branch `feat/bitblitz` with all milestone commits (tip `ae32575`), and every
-  change made after that, which is on disk in this folder, uncommitted.
-- **Not committed yet:** the adversarial-review fixes and the walkthrough fixes (everything
-  after M7). I need git working again to commit them.
-- **The repair writes into the main repo's `.git`**, which I was told not to touch, so it's
-  waiting for your go-ahead. The low-risk fix recreates
-  `think_in_bits/.git/worktrees/bitblitz/` (three small files pointing at `feat/bitblitz`).
-  Then `git reset` (mixed: it keeps every file) runs in this folder to rebuild the index.
-  After that, the uncommitted work shows up as normal changes, and I commit it as "BitBlitz
-  review: adversarial fixes".
-- Worth checking what removed the folder (`git worktree prune`, or a cleanup script in another
-  session?), so it doesn't happen again to an active worktree.
+**Worth finding out:** what removed that folder (`git worktree prune`, or a cleanup script in
+another session?), so it doesn't happen to an active worktree again.
+
+**Branch scope check:** against the branch point (`011bb7d`), the only file added outside
+`play-src/` is `.claude/skills/bitblitz-quiz/SKILL.md`. `main` has moved on since then (12
+files), so a merge later will pick that up.
 
 ## What works (verified, not assumed)
 
@@ -146,15 +142,14 @@ screens, offline state, stress test). The full 399-shot sweep is regenerated wit
 
 ## Open questions for you
 
-1. **The git repair above.** Yes or no?
-2. **Ending early during an open question drops the answers already given to it unscored.**
+1. **Ending early during an open question drops the answers already given to it unscored.**
    Keep that, or score what's in?
-3. **Hidden student tabs.** A phone that locks for 20 s or more is reconnected when it wakes,
+2. **Hidden student tabs.** A phone that locks for 20 s or more is reconnected when it wakes,
    and keeps its score. That's fine, but a student who leaves the tab mid-question doesn't
    hold up the "everyone answered" early close. Good?
-4. **The light OS setting renders the same dark brand.** Do you want a light "bright room"
+3. **The light OS setting renders the same dark brand.** Do you want a light "bright room"
    projector theme later?
-5. **School network test** (your morning item): WebSockets to `workers.dev` from a Chromebook
+4. **School network test** (your morning item): WebSockets to `workers.dev` from a Chromebook
    on school Wi-Fi decide whether we need the long-polling fallback.
 
 ## Known limits and next steps
