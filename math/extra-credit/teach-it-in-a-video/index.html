@@ -1,0 +1,545 @@
+<title>Teach It in a Video (AS Math)</title>
+<meta content="cover" name="claude:viewport-fit-sides"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+/* Layout: the Think In Bits CS lesson system. One file, Read (scroll, tabs) and Present (one panel at a time).
+   Deliberately single-theme dark, matching thinkinbits.site. */
+:root {
+  --ground: #0a0a0a; --ground-far: #1a1a2e;
+  --surface: #1a1a1a; --surface-lift: #2a2a2a;
+  --accent: #00e5ff; --accent-deep: #0099cc;
+  --accent-wash: rgba(0,229,255,0.10); --accent-line: rgba(0,229,255,0.30);
+  --text: #ffffff; --text-2: #b0b0b0; --text-3: #8a8a8a;
+  --hairline: rgba(255,255,255,0.07); --hairline-strong: rgba(255,255,255,0.16);
+  --ok: #4fe08a; --ok-soft: rgba(79,224,138,0.12); --ok-line: rgba(79,224,138,0.32);
+  --warn: #ff6b6b; --warn-soft: rgba(255,107,107,0.12); --warn-line: rgba(255,107,107,0.32);
+  --gold: #ffc857; --gold-soft: rgba(255,200,87,0.12); --gold-line: rgba(255,200,87,0.30);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.5);
+  --font: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --measure: 74ch;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--ground); }
+body {
+  margin: 0; background: var(--ground);
+  background-image: linear-gradient(157deg, var(--ground) 0%, #12121f 52%, var(--ground-far) 100%);
+  background-attachment: fixed; min-height: 100vh;
+  color: var(--text); font-family: var(--font); line-height: 1.62; font-size: 15.5px;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 60px;
+}
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+
+/* chrome */
+.topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-block: 12px;  background: rgba(10,10,10,0.94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ground); }
+.pill { display: inline-flex; align-items: center; gap: .45em; font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none;
+  background: rgba(26,26,26,0.86); border: 1px solid var(--hairline); border-radius: 50px; padding: 7px 15px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.pill:hover { color: var(--text); border-color: var(--hairline-strong); }
+.modebar { display: inline-flex; background: rgba(26,26,26,0.86); border: 1px solid var(--hairline); border-radius: 50px; padding: 3px; backdrop-filter: blur(8px); }
+.modebar button { border: 0; background: transparent; color: var(--text-2); font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 50px; cursor: pointer; }
+.modebar button[aria-pressed="true"] { background: var(--accent); color: #001014; font-weight: 600; }
+.progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 40; background: transparent; }
+.progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); transition: width .25s ease; }
+.hud { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 30; font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+.keyhint { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 30; font-size: 11.5px; color: var(--text-3); }
+.keyhint kbd { font-family: var(--mono); font-size: 10.5px; background: var(--surface-lift); border: 1px solid var(--hairline-strong); border-radius: 5px; padding: 1px 5px; color: var(--text-2); }
+body:not(.present) .hud, body:not(.present) .keyhint, body:not(.present) .progress { display: none; }
+
+/* tabs */
+.tabbar { max-width: var(--measure); margin: 26px auto 0; background: rgba(10,10,10,0.94); display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px;
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 58px); z-index: 15; background: rgba(10,10,10,0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding-block: 8px; }
+.tabbar::-webkit-scrollbar { display: none; }
+.tabbar button { flex: 0 0 auto; border: 1px solid var(--hairline-strong); background: var(--surface); color: var(--text-2); border-radius: 50px; padding: 6px 15px; font-size: 13.5px; font-weight: 500; cursor: pointer; }
+.tabbar button[aria-current="true"] { background: var(--accent-wash); border-color: var(--accent-line); color: var(--accent); font-weight: 600; }
+body.present .tabbar { display: none; }
+
+/* read mode */
+.lesson-head { max-width: var(--measure); margin: 0 auto; padding-top: 34px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+.lesson-head h1 { font-size: clamp(32px, 5.4vw, 50px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 12px; text-wrap: balance; }
+.lesson-head h1 em { font-style: normal; color: var(--accent); }
+.promise { font-size: clamp(16px, 2.1vw, 19px); color: var(--accent); font-weight: 500; margin: 0 0 18px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 0; list-style: none; }
+.meta li { font-size: 12.5px; color: var(--text-2); background: var(--surface); border: 1px solid var(--hairline); border-radius: 50px; padding: 5px 13px; }
+.meta li b { color: var(--text); font-weight: 600; }
+.lede { color: var(--text-2); font-size: 15.5px; margin: 0; }
+.slide { max-width: var(--measure); margin: 0 auto; padding: 30px 0; }
+.slide + .slide, .lesson-head + .slide { border-top: 1px solid var(--hairline); }
+.slide h2 { font-size: clamp(22px, 3vw, 30px); line-height: 1.2; letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; }
+.slide h3 { font-size: 17px; margin: 22px 0 8px; }
+.slide p { margin: 0 0 14px; }
+.slide > :last-child { margin-bottom: 0; }
+.slide ul, .slide ol { margin: 0 0 14px; padding-left: 1.4em; }
+.slide li { margin-bottom: 7px; }
+.slide li::marker { color: var(--accent); }
+.slide strong, .slide b { color: var(--text); font-weight: 600; }
+.daymark { display: inline-block; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); background: var(--accent-wash); border: 1px solid var(--accent-line); border-radius: 50px; padding: 4px 12px; margin: 0 0 12px; }
+.daymark.req { color: var(--gold); background: var(--gold-soft); border-color: var(--gold-line); }
+
+.twrap { overflow-x: auto; margin: 0 0 16px; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--surface); border-radius: 12px; overflow: hidden; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 13px; text-align: left; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+th { background: var(--surface-lift); font-weight: 600; font-size: 12.5px; letter-spacing: .02em; }
+tbody tr:last-child td { border-bottom: 0; }
+tr.due td { background: var(--accent-wash); }
+tr.due td:first-child { color: var(--accent); font-weight: 600; }
+
+.callout { margin: 0 0 16px; padding: 13px 16px; border-radius: 12px; border: 1px solid var(--hairline); background: var(--surface); font-size: 14.5px; }
+.callout > :last-child { margin-bottom: 0; }
+.callout.check { background: var(--ok-soft); border-color: var(--ok-line); }
+.callout.check > b:first-child { color: var(--ok); }
+.callout.warn { background: var(--warn-soft); border-color: var(--warn-line); }
+.callout.warn > b:first-child { color: var(--warn); }
+.callout.note { background: var(--accent-wash); border-color: var(--accent-line); }
+.callout.note > b:first-child { color: var(--accent); }
+.callout.flag { background: var(--gold-soft); border-color: var(--gold-line); }
+.callout.flag > b:first-child { color: var(--gold); }
+
+/* track switch */
+.track { display: inline-flex; flex-wrap: wrap; gap: 6px; background: var(--surface); border: 1px solid var(--hairline-strong); border-radius: 50px; padding: 4px; margin: 0 0 16px; }
+.track button { border: 0; background: transparent; color: var(--text-2); border-radius: 50px; padding: 8px 18px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
+.track button[aria-pressed="true"] { background: var(--accent); color: #001014; }
+.tracknote { font-size: 13px; color: var(--text-3); margin: -8px 0 16px; }
+
+/* handout buttons */
+.handouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0 0 14px; }
+.hbtn { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--hairline-strong); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.hbtn:hover { border-color: var(--accent-line); background: #1f1f24; }
+.hbtn .ico { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 700; }
+.hbtn .ico.pdf { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn-line); }
+.hbtn .ico.doc { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent-line); }
+.hbtn b { display: block; font-size: 14.5px; }
+.hbtn span { font-size: 12.5px; color: var(--text-2); }
+.hbtn[aria-disabled="true"] { opacity: .55; cursor: default; }
+
+/* must-haves and ideas */
+.must { list-style: none; padding: 0 !important; counter-reset: m; display: grid; gap: 8px; }
+.must li { counter-increment: m; display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 11px 14px; margin: 0 !important; }
+.must li::before { content: counter(m); width: 30px; height: 30px; border-radius: 50%; background: var(--accent-wash); border: 1px solid var(--accent-line); color: var(--accent); font-family: var(--mono); font-weight: 700; font-size: 13px; display: grid; place-items: center; }
+.must li > div { min-width: 0; }
+.ideas { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; list-style: none; padding: 0 !important; }
+.ideas li { margin: 0 !important; padding: 10px 14px 10px 36px; position: relative; background: var(--surface); border-radius: 12px; border: 1px dashed var(--hairline-strong); font-size: 14.5px; }
+.ideas li::before { content: "\2726"; position: absolute; left: 13px; top: 10px; color: var(--accent); }
+.formats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 0 0 14px; }
+.fmt { background: var(--surface); border: 1px solid var(--hairline); border-left: 3px solid var(--accent); border-radius: 12px; padding: 11px 14px; min-width: 0; }
+.fmt b { display: block; font-size: 14.5px; }
+.fmt span { font-size: 13px; color: var(--text-2); }
+.types { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 0 0 14px; }
+.type { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 10px 12px; text-align: center; }
+.type .frame { margin: 2px auto 8px; border: 2px solid var(--accent-line); border-radius: 6px; background: var(--accent-wash); }
+.type .frame.v { width: 26px; height: 44px; }
+.type .frame.w { width: 64px; height: 36px; margin-top: 6px; margin-bottom: 10px; }
+.type b { display: block; font-size: 14px; }
+.type span { font-size: 12px; color: var(--text-3); }
+
+.ai { display: grid; gap: 8px; }
+.ai-row { display: grid; grid-template-columns: 170px 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 10px 14px; }
+.ai-row > span:last-child { min-width: 0; font-size: 14.5px; }
+.chip { display: inline-block; border-radius: 50px; padding: 2px 11px; font-size: 12.5px; font-weight: 600; text-align: center; border: 1px solid; }
+.chip.ok { background: var(--ok-soft); color: var(--ok); border-color: var(--ok-line); }
+.chip.minus { background: var(--warn-soft); color: var(--warn); border-color: var(--warn-line); }
+.chip.info { background: var(--accent-wash); color: var(--accent); border-color: var(--accent-line); }
+
+.topics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.topic { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 12px 14px; min-width: 0; }
+.topic b { display: block; color: var(--accent); font-size: 14px; margin-bottom: 4px; }
+.topic ul { margin: 0 !important; padding-left: 1.1em !important; font-size: 14px; }
+.topic li { margin-bottom: 3px !important; }
+
+.crit { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.crit div { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 12px 14px; }
+.crit b { display: block; margin-bottom: 4px; }
+.crit span { font-size: 13.5px; color: var(--text-2); }
+
+/* turn in checklist */
+.turnin { list-style: none; padding: 0 !important; display: grid; gap: 8px; }
+.turnin li { margin: 0 !important; display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 11px 14px; cursor: pointer; }
+.turnin li .box { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--hairline-strong); margin-top: 2px; display: grid; place-items: center; color: #001014; font-size: 14px; font-weight: 700; }
+.turnin li > div { min-width: 0; }
+.turnin li.done { border-color: var(--ok-line); background: var(--ok-soft); }
+.turnin li.done .box { background: var(--ok); border-color: var(--ok); }
+.turnin li.done .box::after { content: "\2713"; }
+.tally { font-size: 13px; color: var(--text-3); margin: 8px 0 14px; }
+
+.codebox { border: 1px solid var(--hairline); border-radius: 12px; background: #0d0d14; box-shadow: var(--shadow-card); margin: 0 0 16px; overflow: hidden; }
+.codebox .bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px 7px 14px; border-bottom: 1px solid var(--hairline); font-family: var(--mono); font-size: 11.5px; color: var(--text-3); }
+.codebox button { border: 1px solid var(--accent-line); background: var(--accent-wash); color: var(--accent); border-radius: 50px; padding: 3px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.codebox pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.7; color: #dfe6ee; white-space: pre-wrap; }
+
+details.trouble { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 0 14px; margin: 0 0 8px; }
+details.trouble summary { cursor: pointer; padding: 11px 0; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+details.trouble summary::-webkit-details-marker { display: none; }
+details.trouble summary::after { content: "+"; color: var(--accent); font-family: var(--mono); }
+details.trouble[open] summary::after { content: "\2212"; }
+details.trouble p { color: var(--text-2); font-size: 14.5px; margin: 0 0 12px; }
+
+[data-track] { }
+
+/* handout block in the header */
+.getit { margin: 0 0 20px; }
+.getlabel { font-size: 13px; font-weight: 600; color: var(--text); margin: 0 0 8px; }
+.getlabel span { font-weight: 400; color: var(--text-2); margin-left: 6px; }
+.getit .handouts { margin: 0; }
+/* rubric and grade boost */
+table.rubric { min-width: 640px; font-size: 13.5px; }
+table.rubric td:first-child { font-weight: 600; color: var(--accent); width: 17%; }
+.boost { display: grid; grid-template-columns: minmax(200px, 260px) 1fr; gap: 20px; align-items: start; }
+.boost > * { min-width: 0; }
+.boost td:last-child { font-weight: 700; color: var(--accent); }
+.boost-notes p { font-size: 14.5px; }
+@media (max-width: 640px) { .boost { grid-template-columns: 1fr; } }
+.foot { max-width: var(--measure); margin: 10px auto 0; color: var(--text-3); font-size: 13px; border-top: 1px solid var(--hairline); padding-top: 14px; }
+
+/* present mode */
+body.present { overflow: hidden; }
+body.present .deck > .lesson-head, body.present .deck > .slide { display: none; }
+body.present .deck > .on { display: flex !important; flex-direction: column; justify-content: center; max-width: 1100px; min-height: calc(100vh - 140px); margin: 0 auto; padding: 20px 0; border: 0; font-size: clamp(15px, 1.5vw, 20px); overflow-y: auto; max-height: calc(100vh - 110px); }
+body.present .deck > .on h2 { font-size: clamp(26px, 3.4vw, 44px); }
+body.present .deck > .on.lesson-head h1 { font-size: clamp(40px, 6vw, 76px); }
+body.present .foot { display: none; }
+body.present .topics { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+body.present .topic ul { font-size: .85em; }
+body.present .must { gap: 6px; }
+body.present .must li { padding: 8px 14px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 520px) { .ai-row { grid-template-columns: 1fr; gap: 6px; } .topbar .pill span.long { display: none; } }
+</style>
+<div class="progress"><span id="progressBar"></span></div>
+<div class="hud" id="hud">1 / 1</div>
+<div class="keyhint"><kbd>←</kbd> <kbd>→</kbd> move  <kbd>Esc</kbd> read</div>
+<div class="topbar">
+<a class="pill" href="../../../math.html">← <span class="long">Math</span></a>
+<div aria-label="View mode" class="modebar" role="group">
+<button aria-pressed="true" id="readBtn" type="button">Read</button>
+<button aria-pressed="false" id="presentBtn" type="button">Present</button>
+</div>
+</div>
+<main class="deck" id="deck">
+<header class="lesson-head" data-tab="Start">
+<p class="eyebrow">AS Math 9709 · Extra credit · Trimester 1</p>
+<h1>Teach It in a <em>Video</em></h1>
+<p class="promise">Teach one idea in 30 seconds to 3 minutes. Film it any way you like.</p>
+<ul class="meta">
+
+<li><b>Due</b> Mon Nov 16, 11:59 pm</li>
+<li><b>Teams</b> solo or up to 3</li>
+<li><b>Optional</b> extra credit for T1</li>
+</ul>
+<div class="getit">
+<p class="getlabel">Get the handout <span>Same rules, ready to print or keep. Everything is also on this page.</span></p>
+<div class="handouts">
+<a class="hbtn" href="handouts/Teach_It_in_a_Video_AS_Math.pdf" rel="noopener" target="_blank"><span class="ico pdf">PDF</span><div><b>AS Math handout</b><span>3 pages, print or save</span></div></a>
+<a aria-disabled="true" class="hbtn gdoc" data-gdoc="math" href="#"><span class="ico doc">DOC</span><div><b>AS Math, Google Doc</b><span class="gstate">Link coming soon</span></div></a>
+</div>
+
+</div>
+<p class="lede">Everyone has learned something from a 45-second video at some point. Now you make one. Pick one idea from class, figure out how to make it click for someone else, and film it in whatever style you want. Explaining something well is the fastest way to find out whether you actually understand it, which is also why a great video can lift your grade.</p>
+</header>
+<section class="slide">
+<h2>Key dates</h2>
+<div class="twrap"><table>
+<thead><tr><th>Date</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td>Mon Nov 2</td><td>Topic sign-up opens in Schoology</td></tr>
+<tr><td>Mon Nov 9</td><td>Last day to get your own topic idea approved</td></tr>
+<tr class="due"><td>Mon Nov 16</td><td>Video due, 11:59 pm</td></tr>
+<tr><td>Thu Nov 19</td><td>Last day to fix and resubmit if your video comes back</td></tr>
+</tbody>
+</table></div>
+</section>
+<section class="slide" data-tab="Make it">
+<span class="daymark req">Required</span>
+<h2>The must-haves</h2>
+<p>Six things every video needs. Everything else is up to you.</p>
+<ol class="must">
+<li><div><b>One idea.</b> From the topic menu, or your own idea approved by Mon Nov 9.</div></li>
+<li><div><b>Correct math.</b> Cambridge notation, exact answers or 3 significant figures, and say whether you are in degrees or radians.</div></li>
+
+<li><div><b>A worked example.</b> At least one, start to finish, with the working shown. No jumping straight to a calculator answer.</div></li>
+
+<li><div><b>30 seconds to 3 minutes.</b> Vertical or wide, whatever fits your platform.</div></li>
+<li><div><b>The Stay Safe rules.</b> All of them, every time. They are under Stay safe, below.</div></li>
+<li><div><b>A complete comment.</b> Video type, topic, team and who did what, credits, and the AI line. There is a copy-ready template under Turn it in.</div></li>
+</ol>
+</section>
+<section class="slide">
+<span class="daymark">Ideas, not rules</span>
+<h2>Make it legendary</h2>
+<p>The best teaching videos rarely look like a lecture. Steal any of these, or ignore all of them.</p>
+<ul class="ideas">
+<li>Hook us in the first 3 seconds.</li>
+<li>Show the mistake everyone makes, then fix it.</li>
+<li>End with a challenge question for the viewer.</li>
+<li>Connect it to real life: sports, music, money, games, St. Croix.</li>
+<li>Tell a story, act a skit, write a song, ride a trend, race the clock.</li>
+<li>Draw it, animate it, build it, act it out.</li>
+<li>Work a real Cambridge question and name it, like 9709/11 June 2023 Q3.</li>
+
+<li>If it has never been done, do it.</li>
+</ul>
+</section>
+<section class="slide">
+<h2>Any format works</h2>
+<div class="formats">
+<div class="fmt"><b>Faceless voiceover</b><span>Screen recording or visuals with your voice.</span></div>
+<div class="fmt"><b>Whiteboard or paper</b><span>Hands only, writing it out.</span></div>
+<div class="fmt"><b>Illustrated or animated</b><span>Drawings, stop motion, animation apps.</span></div>
+<div class="fmt"><b>On camera</b><span>You, your team, a skit, a challenge.</span></div>
+<div class="fmt"><b>Demonstration</b><span>Real objects, Desmos visuals, a physical model.</span></div>
+
+<div class="fmt"><b>AI-generated or designed</b><span>Slides, graphics, AI video. Check the AI rule first.</span></div>
+</div>
+<div class="callout note"><b>What decides your score</b> is how well it teaches and how much care went into it. A phone, a laptop and a sheet of paper can beat expensive gear. You never need a phone for this: a school laptop's camera or screen recorder handles every format.</div>
+</section>
+<section class="slide">
+<h2>Say what you made</h2>
+<p>Your Schoology comment has to name the video type. Pick the shape before you start filming, because it changes how you frame every shot.</p>
+<div class="types">
+<div class="type"><div class="frame v"></div><b>TikTok</b><span>vertical</span></div>
+<div class="type"><div class="frame v"></div><b>Instagram Reel</b><span>vertical</span></div>
+<div class="type"><div class="frame v"></div><b>YouTube Short</b><span>vertical</span></div>
+<div class="type"><div class="frame w"></div><b>YouTube video</b><span>wide</span></div>
+<div class="type"><div class="frame w" style="border-style:dashed"></div><b>Other</b><span>say what it is</span></div>
+</div>
+<p style="font-size:14px;color:var(--text-2)">You choose the type even if you never post it. It tells me how the video is meant to be watched.</p>
+</section>
+<section class="slide" data-tab="Rules">
+<span class="daymark req">Required</span>
+<h2>Stay safe</h2>
+<ul>
+<li><b>First name only</b>, or no name at all.</li>
+<li><b>No school uniform, logo, address</b>, or anything that shows where you live.</li>
+
+<li><b>Nobody else appears or is heard</b> unless they said yes. Your teammates count as a yes.</li>
+<li><b>Music</b> from your editing app's library, a royalty-free library, or none. Credit any music or images you did not make.</li>
+<li><b>Keep it school appropriate.</b></li>
+</ul>
+<div class="callout warn"><b>Break one of these</b> and the video comes back to you and earns nothing until it is fixed.</div>
+</section>
+<section class="slide">
+<h2>Posting it</h2>
+<ul>
+<li>Post it if you want: TikTok, Instagram Reel, YouTube Short, or YouTube. Posting is optional and earns nothing extra.</li>
+
+<li><b>Always upload the file to Schoology too.</b> That is the copy that gets graded. Links get deleted, set to private, or blocked on the school network.</li>
+<li>The Stay Safe rules apply to anything you post, forever.</li>
+</ul>
+<div class="callout flag"><b>Showcase.</b> Your video may be picked to show in class or on this site. If it is, I will ask you and a parent first, and you can say no.</div>
+</section>
+<section class="slide">
+<h2>Using AI</h2>
+<div class="ai">
+<div class="ai-row"><span><span class="chip ok">Fine</span></span><span>AI explaining the idea while you learn it, checking an answer you already worked out, captions, and audio cleanup.</span></div>
+<div class="ai-row"><span><span class="chip minus">Costs 4 rubric points</span></span><span><b>Full AI assistance:</b> AI wrote the script, did the voice or avatar, or generated the video. Allowed, but a human-made video has the edge.</span></div>
+
+<div class="ai-row"><span><span class="chip info">Always</span></span><span>Write <b>AI used:</b> in your comment, and be ready to explain every step to me in person.</span></div>
+</div>
+</section>
+<section class="slide">
+<h2>Teams</h2>
+<p>Go solo or team up with up to 2 classmates <b>from this class</b>, so 3 people at most. Everyone on the team gets the same score. Each person uploads the video, and the comment says who did what.</p>
+
+</section>
+<section class="slide" data-tab="Topics">
+<h2>Pick your topic</h2>
+<p>One person or team per topic, first come, first served, in the Schoology sign-up discussion.</p>
+
+<div class="topics">
+<div class="topic"><b>1.1 Quadratics</b><ul><li>Completing the square and the vertex</li><li>The discriminant: how many roots?</li><li>Solving a quadratic inequality</li><li>A line and a quadratic, solved together</li><li>Disguised quadratics, like x⁴ − 5x² + 4 = 0</li></ul></div>
+<div class="topic"><b>1.2 Functions</b><ul><li>Domain and range</li><li>Composite functions fg(x)</li><li>Finding an inverse function</li><li>Transformations of graphs</li></ul></div>
+<div class="topic"><b>1.3 Coordinate geometry</b><ul><li>Parallel and perpendicular gradients</li><li>Circle equation: center and radius</li><li>Tangent to a circle</li><li>Where a line meets a curve</li><li>Chords and the angle in a semicircle</li></ul></div>
+<div class="topic"><b>1.4 Circular measure</b><ul><li>Radians, and why we use them</li><li>Arc length</li><li>Sector area</li><li>Segment area</li></ul></div>
+<div class="topic"><b>Related ideas</b><ul><li>A quadratic in sports: a ball's path</li><li>Radians in real machines: wheels and gears</li><li>Your own idea, approved by Nov 9</li></ul></div>
+</div>
+
+</section>
+<section class="slide" data-tab="Scoring">
+<span class="daymark">16 points</span>
+<h2>How it is scored</h2>
+<p>Every video is scored on four things, from 1 to 4 points each, for a total out of 16.</p>
+<div class="twrap"><table class="rubric">
+<thead><tr><th>Criteria</th><th>4 · Nailed it</th><th>3 · Solid</th><th>2 · Getting there</th><th>1 · Not yet</th></tr></thead>
+<tbody>
+<tr><td>Accurate</td><td>Everything is correct, with the right words and notation.</td><td>Correct, with one small slip that does not change the result.</td><td>A few slips, or words and notation that are off.</td><td>The main idea or answer is wrong. Sent back to fix.</td></tr>
+<tr><td>Teaches clearly</td><td>A classmate could learn it from this. Every step makes sense.</td><td>Clear overall. One step is rushed.</td><td>Hard to follow in places.</td><td>Hard to follow most of the way.</td></tr>
+<tr><td>Hook and creativity</td><td>Grabs attention right away. A fresh idea or style nobody else had.</td><td>Good start that holds attention.</td><td>Slow start, plain style.</td><td>No hook. Feels like reading a list.</td></tr>
+<tr><td>Format and credits</td><td>30 seconds to 3 minutes, easy to see and hear, Stay Safe rules kept, comment complete.</td><td>One small issue, like quiet audio.</td><td>Two issues, or credits or the AI line missing.</td><td>Way over or under time, or hard to see or hear.</td></tr>
+</tbody>
+</table></div>
+<div class="callout note"><b>Accuracy comes first.</b> If the main idea or answer is wrong, the video comes back to you to fix and earns nothing until it is fixed.</div>
+</section>
+<section class="slide">
+<h2>What it does for your grade</h2>
+<div class="boost">
+<div class="twrap"><table>
+<thead><tr><th>Rubric score</th><th>T1 grade boost</th></tr></thead>
+<tbody>
+<tr class="due"><td>16</td><td>+5.0</td></tr>
+<tr><td>14</td><td>+4.4</td></tr>
+<tr><td>12</td><td>+3.8</td></tr>
+<tr><td>10</td><td>+3.1</td></tr>
+<tr><td>9</td><td>+2.8</td></tr>
+<tr><td>8 or less</td><td>0</td></tr>
+</tbody>
+</table></div>
+<div class="boost-notes">
+<p>Your rubric score turns into extra points on your <b>overall T1 grade</b>. A perfect 16 adds about 5 points, so an 84 becomes about an 89.</p>
+<p>Each rubric point is worth about 0.3 on your grade. A score of 8 or less adds nothing. Your T1 grade cannot go above 100, so if the boost would take you past 100, only the points up to 100 count. A 98 with a full boost ends at 100.</p>
+<p><b>Full AI assistance</b> takes 4 rubric points off first. A video that would have scored 16 scores 12, which adds about 3.8.</p>
+<p><b>Breaking a Stay Safe rule</b> sends the video back. It earns nothing until it is fixed.</p>
+</div>
+</div>
+</section>
+<section class="slide" data-tab="Turn in">
+<h2>Turn it in</h2>
+<p>Tick each step as you go. Your ticks stay on this browser.</p>
+<ul class="turnin" id="turnin">
+<li data-k="t1"><span class="box"></span><div>Export the video as <b>MP4 or MOV</b>, under 512 MB. Too big? Export at 720p.</div></li>
+<li data-k="t2"><span class="box"></span><div>Open <b>Extra Credit: Teach It in a Video</b> in Schoology and click <b>Submit Assignment</b>.</div></li>
+<li data-k="t3"><span class="box"></span><div>Choose <b>Upload</b> and pick your file.</div></li>
+<li data-k="t4"><span class="box"></span><div>Paste the comment template below into the comment box and fill it in.</div></li>
+<li data-k="t5"><span class="box"></span><div>Click <b>Submit</b>. On a team? Every member does steps 2 to 5.</div></li>
+</ul>
+<p class="tally" id="tally">0 of 5 done</p>
+<div class="callout warn"><b>Choose Upload.</b> The Create button opens a blank text box, and your video never gets attached. It is the most common way work goes missing.</div>
+<div class="codebox">
+<div class="bar"><span>Comment template. Paste in Schoology.</span><button id="copyBtn" type="button">Copy</button></div>
+<pre id="tpl">Video type: (TikTok / Instagram Reel / YouTube Short / YouTube video / other)
+Topic:
+Team: (first names, and what each person did)
+Credits: (music and images you did not make, or "none")
+AI used: (what AI did, or "none")
+Link: (only if you posted it)</pre>
+</div>
+</section>
+<section class="slide">
+<h2>If it comes back</h2>
+<p>If something in your video is wrong, I send it back once with a note. Fix it and resubmit by <b>Thursday, November 19</b> and it is graded like new.</p>
+</section>
+<section class="slide" data-tab="Help">
+<h2>Help</h2>
+<details class="trouble"><summary>My file is over 512 MB</summary><p>Export again at 720p instead of 1080p or 4K. A 3 minute video at 720p is well under the limit.</p></details>
+<details class="trouble"><summary>I do not have a phone or any social accounts</summary><p>You do not need either. Record on a school laptop with its camera or screen recorder, and upload the file to Schoology. <span>You can record in the lab during Day 1 academic time.</span></p></details>
+<details class="trouble"><summary>My video is 3 minutes and 40 seconds</summary><p>Cut it. The limit is part of the challenge: a tighter video almost always teaches better. Trim the intro first.</p></details>
+<details class="trouble"><summary>Someone on my team is not doing anything</summary><p>Talk to Mr. Krigger before the due date, not after. The comment has to say who did what, so it needs to be true.</p></details>
+<details class="trouble"><summary>Can I use a song I like?</summary><p>Only from your editing app's built-in library, a royalty-free library, or none. Popular songs get videos muted or taken down.</p></details>
+<details class="trouble"><summary>My topic is taken</summary><p>Pick another from the menu, or pitch your own idea to Mr. Krigger before Mon Nov 9.</p></details>
+</section>
+</main>
+<p class="foot">Questions? Ask Mr. Krigger in class or email akrigger@ghcds.org.</p>
+<script>
+(function () {
+  var GDOC = { math: "https://docs.google.com/document/d/1QfzmsMTnRIrzLbvLAZca_ClCgJ5WJD_v1zP1fQ_PL_g/edit?usp=sharing", cs: "https://docs.google.com/document/d/1Fi2qOPUKMOQFGvwfEas-SPY12VKQoTTkACvYXvjRpGA/edit?usp=sharing" }; // Google Doc share links go here
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+  var deck = document.getElementById('deck');
+  var panels = Array.prototype.slice.call(deck.children);
+
+  /* Google Doc buttons */
+  document.querySelectorAll('.gdoc').forEach(function (a) {
+    var url = GDOC[a.getAttribute('data-gdoc')];
+    if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.removeAttribute('aria-disabled'); a.querySelector('.gstate').textContent = 'Opens in Google Docs. Make a copy first.'; }
+    else a.addEventListener('click', function (e) { e.preventDefault(); });
+  });
+
+  /* track switch */
+  function setTrack(t) {
+    document.querySelectorAll('[data-track]').forEach(function (el) { el.hidden = el.getAttribute('data-track') !== t; });
+    document.querySelectorAll('[data-set-track]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-set-track') === t)); });
+    store.set('tiv-math-track', t);
+  }
+  document.querySelectorAll('[data-set-track]').forEach(function (b) { b.addEventListener('click', function () { setTrack(b.getAttribute('data-set-track')); }); });
+  setTrack(store.get('tiv-math-track') === 'cs' ? 'cs' : 'math');
+
+  /* section bar: everything stays on the page; the bar jumps to a section and shows where you are */
+  var groups = [], cur = null;
+  panels.forEach(function (p) { var t = p.getAttribute('data-tab'); if (t) { cur = { name: t, items: [] }; groups.push(cur); } if (cur) cur.items.push(p); });
+  var bar = document.createElement('nav'); bar.className = 'tabbar'; bar.setAttribute('aria-label', 'Jump to a section');
+  var smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function mark(i) { Array.prototype.forEach.call(bar.children, function (b, bi) { b.setAttribute('aria-current', bi === i ? 'true' : 'false'); }); }
+  groups.forEach(function (g, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = g.name;
+    b.addEventListener('click', function () {
+      var y = g.items[0].getBoundingClientRect().top + window.scrollY - 118;
+      window.scrollTo({ top: i === 0 ? 0 : y, behavior: smooth ? 'smooth' : 'auto' });
+    });
+    bar.appendChild(b);
+  });
+  deck.parentNode.insertBefore(bar, deck);
+  function spy() {
+    if (document.body.classList.contains('present')) return;
+    var active = 0;
+    groups.forEach(function (g, i) { if (g.items[0].getBoundingClientRect().top - 140 <= 0) active = i; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) active = groups.length - 1;
+    mark(active);
+  }
+  window.addEventListener('scroll', spy, { passive: true });
+  spy();
+
+  /* turn-in checklist */
+  var items = document.querySelectorAll('#turnin li');
+  function tally() { var n = document.querySelectorAll('#turnin li.done').length; document.getElementById('tally').textContent = n + ' of ' + items.length + ' done'; }
+  items.forEach(function (li) {
+    var k = 'tiv-' + li.getAttribute('data-k');
+    if (store.get(k) === '1') li.classList.add('done');
+    li.setAttribute('role', 'checkbox'); li.tabIndex = 0;
+    function toggle() { li.classList.toggle('done'); var on = li.classList.contains('done'); li.setAttribute('aria-checked', String(on)); store.set(k, on ? '1' : '0'); tally(); }
+    li.setAttribute('aria-checked', String(li.classList.contains('done')));
+    li.addEventListener('click', toggle);
+    li.addEventListener('keydown', function (e) { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+  });
+  tally();
+
+  /* copy template */
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', function () {
+    var text = document.getElementById('tpl').textContent;
+    function selectIt() { var r = document.createRange(); r.selectNodeContents(document.getElementById('tpl')); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); copyBtn.textContent = 'Selected. Press Ctrl+C'; }
+    try {
+      navigator.clipboard.writeText(text).then(function () { copyBtn.textContent = 'Copied'; setTimeout(function () { copyBtn.textContent = 'Copy'; }, 1800); }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+
+  /* present mode */
+  var idx = 0;
+  function visiblePanels() { return panels.filter(function (p) { return !(p.getAttribute('data-track') && p.hidden); }); }
+  function render() {
+    var vp = visiblePanels(); if (idx >= vp.length) idx = vp.length - 1; if (idx < 0) idx = 0;
+    panels.forEach(function (p) { p.classList.remove('on'); });
+    vp[idx].classList.add('on');
+    document.getElementById('hud').textContent = (idx + 1) + ' / ' + vp.length;
+    document.getElementById('progressBar').style.width = ((idx + 1) / vp.length * 100) + '%';
+  }
+  function setMode(present) {
+    document.body.classList.toggle('present', present);
+    document.getElementById('readBtn').setAttribute('aria-pressed', String(!present));
+    document.getElementById('presentBtn').setAttribute('aria-pressed', String(present));
+    if (present) { panels.forEach(function (p) { p.hidden = false; }); idx = 0; render(); }
+    else { panels.forEach(function (p) { p.classList.remove('on'); }); spy(); }
+    store.set('tiv-mode', present ? 'present' : 'read');
+  }
+  document.getElementById('readBtn').addEventListener('click', function () { setMode(false); });
+  document.getElementById('presentBtn').addEventListener('click', function () { setMode(true); });
+  document.addEventListener('keydown', function (e) {
+    if (e.target.closest && e.target.closest('input, textarea')) return;
+    if (e.key === 'p' || e.key === 'P') { setMode(!document.body.classList.contains('present')); return; }
+    if (!document.body.classList.contains('present')) return;
+    if (e.key === 'Escape') setMode(false);
+    else if (e.key === 'ArrowRight' || e.key === 'PageDown' || (e.key === ' ' && !e.target.closest('.turnin'))) { e.preventDefault(); idx++; render(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); idx--; render(); }
+  });
+  var sx = null;
+  document.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) { if (sx === null || !document.body.classList.contains('present')) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) { idx += dx < 0 ? 1 : -1; render(); } sx = null; });
+  if (store.get('tiv-mode') === 'present') setMode(true);
+})();
+</script>
