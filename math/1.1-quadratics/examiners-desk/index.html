@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Examiner's Desk: 1.1 Quadratics | Think In Bits</title>
+  <meta name="description" content="Learn what every Cambridge 9709 mark code means, then mark real and practice scripts for quadratics the way an examiner would.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/marks.css">
+  <link rel="stylesheet" href="../../assets/examiners-desk.css">
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+<main class="wrap" id="desk">
+  <noscript><p>The Examiner's Desk needs JavaScript.</p></noscript>
+</main>
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/marks.js"></script>
+<script src="../../assets/examiners-desk.js"></script>
+<script>
+/* 1.1 Quadratics pack. Every code was read on its source page (pages in each credit line); every number
+   in the scripts and model answers is checked with sympy (claude/tools/examiners-desk-checks.py).
+   Real candidate work is retyped, never scanned. Written scripts are labeled "written for practice". */
+(function () {
+  var R = String.raw;
+
+  /* Nov 2020 9709/12 Q3: shared by the three real responses */
+  var Q3 = R`The equation of a curve is \(y = 2x^2 + m(2x + 1)\), where \(m\) is a constant, and the equation of a line is \(y = 6x + 4\).<br>Show that, for all values of \(m\), the line intersects the curve at two distinct points. <span class="mk">[5]</span>`;
+  var Q3MODEL = [
+    { t: R`\(2x^2 + 2mx + m = 6x + 4 \Rightarrow 2x^2 + (2m - 6)x + m - 4 = 0\)` },
+    { t: R`\(b^2 - 4ac = (2m - 6)^2 - 4(2)(m - 4)\)` },
+    { t: R`\(= 4m^2 - 32m + 68\)` },
+    { t: R`\(= 4(m - 4)^2 + 4\)` },
+    { t: R`\((m - 4)^2 \ge 0\), so \(b^2 - 4ac \ge 4 > 0\) for every \(m\). So the line meets the curve at two distinct points.` }
+  ];
+  var Q3NOTE = 'The Example Candidate Responses list these common mistakes: giving m one or two particular values when the question is about every value; not equating the line and the curve; finding the discriminant of the curve alone; algebra slips; mixing up which terms are a, b and c; not completing the square on the quadratic in m; and no clear reasoning at the end.';
+  var Q3CREDIT = 'There is no separate Nov 2020 mark scheme in our collection. The totals are the examiner’s; how the 5 marks split is our reading of the high, middle and low comments, so each is shown as “1 mark”.';
+  function q3scheme(a, why) {
+    var d = [
+      R`Line and curve equated, everything on one side as a 3-term quadratic: \(2x^2 + (2m - 6)x + m - 4\ [= 0]\).`,
+      R`Discriminant used with their \(a\), \(b\), \(c\): \((2m - 6)^2 - 4(2)(m - 4)\).`,
+      R`Discriminant simplified: \(4m^2 - 32m + 68\).`,
+      R`Discriminant shown to be positive for every \(m\), e.g. completed square \(4(m - 4)^2 + 4\).`,
+      R`Conclusion: \(b^2 - 4ac > 0\) for all \(m\), so the line meets the curve at two distinct points.`
+    ];
+    return d.map(function (t, i) { return { c: '1 mark', on: a[i][0], d: t, a: a[i][1], why: why[i] }; });
+  }
+
+  TIBDesk.start({
+    topic: '1.1',
+    kicker: 'Cambridge 9709 · 1.1 Quadratics',
+    intro: 'Learn what every mark code means, then mark quadratics scripts the way a Cambridge examiner does: real student answers and practice ones, against real mark schemes.',
+    known: ['M', 'A', 'B'],
+    scripts: [
+      /* ---------------------------------------------------------------- 1 */
+      { id: 'n20q3m', title: 'Nov 2020 9709/12 Q3 · Two distinct points',
+        mtitle: 'Nov 2020 9709/12 Q3 · middle response',
+        kind: 'Real student answer · middle, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, middle response (retyped)',
+        q: Q3, marks: 5,
+        lines: [
+          { t: R`\(y = 2x^2 + m(2x + 1) \qquad y = 6x + 4\)` },
+          { t: R`\(2x^2 + m(2x + 1) = 6x + 4\)` },
+          { t: R`\(2x^2 + 2mx + m = 6x + 4\)` },
+          { t: R`\(2x^2 + 2mx - 6x + m - 4 \qquad a = 2,\ b = 2m - 6,\ c = m - 4\)` },
+          { t: R`\(b^2 - 4ac < 0\)` },
+          { t: R`\((2m - 6)^2 - 4(2)(m - 4) < 0\)` },
+          { t: R`\(4m^2 - 24m + 36 - 8m + 32\)` },
+          { t: R`\(4m^2 - 32m + 68\), then everything divided by 4` },
+          { t: R`\(m^2 - 8m + 17 < 0\)` },
+          { t: R`\((m \quad\ )(m \quad\ )\)` }
+        ],
+        wrong: 4,
+        wrongNote: R`Two distinct points means \(b^2 - 4ac > 0\). The job is to show the discriminant is positive for every \(m\), so writing "\(< 0\)" sets up the wrong statement.`,
+        spotHint: 'Ignore the algebra for a moment. What does the question need the discriminant to be?',
+        scheme: q3scheme([[3, true], [5, true], [7, true], [9, false], [null, false]], [
+          'The examiner: correct working apart from the < sign.',
+          R`Correct values in \(b^2 - 4ac\). The < sign is wrong, but the examiner’s comment and the total (3 out of 5) show the working marks stand.`,
+          'Correct expansion and collection.',
+          R`They try to factor \(m^2 - 8m + 17\), which has no real factors, and stop. The examiner says the candidate does not finish the question.`,
+          'Never reached. Mark: 3 out of 5.'
+        ]),
+        fix: { o: [R`\(b^2 - 4ac = (2m - 6)^2 - 4(2)(m - 4)\), with no sign yet; then show it is always positive`, R`\(b^2 - 4ac = 0\)`, R`\(b^2 - 4ac \ge 0\)`], ok: 0,
+          why: R`Then \(4m^2 - 32m + 68 = 4(m - 4)^2 + 4\). A square is never negative, so this is at least 4: \(b^2 - 4ac > 0\) for every \(m\).`,
+          no: [null, '“= 0” is the condition for a tangent: one point of contact.', '“≥ 0” allows a tangent. Two distinct points needs > 0, and the question asks you to show it.'] },
+        whyWrong: R`The question gives the answer: two distinct points. So the job is to show \(b^2 - 4ac > 0\) for every \(m\). After the algebra, completing the square on \(4m^2 - 32m + 68\) shows it can never be zero or negative. The examiner suggests exactly this: write the discriminant in completed square form and then interpret it.`,
+        model: Q3MODEL,
+        note: Q3NOTE,
+        mm: { note: 'The examiner: the candidate produces correct working except for the < sign, but then does not finish the question. To improve: leave out the < sign, and write the discriminant in completed square form, then interpret it.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q3), p.13. ' + Q3CREDIT + ' A rough sketch on the script is left out.' },
+
+      /* ---------------------------------------------------------------- 2 */
+      { id: 'n20q3l', title: 'Nov 2020 9709/12 Q3 · For all values of m',
+        mtitle: 'Nov 2020 9709/12 Q3 · low response',
+        kind: 'Real student answer · low, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, low response (retyped)',
+        q: Q3, marks: 5,
+        lines: [
+          { t: R`\(2x^2 + m(2x + 1) = 6x + 4 \iff 2x^2 + 2mx + m = 6x + 4\)` },
+          { t: R`\(\iff 2x^2 - 6x + 2mx + m - 4 = 0\)` },
+          { t: R`2 points \(\to b^2 - 4ac > 0\)` },
+          { t: R`\((-6 + 2m)^2 - 4 \times 2 \times (m - 4) > 0\)` },
+          { t: R`\(\iff 36 - 24m + 4m^2 - 8m - 32 > 0\)` },
+          { t: R`\(\iff 4m^2 - 32m + 4 > 0\)` },
+          { t: R`\(m = \dfrac{-(-32) \pm \sqrt{(-32)^2 - 4 \times 4 \times 4}}{2 \times 4} \iff m = \dfrac{32 \pm 8\sqrt{15}}{8}\)` },
+          { t: R`\(\iff m = 4 + \sqrt{15}\) or \(m = 4 - \sqrt{15}\)` },
+          { t: R`\(\iff m \approx 7.87\) or \(m \approx 0.127\)` }
+        ],
+        wrong: 4,
+        wrongNote: R`\(-4 \times 2 \times (m - 4) = -8m + 32\). The sign of the 32 is lost: \(-8 \times (-4) = +32\).`,
+        scheme: q3scheme([[1, true], [3, true], [5, false], [6, false], [8, false]], [
+          'Line and curve equated, all terms on one side, correct.',
+          R`Correct values in \(b^2 - 4ac\), with the right sign for two distinct points.`,
+          R`The examiner: a sign error, the value should be +32. So \(4m^2 - 32m + 4\) is wrong.`,
+          R`They solve for two particular values of \(m\). The examiner: the candidate does not consider “all values of \(m\)” as the question asks.`,
+          'No conclusion about two distinct points for every m. Mark: 2 out of 5.'
+        ]),
+        fix: { o: [R`\(36 - 24m + 4m^2 - 8m + 32 > 0\)`, R`\(36 - 24m + 4m^2 - 8m - 4 > 0\)`, R`\(36 - 24m + 4m^2 + 8m - 32 > 0\)`], ok: 0,
+          why: R`That gives \(4m^2 - 32m + 68\), and completing the square gives \(4(m - 4)^2 + 4\), which is positive for every \(m\).`,
+          no: [null, 'Multiply out −4 × 2 × (m − 4) term by term: −8m and +32.', 'The m term is −4 × 2 × m = −8m.'] },
+        whyWrong: R`Two things went wrong. A sign slip when expanding \(-8(m - 4)\) changed the constant to 4. Then the student solved for particular values of \(m\), but the question says "for all values of \(m\)": the discriminant has to be shown positive whatever \(m\) is. Ask each time: does my method answer the question that was asked?`,
+        model: Q3MODEL,
+        note: Q3NOTE,
+        mm: { note: 'The examiner: a sign error (+32 needed), and the candidate does not consider all values of m as the question asks. To improve: find the discriminant correctly, consider every value of m, and write the discriminant in completed square form, then interpret it.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q3), p.14. ' + Q3CREDIT + ' Rough side working on the script is left out.' },
+
+      /* ---------------------------------------------------------------- 3 */
+      { id: 'specq11a', title: 'Specimen Paper 1 Q11(a) · Range by completing the square',
+        kind: 'Written for practice',
+        who: 'Written for practice: a student answer with a common slip',
+        q: R`The function f is defined, for \(x \in \mathbb{R}\), by \(f : x \mapsto x^2 + ax + b\), where \(a\) and \(b\) are constants.<br>(a) It is given that \(a = 6\) and \(b = -8\). Find the range of f. <span class="mk">[3]</span>`,
+        marks: 3,
+        lines: [
+          { p: '(a)', t: R`\(f(x) = x^2 + 6x - 8\)` },
+          { t: R`\(= (x + 6)^2 - 36 - 8\)` },
+          { t: R`\(= (x + 6)^2 - 44\)` },
+          { t: R`range: \(f(x) \ge -44\)` }
+        ],
+        wrong: 1,
+        wrongNote: R`Half of 6 goes in the bracket: \((x + 3)^2 = x^2 + 6x + 9\), so take away 9. Expanding shows the slip: \((x + 6)^2 = x^2 + 12x + 36\).`,
+        scheme: [
+          { c: 'B1', on: 2, d: R`\((x + 3)^2\)`, a: false, why: R`The bracket should be \((x + 3)^2\). Here it is \((x + 6)^2\).` },
+          { c: 'B1', on: 2, d: R`\(-17\)`, a: false, why: R`The constant should be \(-17\).` },
+          { c: 'B1', on: 3, d: R`Range \(f(x) \ge -17\), following through from their \(y\)-coordinate.`, a: true,
+            why: R`Cambridge’s comment: this last B mark follows through from the candidate’s \(y\)-coordinate, stated or seen in the completed square. Their \(-44\) leads correctly to \(f(x) \ge -44\).` }
+        ],
+        fix: { o: [R`\(= (x + 3)^2 - 9 - 8\)`, R`\(= (x + 3)^2 + 9 - 8\)`, R`\(= (x + 6)^2 - 6 - 8\)`], ok: 0,
+          why: R`Then \(f(x) = (x + 3)^2 - 17\). Since \((x + 3)^2 \ge 0\), \(f(x) \ge -17\).`,
+          no: [null, '(x + 3)² is x² + 6x + 9, so the 9 has to be taken away.', 'The bracket holds half of 6.'] },
+        whyWrong: R`Completing the square uses half the \(x\) coefficient. A quick expansion of your bracket catches the slip every time. Notice that the range still scored: Cambridge let the last mark follow through from the student’s own minimum value.`,
+        model: [
+          { t: R`\(f(x) = (x + 3)^2 - 17\)`, c: 'B1 B1' },
+          { t: R`\(f(x) \ge -17\)`, c: 'B1' }
+        ],
+        note: R`Cambridge’s Specimen Paper Answers: the final B mark follows through from the candidate’s value of the \(y\)-coordinate, whether it is stated on its own or seen in the completed square form. The range is written with \(f(x)\) and \(\ge\), because the minimum value is reached.`,
+        credit: 'Question: Cambridge 9709 Specimen Paper 1 (2020) Q11(a). Marks and comment: Cambridge Specimen Paper Answers, Paper 1, p.20 (two B1 marks are shown against (x + 3)² − 17; we read one for the bracket and one for the −17). Script: written for practice; not a real student’s work.' },
+
+      /* ---------------------------------------------------------------- 4 */
+      { id: 'wcts', title: 'Completing the square when a ≠ 1',
+        kind: 'Written for practice · Cambridge style',
+        who: 'Written for practice: a student answer with the most common completing-the-square slip',
+        q: R`(a) Express \(2x^2 + 12x + 7\) in the form \(a(x + b)^2 + c\), where \(a\), \(b\) and \(c\) are constants. <span class="mk">[3]</span><br>(b) Hence state the least value of \(2x^2 + 12x + 7\) and the value of \(x\) at which it occurs. <span class="mk">[2]</span>`,
+        marks: 5,
+        lines: [
+          { p: '(a)', t: R`\(2x^2 + 12x + 7 = 2(x^2 + 6x) + 7\)` },
+          { t: R`\(= 2\left[(x + 3)^2 - 9\right] + 7\)` },
+          { t: R`\(= 2(x + 3)^2 - 9 + 7\)` },
+          { t: R`\(= 2(x + 3)^2 - 2\)` },
+          { p: '(b)', t: R`least value \(-2\), when \(x = -3\)` }
+        ],
+        wrong: 2,
+        wrongNote: R`The 2 outside the square bracket multiplies the \(-9\) as well: \(2 \times (-9) = -18\).`,
+        scheme: [
+          { c: 'B1', on: 3, d: R`\(a = 2\)`, a: true, why: 'Correct.' },
+          { c: 'B1', on: 3, d: R`\(b = 3\)`, a: true, why: 'Correct.' },
+          { c: 'B1', on: 3, d: R`\(c = -11\)`, a: false, why: R`Their \(c\) is \(-2\).` },
+          { c: 'B1FT', on: 4, d: R`Least value \(= -11\), FT their \(c\).`, a: true, why: R`Follow through: their completed square gives \(-2\), and they read the least value from it correctly.` },
+          { c: 'B1', on: 4, d: R`\(x = -3\)`, a: true, why: 'Correct, from the bracket.' }
+        ],
+        fix: { o: [R`\(= 2(x + 3)^2 - 18 + 7\)`, R`\(= 2(x + 3)^2 - 9 + 14\)`, R`\(= 2(x + 3)^2 - 18 + 14\)`], ok: 0,
+          why: R`So \(2(x + 3)^2 - 11\): least value \(-11\) at \(x = -3\). Check: \(2(x^2 + 6x + 9) - 11 = 2x^2 + 12x + 7\).`,
+          no: [null, 'Only the −9 is inside the square bracket with the 2. The +7 is outside it.', 'The +7 was never inside the bracket, so it is not doubled.'] },
+        whyWrong: R`When \(a \ne 1\), take the 2 out of the \(x\) terms first. Then everything inside the square bracket, the \(-9\) included, is multiplied by 2 when the bracket goes. Expanding your answer is the five-second check. In (b) the FT mark rewarded the right reasoning from the wrong \(c\).`,
+        model: [
+          { t: R`\(2(x^2 + 6x) + 7 = 2\left[(x + 3)^2 - 9\right] + 7\)` },
+          { t: R`\(= 2(x + 3)^2 - 11\)`, c: 'B1 B1 B1' },
+          { t: R`least value \(-11\)`, c: 'B1FT' },
+          { t: R`when \(x = -3\)`, c: 'B1' }
+        ],
+        note: 'The June 2024 examiner report (Paper 11, Q1(a)) says successful candidates took the factor out of the whole expression, or out of the first two terms, before completing the square, and that candidates should check that their final expression is equivalent to the original one.',
+        credit: 'Written for practice: the question and script are not from a Cambridge paper. The marks follow Cambridge conventions (a B mark for each constant, and FT on the value carried into (b)).' },
+
+      /* ---------------------------------------------------------------- 5 */
+      { id: 'wequal', title: 'Two equal roots: both values of k',
+        kind: 'Written for practice · Cambridge style',
+        who: 'Written for practice: a student answer that loses a root',
+        q: R`The equation \(kx^2 + 12x + k = 0\), where \(k\) is a constant, has two equal real roots.<br>(a) Find the possible values of \(k\). <span class="mk">[2]</span><br>(b) For each value of \(k\), find the root of the equation. <span class="mk">[2]</span>`,
+        marks: 4,
+        lines: [
+          { p: '(a)', t: R`\(b^2 - 4ac = 0\)` },
+          { t: R`\(12^2 - 4(k)(k) = 0\)` },
+          { t: R`\(144 - 4k^2 = 0\)` },
+          { t: R`\(4k^2 = 144\)` },
+          { t: R`\(k^2 = 36\)` },
+          { t: R`\(k = 6\)` },
+          { p: '(b)', t: R`\(6x^2 + 12x + 6 = 0\)` },
+          { t: R`\(x^2 + 2x + 1 = 0\)` },
+          { t: R`\((x + 1)^2 = 0 \Rightarrow x = -1\)` }
+        ],
+        wrong: 5,
+        wrongNote: R`\(k^2 = 36\) has two solutions: \(k = 6\) or \(k = -6\). A square root step needs \(\pm\).`,
+        scheme: [
+          { c: 'M1', on: 1, d: R`Use \(b^2 - 4ac = 0\) with \(a = k\), \(b = 12\), \(c = k\).`, a: true, why: 'The discriminant is set up with the right values.' },
+          { c: 'A1', on: 5, d: R`\(k = \pm 6\)`, a: false, dep: [0], why: R`Only one value. The A1 is for both: \(k = 6\) and \(k = -6\).` },
+          { c: 'B1', on: 8, d: R`\(k = 6\): \(x = -1\)`, a: true, why: 'Correct.' },
+          { c: 'B1', on: null, d: R`\(k = -6\): \(x = 1\)`, a: false, why: R`Never found: \(k = -6\) was lost in (a).` }
+        ],
+        fix: { o: [R`\(k = \pm 6\)`, R`\(k = 36\)`, R`\(k = 6\), since \(k\) is positive`], ok: 0,
+          why: R`For \(k = -6\): \(-6x^2 + 12x - 6 = 0\), so \(-6(x - 1)^2 = 0\) and \(x = 1\).`,
+          no: [null, 'That is k², the step before the square root.', 'The question never says k is positive, and k = −6 works.'] },
+        whyWrong: R`Square-rooting both sides gives two answers. Losing the negative one cost a mark in (a) and a mark in (b). Check each value back in the question: both give a perfect square, so both are valid.`,
+        model: [
+          { t: R`\(12^2 - 4(k)(k) = 0 \Rightarrow k^2 = 36\)`, c: 'M1' },
+          { t: R`\(k = \pm 6\)`, c: 'A1' },
+          { t: R`\(k = 6\): \(6(x + 1)^2 = 0\), \(x = -1\)`, c: 'B1' },
+          { t: R`\(k = -6\): \(-6(x - 1)^2 = 0\), \(x = 1\)`, c: 'B1' }
+        ],
+        note: 'The June 2024 examiner report (Paper 11, Q6(c)) describes the same habit in another question: candidates who did not consider both square roots of 4 answered 2 when the solution was −2.',
+        credit: 'Written for practice: the question and script are not from a Cambridge paper. The marks follow Cambridge conventions (M1 for the discriminant with values, A1 for both values).' },
+
+      /* ---------------------------------------------------------------- 6 */
+      { id: 'wineq', title: 'Quadratic inequality: which region?',
+        kind: 'Written for practice · Cambridge style',
+        who: 'Written for practice: a student answer with the region the wrong way round',
+        q: R`Find the set of values of \(x\) for which \(2x^2 - 7x + 3 > 0\). <span class="mk">[3]</span>`,
+        marks: 3,
+        lines: [
+          { t: R`\(2x^2 - 7x + 3 = 0\)` },
+          { t: R`\((2x - 1)(x - 3) = 0\)` },
+          { t: R`\(x = \tfrac12,\ x = 3\)` },
+          { t: R`\(\tfrac12 < x < 3\)` }
+        ],
+        wrong: 3,
+        wrongNote: R`\(y = 2x^2 - 7x + 3\) is a U-shaped graph: below the \(x\)-axis between the roots and above it outside them. "\(> 0\)" asks where it is above: \(x < \tfrac12\) or \(x > 3\).`,
+        scheme: [
+          { c: 'M1', on: 1, d: 'Attempt to find the critical values: factor, use the formula or complete the square.', a: true, why: 'Correct factors, which expand back to the quadratic.' },
+          { c: 'A1', on: 2, d: R`Critical values \(\tfrac12\) and 3.`, a: true, dep: [0], why: 'Correct.' },
+          { c: 'A1', on: 3, d: R`\(x < \tfrac12\), \(x > 3\)`, a: false, dep: [0], why: 'The region between the roots is where the expression is negative.' }
+        ],
+        fix: { o: [R`\(x < \tfrac12\) or \(x > 3\)`, R`\(x > 3\)`, R`\(x \le \tfrac12\) or \(x \ge 3\)`], ok: 0,
+          why: R`Test one value in each part: \(x = 0\) gives \(3 > 0\) (in), \(x = 1\) gives \(-2\) (out), \(x = 4\) gives \(7 > 0\) (in).`,
+          no: [null, 'The left-hand part of the graph is above the axis too.', 'At x = ½ and x = 3 the value is 0, and the question asks for > 0, so the ends are left out.'] },
+        whyWrong: R`The critical values were right. The region needs one more step: sketch the U-shaped graph, mark the roots, and read off where the graph is above the \(x\)-axis. Testing one value from each part is a quick check.`,
+        model: [
+          { t: R`\((2x - 1)(x - 3) = 0\)`, c: 'M1' },
+          { t: R`critical values \(\tfrac12\) and 3`, c: 'A1' },
+          { t: R`\(x < \tfrac12\) or \(x > 3\)`, c: 'A1' }
+        ],
+        note: 'The June 2025 examiner report (Paper 11, Q6(b)) notes that some candidates solved their quadratic correctly and then did not give the answer as an inequality, and that others made sign errors. A quick sketch of the parabola settles which region is wanted.',
+        credit: 'Written for practice: the question and script are not from a Cambridge paper. The marks follow Cambridge conventions (M1 for a method for the critical values, then A1, A1).' },
+
+      /* ---------------------------------------------------------------- 7 */
+      { id: 'wroot', title: 'A disguised quadratic in √x',
+        kind: 'Written for practice · Cambridge style',
+        who: 'Written for practice: a student answer that keeps an impossible root',
+        q: R`Solve the equation \(x - 2\sqrt{x} - 8 = 0\). <span class="mk">[3]</span>`,
+        marks: 3,
+        lines: [
+          { t: R`let \(u = \sqrt{x}\): \(u^2 - 2u - 8 = 0\)` },
+          { t: R`\((u - 4)(u + 2) = 0\)` },
+          { t: R`\(u = 4\) or \(u = -2\)` },
+          { t: R`\(\sqrt{x} = 4 \Rightarrow x = 16\)` },
+          { t: R`\(\sqrt{x} = -2 \Rightarrow x = 4\)` },
+          { t: R`\(x = 16\) or \(x = 4\)` }
+        ],
+        wrong: 4,
+        wrongNote: R`\(\sqrt{x}\) is never negative, so \(\sqrt{x} = -2\) has no solution. Check: \(x = 4\) gives \(4 - 2(2) - 8 = -8\).`,
+        scheme: [
+          { c: 'M1', on: 1, d: R`Treat it as a quadratic in \(\sqrt{x}\) and solve it.`, a: true, why: 'The substitution and the factors are right.' },
+          { c: 'A1', on: 2, d: R`\(\sqrt{x} = 4\) (and \(-2\))`, a: true, dep: [0], why: 'Correct roots of the quadratic in u.' },
+          { c: 'A1', on: 5, d: R`\(x = 16\) only`, a: false, dep: [0], why: R`\(x = 4\) has to be rejected: it does not satisfy the equation.` }
+        ],
+        fix: { o: [R`\(\sqrt{x} = -2\) has no solution, so reject it`, R`\(\sqrt{x} = -2 \Rightarrow x = -4\)`, R`\(\sqrt{x} = -2 \Rightarrow x = \pm 4\)`], ok: 0,
+          why: R`So \(x = 16\) only. Check: \(16 - 2(4) - 8 = 0\).`,
+          no: [null, 'Squaring −2 gives 4. And √x is never negative, so there is nothing to find.', '√x is never negative, so neither value can come from √x = −2.'] },
+        whyWrong: R`The substitution and the factoring were right. The last step needed a check: \(\sqrt{x}\) is never negative, so \(u = -2\) gives nothing. Substituting each answer back into the original equation catches this every time.`,
+        model: [
+          { t: R`\(u = \sqrt{x}\): \(u^2 - 2u - 8 = 0 \Rightarrow (u - 4)(u + 2) = 0\)`, c: 'M1' },
+          { t: R`\(\sqrt{x} = 4\) (\(\sqrt{x} = -2\) is impossible)`, c: 'A1' },
+          { t: R`\(x = 16\)`, c: 'A1' }
+        ],
+        note: 'The June 2023 examiner report (Paper 11) advises that whenever a quadratic gives two answers, candidates check that both make sense in the question. The June 2024 report (Paper 11, Q1(b)) adds that marks were lost when the substitution was not shown.',
+        credit: 'Written for practice: the question and script are not from a Cambridge paper. The marks follow Cambridge conventions (M1 for solving the quadratic in √x, then A1, A1).' }
+    ],
+
+    marker: [
+      { id: 'n20q3h', title: 'Nov 2020 9709/12 Q3 · Two distinct points',
+        mtitle: 'Nov 2020 9709/12 Q3 · high response',
+        kind: 'Real student answer · high, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, high response (retyped)',
+        q: Q3, marks: 5,
+        lines: [
+          { t: R`\(y = 2x^2 + m(2x + 1) \qquad y = 6x + 4\)` },
+          { t: R`\(= 2x^2 + 2mx + m\)` },
+          { t: R`\(2x^2 + 2mx + m = 6x + 4\)` },
+          { t: R`\(2x^2 + 2mx - 6x + m - 4 = 0\)` },
+          { t: R`\(2x^2 + x(2m - 6) + m - 4 = 0 \qquad a = 2,\ b = (2m - 6),\ c = (m - 4)\)` },
+          { t: R`\(b^2 - 4ac > 0\)` },
+          { t: R`\((2m - 6)^2 - 4(2)(m - 4)\)` },
+          { t: R`\(4m^2 - 24m + 36 - 8(m - 4)\)` },
+          { t: R`\(4m^2 - 24m + 36 - 8m + 32\)` },
+          { t: R`\(4m^2 - 32m + 68 > 0\)` },
+          { t: R`\(4\left[m^2 - 8m + 17\right]\)` },
+          { t: R`\(4\left[(m - 4)^2 - 16 + 17\right]\)` },
+          { t: R`\(4\left[(m - 4)^2 + 1\right]\)` },
+          { t: R`\(4(m - 4)^2 + 4\)` },
+          { t: R`\(x = 4,\ x = -4\)` },
+          { t: R`\(y = 6(4) + 4 = 28 \qquad (4, 28)\)` },
+          { t: R`\(y = 6(-4) + 4 = -20 \qquad (-4, -20)\)` }
+        ],
+        scheme: q3scheme([[4, true], [6, true], [9, true], [13, true], [14, false]], [
+          'Correct, with a, b and c identified.',
+          R`Correct values in \(b^2 - 4ac\).`,
+          'Correct.',
+          R`The completed square \(4(m - 4)^2 + 4\) is exactly what is needed.`,
+          R`The examiner: the candidate completes the mathematics but does not clearly show they understand what the working implies. There is no conclusion; \(x = \pm 4\) and the two points do not come from the working. Mark: 4 out of 5.`
+        ]),
+        model: Q3MODEL,
+        note: Q3NOTE,
+        mm: { note: 'The examiner: the candidate needed to use clear reasoning and give a correct conclusion at the end of the question. One sentence would have done it: 4(m − 4)² + 4 is always positive, so b² − 4ac > 0 for every m, so there are always two distinct points.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q3), p.12. ' + Q3CREDIT + ' Crossed-out working is left out.' },
+      'n20q3m', 'n20q3l'
+    ]
+  });
+})();
+</script>
+</body>
+</html>

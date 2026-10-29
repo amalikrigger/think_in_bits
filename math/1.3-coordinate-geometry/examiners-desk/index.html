@@ -26,6 +26,21 @@
    (claude/tools/examiners-desk-checks.py). Real candidate work is retyped, never scanned. */
 (function () {
   var R = String.raw;
+  var Q9Q = R`A circle has center at the point \(B(5, 1)\). The point \(A(-1, -2)\) lies on the circle.<br>(a) Find the equation of the circle. <span class="mk">[3]</span><br>Point \(C\) is such that \(AC\) is a diameter of the circle. Point \(D\) has coordinates \((5, 16)\).<br>(b) Show that \(DC\) is a tangent to the circle. <span class="mk">[4]</span>`;
+  var Q9D = [
+    R`A correct radius: \(r = \sqrt{45}\), or \(r^2 = 45\).`,
+    'An equation of a circle with the given center (5, 1) and their radius.',
+    R`\((x - 5)^2 + (y - 1)^2 = 45\)`,
+    R`Point \(C(11, 4)\).`,
+    R`Gradient of a radius (\(AB\), \(BC\) or \(AC\)): \(\tfrac12\).`,
+    R`Gradient of \(DC\): \(-2\).`,
+    R`Conclusion: the product of the gradients is \(-1\), so \(DC\) is perpendicular to the radius at \(C\), so \(DC\) is a tangent.`
+  ];
+  function q9scheme(on, a, why) {
+    var c = ['1 mark', 'M1', '1 mark', '1 mark', '1 mark', '1 mark', 'A1'];
+    return c.map(function (code, i) { return { c: code, on: on[i], d: Q9D[i], a: a[i], why: why[i] }; });
+  }
+  var Q9CREDIT = ' There is no separate Nov 2020 mark scheme in our collection, so the marks are the examiner\u2019s part totals and comments; where the codes are not printed we write \u201c1 mark\u201d. Examiner quotes are Americanized (\u201ccenter\u201d).';
   TIBDesk.start({
     topic: '1.3',
     kicker: 'Cambridge 9709 \u00b7 1.3 Coordinate geometry',
@@ -33,7 +48,7 @@
     known: ['M', 'A', 'B'],
     scripts: [
       /* ---------------------------------------------------------------- 1 */
-      { id: 'j24q7', title: 'June 2024 9709/12 Q7 \u00b7 Tangent to a circle',
+      { id: 'j24q7', title: 'June 2024 9709/12 Q7 \u00b7 Tangent to a circle', mtitle: 'June 2024 9709/12 Q7 \u00b7 Script A',
         kind: 'Real student answer \u00b7 Script A',
         who: 'Real candidate response \u00b7 Cambridge I2 training pack, June 2024 9709/12, Script A (retyped)',
         q: R`The equation of a circle is \((x - 6)^2 + (y + a)^2 = 18\). The line with equation \(y = 2a - x\) is a tangent to the circle.<br>(a) Find the two possible values of the constant \(a\). <span class="mk">[5]</span><br>(b) For the greater value of \(a\), find the equation of the diameter which is perpendicular to the given tangent. <span class="mk">[3]</span>`,
@@ -93,7 +108,7 @@
         credit: 'Question and mark scheme: Cambridge 9709/12 June 2024 Q7 (mark scheme p.18). Script A: Cambridge I2 training pack, retyped. The pack gives no examiner marks for this script; these marks apply the published scheme. Rough working at the foot of the page is left out.' },
 
       /* ---------------------------------------------------------------- 2 */
-      { id: 'j24q10b', title: 'June 2024 9709/12 Q10(b) \u00b7 Perpendicular bisector',
+      { id: 'j24q10b', title: 'June 2024 9709/12 Q10(b) \u00b7 Perpendicular bisector', mtitle: 'June 2024 9709/12 Q10(b) \u00b7 Script C',
         kind: 'Real student answer \u00b7 Script C',
         who: 'Real candidate response \u00b7 Cambridge I2 training pack, June 2024 9709/12, Script C (retyped)',
         q: R`The equation of a curve is \(y = (5 - 2x)^{\frac32} + 5\) for \(x < \tfrac52\).<br>(b) Point \(A\) on the curve has \(y\)-coordinate 32. Point \(B\) on the curve is such that the gradient of the curve at \(B\) is \(-3\). Find the equation of the perpendicular bisector of \(AB\). Give your answer in the form \(ax + by + c = 0\), where \(a\), \(b\) and \(c\) are integers. <span class="mk">[6]</span>`,
@@ -146,7 +161,8 @@
         credit: 'Question and mark scheme: Cambridge 9709/12 June 2024 Q10(b) (mark scheme p.25). Script C: Cambridge I2 training pack, retyped. The pack gives no examiner marks for this script; these marks apply the published scheme.' },
 
       /* ---------------------------------------------------------------- 3 */
-      { id: 'n20q9', title: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 Circle and tangent',
+      { id: 'n20q9', title: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 Circle and tangent', mtitle: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 middle response',
+        mm: { note: 'The examiner: in (a) the candidate uses an incorrect method for the radius, but uses the given center with their radius, so earns the method mark (1 out of 3). In (b) all the working is correct, but the candidate does not explain what their answers imply (3 out of 4).' },
         kind: 'Real student answer \u00b7 middle, with the examiner\u2019s marks',
         who: 'Real candidate response \u00b7 Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, middle response (retyped)',
         q: R`A circle has center at the point \(B(5, 1)\). The point \(A(-1, -2)\) lies on the circle.<br>(a) Find the equation of the circle. <span class="mk">[3]</span><br>Point \(C\) is such that \(AC\) is a diameter of the circle. Point \(D\) has coordinates \((5, 16)\).<br>(b) Show that \(DC\) is a tangent to the circle. <span class="mk">[4]</span>`,
@@ -302,6 +318,62 @@
         ],
         note: R`Cambridge's Specimen Paper Answers: the point-gradient form used for \(AB\) earns the M1. If \(y = mx + c\) is used directly, that mark is not awarded until the attempt at finding \(c\) is completed.`,
         credit: 'Question: Cambridge 9709 Specimen Paper 1 (2020) Q10. Marks: Cambridge Specimen Paper Answers, Paper 1, p.18. Script: written for practice; not a real student\u2019s work.' }
+    ],
+    marker: [
+      { id: 'n20q9h', title: 'Nov 2020 9709/12 Q9(a)(b)', mtitle: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 high response',
+        kind: 'Real student answer \u00b7 high, with the examiner\u2019s marks',
+        who: 'Real candidate response \u00b7 Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, high response (retyped)',
+        q: Q9Q, marks: 7,
+        lines: [
+          { p: '(a)', t: R`center \((5, 1)\), radius \(= r\)` },
+          { t: R`\(AB = r = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)` },
+          { t: R`\(= \sqrt{(5 - (-1))^2 + (1 - (-2))^2}\)` },
+          { t: R`\(= \sqrt{6^2 + 3^2} = \sqrt{36 + 9}\)` },
+          { t: R`\(r = \sqrt{45} \qquad r^2 = 45\)` },
+          { t: R`\((x - 5)^2 + (y - 1)^2 = 45\)` },
+          { p: '(b)', t: R`\(C\): \(\dfrac{x + (-1)}{2} = 5 \qquad x - 1 = 10 \qquad x = 11\)` },
+          { t: R`\(\dfrac{y - 2}{2} = 1 \qquad y = 4 \qquad C(11, 4)\)` },
+          { t: R`\(m_{DC} = \dfrac{4 - 16}{11 - 5} = \dfrac{-12}{6} = -2\)` },
+          { t: R`\(m_{BC} = \dfrac{4 - 1}{11 - 5} = \dfrac{3}{6} = \dfrac12\)` },
+          { t: R`\(m_1 \times m_2 = -1 \qquad \tfrac12 \times (-2) = -1\), so \(DC\) is tangent to circle` }
+        ],
+        scheme: q9scheme([4, 5, 5, 7, 9, 8, 10], [true, true, true, true, true, true, false], [
+          'Correct, by the distance formula.',
+          'The given center with their radius.',
+          'The examiner: a concise and efficient solution. Mark for (a): 3 out of 3.',
+          'Correct, from B as the midpoint of AC.',
+          'Correct: the gradient of the radius BC.',
+          'Correct.',
+          'The examiner: all the working is correct, but the candidate does not say that a product of \u22121 means the two lines are perpendicular, and so DC is a tangent. Not mentioning perpendicular lines loses the final accuracy mark. Mark for (b): 3 out of 4.'
+        ]),
+        mm: { note: 'The examiner: the candidate produces a concise and efficient solution to (a). In (b), the only thing missing is the word that links the numbers to the conclusion: perpendicular. Writing \u201cso DC is perpendicular to the radius BC\u201d would have earned the last mark.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q9), p.31.' + Q9CREDIT + ' Crossed-out working is left out.' },
+      'n20q9',
+      { id: 'n20q9l', title: 'Nov 2020 9709/12 Q9(a)(b)', mtitle: 'Nov 2020 9709/12 Q9(a)(b) \u00b7 low response',
+        kind: 'Real student answer \u00b7 low, with the examiner\u2019s marks',
+        who: 'Real candidate response \u00b7 Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, low response (retyped)',
+        q: Q9Q, marks: 7,
+        lines: [
+          { p: '(a)', t: R`\(AB = \sqrt{(5 + 1)^2 + (1 + 2)^2} = \sqrt{36 + 9}\)` },
+          { t: R`\(r = \sqrt{45}\)` },
+          { t: R`\(x^2 + y^2 = r^2, \qquad x^2 + y^2 = 45\)` },
+          { p: '(b)', t: R`\(D(5, 16) \qquad C(11, 4)\)` },
+          { t: R`\(m = \dfrac{16 - 4}{5 - 11} = -2\)` },
+          { t: R`equation of circle: \(y = \sqrt{45 - x^2}\), \(y = (45 - x^2)^{\frac12}\)` },
+          { t: R`an attempt to differentiate \((45 - x^2)^{\frac12}\), left unfinished` }
+        ],
+        scheme: q9scheme([1, 2, 2, 3, null, 4, null], [true, false, false, true, false, true, false], [
+          'The examiner: the radius is correct, so the candidate is awarded 1 mark.',
+          'The examiner: the candidate does not use the given center, so cannot be awarded any further marks.',
+          'Mark for (a): 1 out of 3.',
+          'The examiner: point C is found correctly.',
+          'No radius gradient. The examiner suggests finding the gradient of AB, BC or AC.',
+          'The examiner: the gradient of CD is correct.',
+          'No further progress. Mark for (b): 2 out of 4.'
+        ]),
+        mm: { note: 'The examiner: the candidate needed to use the given center in (a), and could have found the gradient of AB (or BC or AC) in (b). The circle equation x\u00b2 + y\u00b2 = 45 has its center at the origin.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q9), p.35.' + Q9CREDIT + ' A small sketch on the script is left out.' },
+      'j24q7', 'j24q10b'
     ]
   });
 })();

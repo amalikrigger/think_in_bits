@@ -4,6 +4,8 @@
    A topic page holds only its own scripts and calls:
      TIBDesk.start({ topic: '1.3', kicker: '...', title: '...', intro: '...', known: ['M','A','B'], scripts: [...] })
    Tabs: Learn the marks · Mark a script · Code check · Marker mode.
+   Optional cfg.marker: Marker mode's whole scripts, as pack script ids or full script objects.
+   A scheme line may have pick: ['B2','B1','B0'] (part credit) with a: 'B1'; '1 mark' is a code not printed.
    Saved progress: localStorage 'tib-tool:examiners-desk:<topic>', every read and write in try/catch,
    validated on load; the page works fully with storage blocked.
    Code definitions quote the Mark Scheme Notes and Abbreviations, MS 9709/11 June 2023 pp.3 to 5
@@ -246,6 +248,21 @@
     if (!k) return '<span class="tib-mk-chip' + (cls ? ' ' + cls : '') + '">' + esc(code) + '</span>';
     return '<button type="button" class="tib-mk-chip' + (cls ? ' ' + cls : '') + '" data-card="' + k + '" aria-label="' + esc(code) + ': what this code means">' + esc(code) + '</button>';
   }
+  function modelHTML(s) {
+    return '<div class="model">' + s.model.map(function (l) {
+      var cs = !l.c ? [] : isGen(l.c) ? [l.c] : l.c.split(' ');
+      return '<div class="ml"><span>' + l.t + '</span><span>' + cs.map(function (c) { return chip(c); }).join(' ') + '</span></div>';
+    }).join('') + '</div>';
+  }
+  /* "1 mark": a mark whose code is not printed (Example Candidate Responses) */
+  function isGen(code) { return /^\d/.test(String(code)); }
+  /* marks a decision is worth: true/false for one-mark lines, a label such as 'B1' for part-credit lines (m.pick) */
+  function val(m, d) {
+    if (d == null) return 0;
+    if (m.pick) return typeof d === 'string' ? (parseInt(d.replace(/\D/g, ''), 10) || 0) : 0;
+    return d === true ? (m.n || 1) : 0;
+  }
+  function earnedOf(s) { return s.scheme.reduce(function (a, m) { return a + val(m, m.a); }, 0); }
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function rankFor(p) { return p >= 85 ? 'Principal Examiner' : p >= 65 ? 'Team Leader' : p >= 40 ? 'Assistant Examiner' : 'Trainee Marker'; }
 
@@ -254,15 +271,21 @@
     var KEY = 'tib-tool:examiners-desk:' + cfg.topic;
     var scripts = cfg.scripts || [];
     var ids = {}; scripts.forEach(function (s) { ids[s.id] = s; });
+    /* Marker mode list: ids of pack scripts, or whole-script objects of its own */
+    var mlist = (cfg.marker || []).map(function (x) { return typeof x === 'string' ? ids[x] : x; }).filter(Boolean);
+    var mids = {}; mlist.forEach(function (s) { mids[s.id] = s; });
 
     /* saved state, validated */
     function load() {
-      var st = { best: {}, cc: {}, learned: {}, tab: 'learn' };
+      var st = { best: {}, cc: {}, learned: {}, mk: {}, tab: 'learn' };
       try {
         var raw = JSON.parse(localStorage.getItem(KEY) || '{}');
         if (raw && typeof raw === 'object') {
           if (raw.best && typeof raw.best === 'object') Object.keys(raw.best).forEach(function (id) {
             var v = raw.best[id]; if (ids[id] && typeof v === 'number' && isFinite(v) && v >= 0 && v <= 100) st.best[id] = Math.round(v);
+          });
+          if (raw.mk && typeof raw.mk === 'object') Object.keys(raw.mk).forEach(function (id) {
+            var v = raw.mk[id]; if (mids[id] && typeof v === 'number' && isFinite(v) && v >= 0 && v <= 100) st.mk[id] = Math.round(v);
           });
           if (raw.cc && typeof raw.cc === 'object') Object.keys(raw.cc).forEach(function (k) {
             var v = raw.cc[k]; if (CARDS[k] && typeof v === 'number' && v >= 0 && v < 1000) st.cc[k] = Math.floor(v);
@@ -318,7 +341,7 @@
       var ticks = Object.keys(S.cc).filter(function (k) { return S.cc[k] >= 2; }).length;
       var learned = Object.keys(S.learned).length;
       $('#dStatus').innerHTML = 'Rank <b>' + (done.length ? rankFor(avg) : 'Trainee Marker') + '</b> · Scripts marked <b>' + done.length + ' of ' + scripts.length + '</b>' +
-        (done.length ? ' · Desk score <b>' + avg + '%</b>' : '') + ' · Codes learned <b>' + learned + ' of ' + Object.keys(CARDS).length + '</b> · Code check ticks <b>' + ticks + ' of ' + SCEN.length + '</b>';
+        (done.length ? ' · Desk score <b>' + avg + '%</b>' : '') + (mlist.length ? ' · Marker mode <b>' + Object.keys(S.mk).length + ' of ' + mlist.length + '</b>' : '') + ' · Codes learned <b>' + learned + ' of ' + Object.keys(CARDS).length + '</b> · Code check ticks <b>' + ticks + ' of ' + SCEN.length + '</b>';
     }
 
     /* ---------- a code card ---------- */
@@ -503,37 +526,43 @@
           if (j >= s.scheme.length) { return afterMarks(); }
           var m = s.scheme[j], r = msRows[j]; r.classList.remove('todo'); r.classList.add('cur');
           var acts = $('.acts', r), res = $('.res', r);
-          var aw = bt('Award', 'go'), wh = bt('Withhold', 'ghost');
-          acts.appendChild(aw); acts.appendChild(wh);
+          var zero = m.pick ? m.pick[m.pick.length - 1] : false;
+          var btns = m.pick ? m.pick.map(function (l, i) { return bt(l, i === 0 ? 'go' : 'ghost'); }) : [bt('Award', 'go'), bt('Withhold', 'ghost')];
+          btns.forEach(function (b) { acts.appendChild(b); });
           max += 1;
-          aw.focus();
+          btns[0].focus();
           function decide(give, forced) {
             acts.innerHTML = '';
-            var right = give === m.a; if (right && !forced) pts += 1;
-            if (forced && right) pts += 1;
-            dec[j] = give; if (give) mine += (m.n || 1);
+            var right = give === m.a; if (right) pts += 1;
+            dec[j] = give; mine += val(m, give);
             r.classList.remove('cur'); r.classList.add(right ? 'got' : 'miss');
             res.hidden = false;
+            var exSays = m.pick ? 'The examiner gives ' + m.a + '.' : 'The examiner ' + (m.a ? 'awards' : 'withholds') + ' it.';
             res.innerHTML = (forced ? '<b style="color:var(--amber)">Rule: ' + forced + '</b><br>' : '') +
-              (right ? '<b>' + (forced ? 'And the examiner withholds it too.' : 'Same as the examiner.') + '</b> ' : '<b>The examiner ' + (m.a ? 'awards' : 'withholds') + ' it.</b> ') + m.why;
+              (right ? '<b>' + (forced ? 'And the examiner withholds it too.' : 'Same as the examiner.') + '</b> ' : '<b>' + exSays + '</b> ') + m.why;
             math(res);
             if (m.on != null && rows[m.on]) {
-              var mg = $('.mg', rows[m.on]);
-              mg.insertAdjacentHTML('beforeend', (m.a ? '<span class="tick">✓</span>' : '') + chip(m.c, m.a ? '' : 'lost'));
+              var mg = $('.mg', rows[m.on]), got = val(m, m.a) > 0;
+              mg.insertAdjacentHTML('beforeend', (got ? '<span class="tick">✓</span>' : '') + chip(m.pick && got ? m.a : m.c, got ? '' : 'lost'));
             }
             upd(); ask(j + 1);
           }
-          aw.addEventListener('click', function () {
-            /* dependency rules, enforced on the student's own marking */
-            var blocker = (m.dep || []).filter(function (d) { return dec[d] === false; })[0];
-            if (blocker != null) {
-              var bc = s.scheme[blocker].c;
-              var why = /^A/.test(m.c) ? m.c + ' needs its method mark ' + bc + ', which you withheld.' : m.c + ' depends on ' + bc + ', which you withheld, so it cannot be awarded.';
-              decide(false, why); return;
-            }
-            decide(true);
+          /* dependency rules, enforced on the student's own marking */
+          function blockedBy() {
+            return (m.dep || []).filter(function (d) { return dec[d] !== undefined && val(s.scheme[d], dec[d]) === 0; })[0];
+          }
+          function ruleText(blocker) {
+            var bc = s.scheme[blocker].c;
+            if (isGen(m.c) || isGen(bc)) return 'This mark depends on the mark in row ' + (blocker + 1) + ', which you withheld, so it cannot be awarded.';
+            return /^A/.test(m.c) ? m.c + ' needs its method mark ' + bc + ', which you withheld.' : m.c + ' depends on ' + bc + ', which you withheld, so it cannot be awarded.';
+          }
+          btns.forEach(function (b, i) {
+            b.addEventListener('click', function () {
+              var give = m.pick ? m.pick[i] : i === 0;
+              if (val(m, give) > 0) { var bl = blockedBy(); if (bl != null) { decide(zero, ruleText(bl)); return; } }
+              decide(give);
+            });
           });
-          wh.addEventListener('click', function () { decide(false); });
         }
         ask(0);
       }
@@ -574,11 +603,11 @@
         var pct = Math.round(100 * pts / max);
         if (S.best[s.id] == null || pct > S.best[s.id]) S.best[s.id] = pct;
         save(); status();
-        var earned = s.scheme.reduce(function (a, m) { return a + (m.a ? (m.n || 1) : 0); }, 0);
+        var earned = earnedOf(s);
         var h = '<div class="deb">' +
           '<div class="say ok"><b class="t">You scored ' + pts + ' of ' + max + ' (' + pct + '%): ' + rankFor(pct) + '.</b>The script scores ' + earned + ' of ' + s.marks + '.</div>' +
           '<div><h3>Why it went wrong</h3><p>' + s.whyWrong + '</p></div>' +
-          '<div><h3>Model answer</h3><div class="model">' + s.model.map(function (l) { return '<div class="ml"><span>' + l.t + '</span><span>' + (l.c ? l.c.split(' ').map(function (c) { return chip(c); }).join(' ') : '') + '</span></div>'; }).join('') + '</div></div>' +
+          '<div><h3>Model answer</h3>' + modelHTML(s) + '</div>' +
           '<div><h3>What the examiners said</h3><p>' + s.note + '</p></div>' +
           '<div class="srcline">' + esc(s.credit) + '</div>' +
           '<div class="row no-print">' + (si + 1 < scripts.length ? '<button type="button" class="go" id="nextS">Next script</button>' : '') + '<button type="button" class="ghost" id="allS">All scripts</button></div></div>';
@@ -631,21 +660,118 @@
       ticks(); one();
     }
 
-    /* ================================================================ Marker mode (stub) */
-    $('#p-marker').innerHTML = '<div class="card"><h2>Marker mode</h2><p>Whole real scripts with no hints: mark every line yourself, then compare with the real examiner’s marks and comments. It arrives with the next update to the Desk.</p>' +
-      '<p class="small muted">Until then, Mark a script uses the same real scripts with hints.</p></div>';
+    /* ================================================================ Marker mode
+       Whole real scripts, no hints and no rules enforced: the marker decides every scheme line
+       (and can change a decision) before comparing with the examiner. */
+    var mpanel = $('#p-marker');
+    function byOf(s) { return (s.mm && s.mm.by) || (/examiner/i.test(s.kind) ? 'examiner' : 'scheme'); }
+    function renderMarkerPicker() {
+      var h = '<div class="card"><h2>Marker mode</h2><p class="muted small">Whole real scripts, no hints. Read the script, then decide every mark in the scheme yourself. Nothing is checked until you compare, and you can change any decision before then. ' +
+        'Scripts from Cambridge’s Example Candidate Responses come with the real examiner’s marks and comments. The training-pack scripts come without marks, so for those you compare with the published scheme as we applied it.</p>';
+      if (!mlist.length) h += '<p class="small muted">No whole scripts for this topic yet.</p>';
+      else {
+        h += '<div class="pick">';
+        mlist.forEach(function (s, i) {
+          var b = S.mk[s.id];
+          h += '<button type="button" data-i="' + i + '"><span class="t">' + esc(s.mtitle || s.title) + '</span><span class="s">' + esc(byOf(s) === 'examiner' ? 'Real script · examiner’s marks' : 'Real script · scheme marks (ours)') + '</span>' +
+            (b != null ? '<span class="d">Best agreement ' + b + '%</span>' : '') + '</button>';
+        });
+        h += '</div>';
+      }
+      mpanel.innerHTML = h + '</div>';
+      $$('.pick button', mpanel).forEach(function (b) { b.addEventListener('click', function () { playMarker(+b.getAttribute('data-i')); }); });
+    }
+    function playMarker(mi) {
+      var s = mlist[mi], by = byOf(s), mine = s.scheme.map(function () { return undefined; });
+      mpanel.innerHTML = '';
+      var top = el('div', 'row no-print'); var back = bt('‹ All scripts', 'ghost'); top.appendChild(back); mpanel.appendChild(top);
+      back.addEventListener('click', function () { renderMarkerPicker(); mpanel.scrollIntoView({ block: 'start' }); });
+      var card = el('div', 'card'); mpanel.appendChild(card);
+      card.innerHTML = '<div class="qbox"><span class="src">' + esc(s.mtitle || s.title) + '</span><div class="qt">' + s.q + '</div><div class="mk small">Total: ' + s.marks + ' marks</div></div>' +
+        '<div class="sheet"><div class="who">' + esc(s.who) + '</div></div>' +
+        '<div class="task"><p class="ask">Mark it: decide every line of the mark scheme.</p><p class="small muted">No hints, and no rules are applied for you. Tap any code to see what it means.</p><div class="ms"></div><div class="tally"></div>' +
+        '<div class="row" style="margin-top:12px"><button type="button" class="go" id="mmCompare" disabled>Compare with the examiner</button></div><div class="mmOut"></div></div>';
+      var sheet = $('.sheet', card), ms = $('.ms', card), tally = $('.tally', card), cmp = $('#mmCompare'), out = $('.mmOut', card);
+      var rows = s.lines.map(function (ln) {
+        var r = el('div', 'sl');
+        r.innerHTML = '<span class="pt">' + (ln.p || '') + '</span><span class="w">' + ln.t + '</span><span class="mg"></span>';
+        sheet.appendChild(r); return r;
+      });
+      var msRows = s.scheme.map(function (m, j) {
+        var r = el('div', 'msl');
+        r.innerHTML = '<div class="cd">' + chip(m.c) + '</div><div class="what">' + m.d + '</div><div class="acts" role="group" aria-label="Row ' + (j + 1) + '"></div><div class="res" hidden></div>';
+        var acts = $('.acts', r);
+        var labels = m.pick ? m.pick : ['Award', 'Withhold'];
+        labels.forEach(function (l, i) {
+          var b = bt(l, 'ghost'); b.setAttribute('aria-pressed', 'false'); acts.appendChild(b);
+          b.addEventListener('click', function () {
+            mine[j] = m.pick ? l : i === 0;
+            $$('button', acts).forEach(function (x) { var on = x === b; x.setAttribute('aria-pressed', on ? 'true' : 'false'); x.className = on ? 'go' : 'ghost'; });
+            upd();
+          });
+        });
+        ms.appendChild(r); return r;
+      });
+      math(card);
+      function upd() {
+        var n = mine.filter(function (d) { return d !== undefined; }).length;
+        var tot = s.scheme.reduce(function (a, m, j) { return a + val(m, mine[j]); }, 0);
+        tally.innerHTML = 'Your total <b>' + tot + '</b> of ' + s.marks + ' · decided ' + n + ' of ' + s.scheme.length;
+        cmp.disabled = n < s.scheme.length;
+      }
+      upd();
+      cmp.addEventListener('click', compare);
+      function compare() {
+        cmp.disabled = true; cmp.parentNode.hidden = true;
+        var agree = 0, flags = [];
+        s.scheme.forEach(function (m, j) {
+          var r = msRows[j], res = $('.res', r), same = mine[j] === m.a;
+          if (same) agree++;
+          $$('button', $('.acts', r)).forEach(function (x) { x.disabled = true; });
+          r.classList.add(same ? 'got' : 'miss');
+          var exSays = m.pick ? m.a : (m.a ? 'awarded' : 'withheld');
+          res.hidden = false;
+          res.innerHTML = '<b>' + (same ? 'Same as the examiner' : 'The examiner: ' + exSays) + '.</b> ' + m.why;
+          math(res);
+          if (m.on != null && rows[m.on]) {
+            var got = val(m, m.a) > 0;
+            $('.mg', rows[m.on]).insertAdjacentHTML('beforeend', (got ? '<span class="tick">✓</span>' : '') + chip(m.pick && got ? m.a : m.c, got ? '' : 'lost'));
+          }
+          if (val(m, mine[j]) > 0) (m.dep || []).forEach(function (d) {
+            if (val(s.scheme[d], mine[d]) === 0) flags.push((isGen(m.c) ? 'Row ' + (j + 1) : m.c) + ' was awarded, but ' + (isGen(s.scheme[d].c) ? 'row ' + (d + 1) : s.scheme[d].c) + ', which it depends on, was withheld.');
+          });
+        });
+        var pct = Math.round(100 * agree / s.scheme.length);
+        if (S.mk[s.id] == null || pct > S.mk[s.id]) S.mk[s.id] = pct;
+        save(); status();
+        var yours = s.scheme.reduce(function (a, m, j) { return a + val(m, mine[j]); }, 0);
+        var h = '<div class="deb" style="margin-top:14px">' +
+          '<div class="say ' + (pct >= 85 ? 'ok' : pct >= 50 ? 'rule' : 'no') + '"><b class="t">You agree with the examiner on ' + agree + ' of ' + s.scheme.length + ' scheme lines (' + pct + '%).</b>' +
+          'Your total: ' + yours + ' of ' + s.marks + '. ' + (by === 'examiner' ? 'The examiner’s total' : 'The total under the published scheme') + ': ' + earnedOf(s) + ' of ' + s.marks + '.</div>' +
+          (flags.length ? '<div class="say rule"><b class="t">Check the dependencies</b>' + flags.map(esc).join('<br>') + '</div>' : '') +
+          '<div><h3>' + (by === 'examiner' ? 'What the examiner said' : 'Notes on this script') + '</h3><p>' + ((s.mm && s.mm.note) || s.note) + '</p></div>' +
+          (s.model ? '<div><h3>Model answer</h3>' + modelHTML(s) + '</div>' : '') +
+          '<div class="srcline">' + esc(s.credit) + '</div>' +
+          '<div class="row no-print"><button type="button" class="go" id="mmAgain">Mark it again</button>' + (mi + 1 < mlist.length ? '<button type="button" class="ghost" id="mmNext">Next script</button>' : '') + '<button type="button" class="ghost" id="mmAll">All scripts</button></div></div>';
+        out.innerHTML = h; math(out);
+        $('#mmAgain').addEventListener('click', function () { playMarker(mi); mpanel.scrollIntoView({ block: 'start' }); });
+        if ($('#mmNext')) $('#mmNext').addEventListener('click', function () { playMarker(mi + 1); mpanel.scrollIntoView({ block: 'start' }); });
+        $('#mmAll').addEventListener('click', function () { renderMarkerPicker(); mpanel.scrollIntoView({ block: 'start' }); });
+        $('#mmAgain').focus();
+      }
+    }
 
     /* ---------- start over ---------- */
     var rs = $('#dReset'), armed = null;
     rs.addEventListener('click', function () {
       if (!armed) { rs.textContent = 'Tap again to clear'; rs.classList.add('armed'); armed = setTimeout(function () { rs.textContent = 'Start over'; rs.classList.remove('armed'); armed = null; }, 4000); return; }
       clearTimeout(armed); armed = null; rs.textContent = 'Start over'; rs.classList.remove('armed');
-      S = { best: {}, cc: {}, learned: {}, tab: S.tab };
+      S = { best: {}, cc: {}, learned: {}, mk: {}, tab: S.tab };
       try { localStorage.removeItem(KEY); } catch (e) {}
-      save(); status(); renderLearn(); renderPicker(); renderCheck();
+      save(); status(); renderLearn(); renderPicker(); renderCheck(); renderMarkerPicker();
     });
 
-    renderLearn(); renderPicker(); renderCheck(); status(); showTab(S.tab);
+    renderLearn(); renderPicker(); renderCheck(); renderMarkerPicker(); status(); showTab(S.tab);
     window.TIBDesk.state = function () { return S; };
     window.TIBDesk.cfg = cfg;
   }

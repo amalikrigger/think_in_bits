@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Examiner's Desk: 1.2 Functions | Think In Bits</title>
+  <meta name="description" content="Learn what every Cambridge 9709 mark code means, then mark real and practice scripts for functions the way an examiner would.">
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/marks.css">
+  <link rel="stylesheet" href="../../assets/examiners-desk.css">
+</head>
+<body>
+<a class="tib-back" href="../../../math.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Math</a>
+<main class="wrap" id="desk">
+  <noscript><p>The Examiner's Desk needs JavaScript.</p></noscript>
+</main>
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/marks.js"></script>
+<script src="../../assets/examiners-desk.js"></script>
+<script>
+/* 1.2 Functions pack. Every code was read on its source page (pages in each credit line); every number
+   in the scripts and model answers is checked with sympy (claude/tools/examiners-desk-checks.py).
+   Real candidate work is retyped, never scanned. Written scripts are labeled "written for practice". */
+(function () {
+  var R = String.raw;
+
+  /* ---- June 2024 9709/12 Q2 (I2 training pack Scripts A to C) ---- */
+  var J2Q = R`The curve \(y = x^2\) is transformed to the curve \(y = 4(x - 3)^2 - 8\).<br>Describe fully a sequence of transformations that have been combined, making clear the order in which the transformations have been applied. <span class="mk">[5]</span>`;
+  var J2D = [
+    'Stretch, factor 4, in the y-direction (parallel to the y-axis, or vertically).',
+    R`Translation \(\begin{pmatrix}3\\0\end{pmatrix}\) and \(\begin{pmatrix}0\\-8\end{pmatrix}\). The word and the two vectors are 3 elements; one combined vector counts as 2. B2 for all 3, B1 for 2 out of 3.`,
+    'Two translations, one in each direction, and a stretch only. Inaccurate words such as up, down, left and right are condoned if the intention is clear.',
+    'Correct order: the stretch, which must be in the y-direction, comes before the translation in the y-direction. Numerical values must be correct.'
+  ];
+  function j2scheme(on, a, why) {
+    var c = ['B1', 'B2', 'M1', 'A1'];
+    return c.map(function (code, i) {
+      var m = { c: code, on: on[i], d: J2D[i], a: a[i], why: why[i] };
+      if (i === 1) m.pick = ['B2', 'B1', 'B0'];
+      if (i === 3) m.dep = [2];
+      return m;
+    });
+  }
+  var J2MODEL = [
+    { t: R`stretch, factor 4, in the \(y\)-direction: \(y = 4x^2\)`, c: 'B1' },
+    { t: R`then translation \(\begin{pmatrix}3\\0\end{pmatrix}\) and translation \(\begin{pmatrix}0\\-8\end{pmatrix}\), or one translation \(\begin{pmatrix}3\\-8\end{pmatrix}\)`, c: 'B2' },
+    { t: 'two translations and one stretch', c: 'M1' },
+    { t: R`the stretch comes before the translation \(\begin{pmatrix}0\\-8\end{pmatrix}\)`, c: 'A1' }
+  ];
+  var J2NOTE = 'The June 2024 examiner report says many fully correct descriptions were seen, and that an answer as short as a stretch of factor 4 in the y-direction followed by one translation (3, −8) earned full marks. It stresses that the correct words must be used and the order must be clear.';
+  var J2CREDIT = 'Question and mark scheme: Cambridge 9709/12 June 2024 Q2 (mark scheme p.7). Script retyped from the Cambridge I2 training pack. The pack gives no examiner marks for its scripts; these marks apply the published scheme (our reading).';
+
+  /* ---- Nov 2020 9709/12 Q5 (Example Candidate Responses) ---- */
+  var Q5 = R`Functions f and g are defined by<br>\(f(x) = 4x - 2\), for \(x \in \mathbb{R}\),<br>\(g(x) = \dfrac{4}{x + 1}\), for \(x \in \mathbb{R},\ x \ne -1\).<br>(a) Find the value of \(fg(7)\). <span class="mk">[1]</span><br>(b) Find the values of \(x\) for which \(f^{-1}(x) = g^{-1}(x)\). <span class="mk">[5]</span>`;
+  var Q5D = [
+    R`(a) \(fg(7) = 0\)`,
+    R`(b) \(f^{-1}(x) = \dfrac{x + 2}{4}\)`,
+    R`\(g^{-1}(x) = \dfrac{4}{x} - 1\) OE`,
+    R`Equate and reach the correct quadratic \(x^2 + 6x - 16 = 0\).`,
+    'A method for solving their quadratic, shown: factors, the formula with values, or completing the square.',
+    R`\(x = 2,\ -8\)`
+  ];
+  function q5scheme(on, a, why) {
+    return Q5D.map(function (d, i) { var m = { c: '1 mark', on: on[i], d: d, a: a[i], why: why[i] }; if (i === 5) m.dep = [4]; return m; });
+  }
+  var Q5MODEL = [
+    { t: R`(a) \(g(7) = \dfrac{4}{8} = \dfrac12\), \(fg(7) = 4\left(\tfrac12\right) - 2 = 0\)` },
+    { t: R`(b) \(f^{-1}(x) = \dfrac{x + 2}{4}\), \(g^{-1}(x) = \dfrac{4}{x} - 1\)` },
+    { t: R`\(\dfrac{x + 2}{4} = \dfrac{4}{x} - 1 \Rightarrow x(x + 2) = 16 - 4x \Rightarrow x^2 + 6x - 16 = 0\)` },
+    { t: R`\((x + 8)(x - 2) = 0\)` },
+    { t: R`\(x = 2\) or \(x = -8\)` }
+  ];
+  var Q5NOTE = 'The Example Candidate Responses list these common mistakes: not showing a method for solving the quadratic equation; rearranging errors when finding the inverse functions; and algebra errors when simplifying the equation formed by equating the two inverses. Every June examiner report repeats the rule behind the first one: a quadratic must be solved by factors, the formula with values in it, or completing the square, and a calculator answer alone is not enough.';
+  var Q5CREDIT = 'There is no separate Nov 2020 mark scheme in our collection. The totals are the examiner’s; how the 5 marks in (b) split is our reading of the high, middle and low comments, so each is shown as “1 mark”.';
+
+  /* ---- Nov 2020 9709/12 Q11(d)(e) (Example Candidate Responses) ---- */
+  var Q11 = R`Functions f, g and h are defined for \(x \in \mathbb{R}\) by<br>\(f(x) = 3\cos 2x + 2\),<br>\(g(x) = f(2x) + 4\),<br>\(h(x) = 2f\left(x + \tfrac12\pi\right)\).<br>(d) Describe fully a sequence of transformations that maps the graph of \(y = f(x)\) on to \(y = g(x)\). <span class="mk">[2]</span><br>(e) Describe fully a sequence of transformations that maps the graph of \(y = f(x)\) on to \(y = h(x)\). <span class="mk">[2]</span><br><span class="small muted">No trigonometry needed: only what \(f(2x)\), \(+\,4\), \(2f(\ )\) and \(x + \tfrac12\pi\) do to a graph.</span>`;
+  var Q11D = [
+    R`(d) Stretch, factor \(\tfrac12\), in the \(x\)-direction.`,
+    R`(d) Translation \(\begin{pmatrix}0\\4\end{pmatrix}\).`,
+    R`(e) Translation \(\begin{pmatrix}-\frac12\pi\\0\end{pmatrix}\).`,
+    R`(e) Stretch, factor 2, in the \(y\)-direction.`
+  ];
+  function q11scheme(on, a, why) { return Q11D.map(function (d, i) { return { c: '1 mark', on: on[i], d: d, a: a[i], why: why[i] }; }); }
+  var Q11MODEL = [
+    { t: R`(d) stretch, factor \(\tfrac12\), in the \(x\)-direction` },
+    { t: R`and translation \(\begin{pmatrix}0\\4\end{pmatrix}\)` },
+    { t: R`(e) translation \(\begin{pmatrix}-\frac12\pi\\0\end{pmatrix}\)` },
+    { t: R`and stretch, factor 2, in the \(y\)-direction` }
+  ];
+  var Q11NOTE = 'The Example Candidate Responses: the most common problem in (d) and (e) was poor description, with words such as move, up, down, left and right. The correct words are stretch and translation, and best practice describes a translation with a column vector.';
+  var Q11CREDIT = 'There is no separate Nov 2020 mark scheme in our collection. The totals are the examiner’s; each 2-mark part is read as one mark for the stretch and one for the translation, as the comments describe, and shown as “1 mark”. Parts (a) to (c) are left out.';
+
+  TIBDesk.start({
+    topic: '1.2',
+    kicker: 'Cambridge 9709 · 1.2 Functions',
+    intro: 'Learn what every mark code means, then mark functions scripts the way a Cambridge examiner does: real student answers and practice ones, against real mark schemes.',
+    known: ['M', 'A', 'B'],
+    scripts: [
+      /* ---------------------------------------------------------------- 1 */
+      { id: 'j24q2b', title: 'June 2024 9709/12 Q2 · Describing transformations',
+        mtitle: 'June 2024 9709/12 Q2 · Script B',
+        kind: 'Real student answer · Script B',
+        who: 'Real candidate response · Cambridge I2 training pack, June 2024 9709/12, Script B (retyped)',
+        q: J2Q, marks: 5,
+        lines: [
+          { t: R`The stretch factor of 4 in the \(x\)-direction.` },
+          { t: R`The translation of \(\begin{pmatrix}4\\-8\end{pmatrix}\)` }
+        ],
+        wrong: 0,
+        wrongNote: R`Multiplying the whole function by 4 stretches the graph vertically: factor 4 in the \(y\)-direction.`,
+        scheme: j2scheme([0, 1, 1, 1], [false, 'B1', true, false], [
+          R`Their stretch is in the \(x\)-direction.`,
+          R`The word “translation” and the \(-8\) are right; the 4 should be 3. Two out of three elements: B1.`,
+          'A stretch, and one translation that moves in both directions. The June 2024 examiner report gives full marks to an answer with one combined vector, so it counts as the two translations.',
+          'Stretch first, then translation, is the right order, but this mark needs the stretch in the y-direction and the numbers right. Both fail here.'
+        ]),
+        fix: { ask: 'Which description should replace the first wrong line?',
+          o: [R`Stretch, factor 4, in the \(y\)-direction`, R`Stretch, factor \(\tfrac14\), in the \(x\)-direction`, R`Stretch, factor 4, in the \(x\)-direction, done last`], ok: 0,
+          why: R`Then translate by \(\begin{pmatrix}3\\-8\end{pmatrix}\): \(y = 4x^2\) becomes \(y = 4(x - 3)^2 - 8\).`,
+          no: [null, 'A stretch of factor ¼ in the x-direction replaces x with 4x, giving y = 16x².', 'A stretch in the x-direction changes x wherever it comes in the order. Here the 4 multiplies the whole function.'] },
+        whyWrong: R`\(4(x - 3)^2 - 8\) is 4 times \((x - 3)^2\), then 8 taken off. Multiplying the whole function by 4 is a stretch in the \(y\)-direction. Changes inside the bracket act horizontally: \(x - 3\) moves the graph 3 to the right, so the top number of the vector is \(+3\). The student had the right plan, a stretch then a translation, and the right \(-8\).`,
+        model: J2MODEL, note: J2NOTE,
+        mm: { note: 'Our marking, using the published scheme: B0 (stretch in the x-direction), B1 (translation, with 2 of the 3 elements), M1 (a stretch and a translation in both directions), A0 (the stretch and the numbers must be right for the order mark). 2 out of 5.' },
+        credit: J2CREDIT },
+
+      /* ---------------------------------------------------------------- 2 */
+      { id: 'n20q5h', title: 'Nov 2020 9709/12 Q5 · Two inverses equal',
+        mtitle: 'Nov 2020 9709/12 Q5 · high response',
+        kind: 'Real student answer · high, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, high response (retyped)',
+        q: Q5, marks: 6,
+        lines: [
+          { p: '(a)', t: R`\(fg(x) = 4\left(\dfrac{4}{x + 1}\right) - 2\)` },
+          { t: R`\(fg(7) = 4\left(\dfrac{4}{7 + 1}\right) - 2\)` },
+          { t: R`\(= 0\)` },
+          { p: '(b)', t: R`\(f^{-1}(x)\): \(x = 4y - 2\)` },
+          { t: R`\(4y = x + 2\)` },
+          { t: R`\(y = \dfrac{x + 2}{4}\)` },
+          { t: R`\(g^{-1}(x)\): \(x = \dfrac{4}{y + 1}\)` },
+          { t: R`\(x(y + 1) = 4\)` },
+          { t: R`\(y + 1 = \dfrac{4}{x}\)` },
+          { t: R`\(y = \dfrac{4}{x} - 1\)` },
+          { t: R`\(\therefore \dfrac{x + 2}{4} = \dfrac{4}{x} - 1 \qquad \text{LCD} = 4x\)` },
+          { t: R`\(x(x + 2) = 4(4) - 1(4x)\)` },
+          { t: R`\(x^2 + 2x = 16 - 4x\)` },
+          { t: R`\(x^2 + 6x - 16 = 0\)` },
+          { t: R`\(x = 2\) or \(x = -8\)` }
+        ],
+        wrong: 14,
+        wrongNote: 'The answers are right, but nothing shows how the quadratic was solved. Cambridge needs a method on the page: factors, the formula with numbers in it, or completing the square.',
+        spotHint: 'Every value on this page is correct. Look for a line that would still lose marks.',
+        scheme: q5scheme([2, 5, 9, 13, 14, 14], [true, true, true, true, false, false], [
+          'The examiner: a correct response. Mark for (a): 1 out of 1.',
+          'Correct.',
+          'Correct.',
+          'The examiner: correct up to this point.',
+          'The examiner: the candidate does not show a method for solving the quadratic equation.',
+          'The examiner: even though the final answers are correct, no marks can be awarded. Without the method, the answer mark goes too. Mark for (b): 3 out of 5.'
+        ]),
+        fix: { o: [R`\((x + 8)(x - 2) = 0\), so \(x = -8\) or \(x = 2\)`, R`\(x^2 + 6x = 16\), so \(x = 2\) or \(x = -8\) by trying values`, R`Calculator: \(x = 2,\ -8\)`], ok: 0,
+          why: R`Factors that expand back to \(x^2 + 6x - 16\) put the method on the page.`,
+          no: [null, 'Trying values is not one of the methods Cambridge accepts for a quadratic. Show factors, the formula or completing the square.', 'A calculator solution with no working scores nothing.'] },
+        whyWrong: 'Everything difficult was right: both inverses, clearing the fractions, collecting terms. Two marks went because the last step happened on a calculator or in the student’s head. One line of factors would have kept them.',
+        model: Q5MODEL, note: Q5NOTE,
+        mm: { note: 'The examiner: the candidate could have shown their method for solving the quadratic equation. Total: 4 out of 6.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q5), p.18. ' + Q5CREDIT },
+
+      /* ---------------------------------------------------------------- 3 */
+      { id: 'n20q5m', title: 'Nov 2020 9709/12 Q5 · Clearing the fractions',
+        mtitle: 'Nov 2020 9709/12 Q5 · middle response',
+        kind: 'Real student answer · middle, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, middle response (retyped)',
+        q: Q5, marks: 6,
+        lines: [
+          { p: '(a)', t: R`\(g(7) = \dfrac{4}{7 + 1} = \dfrac12\)` },
+          { t: R`\(f(g(7)) = 4\left(\tfrac12\right) - 2 = 0\)` },
+          { p: '(b)', t: R`\(f^{-1}(x)\): \(4x - 2 = y\)` },
+          { t: R`\(4y - 2 = x\)` },
+          { t: R`\(4y = x + 2 \qquad y = \dfrac{x + 2}{4}\)` },
+          { t: R`\(g^{-1}(x)\): \(\dfrac{4}{x + 1} = y\)` },
+          { t: R`\(\dfrac{4}{y + 1} = x \qquad \dfrac{4}{x} = y + 1 \qquad \dfrac{4}{x} - 1 = y\)` },
+          { t: R`\(\dfrac{x + 2}{4} = \dfrac{4}{x} - 1\)` },
+          { t: R`\(\dfrac{x + 2}{4} - \dfrac{4}{x} + 1 = 0\)` },
+          { t: R`\(1 + \dfrac{x + 2}{4} = \dfrac{4}{x}\)` },
+          { t: R`\(1 + x^2 + 2x = 16\)` },
+          { t: R`\(x^2 + 2x - 15 = 0\)` },
+          { t: R`\(x = 3 \qquad x = -5\)` }
+        ],
+        wrong: 10,
+        wrongNote: R`Multiplying both sides by \(4x\) multiplies every term, the 1 included: \(4x + x(x + 2) = 16\).`,
+        scheme: q5scheme([1, 4, 6, 11, 12, 12], [true, true, true, false, false, false], [
+          'The examiner: a correct response.',
+          'Correct.',
+          'Correct.',
+          'The examiner: the inverses are equated correctly, but the candidate reaches an incorrect quadratic equation.',
+          'The examiner: no method is shown for solving it.',
+          'Wrong values, and no method. Mark for (b): 2 out of 5.'
+        ]),
+        fix: { o: [R`\(4x + x^2 + 2x = 16\)`, R`\(4 + x^2 + 2x = 16\)`, R`\(1 + x^2 + 2x = 16x\)`], ok: 0,
+          why: R`So \(x^2 + 6x - 16 = 0\), \((x + 8)(x - 2) = 0\), \(x = 2\) or \(x = -8\).`,
+          no: [null, 'The 1 is multiplied by 4x, giving 4x. Only the fraction’s 4 cancels.', 'The right-hand side is 4/x times 4x, which is 16.'] },
+        whyWrong: R`Clearing fractions means multiplying every term on both sides by the same thing. The June 2023 examiner report describes the same slip in another functions question (Paper 11, Q8(a)): the 1 was not multiplied when clearing a denominator, and that cost the method mark. Then, as in the high response, the quadratic was solved with no working shown.`,
+        model: Q5MODEL, note: Q5NOTE,
+        mm: { note: 'The examiner: the candidate could have checked their rearrangement to form the correct quadratic equation, and shown their method for solving it. Total: 3 out of 6.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q5), p.19. ' + Q5CREDIT },
+
+      /* ---------------------------------------------------------------- 4 */
+      { id: 'n20q11h', title: 'Nov 2020 9709/12 Q11(d)(e) · Stretch and translation',
+        mtitle: 'Nov 2020 9709/12 Q11(d)(e) · high response',
+        kind: 'Real student answer · high, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, high response (retyped)',
+        q: Q11, marks: 4,
+        lines: [
+          { p: '(d)', t: R`Stretch on \(y\) axis with scale factor \(\tfrac12\)` },
+          { t: R`followed by translation with vector \(\begin{pmatrix}0\\4\end{pmatrix}\)` },
+          { p: '(e)', t: R`translation with vector \(\begin{pmatrix}-\frac12\pi\\0\end{pmatrix}\)` },
+          { t: R`followed by stretch on \(x\)-axis with scale factor 2` }
+        ],
+        wrong: 0,
+        wrongNote: R`\(f(2x)\) changes \(x\), so the stretch is horizontal: factor \(\tfrac12\) in the \(x\)-direction. “On the \(y\) axis” describes a vertical stretch.`,
+        scheme: q11scheme([0, 1, 2, 3], [false, true, true, false], [
+          'The examiner: correct terminology, but the wrong axis.',
+          'The examiner: a correct response, using best practice, a column vector.',
+          'Correct.',
+          'The examiner: the right word for the stretch but, again, the wrong axis, so only 1 mark for (e).'
+        ]),
+        fix: { o: [R`Stretch, factor \(\tfrac12\), in the \(x\)-direction`, R`Stretch, factor 2, in the \(x\)-direction`, R`Stretch, factor \(\tfrac12\), in the \(y\)-direction`], ok: 0,
+          why: R`Replacing \(x\) with \(2x\) squeezes the graph toward the \(y\)-axis: every \(x\)-coordinate is halved.`,
+          no: [null, 'Replacing x with 2x halves the x-coordinates, so the factor is ½.', 'A stretch in the y-direction multiplies the whole function, like the 2f in part (e).'] },
+        whyWrong: R`A change inside the function, to \(x\), acts horizontally and works backwards: \(2x\) halves the \(x\)-coordinates. A change outside, to the whole function, acts vertically and works as it reads: \(2f\) doubles the \(y\)-coordinates. The student swapped these in both parts and got both translations right.`,
+        model: Q11MODEL, note: Q11NOTE,
+        mm: { note: 'The examiner: the candidate could have described the stretches with the correct axes in (d) and (e). Total for (d) and (e): 2 out of 4.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q11), p.43. ' + Q11CREDIT },
+
+      /* ---------------------------------------------------------------- 5 */
+      { id: 'n20q11m', title: 'Nov 2020 9709/12 Q11(d)(e) · The size of a translation',
+        mtitle: 'Nov 2020 9709/12 Q11(d)(e) · middle response',
+        kind: 'Real student answer · middle, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, middle response (retyped)',
+        q: Q11, marks: 4,
+        lines: [
+          { p: '(d)', t: R`\(g(x) = f(2x) + 4\)` },
+          { t: R`\(= 3\cos 2(2x) + 2 + 4\)` },
+          { t: R`\(= 3\cos(4x) + 6\)` },
+          { t: R`i) Horizontal stretch, stretch factor \(\tfrac12\)` },
+          { t: R`ii) vertical translation, vector \(\begin{pmatrix}0\\4\end{pmatrix}\)` },
+          { p: '(e)', t: 'i) vertical stretch, stretch factor 2' },
+          { t: R`ii) Horizontal translation, vector \(\begin{pmatrix}-\frac12\\0\end{pmatrix}\)` }
+        ],
+        wrong: 6,
+        wrongNote: R`\(x + \tfrac12\pi\) moves the graph \(\tfrac12\pi\) to the left. The top number of the vector is \(-\tfrac12\pi\): the \(\pi\) is part of the distance.`,
+        scheme: q11scheme([3, 4, 6, 5], [true, true, false, true], [
+          'The examiner: a correct response, with correct use of terminology.',
+          'Correct, with a column vector.',
+          R`The examiner: correct except that \(\pi\) is missing, so only 1 mark for (e).`,
+          'Correct: vertical, factor 2.'
+        ]),
+        fix: { o: [R`\(\begin{pmatrix}-\frac12\pi\\0\end{pmatrix}\)`, R`\(\begin{pmatrix}\frac12\pi\\0\end{pmatrix}\)`, R`\(\begin{pmatrix}0\\-\frac12\pi\end{pmatrix}\)`], ok: 0,
+          why: R`\(f\left(x + \tfrac12\pi\right)\) takes the value \(f\) had \(\tfrac12\pi\) further right, so the graph moves \(\tfrac12\pi\) to the left.`,
+          no: [null, 'x + ½π moves the graph to the left: the top number is negative.', 'A change to x moves the graph sideways. The top number of the vector is the sideways move.'] },
+        whyWrong: R`Everything else was right, including the words and the order. One missing symbol cost a mark: the translation distance is \(\tfrac12\pi\), and \(\tfrac12\) on its own is a different distance.`,
+        model: Q11MODEL, note: Q11NOTE,
+        mm: { note: 'The examiner: the answer to (e) would have been correct if the candidate had included the π. Total for (d) and (e): 3 out of 4.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q11), p.45. ' + Q11CREDIT },
+
+      /* ---------------------------------------------------------------- 6 */
+      { id: 's23q8', title: 'June 2023 9709/11 Q8 · Finding constants and an inverse',
+        kind: 'Written for practice · based on the examiner report',
+        who: 'Written for practice: a student answer showing errors the June 2023 examiner report describes',
+        q: R`The functions f and g are defined as follows, where \(a\) and \(b\) are constants.<br>\(f(x) = 1 + \dfrac{2a}{x - a}\) for \(x > a\),<br>\(g(x) = bx - 2\) for \(x \in \mathbb{R}\).<br>(a) Given that \(f(7) = \tfrac52\) and \(gf(5) = 4\), find the values of \(a\) and \(b\). <span class="mk">[4]</span><br>For the rest of this question, you should use the value of \(a\) which you found in (a).<br>(b) Find the domain of \(f^{-1}\). <span class="mk">[1]</span><br>(c) Find an expression for \(f^{-1}(x)\). <span class="mk">[3]</span>`,
+        marks: 8,
+        lines: [
+          { p: '(a)', t: R`\(1 + \dfrac{2a}{7 - a} = \dfrac52\)` },
+          { t: R`\(\dfrac{2a}{7 - a} = \dfrac32\)` },
+          { t: R`\(4a = 21 - 3a \Rightarrow 7a = 21 \Rightarrow a = 3\)` },
+          { t: R`\(f(5) = \dfrac{2(3)}{5 - 3} = 3\)` },
+          { t: R`\(gf(5) = g(3) = 3b - 2 = 4\)` },
+          { t: R`\(b = 2\)` },
+          { p: '(b)', t: R`\(x > 3\)` },
+          { p: '(c)', t: R`\(y = 1 + \dfrac{6}{x - 3}\)` },
+          { t: R`swap: \(x = 1 + \dfrac{6}{y - 3}\)` },
+          { t: R`\(x - 1 = \dfrac{6}{y - 3}\)` },
+          { t: R`\(y - 3 = \dfrac{6}{x - 1}\)` },
+          { t: R`\(f^{-1}(x) = 3 + \dfrac{6}{x - 1}\)` }
+        ],
+        wrong: 3,
+        wrongNote: R`\(f(5) = 1 + \dfrac{2(3)}{5 - 3} = 1 + 3 = 4\). The \(1 +\) at the front of f has been dropped.`,
+        scheme: [
+          { c: 'M1', on: 2, d: R`Substitute \(x = 7\), then solve for \(a\) by legitimate steps. Condone sign errors only.`, a: true, why: 'Correct, and every step is legitimate.' },
+          { c: 'A1', on: 2, d: R`\(a = 3\)`, a: true, dep: [0], why: 'Correct.' },
+          { c: 'M1', on: 4, d: R`Evaluate \(f(5)\), separately or within \(gf\), then solve for \(b\) by legitimate steps. Condone sign errors only. FT their \(a\).`, a: false,
+            why: R`Dropping the \(1 +\) means \(f(5)\) was never evaluated. The scheme condones sign errors only, so M0. The June 2023 examiner report names this exact error.` },
+          { c: 'A1', on: 5, d: R`\(b = \tfrac32\) OE`, a: false, dep: [2], why: 'Needs the M1, and the value is wrong too.' },
+          { c: 'B1', on: 6, d: R`\(x > 1\). B0 for \(f^{-1}(x) > 1\), \(f(x) > 1\) or \(y > 1\).`, a: false,
+            why: R`\(x > 3\) is the domain of f. The domain of \(f^{-1}\) is the range of f. The report says many candidates gave \(x > 3\).` },
+          { c: '*M1', on: 9, d: R`\(x - 1 = \dfrac{6}{y - 3}\) OE (the variables swapped, then the first rearranging step). Allow their 3 from (a).`, a: true, why: 'Correct.' },
+          { c: 'DM1', on: 10, d: R`\(y - 3 = \dfrac{6}{x - 1}\) OE. Allow their 3 from (a).`, a: true, dep: [5], why: 'The *M1 was earned, and this step is right.' },
+          { c: 'A1', on: 11, d: R`\(f^{-1}(x) = 3 + \dfrac{6}{x - 1}\) OE ISW. Must be in terms of \(x\).`, a: true, dep: [6], why: 'Correct, in terms of x.' }
+        ],
+        fix: { o: [R`\(f(5) = 1 + \dfrac{2(3)}{5 - 3} = 4\)`, R`\(f(5) = 1 + \dfrac{2(5)}{5 - 3} = 6\)`, R`\(f(5) = \dfrac{1 + 2(3)}{5 - 3} = \dfrac72\)`], ok: 0,
+          why: R`Then \(g(4) = 4b - 2 = 4\), so \(b = \tfrac32\).`,
+          no: [null, 'The numerator is 2a, and a = 3. Only the x in the denominator becomes 5.', 'The 1 is added to the whole fraction. It is not part of the numerator.'] },
+        whyWrong: R`One dropped term in \(f(5)\) cost two marks in (a). In (b), the domain of the inverse is the range of the function: for \(x > 3\), \(\dfrac{6}{x - 3} > 0\), so \(f(x) > 1\). Part (c) was marked on its own and scored all 3, because the earlier errors did not touch it.`,
+        model: [
+          { t: R`\(1 + \dfrac{2a}{7 - a} = \dfrac52 \Rightarrow 7a = 21\)`, c: 'M1' },
+          { t: R`\(a = 3\)`, c: 'A1' },
+          { t: R`\(f(5) = 1 + \dfrac{6}{2} = 4\), \(4b - 2 = 4\)`, c: 'M1' },
+          { t: R`\(b = \tfrac32\)`, c: 'A1' },
+          { t: R`(b) \(x > 1\)`, c: 'B1' },
+          { t: R`(c) \(x - 1 = \dfrac{6}{y - 3}\)`, c: '*M1' },
+          { t: R`\(y - 3 = \dfrac{6}{x - 1}\)`, c: 'DM1' },
+          { t: R`\(f^{-1}(x) = 3 + \dfrac{6}{x - 1}\)`, c: 'A1' }
+        ],
+        note: 'The June 2023 examiner report (Paper 11, Q8): in (a) a common error was not multiplying the 1 when clearing the denominator 7 − a, and those who found f(5) first did better, though many left out the “1 +”. In (b) only a small number found x > 1: many confused range and domain, or gave x > 3, the domain of f. In (c), successful answers swapped the variables and made y the subject in a few lines.',
+        credit: 'Question and mark scheme: Cambridge 9709/11 June 2023 Q8 (question paper pp.10 to 11, mark scheme pp.14 to 15). Script: written for practice from the June 2023 examiner report (Paper 11, Q8); not a real student’s work.' },
+
+      /* ---------------------------------------------------------------- 7 */
+      { id: 'specq2', title: 'Specimen Paper 1 Q2 · Inverse and composite',
+        kind: 'Written for practice',
+        who: 'Written for practice: a student answer with the composite the wrong way round',
+        q: R`Functions f and g are defined by<br>\(f : x \mapsto 3x + 2\), \(x \in \mathbb{R}\),<br>\(g : x \mapsto 4x - 12\), \(x \in \mathbb{R}\).<br>Solve the equation \(f^{-1}(x) = gf(x)\). <span class="mk">[4]</span>`,
+        marks: 4,
+        lines: [
+          { t: R`\(y = 3x + 2 \Rightarrow x = \dfrac{y - 2}{3}\)` },
+          { t: R`\(f^{-1}(x) = \dfrac{x - 2}{3}\)` },
+          { t: R`\(gf(x) = 3(4x - 12) + 2\)` },
+          { t: R`\(= 12x - 34\)` },
+          { t: R`\(\dfrac{x - 2}{3} = 12x - 34\)` },
+          { t: R`\(x - 2 = 36x - 102\)` },
+          { t: R`\(100 = 35x \Rightarrow x = \dfrac{20}{7}\)` }
+        ],
+        wrong: 2,
+        wrongNote: R`\(gf(x)\) means f first, then g: \(g(3x + 2) = 4(3x + 2) - 12\). The line written is \(fg(x)\).`,
+        scheme: [
+          { c: 'B1', on: 1, d: R`\(f^{-1}(x) = \dfrac{x - 2}{3}\)`, a: true, why: 'Correct.' },
+          { c: 'B1', on: 3, d: R`\(gf(x) = 4(3x + 2) - 12\ [= 12x - 4]\)`, a: false, why: 'They found fg(x) instead.' },
+          { c: 'M1', on: 4, d: R`Equate their \(f^{-1}(x)\) and their \(gf(x)\), and solve.`, a: true, why: 'Cambridge’s comment: the method mark is for equating their two expressions, and theirs are equated and solved.' },
+          { c: 'A1', on: 6, d: R`\(x = \tfrac27\)`, a: false, dep: [2], why: 'The method mark was earned, but the value is wrong.' }
+        ],
+        fix: { o: [R`\(gf(x) = 4(3x + 2) - 12\)`, R`\(gf(x) = (4x - 12)(3x + 2)\)`, R`\(gf(x) = 3(4x + 2) - 12\)`], ok: 0,
+          why: R`So \(gf(x) = 12x - 4\), and \(\dfrac{x - 2}{3} = 12x - 4\) gives \(35x = 10\), \(x = \tfrac27\).`,
+          no: [null, 'A composite function is not a product. gf(x) means g applied to f(x).', 'Put the whole of f(x) = 3x + 2 in place of x in g.'] },
+        whyWrong: R`\(gf(x)\) is read from right to left: the function next to \(x\) acts first. Writing \(g\big(f(x)\big)\) as a middle step makes the order hard to get wrong. The M1 still came, because equating and solving was right for their expressions.`,
+        model: [
+          { t: R`\(f^{-1}(x) = \dfrac{x - 2}{3}\)`, c: 'B1' },
+          { t: R`\(gf(x) = 4(3x + 2) - 12 = 12x - 4\)`, c: 'B1' },
+          { t: R`\(\dfrac{x - 2}{3} = 12x - 4 \Rightarrow x - 2 = 36x - 12\)`, c: 'M1' },
+          { t: R`\(x = \tfrac27\)`, c: 'A1' }
+        ],
+        note: 'Cambridge’s Specimen Paper Answers: candidates should show their working here, because a method mark is given for equating their expressions for f⁻¹(x) and gf(x).',
+        credit: 'Question: Cambridge 9709 Specimen Paper 1 (2020) Q2. Marks and comment: Cambridge Specimen Paper Answers, Paper 1, p.8. Script: written for practice; not a real student’s work.' }
+    ],
+
+    marker: [
+      { id: 'j24q2a', title: 'June 2024 9709/12 Q2', mtitle: 'June 2024 9709/12 Q2 · Script A',
+        kind: 'Real student answer · Script A',
+        who: 'Real candidate response · Cambridge I2 training pack, June 2024 9709/12, Script A (retyped)',
+        q: J2Q, marks: 5,
+        lines: [
+          { t: R`There has been a horizontal translation by vector \(\begin{pmatrix}3\\0\end{pmatrix}\)` },
+          { t: 'There has been a vertical stretch along the y axis by scale factor 4' },
+          { t: R`There has been a vertical translation by vector \(\begin{pmatrix}0\\-8\end{pmatrix}\)` }
+        ],
+        scheme: j2scheme([1, 2, 2, 2], [true, 'B2', true, true], [
+          'Vertical, factor 4. The guidance allows “along the y axis”.',
+          'The word and both vectors are right: B2.',
+          'Two translations, one in each direction, and one stretch.',
+          'The stretch (second line) comes before the vertical translation (third line). The horizontal translation may come at any point.'
+        ]),
+        model: J2MODEL,
+        mm: { note: 'Our marking, using the published scheme: full marks. Notice the order: the horizontal translation came first, which is allowed, because only the stretch and the vertical translation have to be in a particular order.' },
+        credit: J2CREDIT },
+      'j24q2b',
+      { id: 'j24q2c', title: 'June 2024 9709/12 Q2', mtitle: 'June 2024 9709/12 Q2 · Script C',
+        kind: 'Real student answer · Script C',
+        who: 'Real candidate response · Cambridge I2 training pack, June 2024 9709/12, Script C (retyped)',
+        q: J2Q, marks: 5,
+        lines: [
+          { t: R`<s>Translation \(\begin{pmatrix}+3\\-8\end{pmatrix}\)</s> (crossed out by the student)` },
+          { t: R`Translation \(\begin{pmatrix}3\\-2\end{pmatrix}\)` },
+          { t: 'Stretch with factor 4 in y direction.' }
+        ],
+        scheme: j2scheme([2, 1, 2, 2], [true, 'B2', true, true], [
+          'Stretch, factor 4, in the y-direction: correct.',
+          R`The scheme lists \(\begin{pmatrix}0\\-8\end{pmatrix}\). This student translates first, by \(\begin{pmatrix}3\\-2\end{pmatrix}\), then stretches: \(4\left[(x - 3)^2 - 2\right] = 4(x - 3)^2 - 8\). That is a correct sequence, and Principle 1 of the scheme says any correct method can earn full marks, so we award B2. The crossed-out line is ignored because it was replaced.`,
+          'Two translations (in one vector) and one stretch.',
+          R`For their vector, translating first and then stretching is the correct order. The June 2024 examiner report (Paper 11, Q2(a)) makes the same point about another question: candidates who started with the translation had to use a smaller vector. An examiner unsure about a case like this asks their Team Leader.`
+        ]),
+        model: J2MODEL,
+        mm: { note: 'The hardest call in the set, and our ruling: the I2 pack gives no marks. The printed scheme expects the stretch first, but this sequence is also correct, so the scheme’s own principles point to full marks. When a script does something correct that the scheme does not list, examiners refer it to their Team Leader.' },
+        credit: J2CREDIT },
+      'n20q5h', 'n20q5m',
+      { id: 'n20q5l', title: 'Nov 2020 9709/12 Q5', mtitle: 'Nov 2020 9709/12 Q5 · low response',
+        kind: 'Real student answer · low, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, low response (retyped)',
+        q: Q5, marks: 6,
+        lines: [
+          { p: '(a)', t: R`\(4\left(\dfrac{4}{7 + 1}\right) - 2 = 0\)` },
+          { p: '(b)', t: R`\(f^{-1}(x)\): \(x = 4y - 2\)` },
+          { t: R`\((x - 2) \div 4 = y\)` },
+          { t: R`\(y = \dfrac{x - 2}{4}\)` },
+          { t: R`\(g^{-1}(x)\): \(x = \dfrac{4}{y + 1}\)` },
+          { t: R`\(y + 1 = \dfrac{4}{x}\)` },
+          { t: R`\(y = \dfrac{4}{x} + 1\)` },
+          { t: R`\(\dfrac{x - 2}{4} = \dfrac{4}{x} + 1\)` },
+          { t: R`\(\dfrac{x(x - 2)}{4} = \dfrac{4}{1} + x\)` },
+          { t: R`\(\dfrac{x^2 - 2x}{4} - x - 4 = 0\)` },
+          { t: R`\(x^2 - 2x - 4x - 16 = 0\)` },
+          { t: R`\(x^2 - 6x - 16 = 0\)` },
+          { t: R`\(x = 8\) or \(-2\)` }
+        ],
+        scheme: q5scheme([0, 3, 6, 11, 12, 12], [true, false, false, false, false, false], [
+          'The examiner: the response is correct. Mark for (a): 1 out of 1.',
+          R`The examiner: the method is correct for both inverses, but there are mistakes rearranging. From \(x = 4y - 2\), \(4y = x + 2\).`,
+          R`The same kind of slip: \(y + 1 = \dfrac{4}{x}\) gives \(y = \dfrac{4}{x} - 1\).`,
+          'The examiner: an incorrect quadratic equation.',
+          'The examiner: no method shown for solving it.',
+          'Wrong values, and no method. Mark for (b): 0 out of 5.'
+        ]),
+        model: Q5MODEL,
+        mm: { note: 'The examiner: the candidate could have been more careful when finding the inverse functions, and shown their method for solving the quadratic equation. Total: 1 out of 6.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q5), p.20. ' + Q5CREDIT },
+      'n20q11h', 'n20q11m',
+      { id: 'n20q11l', title: 'Nov 2020 9709/12 Q11(d)(e)', mtitle: 'Nov 2020 9709/12 Q11(d)(e) · low response',
+        kind: 'Real student answer · low, with the examiner’s marks',
+        who: 'Real candidate response · Cambridge Example Candidate Responses (Paper 1), Nov 2020 9709/12, low response (retyped)',
+        q: Q11, marks: 4,
+        lines: [
+          { p: '(d)', t: R`Stretch by \(\tfrac12\)` },
+          { p: '(e)', t: 'Stretch by factor 2' },
+          { t: R`Translation left by \(\tfrac{\pi}{2}\) along the \(x\)-axis` }
+        ],
+        scheme: q11scheme([0, null, 2, 1], [false, false, true, false], [
+          'The examiner: no direction is given for the stretch, so no marks.',
+          'No translation is given. Mark for (d): 0 out of 2.',
+          'The examiner: a column vector is better practice, but this earns the mark because it says “along the x-axis”.',
+          'Again, no direction for the stretch. Mark for (e): 1 out of 2.'
+        ]),
+        model: Q11MODEL,
+        mm: { note: 'The examiner: the candidate needed to give the direction of each stretch, and could have used column vectors for the translations. Total for (d) and (e): 1 out of 4.' },
+        credit: 'Question, script, marks and comments: Cambridge Example Candidate Responses, Paper 1 (Nov 2020 9709/12 Q11), p.47. ' + Q11CREDIT }
+    ]
+  });
+})();
+</script>
+</body>
+</html>
