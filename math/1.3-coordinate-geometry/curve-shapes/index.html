@@ -95,6 +95,7 @@ header { margin-bottom: 18px; }
 .seg { display: inline-flex; border: 1px solid var(--hairline-strong); border-radius: 50px; overflow: hidden; }
 .seg button { background: transparent; border: none; padding: 9px 14px; font-size: 13.5px; color: var(--text-2); min-height: 44px; }
 .seg button[aria-pressed="true"] { background: var(--accent-wash); color: var(--accent); }
+.seg button:focus-visible { outline-offset: -3px; }
 .kbd { font-family: var(--mono); font-size: 11px; color: var(--text-2); border: 1px solid var(--hairline-strong); border-radius: 6px; padding: 0 5px; margin-left: 6px; }
 .go .kbd { color: rgba(10,10,10,0.7); border-color: rgba(10,10,10,0.35); }
 
@@ -394,6 +395,7 @@ footer a { color: var(--accent); }
       var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t[1];
       b.setAttribute('aria-pressed', store.topics.indexOf(t[0]) >= 0 ? 'true' : 'false');
       b.addEventListener('click', function () {
+        if (sprintBusy()) return;
         var on = store.topics.indexOf(t[0]) >= 0;
         if (store.topics.length === TOPICS.length) store.topics = [t[0]];   /* from All, a tap means "just this area" */
         else if (on && store.topics.length === 1) return;                   /* keep at least one area on */
@@ -404,11 +406,16 @@ footer a { color: var(--accent); }
     });
     var all = document.createElement('button'); all.type = 'button'; all.className = 'chip'; all.textContent = 'All';
     all.setAttribute('aria-pressed', store.topics.length === TOPICS.length ? 'true' : 'false');
-    all.addEventListener('click', function () { store.topics = TOPICS.map(function (t) { return t[0]; }); save(); buildTopics(); queues = {}; refresh(); });
+    all.addEventListener('click', function () { if (sprintBusy()) return; store.topics = TOPICS.map(function (t) { return t[0]; }); save(); buildTopics(); queues = {}; refresh(); });
     box.appendChild(all);
     $('count').textContent = active().length + ' of ' + ITEMS.length + ' curves in play';
   }
 
+  function sprintBusy() {   /* topics are locked while the clock runs */
+    if (!(sp && sp.timer && mode === 'sprint')) return false;
+    $('count').textContent = 'Topics are locked until the sprint ends.';
+    return true;
+  }
   /* a shuffled queue per mode, so nothing repeats until the pool runs out; misses come back sooner */
   var queues = {};
   function nextItem(mode, pool) {
@@ -578,7 +585,7 @@ footer a { color: var(--accent); }
     if (!sk.scored) { sk.scored = true; record(sk.it.id, total === 2); }
     $('sNext').disabled = false;
     if (sk.it.fu && !sk.fuShown) {
-      sk.fuShown = true; var fu = sk.it.fu, h = '<div class="fb"><b>Follow-up, ' + esc(sk.it.src.replace(/Q7\(b\) \[2\]/, '')) + '</b><p>' + esc(fu.q) + '</p><div class="popts">';
+      sk.fuShown = true; var fu = sk.it.fu, h = '<div class="fb"><b>Follow-up: ' + esc(sk.it.src.replace(/,?\s*Q\d+\([a-z]\)\s*\[\d+\]\s*$/, '')) + '</b><p>' + esc(fu.q) + '</p><div class="popts">';
       fu.opts.forEach(function (o, i) { h += '<button type="button" class="popt" data-f="' + i + '"><span class="key">' + (i + 1) + '</span>' + esc(o) + '</button>'; });
       $('sFu').innerHTML = h + '</div><div id="sFuA" aria-live="polite"></div></div>';
       [].forEach.call($('sFu').querySelectorAll('[data-f]'), function (b) { b.addEventListener('click', function () { sketchFu(+b.getAttribute('data-f')); }); });
@@ -589,7 +596,7 @@ footer a { color: var(--accent); }
     [].forEach.call($('sFu').querySelectorAll('[data-f]'), function (b, k) { if (fu.opts[k] === fu.ans) b.classList.add('right'); else if (k === i) b.classList.add('wrong'); });
     draw($('sRev').querySelector('.bigfig'), sk.it, { features: true, fs: 10.5, extra: [[F(fu.js), RED, '7 5', sk.it.dom[0], sk.it.dom[1], 2.4]] });
     $('sFuA').innerHTML = '<p>' + (fu.opts[i] === fu.ans ? '<span class="v ok">Right.</span> ' : '<span class="v no">Not this one.</span> ') +
-      'The line y = 5 ' + M + ' 2x (red, dashed) meets the curve once between 0 and 4π, so there is ' + fu.ans + ' solution: ' + esc(fu.code) + '. Count the meeting points on your sketch; there is no need to solve anything.</p>';
+      'The line y = ' + esc(String(fu.line).replace(/\*/g, '').replace(/-/g, M)) + ' (red, dashed) meets the curve ' + ({ '0': 'nowhere', '1': 'once', '2': 'twice' }[fu.ans] || fu.ans + ' times') + ' on the interval shown, so there ' + (fu.ans === '1' ? 'is 1 solution' : 'are ' + esc(fu.ans) + ' solutions') + ' (' + esc(fu.code) + '). Count the meeting points on your sketch; there is no need to solve anything.</p>';
     $('sNext').focus();
   }
 
@@ -597,7 +604,7 @@ footer a { color: var(--accent); }
   var BASES = [['sq', 'x²'], ['cube', 'x³'], ['root', '√x'], ['recip', '1/x'], ['sin', 'sin x']];
   var MOVEN = [['add', 'f(x) + a'], ['shift', 'f(x + a)'], ['vs', 'af(x)'], ['hs', 'f(ax)'], ['rx', M + 'f(x)'], ['ry', 'f(' + M + 'x)']];
   var PWIN = { sq: [-5, 5, -4, 9], cube: [-5, 5, -6, 6], root: [-6, 10, -4, 7], recip: [-6, 6, -6, 6], sin: [-200, 400, -3.5, 3.5] };
-  var pr = null, pPick = { base: null, move: null };
+  var pr = null, prRaf = 0, pPick = { base: null, move: null };
   function predPool() {
     var on = PRED.filter(function (p) { return store.topics.indexOf(p.topic) >= 0; });
     return on;
@@ -664,6 +671,7 @@ footer a { color: var(--accent); }
       p = src[Math.floor(Math.random() * src.length)];
       if (pr && cand.length > 1 && p.id === pr.p.id) p = cand[(cand.indexOf(p) + 1) % cand.length];
     }
+    if (prRaf) { cancelAnimationFrame(prRaf); prRaf = 0; }
     pr = { p: p, opts: shuffle(p.opts), done: false };
     var bases = BASES.filter(function (b) { return pool.some(function (x) { return x.base === b[0]; }); });
     var h = '<div class="pick"><div class="lbl">Base curve</div><div class="row" id="pBase" role="group" aria-label="Base curve">' +
@@ -698,19 +706,21 @@ footer a { color: var(--accent); }
     }
   }
   function predictAnswer(i) {
-    if (pr.done) return; pr.done = true; var p = pr.p, box = $('pBody'), o = pr.opts[i];
+    if (pr.done) return; pr.done = true; var my = pr, p = pr.p, box = $('pBody'), o = pr.opts[i];
     box.classList.add('done');
     [].forEach.call(box.querySelectorAll('.popt'), function (b, k) { if (pr.opts[k].ok) b.classList.add('right'); else if (k === i) b.classList.add('wrong'); });
     record(p.id, o.ok);
     var svg = box.querySelector('.bigfig'), t0 = null, dur = 1100;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     function step(ts) {
+      if (pr !== my) return;   /* a new question replaced this one mid-animation */
       if (t0 === null) t0 = ts; var t = Math.min(1, (ts - t0) / dur), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-      pDraw(svg, p, e, null, true); if (t < 1) requestAnimationFrame(step); else after();
+      pDraw(svg, p, e, null, true); if (t < 1) prRaf = requestAnimationFrame(step); else { prRaf = 0; after(); }
     }
-    if (reduce) { pDraw(svg, p, 1, null, true); after(); } else requestAnimationFrame(step);
+    if (reduce) { pDraw(svg, p, 1, null, true); after(); } else prRaf = requestAnimationFrame(step);
     function after() {
-      var right = pr.opts.filter(function (x) { return x.ok; })[0];
+      if (pr !== my) return;
+      var right = my.opts.filter(function (x) { return x.ok; })[0];
       var h = '<div class="fb">' + (o.ok ? '<span class="v ok">Right.</span> ' : '<span class="v no">Not this one.</span> <span class="why">' + esc(o.t) + ' is what you get if you ' + esc(o.why) + '.</span> ') +
         '<p>It lands at <b>' + esc(right.t) + '</b>. The dashed gray curve is where it started.</p></div>';
       var sl = (p.move === 'add' || p.move === 'shift' || p.move === 'vs' || p.move === 'hs') ? (p.base === 'sin' && (p.move === 'add' || p.move === 'shift') ? SL['sin' + p.move] : SL[p.move]) : null;
@@ -767,9 +777,10 @@ footer a { color: var(--accent); }
     if (!sp || sp.q.done) return; var box = $('spQ'), ok = markQ(box, sp.q, i);
     sp.n++; if (ok) sp.score++; else sp.miss.push(sp.q.it); record(sp.q.it.id, ok);
     $('spScore').textContent = sp.score;
-    setTimeout(sprintNext, ok ? 350 : 900);
+    var me = sp; clearTimeout(sp.next);
+    sp.next = setTimeout(function () { if (sp === me) sprintNext(); }, ok ? 350 : 900);
   }
-  function stopSprint(silent) { if (sp && sp.timer) clearInterval(sp.timer); if (silent) sp = null; }
+  function stopSprint(silent) { if (sp) { if (sp.timer) clearInterval(sp.timer); clearTimeout(sp.next); } if (silent) sp = null; }
   function sprintEnd() {
     stopSprint(false); var s = sp; sp = null;
     var nb = s.score > 0 && (store.best == null || s.score > store.best);

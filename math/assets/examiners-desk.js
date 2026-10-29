@@ -95,9 +95,9 @@
       qsrc: 'Abbreviations, ' + MS11 + ', p.5',
       ex: { c: 'B1', t: R`\(x^2 + (y-2)^2 = 100\). Guidance: "OE e.g. \((x-0)^2 + (y-2)^2 = 10^2\) ISW."`, src: 'June 2023 9709/11 Q12(a), mark scheme p.20' },
       earn: 'Any correct equivalent form, unless the question asks for a particular form.',
-      lose: 'When the question names a form ("in the form \(ax + by + c = 0\)") and you leave it in another.',
+      lose: R`When the question names a form ("in the form \(ax + by + c = 0\)") and you leave it in another.`,
       chk: { q: R`June 2024 9709/12 Q10(b) wants \(ax + by + c = 0\) with integers. The scheme gives \(2x - 13y + 247 = 0\) "or ± integer multiples of this". A student writes \(-4x + 26y - 494 = 0\). A1?`,
-        o: ['Yes', 'No'], ok: 0, why: 'It is \(-2\) times the scheme answer, an integer multiple, in the form asked.' } },
+        o: ['Yes', 'No'], ok: 0, why: R`It is \(-2\) times the scheme answer, an integer multiple, in the form asked.` } },
     AG: { code: 'AG', group: 'abbr', name: 'Answer Given',
       plain: 'The answer is printed in the question ("Show that..."), so the marks are for the working that gets there.',
       quote: 'Answer Given on the question paper (so extra checking is needed to ensure that the detailed working leading to the result is valid)',
@@ -143,9 +143,9 @@
       quote: 'Special Case (detailing the mark to be given for a specific wrong solution, or a case where some standard marking practice is to be varied in the light of a particular circumstance)',
       qsrc: 'Abbreviations, ' + MS11 + ', p.5',
       ex: { c: 'A1', t: R`\(a = 3\). Guidance: "If M0, SC B1 for \(a = 3\) with no working."`, src: 'June 2023 9709/11 Q8(a), mark scheme p.14' },
-      earn: 'Exactly the case the scheme describes.', lose: 'Anything else: SC marks are an exception, never the plan.',
+      earn: 'Exactly the case the scheme describes.', lose: 'Anything other than the case the scheme describes. Plan to earn the M and A marks.',
       chk: { q: R`June 2023 Q8(a) has M1 A1 for \(a\). A student writes only \(a = 3\), no working. What do they score for those two marks?`,
-        o: ['SC B1, so 1 mark', '2 marks', '0 marks'], ok: 0, why: 'M0 (no method), so A0, but the scheme gives SC B1 for \(a = 3\) with no working.' } },
+        o: ['SC B1, so 1 mark', '2 marks', '0 marks'], ok: 0, why: R`M0 (no method), so A0, but the scheme gives SC B1 for \(a = 3\) with no working.` } },
     WWW: { code: 'WWW', group: 'abbr', name: 'Without Wrong Working',
       plain: 'The answer earns the mark only if no wrong working led to it.',
       quote: 'Without Wrong Working', qsrc: 'Abbreviations, ' + MS11 + ', p.5',
@@ -337,7 +337,7 @@
 
     function status() {
       var done = scripts.filter(function (s) { return S.best[s.id] != null; });
-      var avg = done.length ? Math.round(done.reduce(function (a, s) { return a + S.best[s.id]; }, 0) / scripts.length) : 0;
+      var avg = done.length ? Math.round(done.reduce(function (a, s) { return a + S.best[s.id]; }, 0) / done.length) : 0;
       var ticks = Object.keys(S.cc).filter(function (k) { return S.cc[k] >= 2; }).length;
       var learned = Object.keys(S.learned).length;
       $('#dStatus').innerHTML = 'Rank <b>' + (done.length ? rankFor(avg) : 'Trainee Marker') + '</b> · Scripts marked <b>' + done.length + ' of ' + scripts.length + '</b>' +
@@ -528,7 +528,7 @@
           var acts = $('.acts', r), res = $('.res', r);
           var zero = m.pick ? m.pick[m.pick.length - 1] : false;
           var btns = m.pick ? m.pick.map(function (l, i) { return bt(l, i === 0 ? 'go' : 'ghost'); }) : [bt('Award', 'go'), bt('Withhold', 'ghost')];
-          btns.forEach(function (b) { acts.appendChild(b); });
+          btns.forEach(function (b) { b.setAttribute('aria-label', b.textContent + ' ' + m.c); acts.appendChild(b); });
           max += 1;
           btns[0].focus();
           function decide(give, forced) {
@@ -580,8 +580,10 @@
         order.forEach(function (i) {
           var b = bt(s.fix.o[i], 'opt'); b.setAttribute('data-i', i); o.appendChild(b);
           b.addEventListener('click', function () {
+            if (b.disabled) return;
             fixTries++;
             var right = i === s.fix.ok;
+            if (!right) b.disabled = true;
             b.classList.add(right ? 'right' : 'wrong');
             say.hidden = false; say.className = 'say ' + (right ? 'ok' : 'no');
             say.innerHTML = right ? '<b class="t">That fixes it.</b>' + s.fix.why : '<b class="t">Not this one.</b>' + (s.fix.no && s.fix.no[i] ? s.fix.no[i] : 'Check it against the question.');

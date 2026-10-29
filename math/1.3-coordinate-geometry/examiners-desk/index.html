@@ -303,7 +303,7 @@
           { c: 'B1', on: 1, d: R`Gradient \(CD = \dfrac17\).`, a: true, why: 'Correct.' },
           { c: 'M1', on: 2, d: R`Gradient \(AB = -7\) (perpendicular to \(CD\)).`, a: false, why: R`They used \(CD\)'s gradient for \(AB\), with no perpendicular step.` },
           { c: 'M1', on: 3, d: R`Equation of a line through \(D\) with their gradient.`, a: true, why: 'The line-equation method through D is right for their gradient.' },
-          { c: 'A1', on: 4, d: R`\(y = -7x + 12\)`, a: false, why: 'Wrong gradient, so the wrong line.' }
+          { c: 'A1', on: 4, d: R`\(y = -7x + 12\)`, a: false, dep: [3], why: 'Wrong gradient, so the wrong line.' }
         ],
         fix: { o: [R`gradient \(AB = -7\)`, R`gradient \(AB = 7\)`, R`gradient \(AB = -\dfrac17\)`], ok: 0,
           why: R`Then \(y - 1\tfrac12 = -7\left(x - 1\tfrac12\right)\), so \(y = -7x + 12\). Check: \(D\) gives \(1\tfrac12 = -10\tfrac12 + 12\).`,
