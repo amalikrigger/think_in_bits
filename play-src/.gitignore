@@ -9,3 +9,6 @@ playwright-report/
 # Real quizzes carry answers and this repo is public: keep them out of git.
 quizzes-private/*
 !quizzes-private/README.md
+
+# Full screenshot sweep output (≈20 MB); a curated set lives in screenshots-selected/.
+screenshots/

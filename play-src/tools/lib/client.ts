@@ -36,6 +36,8 @@ export class Connection {
   readonly received: { at: number; message: ServerMessage }[] = [];
   private readonly socket: WebSocket;
   private waiters: Waiter[] = [];
+  private listeners = new Set<(m: ServerMessage) => void>();
+  private closeListeners = new Set<(code: number) => void>();
   private openPromise: Promise<void>;
   closed = false;
   closeCode: number | null = null;
@@ -50,6 +52,7 @@ export class Connection {
       const message = JSON.parse(String(event.data)) as ServerMessage;
       this.received.push({ at: performance.now(), message });
       if (message.type === "ping") this.send({ type: "pong", id: message.id });
+      for (const listener of this.listeners) listener(message);
       for (const waiter of [...this.waiters]) {
         if (waiter.match(message)) {
           this.waiters = this.waiters.filter((w) => w !== waiter);
@@ -60,9 +63,18 @@ export class Connection {
     this.socket.addEventListener("close", (event) => {
       this.closed = true;
       this.closeCode = event.code;
+      for (const listener of this.closeListeners) listener(event.code);
       for (const waiter of this.waiters) waiter.reject(new Error(`socket closed (${event.code})`));
       this.waiters = [];
     });
+  }
+
+  onMessage(listener: (m: ServerMessage) => void): void {
+    this.listeners.add(listener);
+  }
+
+  onClose(listener: (code: number) => void): void {
+    this.closeListeners.add(listener);
   }
 
   opened(): Promise<void> {
