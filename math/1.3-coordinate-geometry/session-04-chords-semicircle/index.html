@@ -23,6 +23,8 @@
     .rv-a, .rv-b, .rv-c { opacity: 0; transition: opacity .35s ease; }
     .rv-c2, .rv-d { opacity: 0; transition: opacity .35s ease; }
     .slide:has(.r12a.on) .rv-c2, .slide:has(.r12b.on) .rv-d { opacity: 1; }
+    .rv-g, .rv-h, .rv-i, .rv-m { opacity: 0; transition: opacity .35s ease; }
+    .slide:has(.r7b.on) .rv-g, .slide:has(.r7c.on) .rv-h, .slide:has(.r7a.on) .rv-i, .slide:has(.check.open) .rv-m { opacity: 1; }
     .slide:has(.r9a.on) .rv-a, .slide:has(.r9b.on) .rv-b, .slide:has(.r9c.on) .rv-c { opacity: 1; }
     #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
     #cgZoom.on { display: flex; }
@@ -407,13 +409,11 @@
   <h2>The circle \((x - 6)^2 + (y + a)^2 = 18\) has the line \(y = 2a - x\) as a tangent. Find the two possible values of the constant \(a\).</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
-      <svg class="cg" id="fig-q7a" aria-label="Two cases: with a equals 0, the dashed circle centered 6, 0 and the dashed line y equals minus x touch at 3, minus 3; with a equals 4, the circle centered 6, minus 4 and the line y equals 8 minus x touch at 9, minus 1"></svg>
-      <p class="key"><span class="sw dash"></span>\(a = 0\): circle and line &nbsp; <span class="sw ans"></span>\(a = 4\): line (white circle)</p>
-      <p class="small frag"><b>Both values work:</b> each line just touches its own circle. This is the answer we are about to find.</p>
+      <p class="small"><b>What is \(a\)?</b> A constant: one fixed number we do not know yet. Each value of \(a\) gives a different circle and a different line, and the question asks for the values where the line just touches its circle.</p>
+      <p class="small frag"><b>The circle</b> \((x - 6)^2 + (y + a)^2 = 18\) has center \((6, -a)\) (the signs flip, Session 2) and radius \(\sqrt{18}\). <b>The line</b> \(y = 2a - x\) has gradient \(-1\) and crosses the \(y\)-axis at \(2a\).</p>
+      <p class="small frag"><b>Try it, no algebra yet:</b> pick any number for \(a\), say \(a = 1\). The circle is \((x - 6)^2 + (y + 1)^2 = 18\) and the line is \(y = 2 - x\). Whether that line touches, misses or cuts the circle depends on \(a\). We want the \(a\) that makes it touch exactly once.</p>
     </div></div>
     <div><div class="card">
-      <p class="small"><b>What is \(a\)?</b> A constant: one fixed number we do not know yet. Each value of \(a\) gives a different circle and a different line.</p>
-      <p class="small frag"><b>The circle</b> has center \((6, -a)\) (the signs flip, Session 2) and radius \(\sqrt{18}\). <b>The line</b> \(y = 2a - x\) has gradient \(-1\) and crosses the \(y\)-axis at \(2a\).</p>
       <p class="small frag"><b>The question:</b> for which values of \(a\) does the line just touch the circle (a tangent: exactly one meeting point)?</p>
       <p class="small frag"><b>Why substitute first?</b> Meeting points make both equations true at once, so we put the line into the circle, as on slide 6. That gives a quadratic in \(x\) whose roots are the \(x\)-coordinates of the meeting points. A tangent meets once, so there is one repeated root: \(b^2 - 4ac = 0\) (Session 3). That gives an equation we can solve for \(a\).</p>
       <p class="small frag bad"><b>What the examiners saw:</b> this route worked best. Marks were lost expanding brackets, and some forgot the 18 on the right-hand side.</p>
@@ -451,42 +451,66 @@
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
       <svg class="cg" id="fig-q7" aria-label="The circle with center 6, minus 4 and radius root 18, the tangent y equals 8 minus x touching at 9, minus 1, and the diameter y equals x minus 10 through the center and the touching point"></svg>
-      <p class="key"><span class="sw circ"></span>circle, \(a = 4\) &nbsp; <span class="sw ans"></span>tangent \(y = 8 - x\) &nbsp; <span class="sw gold"></span>the diameter</p>
+      <p class="key"><span class="sw circ"></span>circle, \(a = 4\) &nbsp; <span class="sw ans"></span>tangent \(y = 8 - x\) &nbsp; <span class="rv-g"><span class="sw gold"></span>the diameter</span></p>
       <p class="small frag"><b>"The greater value":</b> part (a) gave two answers, \(a = 0\) and \(a = 4\). The greater (bigger) one is \(a = 4\).</p>
       <p class="small frag bad"><b>What the examiners saw:</b> about 30% left this part out, and many worked out the touching point when the center was all they needed. Draw the picture first.</p>
     </div></div>
     <div><div class="card">
       <div class="math small frag"><span class="lbl">put \(a = 4\) into both:</span> circle \((x - 6)^2 + (y + 4)^2 = 18\); &nbsp;line \(y = 2(4) - x = 8 - x\)</div>
       <p class="small frag"><b>Read the picture:</b> every diameter goes through the center. The one perpendicular to the tangent is the radius to the touching point, carried on across (tangent ⊥ radius, Session 2). So we need the center and a gradient.</p>
-      <div class="math small frag"><span class="lbl">B1 · center: \((x - 6)\) gives 6 and \((y + 4)\) gives \(-4\) (the signs flip):</span> \((6, -4)\)</div>
+      <div class="math small frag r7a"><span class="lbl">B1 · center: \((x - 6)\) gives 6 and \((y + 4)\) gives \(-4\) (the signs flip):</span> \((6, -4)\)</div>
       <div class="math small frag"><span class="lbl">B1 · write the tangent as \(y = -1x + 8\). The number in front of \(x\) is the gradient:</span> \(-1\). <span class="lbl">Flip and change the sign:</span> \(-\tfrac{1}{-1} = 1\). <span class="lbl">Check:</span> \((-1) \times 1 = -1\) ✓</div>
       <div class="math small frag"><span class="lbl">line through \((6, -4)\), gradient 1:</span> \(y - (-4) = 1(x - 6)\), &nbsp;\(y + 4 = x - 6\)</div>
-      <div class="math small result frag">B1 · \(y = x - 10\)</div>
-      <p class="small frag"><b>Check:</b> the touching point \((9, -1)\) is on it: \(9 - 10 = -1\) ✓</p>
+      <div class="math small result frag r7b">B1 · \(y = x - 10\)</div>
+      <p class="small frag r7c"><b>Check:</b> the touching point \((9, -1)\) is on it: \(9 - 10 = -1\) ✓</p>
     </div></div>
   </div>
 </section>
 
 <!-- 15 · if time -->
 <section class="slide duo">
-  <p class="eyebrow">If time · the sugar mill problem</p>
+  <p class="eyebrow">If time · the sugar mill problem · 1 of 2 · the center</p>
   <h2>Three points on a round wall: \(A(2, 6)\), \(B(-4, 6)\), \(C(-5, -1)\). Find the center and the equation of the circle.</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
       <svg class="cg" id="fig-mill" aria-label="Three points on a circle with center minus 1, 2 and radius 5; the perpendicular bisectors x equals minus 1 and y equals minus x plus 1 cross at the center"></svg>
-      <p class="key"><span class="sw ans"></span>chords \(AB\), \(AC\) &nbsp; <span class="sw gold"></span>their perpendicular bisectors</p>
+      <p class="key"><span class="sw ans"></span>chords \(AB\), \(AC\) &nbsp; <span class="rv-m"><span class="sw gold"></span>their perpendicular bisectors</span></p>
     </div></div>
     <div>
   <div class="check" tabindex="0">
-    <div class="math small">Use the chord fact twice: the center is on both perpendicular bisectors. Tap to check.</div>
+    <div class="math small">Chord fact, twice: the center is on the perpendicular bisector of \(AB\) <i>and</i> of \(AC\). Find both lines, then where they cross. Tap to check.</div>
     <div class="ans">
-      <div class="math small"><span class="lbl">\(AB\) is horizontal (both \(y = 6\)), midpoint \((-1, 6)\):</span>&nbsp; its perpendicular bisector is the vertical line \(x = -1\)</div>
-      <div class="math small"><span class="lbl">\(AC\): midpoint \(\left(-\tfrac{3}{2}, \tfrac{5}{2}\right)\), gradient \(\tfrac{-1 - 6}{-5 - 2} = 1\), so perpendicular gradient \(-1\):</span>&nbsp; \(y - \tfrac{5}{2} = -\left(x + \tfrac{3}{2}\right)\), &nbsp;\(y = -x + 1\)</div>
-      <div class="math small"><span class="lbl">where they cross, put \(x = -1\):</span>&nbsp; \(y = 2\), center \((-1, 2)\)</div>
-      <div class="math small"><span class="lbl">radius, center to \(A\):</span>&nbsp; \(\sqrt{3^2 + 4^2} = 5\)</div>
-      <div class="math small result">\((x + 1)^2 + (y - 2)^2 = 25\)</div>
+      <div class="math small"><span class="lbl">\(AB\): both \(y = 6\), so horizontal. Midpoint \((-1, 6)\). Perpendicular to horizontal is vertical:</span> \(x = -1\)</div>
+      <div class="math small"><span class="lbl">\(AC\): midpoint</span> \(\left(-\tfrac{3}{2}, \tfrac{5}{2}\right)\); <span class="lbl">gradient</span> \(\tfrac{-7}{-7} = 1\), <span class="lbl">so perpendicular gradient</span> \(-1\)</div>
+      <div class="math small"><span class="lbl">line:</span> \(y - \tfrac{5}{2} = -\left(x + \tfrac{3}{2}\right)\), &nbsp;\(y = -x + 1\)</div>
+      <div class="math small"><span class="lbl">cross: \(x = -1\) in \(y = -x + 1\) gives</span> \(y = 2\). <span class="lbl">Center</span> \((-1, 2)\)</div>
     </div>
   </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 · if time, sugar mill part 2 -->
+<section class="slide">
+  <p class="eyebrow">If time · the sugar mill problem · 2 of 2 · the radius and the equation</p>
+  <h2>The center is \((-1, 2)\). Now the radius, and the equation of the circle.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <p class="small"><b>What we need.</b> The center is \((-1, 2)\). The radius is the distance from the center to any point on the circle, so use \(A(2, 6)\).</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Find \(r\), then write the equation. Tap to check.</div>
+        <div class="ans">
+      <div class="math small"><span class="lbl">from \((-1, 2)\) to \(A(2, 6)\). Across:</span> \(2 - (-1) = 3\). <span class="lbl">Up:</span> \(6 - 2 = 4\). <span class="lbl">These are the 3 and the 4 on the picture: the short sides of a right triangle, with the radius as the slanted side.</span></div>
+      <div class="math small"><span class="lbl">Pythagoras:</span> \(r^2 = 3^2 + 4^2 = 9 + 16 = 25\), &nbsp;\(r = 5\)</div>
+      <div class="math small result"><span class="lbl">the equation wants \(r^2\), which is already 25:</span> \((x + 1)^2 + (y - 2)^2 = 25\)</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <svg class="cg" id="fig-mill2" aria-label="Three points on a circle with center minus 1, 2; the radius to A is the slanted side of a right triangle with legs 3 and 4"></svg>
+        <p class="key">\(A\), \(B\), \(C\) are the wall points; the center is \((-1, 2)\)</p>
+      </div>
     </div>
   </div>
 </section>
@@ -551,20 +575,43 @@
     circles: [[0, 14.5, R5, GO, '']], lines: [[-0.75, 14.5, CY, '']],
     pts: [[0, 14.5, 'Q (0, 29/2)', GO, 8, -8], [2 * S5, 14.5 - 1.5 * S5, 'D', CY, 8, 18], [-2 * S5, 14.5 + 1.5 * S5, 'E', CY, -18, -8]] };
   fig('fig-q12d', q12d);
-  var q7a = { x: [0, 12], y: [-10, 4], k: 22, step: 2, grid: 1, fs: 9,
-    circles: [[6, 0, R18, GR, '5 4'], [6, -4, R18, W, '']],
-    lines: [[-1, 0, GR, '5 4'], [-1, 8, CY, '']],
-    pts: [[3, -3, '(3, -3)', GR, -60, 14], [9, -1, '(9, -1)', CY, 12, 4], [6, 0, '', GR, 0, 0], [6, -4, '', W, 0, 0]] };
-  fig('fig-q7a', q7a);
   var q7 = { x: [0, 12], y: [-10, 2], k: 25, step: 2, grid: 1, fs: 9,
     circles: [[6, -4, R18, W, '']],
     lines: [[-1, 8, CY, ''], [1, -10, GO, '']],
     pts: [[6, -4, '(6, -4)', W, 10, 18], [9, -1, '(9, -1)', CY, 16, 5]] };
   fig('fig-q7', q7, [{ right: [9, -1, 6, -4, 10, -2], col: GO }]);
+  /* hide the answers: the center waits for its B1 step, the diameter for the final line, the touching point and right-angle box for the check */
+  [].slice.call(document.querySelectorAll('#fig-q7 > *')).forEach(function (e) {
+    var t = e.tagName, x = parseFloat(e.getAttribute('cx')), y = parseFloat(e.getAttribute('cy'));
+    if (t === 'polyline') e.classList.add('rv-h');
+    else if (t === 'line' && e.getAttribute('stroke') === GO) e.classList.add('rv-g');
+    else if (t === 'circle' && e.getAttribute('r') === '4.5') e.classList.add(Math.abs(x - 249) < 1 ? 'rv-h' : 'rv-i');
+    else if (t === 'text' && /^\(9/.test(e.textContent)) e.classList.add('rv-h');
+    else if (t === 'text' && /^\(6/.test(e.textContent)) e.classList.add('rv-i');
+  });
   var mill = { x: [-7, 5], y: [-4, 8], k: 25, step: 2, grid: 1, fs: 9,
     circles: [[-1, 2, 5, W, '']], lines: [[-1, 1, GO, '']],
     pts: [[2, 6, 'A', CY, 8, -6], [-4, 6, 'B', CY, -18, -6], [-5, -1, 'C', CY, -18, 14], [-1, 2, '', GO, 0, 0]] };
   fig('fig-mill', mill, [{ seg: [2, 6, -4, 6], col: CY }, { seg: [2, 6, -5, -1], col: CY }, { seg: [-1, -4, -1, 8], col: GO }]);
+  /* hide the answer: the circle, both bisectors and the center appear when the check box is opened */
+  [].slice.call(document.querySelectorAll('#fig-mill > *')).forEach(function (e) {
+    var t = e.tagName;
+    if (t === 'circle' && e.getAttribute('fill') === 'none') e.classList.add('rv-m');
+    else if (t === 'circle' && e.getAttribute('fill') === GO) e.classList.add('rv-m');
+    else if (t === 'line' && e.getAttribute('stroke') === GO) e.classList.add('rv-m');
+  });
+  var mill2 = { x: [-7, 5], y: [-4, 8], k: 22, step: 2, grid: 1, fs: 9,
+    circles: [[-1, 2, 5, W, '']],
+    pts: [[2, 6, 'A', CY, 8, -6], [-4, 6, 'B', CY, -18, -6], [-5, -1, 'C', CY, -18, 14], [-1, 2, '(-1, 2)', GO, -62, 16]],
+    texts: [[0.6, 1.2, '3', GO, 12], [2.5, 4.0, '4', GO, 12]] };
+  fig('fig-mill2', mill2, [{ seg: [-1, 2, 2, 6], col: GO }, { seg: [-1, 2, 2, 2], col: GR, dash: D, w: 1.8 }, { seg: [2, 2, 2, 6], col: GR, dash: D, w: 1.8 }]);
+  [].slice.call(document.querySelectorAll('#fig-mill2 > *')).forEach(function (e) {
+    var t = e.tagName;
+    if (t === 'circle' && e.getAttribute('fill') === 'none') e.classList.add('rv-m');
+    else if (t === 'line' && (e.getAttribute('stroke') === GO || e.getAttribute('stroke-dasharray'))) e.classList.add('rv-m');
+    else if (t === 'polyline') e.classList.add('rv-m');
+    else if (t === 'text' && /^[34]$/.test(e.textContent)) e.classList.add('rv-m');
+  });
   var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged graph');
   document.body.appendChild(box);
   function close() { box.classList.remove('on'); box.innerHTML = ''; }
