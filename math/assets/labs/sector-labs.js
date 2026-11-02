@@ -135,8 +135,8 @@ window.SectorKit = (function () {
       var arc = r * t, area = 0.5 * r * r * t, per = 2 * r + arc, frac = t / TAU, html, v, ok = true;
       if (isRad) {
         html = '<span class="lw">θ =</span> <b>' + t.toFixed(3) + ' rad</b> <span class="lw">=</span> ' + deg.toFixed(1) + '°<br>' +
-          '<span class="lw">arc =</span> θ × r = ' + t.toFixed(3) + ' × ' + r + ' = <b>' + K.sf(arc, 3) + ' cm</b><br>' +
-          '<span class="lw">arc ÷ r =</span> ' + t.toFixed(3) + ' <span class="lw">for every r: the angle counts radii</span><br>' +
+          '<span class="lw">arc length = θ × r =</span> ' + t.toFixed(3) + ' × ' + r + ' = <b>' + K.sf(arc, 3) + ' cm</b><br>' +
+          '<span class="lw">arc length ÷ r =</span> ' + t.toFixed(3) + ' <span class="lw">for every r: the angle counts radii</span><br>' +
           '<span class="lw">fraction of a full turn =</span> θ ÷ 2π = ' + frac.toFixed(3);
         if (Math.abs(t - 1) < 0.006) v = 'The arc is exactly one radius long. That angle is 1 radian, about 57.3°.';
         else if (Math.abs(t - Math.PI) < 0.006) v = 'Half a turn. The arc is π radii (about 3.14) long, so 180° = π radians.';
@@ -151,7 +151,7 @@ window.SectorKit = (function () {
         v = 'The degrees answer is ' + (wrong / whole).toFixed(1) + ' times the whole circle. Impossible: s = rθ and A = ½r²θ need θ in radians.';
         ok = false;
       } else {
-        html = '<span class="lw">arc s = rθ =</span> ' + r + ' × ' + t.toFixed(3) + ' = <b>' + K.sf(arc, 3) + ' cm</b><br>' +
+        html = '<span class="lw">arc length s = rθ =</span> ' + r + ' × ' + t.toFixed(3) + ' = <b>' + K.sf(arc, 3) + ' cm</b><br>' +
           '<span class="lw">area A = ½r²θ =</span> ½ × ' + r + '² × ' + t.toFixed(3) + ' = <b>' + K.sf(area, 3) + ' cm²</b><br>' +
           '<span class="lw">perimeter = r + r + s =</span> <b>' + K.sf(per, 3) + ' cm</b><br>' +
           '<span class="lw">fraction of the circle =</span> θ ÷ 2π = ' + frac.toFixed(3);
