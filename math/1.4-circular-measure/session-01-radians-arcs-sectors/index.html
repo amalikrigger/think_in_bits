@@ -26,11 +26,17 @@
     .lab.sector .read { font-size: clamp(12px, 1.3vw, 15.5px); line-height: 1.55; }
     .lab.sector .panel { gap: 0.7vh; }
     .lab.sector .verdict { font-size: clamp(12px, 1.3vw, 15px); }
+    .lab.parts .fig { width: min(300px, 24vw); background: #0f0f0f; border-radius: 14px; }
+    .lab.fold .fig { width: min(260px, 20vw); background: #0f0f0f; border-radius: 14px; }
+    .lab.parts .read, .lab.fold .read { font-size: clamp(12px, 1.3vw, 15.5px); line-height: 1.5; }
+    .lab.parts .picks button, .lab.fold .picks button { font-size: clamp(11px, 1.15vw, 14px); }
+    .lab.parts .panel, .lab.fold .panel { gap: 0.7vh; }
+    @media (max-width: 800px) { .lab.parts .fig, .lab.fold .fig { width: 100%; } }
     .dn .check .math { font-size: clamp(12px, 1.4vw, 16px); }
     @media (max-width: 800px) { .lab.sector .fig { width: 100%; } }
   </style>
 </head>
-<body data-deck-name="1.4 · Session 1" data-help-note="Click any figure to enlarge it. In the Radian Lab and the Sector Lab, drag the sliders or tap the angle buttons. In the Sector Lab, press the degrees button to see what goes wrong. Tap a box to check your answer.">
+<body data-deck-name="1.4 · Session 1" data-help-note="Click any figure to enlarge it. In the Radian Lab and the Sector Lab, drag the sliders or tap the angle buttons. In the Sector Lab, press the degrees button to see what goes wrong. Tap a box to check your answer. The Parts Lab traces each length and fills each area. The Fold Lab steps through splitting the triangle: press Next step.">
 
 <!-- 1 · title -->
 <section class="slide active">
@@ -39,11 +45,11 @@
   <p class="muted">You met radians in Pre-Calculus. Today they pay off: with the angle in radians, the length of an arc and the area of a slice of a circle each take one short formula. Then we use both, forwards and backwards, and finish a real Cambridge question.</p>
   <div class="agenda">
     <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
-    <div class="row"><span>Radians, a quick recap, and a check</span><span class="t">8 min</span></div>
-    <div class="row"><span>Arc length and sector area: where the formulas come from</span><span class="t">9 min</span></div>
-    <div class="row"><span>Two worked examples: forwards, then backwards</span><span class="t">11 min</span></div>
-    <div class="row"><span>June 2023, Paper 11, <span class="lit">Q4</span></span><span class="t">7 min</span></div>
-    <div class="row"><span>Practice together</span><span class="t">7 min</span></div>
+    <div class="row"><span>Radians, a quick recap, and a check</span><span class="t">7 min</span></div>
+    <div class="row"><span>Arc length and sector area, and every part of a sector</span><span class="t">11 min</span></div>
+    <div class="row"><span>Two worked examples: forwards, then backwards</span><span class="t">9 min</span></div>
+    <div class="row"><span>June 2023, Paper 11, <span class="lit">Q4</span>, in two parts</span><span class="t">10 min</span></div>
+    <div class="row"><span>Practice together</span><span class="t">5 min</span></div>
     <div class="row"><span>Recap and exit ticket</span><span class="t">8 min</span></div>
   </div>
 </section>
@@ -177,6 +183,17 @@
   </div>
 </section>
 
+<!-- 6b · parts of a sector -->
+<section class="slide">
+  <p class="eyebrow">Parts Lab · length, perimeter, circumference, area</p>
+  <h2>Sector or segment? Length or area? Press each button and watch.</h2>
+  <div class="lab parts" data-r="6" data-t="1.4"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><p class="small frag"><b>Sector</b> = the whole slice: two radii and the arc. <b>Segment</b> = only the thin strip between the chord and the arc. Cut a pizza slice straight across near the crust: the crusty strip you cut off is the segment.</p></div>
+    <div><p class="small frag"><b>Length</b> is one edge (cm). <b>Perimeter</b> is every edge added up, all the way round (cm). <b>Circumference</b> is the perimeter of a whole circle. <b>Area</b> is the space inside (cm²).</p></div>
+  </div>
+</section>
+
 <!-- 7 · sector lab -->
 <section class="slide">
   <p class="eyebrow">Sector Lab · see the formulas move</p>
@@ -184,7 +201,7 @@
   <div class="lab sector" data-lab="sector" data-r="8" data-t="1"></div>
   <div class="cols" style="margin-top:0.6vh">
     <div><p class="small frag"><b>Why degrees fail.</b> The formulas were built with \(2\pi\) for a full turn. Put in \(120\) for \(\tfrac{2\pi}{3}\) and the formula thinks the sector turns through 120 radians: about 19 full turns.</p></div>
-    <div><p class="small frag bad"><b>Cambridge's list of common mistakes</b> on a sector question: using \(180\) instead of \(\pi\) in formulas that only work in radians. If a question gives degrees, convert first.</p></div>
+    <div><p class="small frag"><b>The rule</b> (and a mistake on Cambridge's own list): in \(s = r\theta\) and \(A = \tfrac{1}{2}r^2\theta\), \(\theta\) must be in radians. Given degrees? Convert first (\(\times \tfrac{\pi}{180}\)). The calculator mode only matters when you press sin, cos or tan.</p></div>
   </div>
 </section>
 
@@ -234,26 +251,38 @@
   </div>
 </section>
 
-<!-- 10 · J23 Q4 -->
+<!-- 10 · J23 Q4, part 1 -->
 <section class="slide duo">
-  <p class="eyebrow">Cambridge · June 2023, Paper 11, <span class="lit">Q4</span> · 4 marks</p>
-  <h2>Sector area \(\dfrac{16}{3}\pi\) cm², radius 8 cm. Find the perimeter of the segment \(BCD\).</h2>
+  <p class="eyebrow">Cambridge · June 2023, Paper 11, <span class="lit">Q4</span> · 4 marks · part 1 of 2</p>
+  <h2>First: which shape is the question about?</h2>
   <div class="cols" style="margin-top:0.4vh">
     <div><div class="card">
       <p class="small">The diagram shows a sector \(ABC\) of a circle with center \(A\) and radius 8 cm. The area of the sector is \(\tfrac{16}{3}\pi\) cm². The point \(D\) lies on the arc \(BC\). Find the perimeter of the segment \(BCD\). <span class="marks">[4]</span></p>
       <svg class="cg" id="fig-q4" aria-label="Sector ABC with center A on the right, radius 8, a small angle theta at A, the chord BC and the segment BCD between the chord and the arc"></svg>
-      <p class="key"><span class="sw arc"></span>arc \(BC\) &nbsp; <span class="sw gold"></span>chord \(BC\)</p>
-      <p class="small">A <b>segment</b> is the region between a chord and the arc. Its perimeter is the arc plus the chord.</p>
-      <p class="small frag"><b>Or the cosine rule:</b> \(BC^2 = 8^2 + 8^2 - 2(8)(8)\cos\tfrac{\pi}{6} = 128 - 64\sqrt{3}\), so \(BC = 4.1411\). Same answer.</p>
+      <p class="key"><span class="sw arc"></span>arc \(BC\) (through \(D\)) &nbsp; <span class="sw gold"></span>chord \(BC\) &nbsp; <span class="sw rad"></span>radii \(AB\), \(AC\)</p>
     </div></div>
     <div><div class="card">
-      <div class="math small frag"><span class="lbl">B1 · \(\theta\) from the area, then divide by 32:</span><br>\(\tfrac{1}{2} \times 8^2 \times \theta = \tfrac{16}{3}\pi\), &nbsp;\(32\theta = \tfrac{16}{3}\pi\), &nbsp;\(\theta = \tfrac{16\pi}{3 \times 32} = \tfrac{\pi}{6}\)</div>
-      <div class="math small frag"><span class="lbl">M1 · arc \(BC = r\theta\), keeping 4 or more figures:</span><br>\(8 \times \dfrac{\pi}{6} = \dfrac{4\pi}{3} = 4.1888\)</div>
-      <p class="small frag"><b>The chord:</b> triangle \(ABC\) has \(AB = AC = 8\), so it is isosceles, not right-angled. Its line of symmetry splits it into two right triangles, each with angle \(\tfrac{\pi}{12}\) at \(A\) and hypotenuse 8. Half of \(BC\) is opposite that angle.</p>
-      <div class="math small frag"><span class="lbl">M1 · half \(BC = 8\sin\tfrac{\pi}{12}\), so (calculator in radians mode)</span><br>\(BC = 16\sin\dfrac{\pi}{12} = 4.1411\)</div>
-      <div class="math small result frag">A1 · perimeter \(= 4.1888 + 4.1411 = 8.33\) cm</div>
-      <p class="small frag bad"><b>What the examiners saw:</b> some found the area of the segment instead of its perimeter. Others wrote \(BC = 8\tan\theta\), as if \(ABC\) had a right angle. It doesn't.</p>
+      <p class="small"><b>Name every part.</b> \(A\) is the center. \(AB\) and \(AC\) are radii, 8 cm each. The curve from \(B\) through \(D\) to \(C\) is the <b>arc</b>. The straight line from \(B\) to \(C\) is the <b>chord</b>.</p>
+      <p class="small frag"><b>Sector \(ABC\)</b> = the whole slice, with \(A\) in it. <b>Segment \(BCD\)</b> = only the thin strip between the chord and the arc. It does not reach \(A\).</p>
+      <p class="small frag"><b>So its perimeter is two edges:</b> the arc and the chord. The radii are not on its edge.</p>
+      <div class="math small result frag">perimeter of segment \(BCD\) = arc \(BC\) + chord \(BC\)</div>
+      <p class="small frag bad"><b>The trap:</b> \(8 + 8 + 4.19 = 20.19\) is the perimeter of the <i>sector</i> (the whole slice). The question asks for the strip. Other traps the examiners saw: giving the segment's area, and writing \(BC = 8\tan\theta\) as if \(ABC\) had a right angle.</p>
+      <div class="math small frag"><span class="lbl">B1 · first find angle \(BAC = \theta\) from the area, then divide by 32:</span><br>\(\tfrac{1}{2} \times 8^2 \times \theta = \tfrac{16}{3}\pi\), &nbsp;\(32\theta = \tfrac{16}{3}\pi\), &nbsp;\(\theta = \tfrac{\pi}{6}\)</div>
+      <div class="math small frag"><span class="lbl">M1 · arc length \(BC = r\theta\), keeping 4 or more figures:</span><br>\(8 \times \dfrac{\pi}{6} = \dfrac{4\pi}{3} = 4.1888\) cm</div>
     </div></div>
+  </div>
+</section>
+
+<!-- 10b · J23 Q4, part 2 -->
+<section class="slide">
+  <p class="eyebrow">Cambridge · June 2023, Paper 11, <span class="lit">Q4</span> · part 2 of 2 · the chord</p>
+  <h2>The chord: cut triangle \(ABC\) in half to get right triangles, then use sin.</h2>
+  <div class="lab fold"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><div class="math small frag"><span class="lbl">M1 · from step 5 of the Fold Lab:</span>&nbsp; \(BC = 16\sin\dfrac{\pi}{12} = 4.1411\) cm <span class="lbl">(calculator in radians)</span></div>
+      <p class="small frag"><b>Or the cosine rule</b> (same chord): \(BC^2 = 8^2 + 8^2 - 2(8)(8)\cos\tfrac{\pi}{6} = 128 - 64\sqrt{3}\), so \(BC = 4.1411\).</p></div>
+    <div><div class="math small frag"><span class="lbl">A1 · add the two edges of the segment, arc + chord:</span><br>\(4.1888 + 4.1411 = 8.33\) cm</div>
+      <div class="math small result frag">perimeter of segment \(BCD = 8.33\) cm</div></div>
   </div>
 </section>
 
@@ -267,7 +296,7 @@
       <div class="check" tabindex="0">
         <div class="math small">Tap to check.</div>
         <div class="ans">
-          <div class="math small"><span class="lbl">\(s = r\theta\), so \(7 = 5\theta\):</span>&nbsp; \(\theta = \tfrac{7}{5} = 1.4\) radians</div>
+          <div class="math small"><span class="lbl">\(s = r\theta\), so \(7 = 5\theta\):</span>&nbsp; \(\theta = \tfrac{7}{5} = 1.4\) radians <span class="lbl">(\(s = r\theta\) always gives \(\theta\) in radians)</span></div>
           <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 5^2 \times 1.4 = \tfrac{1}{2} \times 25 \times 1.4\)</div>
           <div class="math small result">\(\theta = 1.4\), &nbsp;area \(= 17.5\) cm²</div>
           <p class="small"><b>Shortcut:</b> \(\tfrac{1}{2}r^2\theta = \tfrac{1}{2}r(r\theta) = \tfrac{1}{2}rs = \tfrac{1}{2} \times 5 \times 7 = 17.5\).</p>

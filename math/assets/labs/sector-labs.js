@@ -171,3 +171,165 @@ window.SectorKit = (function () {
     draw();
   });
 })();
+
+/* Parts Lab and Fold Lab (added Nov 2, 2026).
+     <div class="lab parts" data-r="6" data-t="1.4"></div>   one button per idea: arc, chord, both perimeters, circumference, both areas;
+                                                            each one is traced or filled in front of the class, with a running total
+     <div class="lab fold"></div>                           June 2023 Q4 triangle (r 8, angle π/6): split it from A to the middle of BC, fold it, read off π/12
+   Both expose box.__set({...}) for scripted checks and return the readout text. Motion is skipped under prefers-reduced-motion. */
+(function () {
+  'use strict';
+  var K = window.SectorKit; if (!K) return;
+  var CY = K.CY, W = K.W, GR = K.GR, GO = K.GO, GN = '#4fe08a', PI = Math.PI;
+  var reduce = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function f(v) { return K.sf(v, 3).replace(/\.0+$/, ''); }
+  function pt(p) { return p[0].toFixed(2) + ',' + p[1].toFixed(2); }
+  function anim(ms, step, done) {
+    if (reduce || !(ms > 0)) { step(1); if (done) done(); return; }
+    var t0 = null;
+    function fr(ts) { if (t0 === null) t0 = ts; var u = Math.min(1, (ts - t0) / ms); step(u); if (u < 1) requestAnimationFrame(fr); else if (done) done(); }
+    requestAnimationFrame(fr);
+  }
+
+  /* ---------- Parts Lab ---------- */
+  [].slice.call(document.querySelectorAll('.lab.parts')).forEach(function (box) {
+    var r = +(box.getAttribute('data-r') || 6), t = +(box.getAttribute('data-t') || 1.4);
+    var Cx = 160, Cy = 168, R = 118, a0 = PI / 2 - t / 2, a1 = PI / 2 + t / 2;
+    var A = [Cx, Cy], B = K.at(Cx, Cy, R, a0), Cc = K.at(Cx, Cy, R, a1);
+    var arcD = K.arcPath(Cx, Cy, R, a0, a1), arcTail = arcD.replace(/^M[^A]+/, '');
+    var arc = r * t, chord = 2 * r * Math.sin(t / 2), circ = 2 * PI * r, sArea = 0.5 * r * r * t, tri = 0.5 * r * r * Math.sin(t), gArea = sArea - tri;
+    var MODES = [
+      ['arc', 'Arc length'], ['chord', 'Chord'], ['sperim', 'Sector perimeter'], ['gperim', 'Segment perimeter'],
+      ['circ', 'Circumference'], ['sarea', 'Sector area'], ['garea', 'Segment area']];
+    box.innerHTML = '<svg class="fig" viewBox="0 0 320 320" role="img" aria-label="A circle with a sector ABC, its arc BC, its chord BC and the segment between them; the chosen part is traced or filled"></svg>' +
+      '<div class="panel"><p class="small" style="margin:0">Press a button. Lengths are <b>traced</b> (measured in cm). Areas are <b>filled</b> (measured in cm²).</p>' +
+      '<div class="picks pl-modes" role="group" aria-label="Choose a part">' + MODES.map(function (m) { return '<button type="button" data-m="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="read pl-read" aria-live="polite"></div><div class="verdict ok pl-v"></div></div>';
+    var svg = box.querySelector('svg'), read = box.querySelector('.pl-read'), verdict = box.querySelector('.pl-v'), mode = 'arc', run = 0;
+    function base() {
+      var s = '<circle cx="' + Cx + '" cy="' + Cy + '" r="' + R + '" fill="none" stroke="' + GR + '" stroke-opacity="0.4" stroke-width="1.5" stroke-dasharray="4 5"/>';
+      s += '<g class="pl-fill"></g>';
+      s += K.line(A, B, W, 2.2) + K.line(A, Cc, W, 2.2);
+      s += '<path d="' + arcD + '" fill="none" stroke="' + CY + '" stroke-width="3"/>';
+      s += K.line(B, Cc, GO, 2.2, '6 5');
+      s += K.txt(A[0], A[1] + 16, 'A', W, 14) + K.txt(B[0] + 14, B[1] + 4, 'B', W, 14) + K.txt(Cc[0] - 14, Cc[1] + 4, 'C', W, 14);
+      var mr = [(A[0] + B[0]) / 2 + 12, (A[1] + B[1]) / 2 + 6]; s += K.txt(mr[0], mr[1], 'r = ' + f(r), W, 12);
+      s += '<g class="pl-trace"></g><circle cx="' + Cx + '" cy="' + Cy + '" r="3.5" fill="' + W + '"/>';
+      svg.innerHTML = s;
+    }
+    var INFO = {
+      arc: ['The arc is the curved piece of the circle from B to C. Its <b>length</b> is how far you travel along the curve.', 'arc length = rθ = ' + f(r) + ' × ' + t + ' = <b>' + f(arc) + ' cm</b>', 'One curved edge only. No straight lines.'],
+      chord: ['The chord is the <b>straight</b> line from B to C, a shortcut across the circle.', 'chord = 2r sin(θ/2) = <b>' + f(chord) + ' cm</b>', 'Always shorter than the arc it cuts off.'],
+      sperim: ['The <b>sector</b> is the whole slice. Its perimeter is the walk all the way round it: A to B, along the arc, C back to A.', 'r + arc + r = ' + f(r) + ' + ' + f(arc) + ' + ' + f(r) + ' = <b>' + f(2 * r + arc) + ' cm</b>', 'Three edges: two radii and the arc.'],
+      gperim: ['The <b>segment</b> is the thin strip between the chord and the arc. Its perimeter is the walk round the strip: along the arc, back along the chord.', 'arc + chord = ' + f(arc) + ' + ' + f(chord) + ' = <b>' + f(arc + chord) + ' cm</b>', 'Two edges: the arc and the chord. The radii are not on its edge.'],
+      circ: ['The circumference is the perimeter of the <b>whole</b> circle.', 'circumference = 2πr = <b>' + f(circ) + ' cm</b>', 'The arc is a fraction of it: θ ÷ 2π = ' + (t / (2 * PI)).toFixed(3) + ' of the way round.'],
+      sarea: ['Area is the <b>space inside</b>, like the cheese on the slice. The sector area is the whole slice.', 'sector area = ½r²θ = ½ × ' + f(r) + '² × ' + t + ' = <b>' + f(sArea) + ' cm²</b>', 'Area is in cm² (squares), length is in cm.'],
+      garea: ['The segment area is the space inside the thin strip only.', 'segment area = sector − triangle ABC = ' + f(sArea) + ' − ' + f(tri) + ' = <b>' + f(gArea) + ' cm²</b>', 'How to find the triangle: Session 2 (next Monday).']
+    };
+    function pieces(m) {
+      var k = R / r;
+      if (m === 'arc') return { d: arcD, parts: [[R * t, f(arc)]] };
+      if (m === 'chord') return { d: 'M' + pt(B) + ' L' + pt(Cc), parts: [[R * 2 * Math.sin(t / 2), f(chord)]] };
+      if (m === 'sperim') return { d: 'M' + pt(A) + ' L' + pt(B) + ' ' + arcTail + ' L' + pt(A), parts: [[R, f(r)], [R * t, f(arc)], [R, f(r)]] };
+      if (m === 'gperim') return { d: arcD + ' L' + pt(B), parts: [[R * t, f(arc)], [R * 2 * Math.sin(t / 2), f(chord)]] };
+      if (m === 'circ') return { d: K.arcPath(Cx, Cy, R, a0, a0 + 2 * PI), parts: [[2 * PI * R, f(circ)]] };
+      return null;
+    }
+    function show(m, animate) {
+      mode = m; run++; var my = run; base();
+      [].forEach.call(box.querySelectorAll('.pl-modes button'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-m') === m)); });
+      var I = INFO[m]; read.innerHTML = '<b>' + MODES.filter(function (x) { return x[0] === m; })[0][1] + '.</b> ' + I[0] + '<br>' + I[1]; verdict.textContent = I[2];
+      var trace = svg.querySelector('.pl-trace'), fill = svg.querySelector('.pl-fill'), p = pieces(m);
+      if (p) {
+        trace.innerHTML = '<path class="pl-path" d="' + p.d + '" fill="none" stroke="' + GN + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/><circle class="pl-dot" r="7" fill="' + GN + '"/>' +
+          '<text class="pl-run" x="160" y="306" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="' + GN + '"></text>';
+        var path = trace.querySelector('.pl-path'), dot = trace.querySelector('.pl-dot'), runT = trace.querySelector('.pl-run'), L = path.getTotalLength();
+        path.style.strokeDasharray = L; path.style.strokeDashoffset = L;
+        var cum = [], acc = 0; p.parts.forEach(function (q) { acc += q[0]; cum.push(acc); });
+        anim(animate ? 1400 + 500 * p.parts.length : 0, function (u) {
+          if (my !== run) return;
+          var d = u * L; path.style.strokeDashoffset = L - d; var q = path.getPointAtLength(d); dot.setAttribute('cx', q.x); dot.setAttribute('cy', q.y);
+          var done = p.parts.filter(function (x, i) { return cum[i] * (L / acc) <= d + 0.5; }).map(function (x) { return x[1]; });
+          runT.textContent = done.length ? done.join(' + ') + (done.length === p.parts.length && p.parts.length > 1 ? ' = ' + read.querySelector('b:last-of-type').textContent : (done.length === p.parts.length ? ' cm' : ' + …')) : '';
+        });
+      } else {
+        var sec = 'M' + pt(A) + ' L' + pt(B) + ' ' + arcTail + ' Z', seg = arcD + ' Z';
+        if (m === 'sarea') {
+          anim(animate ? 1600 : 0, function (u) {
+            if (my !== run) return; var aa = a0 + t * u, E = K.at(Cx, Cy, R, aa);
+            fill.innerHTML = '<path d="M' + pt(A) + ' L' + pt(B) + ' ' + K.arcPath(Cx, Cy, R, a0, Math.max(aa, a0 + 1e-4)).replace(/^M[^A]+/, '') + ' Z" fill="rgba(0,229,255,0.35)"/>';
+          });
+        } else {
+          anim(animate ? 2200 : 0, function (u) {
+            if (my !== run) return;
+            var s1 = Math.min(1, u * 2), s2 = Math.max(0, u * 2 - 1);
+            fill.innerHTML = '<path d="' + sec + '" fill="rgba(0,229,255,' + (0.3 * s1 * (1 - s2)).toFixed(3) + ')"/>' +
+              '<path d="M' + pt(A) + ' L' + pt(B) + ' L' + pt(Cc) + ' Z" fill="rgba(255,107,107,' + (0.35 * s2 * (1 - s2) * 4 > 0.35 ? 0.35 : 0.35 * s2 * (1 - s2) * 4).toFixed(3) + ')"/>' +
+              '<path d="' + seg + '" fill="rgba(255,196,107,' + (0.55 * Math.max(s2, s1 * 0.4)).toFixed(3) + ')"/>';
+          });
+        }
+      }
+    }
+    [].forEach.call(box.querySelectorAll('.pl-modes button'), function (b) { b.addEventListener('click', function () { show(b.getAttribute('data-m'), true); }); });
+    box.__set = function (o) { show(o.mode || mode, false); return read.textContent + ' | ' + verdict.textContent; };
+    show('arc', false);
+  });
+
+  /* ---------- Fold Lab ---------- */
+  [].slice.call(document.querySelectorAll('.lab.fold')).forEach(function (box) {
+    var h = PI / 12, L = 250, A = [300, 165], B = [A[0] - L * Math.cos(h), A[1] + L * Math.sin(h)], C = [A[0] - L * Math.cos(h), A[1] - L * Math.sin(h)], M = [B[0], A[1]];
+    var STEPS = [
+      ['Triangle ABC', 'AB and AC are both radii, so both are 8 cm. Two equal sides make the triangle <b>isosceles</b>. There is no right angle anywhere in it yet, so we cannot use sin straight away.'],
+      ['Draw the line from A to M', 'M is the middle of the chord BC. Draw a line from the center A to M.'],
+      ['Fold along AM', 'Fold the top half down over AM: C lands exactly on B. The two halves are mirror images, so they are identical. Press <b>Fold again</b> to watch it.'],
+      ['What the fold tells us', 'Matching halves mean: the angle at A splits into two equal parts, π/6 ÷ 2 = <b>π/12</b> each; BM = MC, so BM is <b>half of BC</b>; the two angles at M are equal and together make a straight line (π), so each one is a <b>right angle</b>.'],
+      ['Now use sin in one half', 'Triangle ABM has a right angle at M, hypotenuse AB = 8 and angle π/12 at A. BM is opposite that angle. sin(π/12) = BM ÷ 8, so BM = 8 sin(π/12) = 2.0706. The chord is twice that: BC = 16 sin(π/12) = <b>4.1411 cm</b>.']];
+    box.innerHTML = '<svg class="fig" viewBox="0 0 340 330" role="img" aria-label="Isosceles triangle ABC with AB and AC equal to 8, split by the line from A to M, the middle of BC, into two right triangles with angle pi over 12 at A"></svg>' +
+      '<div class="panel"><p class="small fl-step" style="margin:0"></p>' +
+      '<div class="picks" role="group" aria-label="Steps"><button type="button" class="fl-back">◀ Back</button><button type="button" class="fl-next">Next step ▶</button><button type="button" class="fl-fold">Fold again</button></div>' +
+      '<div class="read fl-read" aria-live="polite"></div></div>';
+    var svg = box.querySelector('svg'), stepEl = box.querySelector('.fl-step'), read = box.querySelector('.fl-read'), st = 0, run = 0;
+    function tri(p, q, r2, col) { return '<path d="M' + pt(p) + ' L' + pt(q) + ' L' + pt(r2) + ' Z" fill="' + col + '"/>'; }
+    function draw(s, animate) {
+      st = Math.max(0, Math.min(STEPS.length - 1, s)); run++; var my = run;
+      var g = '', top = '', lab = '';
+      g += '<path d="' + K.arcPath(A[0], A[1], L, PI - h, PI + h) + '" fill="none" stroke="' + CY + '" stroke-width="2" stroke-opacity="0.35"/>';
+      if (st >= 2) { g += tri(A, M, B, 'rgba(255,196,107,0.22)'); top = tri(A, M, C, 'rgba(0,229,255,0.22)'); }
+      g += K.line(A, B, W, 2.4) + K.line(A, C, W, 2.4) + K.line(B, C, GO, 2.6);
+      g += '<g class="fl-top">' + top + '</g>';
+      if (st >= 1) g += '<path class="fl-am" d="M' + pt(A) + ' L' + pt(M) + '" stroke="' + GN + '" stroke-width="2.6" stroke-dasharray="7 5" fill="none"/>';
+      var ar = 70;
+      if (st < 3) { g += '<path d="' + K.arcPath(A[0], A[1], ar, PI - h, PI + h) + '" fill="none" stroke="' + GO + '" stroke-width="2"/>'; lab += K.txt(A[0] - ar - 26, A[1], 'π/6', GO, 14); }
+      else {
+        g += '<path d="' + K.arcPath(A[0], A[1], ar, PI - h, PI) + '" fill="none" stroke="' + CY + '" stroke-width="2"/><path d="' + K.arcPath(A[0], A[1], ar + 8, PI, PI + h) + '" fill="none" stroke="' + GO + '" stroke-width="2"/>';
+        lab += K.txt(A[0] - ar - 30, A[1] - 12, 'π/12', CY, 13) + K.txt(A[0] - ar - 30, A[1] + 14, 'π/12', GO, 13);
+        var d = 11; g += '<polyline points="' + pt([M[0], M[1] - d]) + ' ' + pt([M[0] + d, M[1] - d]) + ' ' + pt([M[0] + d, M[1]]) + '" fill="none" stroke="' + W + '" stroke-width="1.8"/>' +
+          '<polyline points="' + pt([M[0], M[1] + d]) + ' ' + pt([M[0] + d, M[1] + d]) + ' ' + pt([M[0] + d, M[1]]) + '" fill="none" stroke="' + W + '" stroke-width="1.8"/>';
+        lab += K.txt(M[0] - 30, (M[1] + B[1]) / 2, st >= 4 ? 'BM' : '½BC', GO, 12) + K.txt(M[0] - 30, (M[1] + C[1]) / 2, '½BC', CY, 12);
+      }
+      lab += K.txt(A[0] + 14, A[1], 'A', W, 15) + K.txt(B[0] - 14, B[1] + 6, 'B', W, 15) + K.txt(C[0] - 14, C[1] - 6, 'C', W, 15);
+      if (st >= 1) lab += K.txt(M[0] - 14, M[1], 'M', GN, 14);
+      lab += K.txt((A[0] + C[0]) / 2 + 6, (A[1] + C[1]) / 2 - 12, '8', W, 13) + K.txt((A[0] + B[0]) / 2 + 6, (A[1] + B[1]) / 2 + 16, '8', W, 13);
+      if (st >= 4) lab += K.txt(170, 300, 'BM = 8 sin(π/12) = 2.0706', GN, 13) + K.txt(170, 320, 'BC = 2 × BM = 4.1411 cm', GN, 13);
+      svg.innerHTML = g + lab;
+      stepEl.innerHTML = '<b>Step ' + (st + 1) + ' of ' + STEPS.length + ': ' + STEPS[st][0] + '.</b>';
+      read.innerHTML = STEPS[st][1];
+      box.querySelector('.fl-fold').disabled = st < 2; box.querySelector('.fl-back').disabled = st === 0; box.querySelector('.fl-next').disabled = st === STEPS.length - 1;
+      var am = svg.querySelector('.fl-am');
+      if (am && animate && st === 1) { var len = am.getTotalLength(); am.style.strokeDasharray = len; am.style.strokeDashoffset = len; anim(900, function (u) { if (my === run) am.style.strokeDashoffset = len * (1 - u); }, function () { if (my === run) am.style.strokeDasharray = '7 5'; }); }
+      if (animate && st === 2) fold(my);
+    }
+    function fold(my) {
+      var gt = svg.querySelector('.fl-top'); if (!gt) return;
+      anim(2400, function (u) {
+        if (my !== run) return; var sc = Math.cos(u * 2 * PI);  /* 1 → −1 → 1: down onto the bottom half and back */
+        gt.setAttribute('transform', 'translate(0,' + A[1] + ') scale(1,' + sc.toFixed(3) + ') translate(0,' + (-A[1]) + ')');
+      });
+    }
+    box.querySelector('.fl-next').addEventListener('click', function () { draw(st + 1, true); });
+    box.querySelector('.fl-back').addEventListener('click', function () { draw(st - 1, false); });
+    box.querySelector('.fl-fold').addEventListener('click', function () { run++; fold(run); });
+    box.__set = function (o) { draw(o.step || 0, false); return stepEl.textContent + ' ' + read.textContent; };
+    draw(0, false);
+  });
+})();
