@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Test 1 Review · Quadratics, Functions, Coordinate Geometry</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/booklet.css">
+  <link rel="stylesheet" href="../../assets/marks.css">
+  <link rel="stylesheet" href="../../assets/board.css">
+  <style>
+    /* question bar: jump straight to any question */
+    .qbar { position: sticky; top: 61px; z-index: 29; display: flex; gap: 6px; overflow-x: auto; padding: 8px max(16px, calc((100vw - var(--col)) / 2)); background: rgba(10,10,14,0.86); border-bottom: 1px solid var(--hairline); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); scrollbar-width: thin; }
+    .qbar a { flex: 0 0 auto; font-family: var(--mono); font-size: 13px; color: var(--text-2); text-decoration: none; border: 1px solid var(--hairline); border-radius: 50px; padding: 6px 11px; white-space: nowrap; }
+    .qbar a:hover { color: var(--accent); border-color: var(--accent-line); }
+    .qbar a.here { color: var(--accent); border-color: var(--accent); background: var(--accent-wash); }
+    .qbar .gap { flex: 0 0 1px; background: var(--hairline); margin: 4px 2px; }
+    html { scroll-padding-top: 130px; }
+    section.bsec { scroll-margin-top: 130px; }
+    .part { margin-top: 72px; padding: 14px 18px; border-radius: 16px; border: 1px solid var(--accent-line); background: var(--accent-wash); }
+    .part .eyebrow { font-size: 12px; }
+    .part h2 { font-size: clamp(22px, 3.4vw, 28px); margin-top: 4px; }
+    .lab .fig { width: min(380px, 100%); }
+    .lab.wide .fig { width: min(440px, 100%); }
+    .nw { white-space: nowrap; }
+    .lab .figs { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; flex: 1 1 100%; }
+    .lab .figs .fig { width: 330px; max-width: 100%; margin: 0; }
+    .lab .read .bad, .lab .read .no { color: var(--warn); }
+    .lab .read .ok { color: var(--ok); }
+    .lab .read .gold { color: var(--amber); }
+    .lab .sl { display: flex; align-items: center; gap: 10px; }
+    .lab .sl input { flex: 1; }
+    .lab .sl output { font-family: var(--mono); font-size: 14px; color: var(--accent); min-width: 54px; text-align: right; }
+    .machine { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--mono); font-size: 15px; }
+    .machine .box { border: 1px solid var(--accent-line); background: var(--accent-wash); color: var(--accent); border-radius: 12px; padding: 6px 10px; }
+    .machine .val { color: var(--text); background: var(--surface-lift); border-radius: 10px; padding: 6px 10px; min-width: 46px; text-align: center; }
+    .machine .arr { color: var(--text-2); }
+    .tanks { display: flex; gap: 14px; align-items: flex-end; height: 170px; padding: 8px 6px 0; }
+    .tank { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+    .tank .shell { position: relative; flex: 1; width: 64px; border: 2px solid rgba(255,255,255,0.5); border-top: none; border-radius: 0 0 10px 10px; overflow: hidden; background: var(--surface-deep); }
+    .tank .water { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: linear-gradient(0deg, #0099cc, #00e5ff); transition: height .25s ease; }
+    .tank .water.full { background: linear-gradient(0deg, #2fbf6e, #4fe08a); }
+    .tank .cap { font-family: var(--mono); font-size: 12.5px; color: var(--text-2); text-align: center; line-height: 1.35; }
+    .tab { width: 100%; border-collapse: collapse; font-size: 16px; }
+    .tab th, .tab td { border: 1px solid var(--hairline); padding: 8px 10px; text-align: left; }
+    .tab th { font-family: var(--mono); font-size: 13px; color: var(--accent); font-weight: 500; }
+    .predict .opts button .katex { font-size: 1.02em; }
+    .qtag { font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+    @media (max-width: 720px) { .qbar { top: 57px; } .lab .figs .fig { width: 100%; } }
+    @media print { .qbar { display: none !important; } }
+  </style>
+</head>
+<body data-booklet="test-1-review" data-booklet-name="Test 1 Review · Quadratics, Functions, Coordinate Geometry" data-back="../../../math.html">
+<nav class="qbar" aria-label="Jump to a question">
+  <a href="#warm">Warm-up</a><span class="gap"></span>
+  <a href="#q1">Q1</a><a href="#q2">Q2</a><a href="#q3">Q3</a><a href="#q4">Q4</a><span class="gap"></span>
+  <a href="#q5">Q5</a><a href="#q6">Q6</a><a href="#q7">Q7</a><span class="gap"></span>
+  <a href="#q8">Q8</a><a href="#q9">Q9</a><span class="gap"></span>
+  <a href="#quiz">Quiz 1</a><a href="#ready">Checklist</a>
+</nav>
+<main class="bk">
+
+<!-- ================= cover ================= -->
+<div class="cover" id="top">
+  <p class="eyebrow">9709 Pure 1 · Test 1 Review · 1.1 to 1.3</p>
+  <h1>Test 1 Review</h1>
+  <p class="lead">Every question from the review sheet, worked step by step with the marks a Cambridge examiner would give, and a lab for each one so you can see why the method works. Then all ten Quiz 1 questions, with the reason every wrong answer is wrong.</p>
+  <div class="can">
+    <div>
+      <h3>Test 1 · Thursday</h3>
+      <ul>
+        <li>In class, the full period</li>
+        <li>36 marks, plus a 3-mark bonus problem</li>
+        <li>Calculator allowed. Show your working: without it the score is capped at 80%</li>
+      </ul>
+    </div>
+    <div>
+      <h3>How to use this page</h3>
+      <ul>
+        <li>Work each question on paper first, then press <b>Next step</b></li>
+        <li><b>Board</b> (or W) gives you a blank page; <b>Graph</b> (or G) gives you numbered axes</li>
+        <li>Your progress saves in this browser only</li>
+      </ul>
+    </div>
+  </div>
+  <div class="why" style="margin-top:18px">
+    <p class="eyebrow">Reading the mark codes</p>
+    <p class="small"><b>M1</b> is a method mark: a correct method with the numbers put in, even with a slip. <b>A1</b> is an accuracy mark for a correct answer, and it needs the M1 before it. <b>B1</b> is a mark for a correct fact or value on its own. A <b>*M1</b> with a later <b>DM1</b> means the second method mark depends on the first. <b>FT</b> means follow through: you can still earn it using your own earlier answer.</p>
+  </div>
+</div>
+
+<!-- ================= warm-up ================= -->
+<section class="bsec" id="warm" data-title="Warm-up: two pipes">
+  <div class="sec-head"><div class="num">★</div><div><h2>Warm-up: two pipes</h2><p class="sub">Like Thursday's bonus problem: no formula, just set it up.</p></div></div>
+  <div class="exam">
+    <p class="qtext">One pipe fills a water tank in 10 minutes. A second pipe fills the same tank in 15 minutes. How long does it take to fill the tank with both pipes open? <span class="mk">[2]</span></p>
+  </div>
+  <div class="predict">
+    <p class="eyebrow">Your first guess</p>
+    <p>Without working it out, which is closest?</p>
+    <div class="opts">
+      <button data-say="That is the average of 10 and 15. But two pipes together must be faster than the fast pipe alone, so the answer is under 10.">12.5 minutes</button>
+      <button data-say="That adds the times. Adding a second pipe cannot make the job take longer.">25 minutes</button>
+      <button data-ok data-say="Yes. Both pipes together must beat the faster pipe's 10 minutes, and 6 is the exact answer. Here is why.">6 minutes</button>
+      <button data-say="Close, but too fast. Halving 10 would need two copies of the fast pipe, and the second pipe is slower.">5 minutes</button>
+    </div>
+    <div class="why-it">
+      <div class="steps" data-next="Next step">
+        <div class="step m"><span class="lbl">work in "how much of the tank per minute", because rates add and times do not</span>pipe 1 fills \(\tfrac{1}{10}\) of the tank each minute; pipe 2 fills \(\tfrac{1}{15}\)</div>
+        <div class="step m"><span class="lbl">together, each minute (M1)</span>\(\dfrac{1}{10} + \dfrac{1}{15} = \dfrac{3}{30} + \dfrac{2}{30} = \dfrac{5}{30} = \dfrac{1}{6}\)</div>
+        <div class="step m result"><span class="lbl">a sixth of the tank each minute, so the whole tank takes (A1)</span>\(6\) minutes</div>
+        <div class="step"><p class="small">Another way: in 30 minutes pipe 1 fills 3 tanks and pipe 2 fills 2, so 5 tanks in 30 minutes, which is one tank every 6 minutes.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the tank race</p><p class="small">Drag the clock. Watch which tank fills first.</p></div>
+  <div class="lab" id="lab-tanks">
+    <div class="tanks" style="flex:1 1 300px">
+      <div class="tank"><div class="shell"><div class="water" id="tk1"></div></div><div class="cap">pipe 1<br>10 min</div></div>
+      <div class="tank"><div class="shell"><div class="water" id="tk2"></div></div><div class="cap">pipe 2<br>15 min</div></div>
+      <div class="tank"><div class="shell"><div class="water" id="tk3"></div></div><div class="cap">both<br>together</div></div>
+    </div>
+    <div class="panel">
+      <div class="sl"><label for="tkT">minutes</label><input type="range" id="tkT" min="0" max="15" step="0.5" value="0"><output id="tkTo">0</output></div>
+      <div class="read" id="tkRead"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Part A ================= -->
+<div class="part"><p class="eyebrow">Part A · Quiz 1 fixes</p><h2>The four question types the class found hardest</h2></div>
+
+<!-- ================= Q1 ================= -->
+<section class="bsec" id="q1" data-title="Q1 · Completing the square">
+  <div class="sec-head"><div class="num">1</div><div><h2>Completing the square when \(a \ne 1\)</h2><p class="sub">Quiz 1 Q1 was answered correctly by 71% of the class. The slip is one number.</p></div></div>
+  <div class="exam">
+    <p class="qtext">(a) Express \(2x^2 + 12x + 5\) in the form \(a(x + b)^2 + c\), where <span class="nw">\(a\),</span> \(b\) and \(c\) are constants. <span class="mk">[3]</span></p>
+    <p class="qtext">(b) Hence state the coordinates of the minimum point of the curve <span class="nw">\(y = 2x^2 + 12x + 5\).</span> <span class="mk">[1]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">take the 2 out of the \(x\) terms only (the 5 stays outside)</span>\(2(x^2 + 6x) + 5\)</div>
+    <div class="step m"><span class="lbl">half of 6 is 3, so \(x^2 + 6x = (x + 3)^2 - 9\) &nbsp;(check: \((x + 3)^2 = x^2 + 6x + 9\), so take the 9 back off)</span>\(2\big[(x + 3)^2 - 9\big] + 5\)</div>
+    <div class="step m"><span class="lbl">multiply the bracket out: the 2 multiplies the \(-9\) too. This is the line where marks are lost</span>\(2(x + 3)^2 - 18 + 5\)</div>
+    <div class="step m result"><span class="lbl">(a)</span>\(2(x + 3)^2 - 13\)</div>
+    <div class="step m"><span class="lbl">(b) the squared part is never negative, and it is zero when <span class="nw">\(x + 3 = 0\),</span> so <span class="nw">\(x = -3\).</span> Then \(y = 2(0) - 13\)</span>minimum point \((-3, -13)\)</div>
+    <div class="step"><p class="small">Why a minimum and not a maximum: \(a = 2\) is positive, so the parabola opens upward. The sign inside the bracket flips: \((x + 3)\) means \(x = -3\).</p></div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="B1" data-n="1"><div>\(a = 2\) and \(b = 3\)</div><div class="earn">For the bracket \(2(x + 3)^2\).</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>\(2(x + 3)^2 - 18 + 5\)</div><div class="earn">For the correct method on the constant: \(2 \times 9\) subtracted.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(c = -13\)</div><div class="earn">The accuracy mark, which needs the M1.</div></div>
+    <div class="mline" data-code="B1FT" data-n="1"><div>\((-3, -13)\)</div><div class="earn">Follow through: the point from your own \(b\) and \(c\) still scores.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the square builder</p><p class="small">Choose how much to subtract on line 3. The white curve is the real <span class="nw">\(y = 2x^2 + 12x + 5\).</span></p></div>
+  <div class="lab" id="lab-sq">
+    <svg class="fig" id="sqFig" aria-label="The curve y equals 2x squared plus 12x plus 5 with a candidate completed square form drawn over it"></svg>
+    <div class="panel">
+      <div class="picks" id="sqPicks"><button type="button" data-v="9" aria-pressed="true">subtract 9</button><button type="button" data-v="18" aria-pressed="false">subtract 2 × 9</button></div>
+      <div class="read" id="sqRead"></div>
+      <div class="verdict" id="sqVerdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Q2 ================= -->
+<section class="bsec" id="q2" data-title="Q2 · Range, one-one and the inverse">
+  <div class="sec-head"><div class="num">2</div><div><h2>Range on a restricted domain, and the inverse</h2><p class="sub">Quiz 1 Q3 (71%). The fix is three values: both ends and the vertex.</p></div></div>
+  <div class="exam">
+    <p class="qtext">The function f is defined by \(f(x) = x^2 - 6x + 11\) for \(0 \le x \le 5\).</p>
+    <p class="qtext">(a) Express \(f(x)\) in the form \((x - p)^2 + q\). <span class="mk">[2]</span></p>
+    <p class="qtext">(b) Find the range of f. <span class="mk">[2]</span></p>
+    <p class="qtext">(c) Explain why f does not have an inverse. <span class="mk">[1]</span></p>
+    <p class="qtext">(d) The domain of f is changed to <span class="nw">\(x \ge k\).</span> Find the smallest value of \(k\) for which f has an inverse. <span class="mk">[1]</span></p>
+    <p class="qtext">(e) Using this value of <span class="nw">\(k\),</span> find an expression for \(f^{-1}(x)\) and state its domain. <span class="mk">[2]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">(a) half of <span class="nw">\(-6\) is \(-3\):</span> \(x^2 - 6x = (x - 3)^2 - 9\)</span>\(f(x) = (x - 3)^2 - 9 + 11 = (x - 3)^2 + 2\)</div>
+    <div class="step m"><span class="lbl">(b) so the vertex is <span class="nw">\((3, 2)\).</span> Is \(x = 3\) inside \(0 \le x \le 5\)? Yes, so the lowest value is 2</span>vertex: \(f(3) = 2\)</div>
+    <div class="step m"><span class="lbl">now the two ends: the curve rises away from the vertex both ways, so the highest value is at one of the ends</span><span class="nw">\(f(0) = 11\),</span> &nbsp;\(f(5) = 25 - 30 + 11 = 6\)</div>
+    <div class="step m result"><span class="lbl">the top is the bigger end, 11; the bottom is the vertex, 2. Write it in <span class="nw">\(f(x)\),</span> never \(x\)</span>\(2 \le f(x) \le 11\)</div>
+    <div class="step"><p class="small">Where did \(f(5) = 6\) go? It is a real output, but it is neither the top nor the bottom, so it is not in the answer. The end \(x = 0\) is farther from the vertex (3 across) than \(x = 5\) is (2 across), so it climbs higher.</p></div>
+    <div class="step m"><span class="lbl">(c) two different inputs give the same output, so f is not one-one</span><span class="nw">\(f(2) = 3\) and \(f(4) = 3\):</span> no inverse</div>
+    <div class="step m"><span class="lbl">(d) start the domain at the vertex, so the curve only goes up</span>\(k = 3\)</div>
+    <div class="step m"><span class="lbl">(e) write <span class="nw">\(y =\),</span> swap <span class="nw">\(x\) and \(y\),</span> and solve for \(y\)</span>\(x = (y - 3)^2 + 2\) &nbsp;so&nbsp; \((y - 3)^2 = x - 2\)</div>
+    <div class="step m"><span class="lbl">which root? On the domain <span class="nw">\(x \ge 3\),</span> f's inputs are at least 3, so the inverse's outputs must be at least 3. That needs the + root</span>\(y - 3 = +\sqrt{x - 2}\)</div>
+    <div class="step m result"><span class="lbl">the domain of \(f^{-1}\) is the range of f, which is now \(f(x) \ge 2\)</span>\(f^{-1}(x) = 3 + \sqrt{x - 2}\), &nbsp;\(x \ge 2\)</div>
+  </div>
+  <div class="why">
+    <p class="eyebrow">Two traps</p>
+    <p class="small"><b>Ends only.</b> Working out \(f(0)\) and \(f(5)\) gives \(6 \le f(x) \le 11\), which misses the dip down to 2. Cambridge's examiner reports name this as the most common range error.</p>
+    <p class="small"><b>The wrong test.</b> "It fails the vertical line test" is not a reason. That test checks whether something is a function. An inverse needs one-one, which is the horizontal line test: no horizontal line can cut the graph twice.</p>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the range finder</p><p class="small">Slide the ends of the domain. Then slide the horizontal line to test one-one.</p></div>
+  <div class="lab" id="lab-rng">
+    <svg class="fig" id="rngFig" aria-label="The parabola y equals x squared minus 6x plus 11 with the chosen domain highlighted and a horizontal test line"></svg>
+    <div class="panel">
+      <div class="sl"><label for="rngL">left end</label><input type="range" id="rngL" min="-1" max="7" step="0.5" value="0"><output id="rngLo"></output></div>
+      <div class="sl"><label for="rngR">right end</label><input type="range" id="rngR" min="-1" max="7" step="0.5" value="5"><output id="rngRo"></output></div>
+      <div class="sl"><label for="rngH">test line y</label><input type="range" id="rngH" min="1" max="14" step="0.5" value="3"><output id="rngHo"></output></div>
+      <div class="read" id="rngRead"></div>
+      <div class="verdict" id="rngVerdict"></div>
+    </div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the mirror</p><p class="small">An inverse is a reflection in <span class="nw">\(y = x\).</span> Pick a root and see which one lands on the mirror image.</p></div>
+  <div class="lab" id="lab-inv2">
+    <svg class="fig" id="inv2Fig" aria-label="f for x at least 3, the line y equals x, and a candidate inverse"></svg>
+    <div class="panel">
+      <div class="picks" id="inv2Picks"><button type="button" data-v="1" aria-pressed="true">3 + √(x − 2)</button><button type="button" data-v="-1" aria-pressed="false">3 − √(x − 2)</button></div>
+      <div class="read" id="inv2Read"></div>
+      <div class="verdict" id="inv2Verdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Q3 ================= -->
+<section class="bsec" id="q3" data-title="Q3 · Transformations in order">
+  <div class="sec-head"><div class="num">3</div><div><h2>Transformations, and when the order matters</h2><p class="sub">Quiz 1 Q6 (71%). Describe each step fully, in the right order.</p></div></div>
+  <div class="exam">
+    <p class="qtext">(a) The graph of \(y = f(x)\) is transformed to the graph of \(y = 4 - f(x)\). Describe fully a sequence of two transformations that does this, making clear the order. <span class="mk">[3]</span></p>
+    <p class="qtext">(b) The curve \(y = x^2 + 2x\) is translated 3 units in the negative \(x\)-direction. The result is then stretched parallel to the \(y\)-axis with scale factor 2. Find the equation of the final curve, in the form \(y = ax^2 + bx + c\). <span class="mk">[2]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">(a) rewrite the target so you can see the two steps</span>\(4 - f(x) = -f(x) + 4\)</div>
+    <div class="step m"><span class="lbl">step 1: the minus sign outside: \(f(x)\) becomes \(-f(x)\)</span>reflection in the \(x\)-axis</div>
+    <div class="step m"><span class="lbl">step 2: add 4 outside: \(-f(x)\) becomes \(-f(x) + 4\)</span>translation by \(\begin{pmatrix} 0 \\ 4 \end{pmatrix}\)</div>
+    <div class="step m result"><span class="lbl">(a) answer, with the order stated</span>reflect in the \(x\)-axis, then translate by \(\begin{pmatrix} 0 \\ 4 \end{pmatrix}\)</div>
+    <div class="step"><p class="small">"Fully" means the type and its detail: <i>reflection in the \(x\)-axis</i>, <i>translation by</i> the vector. "Move it up 4" scores nothing.</p></div>
+    <div class="step m"><span class="lbl">(b) negative \(x\)-direction means replace \(x\) by \(x + 3\) (inside the bracket goes the opposite way)</span>\((x + 3)^2 + 2(x + 3) = x^2 + 6x + 9 + 2x + 6 = x^2 + 8x + 15\)</div>
+    <div class="step m result"><span class="lbl">stretch parallel to the \(y\)-axis, factor 2: multiply the whole thing by 2</span>\(y = 2x^2 + 16x + 30\)</div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="B1" data-n="1"><div>Reflection in the \(x\)-axis</div><div class="earn">The type and the mirror line.</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>Translation \(\begin{pmatrix} 0 \\ 4 \end{pmatrix}\)</div><div class="earn">The type and the vector.</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>The order: reflection first, then translation</div><div class="earn">Also full marks: translate by \(\begin{pmatrix} 0 \\ -4 \end{pmatrix}\) first, then reflect.</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>(b) \((x + 3)^2 + 2(x + 3)\)</div><div class="earn">For replacing \(x\) by \(x + 3\).</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(y = 2x^2 + 16x + 30\)</div><div class="earn">After the stretch.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the order machine</p><p class="small">Here <span class="nw">\(f(x) = x^2 - 2x - 1\).</span> The gold dashed curve is the target <span class="nw">\(y = 4 - f(x)\).</span> Pick a route, then step through it.</p></div>
+  <div class="lab" id="lab-ord">
+    <svg class="fig" id="ordFig" aria-label="f, the target 4 minus f, and the curve after each step of the chosen route"></svg>
+    <div class="panel">
+      <div class="picks" id="ordPicks">
+        <button type="button" data-v="1" aria-pressed="true">reflect, then up 4</button>
+        <button type="button" data-v="2" aria-pressed="false">down 4, then reflect</button>
+        <button type="button" data-v="3" aria-pressed="false">up 4, then reflect</button>
+      </div>
+      <div class="sl"><label for="ordS">step</label><input type="range" id="ordS" min="0" max="2" step="1" value="0"><output id="ordSo"></output></div>
+      <div class="read" id="ordRead"></div>
+      <div class="verdict" id="ordVerdict"></div>
+    </div>
+  </div>
+  <div class="idea">
+    <p class="eyebrow">When does the order matter?</p>
+    <p>When both steps act in the same direction. In (a), the reflection and the translation both change <span class="nw">\(y\),</span> so swapping them changes the answer. In (b), the translation changes \(x\) and the stretch changes \(y\), so they do not interfere: stretching first gives the same <span class="nw">\(y = 2x^2 + 16x + 30\).</span></p>
+  </div>
+</section>
+
+<!-- ================= Q4 ================= -->
+<section class="bsec" id="q4" data-title="Q4 · Discriminant conditions">
+  <div class="sec-head"><div class="num">4</div><div><h2>Two points, one point, or none</h2><p class="sub">Quiz 1 Q9 (71%). Read the words, pick the condition, then solve the inequality with a sketch.</p></div></div>
+  <div class="exam">
+    <p class="qtext">(a) Find the set of values of \(k\) for which the line \(y = kx - 1\) meets the curve \(y = x^2 + 3\) at two distinct points. <span class="mk">[3]</span></p>
+    <p class="qtext">(b) State the values of \(k\) for which the line is a tangent to the curve. <span class="mk">[1]</span></p>
+  </div>
+  <table class="tab">
+    <tr><th>The question says</th><th>Condition on \(b^2 - 4ac\)</th></tr>
+    <tr><td>two distinct points</td><td>\(&gt; 0\)</td></tr>
+    <tr><td>tangent, or touches</td><td>\(= 0\)</td></tr>
+    <tr><td>does not meet</td><td>\(&lt; 0\)</td></tr>
+    <tr><td>meets (at all)</td><td>\(\ge 0\)</td></tr>
+  </table>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">where they meet, the two \(y\)'s are equal. Set them equal and make one side 0</span>\(x^2 + 3 = kx - 1\) &nbsp;so&nbsp; \(x^2 - kx + 4 = 0\)</div>
+    <div class="step m"><span class="lbl">read off <span class="nw">\(a = 1\),</span> <span class="nw">\(b = -k\),</span> <span class="nw">\(c = 4\).</span> Two distinct points means two different roots</span>\((-k)^2 - 4(1)(4) &gt; 0\) &nbsp;so&nbsp; \(k^2 - 16 &gt; 0\)</div>
+    <div class="step m"><span class="lbl">critical values: solve the "= 0" version</span><span class="nw">\(k^2 = 16\),</span> &nbsp;\(k = -4\) or \(k = 4\)</div>
+    <div class="step m"><span class="lbl">sketch <span class="nw">\(D = k^2 - 16\):</span> a U shape crossing the \(k\)-axis at \(-4\) and 4. "\(&gt; 0\)" means above the axis, which is outside the roots</span>see the lab: the green parts of the axis</div>
+    <div class="step m result"><span class="lbl">(a)</span>\(k &lt; -4\) or \(k &gt; 4\)</div>
+    <div class="step m result"><span class="lbl">(b) tangent: \(k^2 - 16 = 0\)</span>\(k = -4\) or \(k = 4\)</div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="*M1" data-n="1"><div>\(x^2 - kx + 4 = 0\)</div><div class="earn">Equate and rearrange to a quadratic equal to 0.</div></div>
+    <div class="mline" data-code="DM1" data-n="1"><div><span class="nw">\(k^2 - 16 &gt; 0\),</span> critical values \(\pm 4\)</div><div class="earn">Using \(b^2 - 4ac\) on your own quadratic. Depends on the *M1.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(k &lt; -4\) or \(k &gt; 4\)</div><div class="earn">"\(-4 &lt; k &lt; 4\)" (between) scores A0. So does "\(k &gt; \pm 4\)".</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>(b) \(k = \pm 4\)</div><div class="earn">Both values.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · turn the line</p><p class="small">Every line \(y = kx - 1\) passes through \((0, -1)\). Change \(k\) and watch both pictures. The right one is not the question's graph: its axis is \(k\) and its height is the discriminant.</p></div>
+  <div class="lab wide" id="lab-disc">
+    <div class="figs">
+      <svg class="fig" id="discFig" aria-label="The curve y equals x squared plus 3 and the line y equals kx minus 1"></svg>
+      <svg class="fig" id="discD" aria-label="The discriminant D equals k squared minus 16 against k, with a dot at the current k"></svg>
+    </div>
+    <div class="panel">
+      <div class="sl"><label for="discK">k</label><input type="range" id="discK" min="-7" max="7" step="0.25" value="1"><output id="discKo"></output></div>
+      <div class="read" id="discRead"></div>
+      <div class="verdict" id="discVerdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Part B ================= -->
+<div class="part"><p class="eyebrow">Part B · Coordinate geometry</p><h2>Tangents, chords and the angle in a semicircle</h2></div>
+
+<!-- ================= Q5 ================= -->
+<section class="bsec" id="q5" data-title="Q5 · Tangent to a reciprocal curve">
+  <div class="sec-head"><div class="num">5</div><div><h2>A line that touches \(y = -\tfrac{2}{x}\)</h2><p class="sub">The same skill as Quiz 1 Q10, and a real Cambridge favorite (June 2023 Paper 11 Q5).</p></div></div>
+  <div class="exam">
+    <p class="qtext">The line <span class="nw">\(y = kx + 3\),</span> where \(k\) is a constant, is a tangent to the curve \(y = -\dfrac{2}{x}\). Find the value of \(k\) and the coordinates of the point where the line touches the curve. <span class="mk">[5]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step"><p><b>The plan.</b> Tangent means the line and curve meet exactly once. The meeting points come from a quadratic, and one meeting point means a repeated root, so <span class="nw">\(b^2 - 4ac = 0\).</span></p></div>
+    <div class="step m"><span class="lbl">set the two \(y\)'s equal</span>\(kx + 3 = -\dfrac{2}{x}\)</div>
+    <div class="step m"><span class="lbl">clear the fraction: multiply every term by <span class="nw">\(x\),</span> including the 3</span>\(kx^2 + 3x = -2\)</div>
+    <div class="step m"><span class="lbl">make one side 0</span>\(kx^2 + 3x + 2 = 0\)</div>
+    <div class="step m"><span class="lbl"><span class="nw">\(a = k\),</span> <span class="nw">\(b = 3\),</span> <span class="nw">\(c = 2\).</span> Tangent, so</span>\(3^2 - 4(k)(2) = 0\) &nbsp;so&nbsp; \(9 - 8k = 0\)</div>
+    <div class="step m result"><span class="lbl">solve for \(k\)</span>\(k = \tfrac{9}{8}\)</div>
+    <div class="step m"><span class="lbl">put \(k = \tfrac{9}{8}\) back and multiply by 8 to clear the fraction</span>\(9x^2 + 24x + 16 = 0\) &nbsp;so&nbsp; \((3x + 4)^2 = 0\), &nbsp;\(x = -\tfrac{4}{3}\)</div>
+    <div class="step"><p class="small">It is a perfect square, which is what a tangent should give. Shortcut: when <span class="nw">\(b^2 - 4ac = 0\),</span> the quadratic formula's \(\pm\sqrt{\;}\) part is 0, leaving \(x = -\tfrac{b}{2a} = -\tfrac{3}{2 \times 9/8} = -\tfrac{4}{3}\).</p></div>
+    <div class="step m result"><span class="lbl">\(y\) from the curve: \(-2 \div \left(-\tfrac{4}{3}\right) = \tfrac{3}{2}\). Check with the line: \(\tfrac{9}{8}\left(-\tfrac{4}{3}\right) + 3 = \tfrac{3}{2}\)</span>point \(\left(-\tfrac{4}{3}, \tfrac{3}{2}\right)\)</div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="*M1" data-n="1"><div>Equate and multiply through by \(x\)</div><div class="earn">Every term multiplied.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(kx^2 + 3x + 2 = 0\)</div><div class="earn">Any correct three-term quadratic equal to 0.</div></div>
+    <div class="mline" data-code="DM1" data-n="1"><div>\(9 - 8k = 0\)</div><div class="earn">\(b^2 - 4ac = 0\) on your quadratic. Depends on the *M1.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(k = \tfrac{9}{8}\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>\(\left(-\tfrac{4}{3}, \tfrac{3}{2}\right)\)</div><div class="earn">The point is part of the question: stopping at \(k\) loses this mark.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · find the touching line</p><p class="small">Slide \(k\) until the line just touches the curve. Then switch on the examiner's mistake.</p></div>
+  <div class="lab" id="lab-tan">
+    <svg class="fig" id="tanFig" aria-label="The curve y equals minus 2 over x and the line y equals kx plus 3"></svg>
+    <div class="panel">
+      <div class="sl"><label for="tanK">k</label><input type="range" id="tanK" min="0.25" max="3" step="0.125" value="0.5"><output id="tanKo"></output></div>
+      <button type="button" class="toggle" id="tanSlip" aria-pressed="false">show the slip: −2/x written as −2x</button>
+      <div class="read" id="tanRead"></div>
+      <div class="verdict" id="tanVerdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Q6 ================= -->
+<section class="bsec" id="q6" data-title="Q6 · Circle, chord and endpoints">
+  <div class="sec-head"><div class="num">6</div><div><h2>A chord and its midpoint</h2><p class="sub">Session 4's chord fact: the line from the center to the midpoint of a chord is perpendicular to the chord.</p></div></div>
+  <div class="exam">
+    <p class="qtext">A circle has equation <span class="nw">\(x^2 + y^2 - 4x + 6y - 12 = 0\).</span></p>
+    <p class="qtext">(a) Find the coordinates of the center C and the radius of the circle. <span class="mk">[2]</span></p>
+    <p class="qtext">(b) The chord AB of the circle has midpoint <span class="nw">\(M(4, 1)\).</span> Find the equation of AB, giving your answer in the form <span class="nw">\(ax + by + c = 0\).</span> <span class="mk">[3]</span></p>
+    <p class="qtext">(c) Find, by calculation, the coordinates of A and B. <span class="mk">[3]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">(a) group the \(x\) terms and the \(y\) terms, and complete the square on each</span>\((x - 2)^2 - 4 + (y + 3)^2 - 9 = 12\)</div>
+    <div class="step m"><span class="lbl">move the numbers across: \(12 + 4 + 9 = 25\)</span>\((x - 2)^2 + (y + 3)^2 = 25\)</div>
+    <div class="step m result"><span class="lbl">the signs flip, and the radius is the square root of 25</span><span class="nw">\(C(2, -3)\),</span> &nbsp;radius \(5\)</div>
+    <div class="step m"><span class="lbl">(b) gradient of CM, from \(C(2, -3)\) to \(M(4, 1)\)</span>\(\dfrac{1 - (-3)}{4 - 2} = \dfrac{4}{2} = 2\)</div>
+    <div class="step m"><span class="lbl">why CM is perpendicular to AB: \(CA = CB\) (both radii), so C is on the perpendicular bisector of AB, and that bisector goes through the midpoint M</span>gradient of AB \(= -\tfrac{1}{2}\) &nbsp;(flip and change the sign)</div>
+    <div class="step m"><span class="lbl">line through <span class="nw">\(M(4, 1)\),</span> then multiply by 2 to clear the fraction</span>\(y - 1 = -\tfrac{1}{2}(x - 4)\) &nbsp;so&nbsp; \(2y - 2 = -x + 4\)</div>
+    <div class="step m result"><span class="lbl">(b)</span>\(x + 2y - 6 = 0\)</div>
+    <div class="step m"><span class="lbl">(c) from (b), \(x = 6 - 2y\) (no fractions, so this is the easier substitution). Put it into the circle</span>\((6 - 2y)^2 + y^2 - 4(6 - 2y) + 6y - 12 = 0\)</div>
+    <div class="step m"><span class="lbl">expand line by line: \(36 - 24y + 4y^2 + y^2 - 24 + 8y + 6y - 12 = 0\)</span>\(5y^2 - 10y = 0\) &nbsp;so&nbsp; \(5y(y - 2) = 0\)</div>
+    <div class="step m result"><span class="lbl"><span class="nw">\(y = 0\) gives \(x = 6\);</span> \(y = 2\) gives \(x = 2\)</span>\((6, 0)\) and \((2, 2)\)</div>
+    <div class="step"><p class="small">Check: the midpoint of \((6, 0)\) and \((2, 2)\) is \((4, 1)\), which is M. "By calculation" means the substitution must be written down: answers read from a graph or a calculator score 0.</p></div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="B1" data-n="1"><div>\(C(2, -3)\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>radius 5</div><div class="earn"></div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>gradient of CM \(= 2\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>gradient of AB <span class="nw">\(= -\tfrac{1}{2}\),</span> line through M</div><div class="earn">The perpendicular gradient used with M.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(x + 2y - 6 = 0\)</div><div class="earn">In the form asked for.</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>Substitute the line into the circle</div><div class="earn">The substitution must be seen.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(y = 0\) or \(y = 2\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\((6, 0)\) and \((2, 2)\)</div><div class="earn">Both points, both coordinates.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · move the midpoint</p><p class="small">Drag M anywhere inside the circle. The chord through M is always perpendicular to CM.</p></div>
+  <div class="lab" id="lab-chord">
+    <svg class="fig" id="chordFig" aria-label="The circle with center 2, minus 3 and radius 5, the point M, the line CM and the chord through M"></svg>
+    <div class="panel">
+      <div class="sl"><label for="chX">M x</label><input type="range" id="chX" min="-2" max="6" step="0.5" value="4"><output id="chXo"></output></div>
+      <div class="sl"><label for="chY">M y</label><input type="range" id="chY" min="-7" max="1.5" step="0.5" value="1"><output id="chYo"></output></div>
+      <div class="read" id="chRead"></div>
+      <div class="verdict" id="chVerdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Q7 ================= -->
+<section class="bsec" id="q7" data-title="Q7 · Angle in a semicircle">
+  <div class="sec-head"><div class="num">7</div><div><h2>A right angle means a diameter</h2><p class="sub">Session 4, used backwards: if angle PQR is 90°, then PR is a diameter.</p></div></div>
+  <div class="exam">
+    <p class="qtext">The points <span class="nw">\(P(1, 1)\),</span> \(Q(3, 5)\) and \(R(7, 3)\) are given.</p>
+    <p class="qtext">(a) Show that angle <span class="nw">\(PQR = 90^\circ\).</span> <span class="mk">[2]</span></p>
+    <p class="qtext">(b) Hence find the equation of the circle that passes through P, Q and R. <span class="mk">[3]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">(a) the two sides that meet at Q</span>gradient PQ <span class="nw">\(= \dfrac{5 - 1}{3 - 1} = 2\),</span> &nbsp; gradient QR \(= \dfrac{3 - 5}{7 - 3} = -\dfrac{1}{2}\)</div>
+    <div class="step m result"><span class="lbl">the conclusion is the mark: say it in words</span>\(2 \times \left(-\tfrac{1}{2}\right) = -1\), so PQ is perpendicular to QR and angle \(PQR = 90^\circ\)</div>
+    <div class="step m"><span class="lbl">(b) the right angle is at Q, so the diameter is the side opposite it: PR (the hypotenuse)</span>center = midpoint of PR \(= \left(\tfrac{1 + 7}{2}, \tfrac{1 + 3}{2}\right) = (4, 2)\)</div>
+    <div class="step m"><span class="lbl">radius squared: distance from the center <span class="nw">\((4, 2)\) to \(R(7, 3)\).</span> Across <span class="nw">\(7 - 4 = 3\),</span> up \(3 - 2 = 1\)</span>\(r^2 = 3^2 + 1^2 = 9 + 1 = 10\)</div>
+    <div class="step m result"><span class="lbl">(b)</span>\((x - 4)^2 + (y - 2)^2 = 10\)</div>
+    <div class="step"><p class="small">Check with Q: \((3 - 4)^2 + (5 - 2)^2 = 1 + 9 = 10\). Q is on the circle.</p></div>
+  </div>
+  <div class="why">
+    <p class="eyebrow">The radius is a slanted distance</p>
+    <p class="small">A tempting shortcut is "<span class="nw">\(7 - 1 = 6\),</span> halve it, so \(r = 3\)". That only measures across. P and R are at different heights (\(y = 1\) and \(y = 3\)), so PR is slanted, and its length needs Pythagoras with the "up" part too. The shortcut only works when the diameter is horizontal: both ends at the same height, so "across" is the whole length.</p>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="M1" data-n="1"><div>Both gradients, 2 and \(-\tfrac{1}{2}\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>Product <span class="nw">\(-1\),</span> so \(90^\circ\)</div><div class="earn">A "show that" needs the conclusion written.</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>Center \((4, 2)\)</div><div class="earn">The midpoint of PR.</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>\(r^2 = 10\) (or \(r = \sqrt{10}\))</div><div class="earn">From the center to any of the three points.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\((x - 4)^2 + (y - 2)^2 = 10\)</div><div class="earn"></div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · measure the radius</p><p class="small">Pick a way to measure. Only a radius that reaches all three points is right.</p></div>
+  <div class="lab" id="lab-semi">
+    <svg class="fig" id="semiFig" aria-label="P, Q and R with the circle through them, the center C, and a right triangle from C to R"></svg>
+    <div class="panel">
+      <div class="picks" id="semiPicks"><button type="button" data-v="0" aria-pressed="false">across only: (7 − 1) ÷ 2</button><button type="button" data-v="1" aria-pressed="true">across and up</button></div>
+      <div class="sl"><label for="semiQ">move Q</label><input type="range" id="semiQ" min="0" max="360" step="5" value="0"><output id="semiQo"></output></div>
+      <div class="read" id="semiRead"></div>
+      <div class="verdict" id="semiVerdict"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Part C ================= -->
+<div class="part"><p class="eyebrow">Part C · Composite and inverse functions</p><h2>Order of functions, and undoing a function</h2></div>
+
+<!-- ================= Q8 ================= -->
+<section class="bsec" id="q8" data-title="Q8 · Composite functions">
+  <div class="sec-head"><div class="num">8</div><div><h2>fg means g first</h2><p class="sub">Read a composite from right to left: the function next to the \(x\) acts first.</p></div></div>
+  <div class="exam">
+    <p class="qtext">The functions f and g are defined by \(f(x) = 2x - 3\) for \(x \in \mathbb{R}\) and \(g(x) = x^2 + 1\) for \(x \in \mathbb{R}\).</p>
+    <p class="qtext">(a) Find expressions for <span class="nw">\(fg(x)\) and \(gf(x)\).</span> <span class="mk">[2]</span></p>
+    <p class="qtext">(b) Solve the equation <span class="nw">\(gf(x) = 10\).</span> <span class="mk">[2]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl"><span class="nw">\(fg(x) = f\big(g(x)\big)\):</span> put <span class="nw">\(g(x)\),</span> in a bracket, into every \(x\) of f</span>\(f(x^2 + 1) = 2(x^2 + 1) - 3 = 2x^2 - 1\)</div>
+    <div class="step m"><span class="lbl"><span class="nw">\(gf(x) = g\big(f(x)\big)\):</span> put \(f(x)\) into every \(x\) of g</span>\(g(2x - 3) = (2x - 3)^2 + 1 = 4x^2 - 12x + 10\)</div>
+    <div class="step"><p class="small">They are different. Order matters, so fg and gf are two different functions.</p></div>
+    <div class="step m"><span class="lbl">(b) use the bracket form: it is two lines, with no factoring</span>\((2x - 3)^2 + 1 = 10\) &nbsp;so&nbsp; \((2x - 3)^2 = 9\)</div>
+    <div class="step m"><span class="lbl">a square root always gives two signs</span>\(2x - 3 = 3\) or \(2x - 3 = -3\)</div>
+    <div class="step m result"><span class="lbl">(b)</span>\(x = 3\) or \(x = 0\)</div>
+    <div class="step"><p class="small">Check: \(gf(0) = g(-3) = 9 + 1 = 10\) and \(gf(3) = g(3) = 10\). Both work.</p></div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="B1" data-n="1"><div>\(fg(x) = 2x^2 - 1\)</div><div class="earn"></div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>\(gf(x) = 4x^2 - 12x + 10\)</div><div class="earn">\((2x - 3)^2 + 1\) also scores.</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>\((2x - 3)^2 = 9\)</div><div class="earn">Their gf set equal to 10 and simplified.</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(x = 0\) or \(x = 3\)</div><div class="earn">Both values.</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the function machine</p><p class="small">Pick an order and an input. The graph shows \(y = gf(x)\) or \(y = fg(x)\) against the line \(y = 10\).</p></div>
+  <div class="lab" id="lab-mach">
+    <svg class="fig" id="machFig" aria-label="The graph of the chosen composite and the line y equals 10"></svg>
+    <div class="panel">
+      <div class="picks" id="machPicks"><button type="button" data-v="gf" aria-pressed="true">gf: f first, then g</button><button type="button" data-v="fg" aria-pressed="false">fg: g first, then f</button></div>
+      <div class="sl"><label for="machX">input x</label><input type="range" id="machX" min="-2" max="5" step="0.5" value="2"><output id="machXo"></output></div>
+      <div class="machine" id="machRow"></div>
+      <div class="read" id="machRead"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Q9 ================= -->
+<section class="bsec" id="q9" data-title="Q9 · Finding an inverse">
+  <div class="sec-head"><div class="num">9</div><div><h2>Undo a fraction function</h2><p class="sub">Quiz 1 Q5 had the same shape. Collect the \(y\) terms, then factor out \(y\).</p></div></div>
+  <div class="exam">
+    <p class="qtext">The function h is defined by \(h(x) = \dfrac{2x + 3}{x - 4}\) for \(x &gt; 4\).</p>
+    <p class="qtext">(a) Find an expression for <span class="nw">\(h^{-1}(x)\).</span> <span class="mk">[3]</span></p>
+    <p class="qtext">(b) Show that <span class="nw">\(h(x) = 2 + \dfrac{11}{x - 4}\),</span> and hence state the domain of <span class="nw">\(h^{-1}\).</span> <span class="mk">[2]</span></p>
+  </div>
+  <div class="steps" data-next="Next step">
+    <div class="step m"><span class="lbl">write <span class="nw">\(y =\),</span> then swap \(x\) and \(y\)</span>\(x = \dfrac{2y + 3}{y - 4}\)</div>
+    <div class="step m"><span class="lbl">clear the fraction: multiply both sides by \(y - 4\)</span>\(xy - 4x = 2y + 3\)</div>
+    <div class="step m"><span class="lbl">\(y\) appears twice: collect the \(y\) terms on one side, everything else on the other</span>\(xy - 2y = 4x + 3\)</div>
+    <div class="step m"><span class="lbl">factor out <span class="nw">\(y\),</span> then divide</span>\(y(x - 2) = 4x + 3\)</div>
+    <div class="step m result"><span class="lbl">(a)</span>\(h^{-1}(x) = \dfrac{4x + 3}{x - 2}\)</div>
+    <div class="step"><p class="small">Check with a number: <span class="nw">\(h(5) = \tfrac{13}{1} = 13\),</span> and \(h^{-1}(13) = \tfrac{55}{11} = 5\). The inverse undoes h.</p></div>
+    <div class="step m"><span class="lbl">(b) start from the right-hand side and combine into one fraction</span>\(2 + \dfrac{11}{x - 4} = \dfrac{2(x - 4) + 11}{x - 4} = \dfrac{2x + 3}{x - 4}\)</div>
+    <div class="step m"><span class="lbl">for <span class="nw">\(x &gt; 4\),</span> \(x - 4\) is positive, so \(\tfrac{11}{x - 4}\) is positive, so \(h(x) &gt; 2\). It gets close to 2 but never reaches it</span>range of h: \(h(x) &gt; 2\)</div>
+    <div class="step m result"><span class="lbl">the domain of the inverse is the range of the function</span>domain of <span class="nw">\(h^{-1}\):</span> \(x &gt; 2\)</div>
+    <div class="step"><p class="small">The formula \(\tfrac{4x + 3}{x - 2}\) breaks at \(x = 2\): the same 2 the domain leaves out. And the range of \(h^{-1}\) is the domain of h, \(h^{-1}(x) &gt; 4\).</p></div>
+  </div>
+  <div class="marks">
+    <div class="mline" data-code="M1" data-n="1"><div>\(xy - 4x = 2y + 3\)</div><div class="earn">Swap and clear the fraction (or rearrange first, then swap).</div></div>
+    <div class="mline" data-code="M1" data-n="1"><div>\(y(x - 2) = 4x + 3\)</div><div class="earn">Collect and factor \(y\).</div></div>
+    <div class="mline" data-code="A1" data-n="1"><div>\(h^{-1}(x) = \dfrac{4x + 3}{x - 2}\)</div><div class="earn">In terms of \(x\).</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>Shown: \(\dfrac{2(x - 4) + 11}{x - 4}\)</div><div class="earn">A "show that" needs the line that combines them.</div></div>
+    <div class="mline" data-code="B1" data-n="1"><div>\(x &gt; 2\)</div><div class="earn">Not \(x \ne 2\), and not \(x &gt; 4\) (that is h's own domain).</div></div>
+  </div>
+  <div class="labhead"><p class="eyebrow">Try it · the mirror</p><p class="small">Move the point along h. Its mirror image in <span class="nw">\(y = x\) lands on \(h^{-1}\):</span> the coordinates swap.</p></div>
+  <div class="lab" id="lab-inv">
+    <svg class="fig" id="invFig" aria-label="h for x greater than 4, its inverse, the line y equals x and the asymptotes"></svg>
+    <div class="panel">
+      <div class="sl"><label for="invA">x on h</label><input type="range" id="invA" min="4.5" max="12" step="0.25" value="5"><output id="invAo"></output></div>
+      <div class="read" id="invRead"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Quiz 1 ================= -->
+<section class="bsec" id="quiz" data-title="Quiz 1, explained">
+  <div class="sec-head"><div class="num">Q</div><div><h2>Quiz 1, every option explained</h2><p class="sub">Choose an answer. A wrong choice tells you the exact mistake behind it. Then open the full working with its marks.</p></div></div>
+  <p class="small">Class averages from Quiz 1 are next to each question. The 71% ones (1, 3, 6 and 9) are the ones Part A covers again.</p>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 1 <span class="qtag">· 3 marks · class 71%</span></p>
+    <p>Express \(3x^2 - 12x + 7\) in the form \(a(x + b)^2 + c\). Which gives this form and the minimum value?</p>
+    <div class="opts">
+      <button data-say="The sign inside the bracket: x² − 4x comes from (x − 2)², not (x + 2)²."><span class="nw">\(3(x + 2)^2 - 5\);</span> minimum \(-5\)</button>
+      <button data-say="You did not halve. x² − 4x needs (x − 2)², not (x − 4)²."><span class="nw">\(3(x - 4)^2 - 41\);</span> minimum \(-41\)</button>
+      <button data-ok data-say="Yes."><span class="nw">\(3(x - 2)^2 - 5\);</span> minimum \(-5\)</button>
+      <button data-say="You subtracted 4 instead of 3 × 4 = 12 when you multiplied out the bracket. Same slip as Q1 of the review."><span class="nw">\(3(x - 2)^2 + 3\);</span> minimum \(3\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="B1" data-n="1"><div>\(3(x^2 - 4x) + 7 = 3\big[(x - 2)^2 - 4\big] + 7\): \(a = 3\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="B1" data-n="1"><div><span class="nw">\(3(x - 2)^2 - 12 + 7\):</span> \(b = -2\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="B1" data-n="1"><div><span class="nw">\(3(x - 2)^2 - 5\),</span> minimum \(-5\)</div><div class="earn">The minimum of \(a(x + b)^2 + c\) with \(a &gt; 0\) is \(c\).</div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 2 <span class="qtag">· 3 marks · class 86%</span></p>
+    <p>Find the set of values of \(k\) for which \(2x^2 - 4x + 8 = kx\) has no real roots.</p>
+    <div class="opts">
+      <button data-ok data-say="Yes: below zero means between the roots.">\(-12 &lt; k &lt; 4\)</button>
+      <button data-say="That is outside the roots, which answers 'two real roots'. No real roots means the discriminant is below zero: between.">\(k &lt; -12\) or \(k &gt; 4\)</button>
+      <button data-say="The bracket is (4 + k), not (k − 4). Rearranging gives 2x² − (4 + k)x + 8 = 0.">\(-4 &lt; k &lt; 12\)</button>
+      <button data-say="You stopped at 4 + k = ±8. Solve for k: k = 4 or k = −12.">\(-8 &lt; k &lt; 8\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="M1" data-n="1"><div>\(2x^2 - (4 + k)x + 8 = 0\) and \((4 + k)^2 - 64 &lt; 0\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="M1" data-n="1"><div><span class="nw">\((k - 4)(k + 12) &lt; 0\):</span> critical values \(-12\) and 4</div><div class="earn"></div></div>
+      <div class="mline" data-code="A1" data-n="1"><div>\(-12 &lt; k &lt; 4\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 3 <span class="qtag">· 2 marks · class 71%</span></p>
+    <p>\(f(x) = 5 + 8x - x^2\) for \(1 \le x \le 10\). Find the range of f.</p>
+    <div class="opts">
+      <button data-say="Ends only: f(1) = 12 and f(10) = −15. The vertex (4, 21) is inside the domain, so the top is 21.">\(-15 \le f(x) \le 12\)</button>
+      <button data-say="That ignores the domain. With 1 ≤ x ≤ 10 there is also a lowest value, f(10) = −15.">\(f(x) \le 21\)</button>
+      <button data-say="Right numbers, wrong letter: a range is written in f(x) (or y). Cambridge gives B0 for x.">\(-15 \le x \le 21\)</button>
+      <button data-ok data-say="Yes.">\(-15 \le f(x) \le 21\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="B1" data-n="1"><div><span class="nw">\(f(x) = 21 - (x - 4)^2\):</span> vertex \((4, 21)\) inside the domain, so the top is 21</div><div class="earn"></div></div>
+      <div class="mline" data-code="B1" data-n="1"><div><span class="nw">\(f(1) = 12\),</span> <span class="nw">\(f(10) = -15\),</span> so \(-15 \le f(x) \le 21\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 4 <span class="qtag">· 2 marks · class 100%</span></p>
+    <p>\(f(x) = x^2 - 2\) and \(g(x) = 3x + 4\), both for <span class="nw">\(x \in \mathbb{R}\).</span> Solve <span class="nw">\(fg(x) = 7\).</span></p>
+    <div class="opts">
+      <button data-say="You lost the negative square root: 3x + 4 = −3 as well.">\(x = -\tfrac{1}{3}\) only</button>
+      <button data-ok data-say="Yes.">\(x = -\tfrac{1}{3}\) or \(x = -\tfrac{7}{3}\)</button>
+      <button data-say="That solves gf(x) = 7. fg means g first: (3x + 4)² − 2.">\(x = \pm\sqrt{3}\)</button>
+      <button data-say="That used 3x − 4 instead of 3x + 4.">\(x = \tfrac{1}{3}\) or \(x = \tfrac{7}{3}\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="M1" data-n="1"><div>\((3x + 4)^2 - 2 = 7\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="A1" data-n="1"><div><span class="nw">\(3x + 4 = \pm 3\):</span> \(x = -\tfrac{1}{3}\) or \(-\tfrac{7}{3}\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 5 <span class="qtag">· 2 marks · class 86%</span></p>
+    <p>\(f(x) = \dfrac{2x + 3}{x - 1}\) for \(x &gt; 1\). Find <span class="nw">\(f^{-1}(x)\).</span></p>
+    <div class="opts">
+      <button data-ok data-say="Yes.">\(\dfrac{x + 3}{x - 2}\)</button>
+      <button data-say="That is 1/f(x), the reciprocal. An inverse undoes f; it does not flip the fraction.">\(\dfrac{x - 1}{2x + 3}\)</button>
+      <button data-say="A sign slip while collecting the y terms. Check it: put your answer into f and you should get x back.">\(\dfrac{x - 3}{x - 2}\)</button>
+      <button data-say="A sign slip: xy − 2y = x + 3 factors to y(x − 2), not y(x + 2).">\(\dfrac{x + 3}{x + 2}\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="M1" data-n="1"><div><span class="nw">\(x(y - 1) = 2y + 3\),</span> so \(xy - 2y = x + 3\)</div><div class="earn">Swap, clear the fraction, collect \(y\).</div></div>
+      <div class="mline" data-code="A1" data-n="1"><div>\(f^{-1}(x) = \dfrac{x + 3}{x - 2}\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 6 <span class="qtag">· 2 marks · class 71%</span></p>
+    <p>\(y = x^2 + 3x\) is reflected in the \(x\)-axis, then translated 5 units in the positive \(y\)-direction. Find the final equation.</p>
+    <div class="opts">
+      <button data-say="That translated first and then reflected, which reflects the +5 too. The order in the question is reflect first.">\(y = -x^2 - 3x - 5\)</button>
+      <button data-say="That reflects in the y-axis (x becomes −x). Reflecting in the x-axis makes the whole function negative.">\(y = x^2 - 3x + 5\)</button>
+      <button data-ok data-say="Yes.">\(y = -x^2 - 3x + 5\)</button>
+      <button data-say="That reflects in both axes.">\(y = -x^2 + 3x + 5\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="B1" data-n="1"><div>\(y = -(x^2 + 3x)\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="B1" data-n="1"><div>\(y = -x^2 - 3x + 5\)</div><div class="earn">The +5 is added after the reflection.</div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 7 <span class="qtag">· 2 marks · class 86%</span></p>
+    <p>Find the line through \((4, -1)\) perpendicular to \(3x - 2y = 7\), in the form <span class="nw">\(ax + by + c = 0\).</span></p>
+    <div class="opts">
+      <button data-say="That line is parallel to 3x − 2y = 7, not perpendicular.">\(3x - 2y - 14 = 0\)</button>
+      <button data-say="Right gradient, but it goes through (−4, 1), not (4, −1).">\(2x + 3y + 5 = 0\)</button>
+      <button data-say="The gradient was flipped without changing its sign. Perpendicular to 3/2 is −2/3.">\(2x - 3y - 11 = 0\)</button>
+      <button data-ok data-say="Yes.">\(2x + 3y - 5 = 0\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="M1" data-n="1"><div>gradient <span class="nw">\(\tfrac{3}{2}\),</span> perpendicular <span class="nw">\(-\tfrac{2}{3}\):</span> \(y + 1 = -\tfrac{2}{3}(x - 4)\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="A1" data-n="1"><div>\(2x + 3y - 5 = 0\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 8 <span class="qtag">· 3 marks · class 100%</span></p>
+    <p>\(P(1, 7)\) lies on \(x^2 + y^2 + 4x - 6y - 12 = 0\). Find the tangent at P.</p>
+    <div class="opts">
+      <button data-say="That uses the radius gradient 4/3. The tangent is perpendicular to the radius, so its gradient is −3/4.">\(4x - 3y + 17 = 0\)</button>
+      <button data-ok data-say="Yes.">\(3x + 4y - 31 = 0\)</button>
+      <button data-say="Right gradient, but through the center (−2, 3). The tangent goes through P.">\(3x + 4y - 6 = 0\)</button>
+      <button data-say="Flipped but not sign-changed: 3/4 instead of −3/4.">\(3x - 4y + 25 = 0\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="B1" data-n="1"><div>center \((-2, 3)\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="M1" data-n="1"><div>radius gradient <span class="nw">\(\tfrac{4}{3}\),</span> so tangent gradient \(-\tfrac{3}{4}\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="A1" data-n="1"><div>\(3x + 4y - 31 = 0\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="predict">
+    <p class="eyebrow">Quiz 1 · Question 9 <span class="qtag">· 2 marks · class 71%</span></p>
+    <p>Find the values of \(m\) for which \(y = mx + 2\) meets \(y = x^2 - 2x + 6\) at two distinct points.</p>
+    <div class="opts">
+      <button data-ok data-say="Yes: above zero means outside the roots.">\(m &lt; -6\) or \(m &gt; 2\)</button>
+      <button data-say="Between the roots is where the discriminant is negative: that is 'does not meet'.">\(-6 &lt; m &lt; 2\)</button>
+      <button data-say="The critical values have the wrong signs. (2 + m)² − 16 = (m − 2)(m + 6).">\(m &lt; -2\) or \(m &gt; 6\)</button>
+      <button data-say="Only one branch. The square root of a square gives two signs, so there are two ranges.">\(m &gt; 2\)</button>
+    </div>
+    <div class="why-it"><div class="marks">
+      <div class="mline" data-code="M1" data-n="1"><div>\(x^2 - (2 + m)x + 4 = 0\) and \((2 + m)^2 - 16 &gt; 0\)</div><div class="earn"></div></div>
+      <div class="mline" data-code="A1" data-n="1"><div><span class="nw">\((m - 2)(m + 6) &gt; 0\):</span> \(m &lt; -6\) or \(m &gt; 2\)</div><div class="earn"></div></div>
+    </div></div>
+  </div>
+
+  <div class="try" data-id="quiz10">
+    <div class="qh"><span class="qn">Quiz 1 · Question 10</span><span class="tag">5 marks · written answer</span></div>
+    <div class="q"><p>The line <span class="nw">\(y = 3 - kx\),</span> where \(k\) is a constant, is a tangent to the curve \(y = \dfrac{3}{2x}\). Find the value of \(k\) and the coordinates of the point where the line touches the curve.</p></div>
+    <div class="sol">
+      <div class="marks">
+        <div class="mline" data-code="*M1" data-n="1"><div><span class="nw">\(3 - kx = \dfrac{3}{2x}\),</span> multiply every term by <span class="nw">\(2x\):</span> \(6x - 2kx^2 = 3\)</div><div class="earn"></div></div>
+        <div class="mline" data-code="A1" data-n="1"><div>\(2kx^2 - 6x + 3 = 0\)</div><div class="earn"></div></div>
+        <div class="mline" data-code="DM1" data-n="1"><div>\(36 - 24k = 0\)</div><div class="earn">\(b^2 - 4ac = 0\) on your quadratic.</div></div>
+        <div class="mline" data-code="A1" data-n="1"><div>\(k = \tfrac{3}{2}\)</div><div class="earn"></div></div>
+        <div class="mline" data-code="B1" data-n="1"><div><span class="nw">\(3x^2 - 6x + 3 = 0\),</span> <span class="nw">\(3(x - 1)^2 = 0\),</span> <span class="nw">\(x = 1\),</span> <span class="nw">\(y = \tfrac{3}{2}\):</span> point \(\left(1, \tfrac{3}{2}\right)\)</div><div class="earn"></div></div>
+      </div>
+      <p class="small">The examiner's most common error on this kind of question: writing \(\tfrac{3}{2x}\) as \(\tfrac{3}{2}x\), so no quadratic ever appears. The Q5 lab above lets you watch that happen.</p>
+    </div>
+  </div>
+  <p class="tally"></p>
+</section>
+
+<!-- ================= checklist ================= -->
+<section class="bsec" id="ready" data-title="Ready for Thursday?">
+  <div class="sec-head"><div class="num">✓</div><div><h2>Ready for Thursday?</h2><p class="sub">If you can do every line, you are ready.</p></div></div>
+  <div class="next">
+    <ul>
+      <li>Complete the square with <span class="nw">\(a \ne 1\),</span> and read off the vertex and the minimum or maximum value. <a href="#q1">Q1</a></li>
+      <li>Pick the discriminant condition from the words, and solve the inequality with a sketch (between or outside). <a href="#q4">Q4</a> · <a href="#q5">Q5</a></li>
+      <li>Find a range on a restricted domain: both ends and the vertex, written in <span class="nw">\(f(x)\).</span> <a href="#q2">Q2</a></li>
+      <li>Find <span class="nw">\(fg(x)\) and \(f^{-1}(x)\),</span> and explain when an inverse exists (one-one). <a href="#q8">Q8</a> · <a href="#q9">Q9</a> · <a href="#q2">Q2</a></li>
+      <li>Describe transformations fully, in the right order. <a href="#q3">Q3</a></li>
+      <li>Gradients, midpoints, perpendicular lines and bisectors, and where two lines meet. <a href="#q6">Q6</a> · <a href="#q7">Q7</a></li>
+      <li>A circle's center and radius, a tangent (perpendicular to the radius), a chord (perpendicular to the line from the center to its midpoint), and the angle in a semicircle. <a href="#q6">Q6</a> · <a href="#q7">Q7</a></li>
+    </ul>
+    <p class="small">One more for the bonus: problems like the pipes, where you set up your own rate or letter. Show the setup, then the answer.</p>
+  </div>
+</section>
+
+</main>
+<footer class="bk-foot">Test 1 Review · AS Math · Good Hope Country Day School</footer>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/marks.js"></script>
+<script src="../../assets/booklet.js"></script>
+<script src="../../assets/board.js"></script>
+<script src="../../assets/labs/meet-labs.js"></script>
+<script src="../../assets/labs/circle-geo-labs.js"></script>
+<script src="labs.js"></script>
+</body>
+</html>

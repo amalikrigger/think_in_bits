@@ -1,0 +1,85 @@
+/* THINK IN BITS · BOARD (shared): the board rules from deck.css, for booklet and review pages. Pairs with board.js. */
+/* ---------- blank board: a full-screen writing surface, any time ----------
+   Deliberately NOT an annotation layer over the slides. Amali asked for a
+   clean surface to work equations on, so this replaces the view entirely
+   and the slide underneath is untouched when you come back. */
+.board { position: fixed; inset: 0; z-index: 40; display: none; background: #0d0d12; touch-action: none; }
+.board.on { display: block; }
+.board.light { background: #f7f7f5; }
+.board canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+.board-bar {
+  /* left:0;right:0 + margin auto, NOT left:50%+translate. With left:50% the bar's
+     shrink-to-fit width is capped at half the viewport and the toolbar wraps. */
+  position: absolute; left: 0; right: 0; bottom: 2.2vh; margin: 0 auto;
+  width: max-content;
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: center;
+  max-width: 96vw; padding: 8px 11px; border-radius: 50px; z-index: 2;
+  background: rgba(18,18,24,0.92); border: 1px solid var(--hairline);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+}
+.board.light .board-bar { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.13); }
+.board-bar button {
+  font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer;
+  color: var(--text); background: var(--surface-lift);
+  border: 1px solid var(--hairline); border-radius: 50px;
+  padding: 10px 14px; min-height: 46px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.board.light .board-bar button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
+.board-bar button:hover { border-color: var(--accent-line); }
+.board-bar button[aria-pressed="true"] { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); }
+.board-bar .swatch { width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 50%; border: 3px solid transparent; }
+.board-bar .swatch[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 14px rgba(255,255,255,0.55); }
+.board.light .board-bar .swatch[aria-pressed="true"] { border-color: #14141a; box-shadow: 0 0 0 2px #fff; }
+.board-bar .sep { width: 1px; height: 26px; background: var(--hairline); }
+.board.light .board-bar .sep { background: rgba(0,0,0,0.15); }
+.board-bar .pg { font-family: var(--mono); font-size: 14px; color: var(--text-2); min-width: 58px; text-align: center; }
+.board.light .board-bar .pg { color: #55555f; }
+
+/* graph paper: its own canvas under the ink, so Erase never touches the grid */
+.board #graphCanvas { pointer-events: none; cursor: default; }
+.gset {
+  position: absolute; left: 0; right: 0; bottom: calc(2.2vh + 78px); margin: 0 auto; z-index: 3;
+  width: max-content; max-width: 94vw; display: none; flex-direction: column; gap: 10px;
+  padding: 14px 16px; border-radius: 20px;
+  background: rgba(18,18,24,0.96); border: 1px solid var(--accent-line);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.55); font-family: var(--font); color: var(--text); font-size: 15px;
+}
+.gset.open { display: flex; }
+.board.light .gset { background: rgba(255,255,255,0.97); color: #14141a; border-color: rgba(0,0,0,0.18); }
+.gset-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gset .gl { font-family: var(--mono); font-style: italic; font-size: 18px; color: var(--accent); width: 16px; }
+.board.light .gset .gl { color: #0077a3; }
+.gset .gl2 { font-size: 13px; color: var(--text-2); }
+.gset label { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+.board.light .gset label { color: #44444c; }
+.gset input[type="number"] {
+  width: 68px; font-family: var(--mono); font-size: 16px; padding: 7px 8px; border-radius: 10px;
+  background: var(--surface-lift); color: var(--text); border: 1px solid var(--hairline);
+}
+.board.light .gset input[type="number"] { background: #f1f1f1; color: #14141a; border-color: rgba(0,0,0,0.18); }
+.gset input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+.gset button {
+  font-family: var(--font); font-size: 14px; cursor: pointer; color: var(--text); background: var(--surface-lift);
+  border: 1px solid var(--hairline); border-radius: 50px; padding: 7px 12px; min-height: 38px;
+}
+.board.light .gset button { color: #14141a; background: #ebebeb; border-color: rgba(0,0,0,0.13); }
+.gset button:hover { border-color: var(--accent-line); }
+.gset button.go { background: var(--accent-wash); border-color: var(--accent); color: var(--accent); margin-left: auto; }
+.gset .gmsg { margin: 0; min-height: 0; font-size: 13px; color: var(--warn); }
+.gset .gmsg:empty { display: none; }
+
+/* ---------- floating launcher (booklet and review pages) ---------- */
+.tib-fab { position: fixed; right: max(14px, env(safe-area-inset-right)); bottom: max(14px, env(safe-area-inset-bottom)); z-index: 35; display: flex; gap: 8px; }
+.tib-fab button { font-family: var(--font); font-size: 15px; font-weight: 500; cursor: pointer; color: var(--accent); background: rgba(14,14,20,0.92);
+  border: 1px solid var(--accent-line); border-radius: 50px; padding: 9px 16px; min-height: 44px; box-shadow: var(--shadow-card); display: inline-flex; align-items: center; gap: 8px; }
+.tib-fab button:hover { box-shadow: var(--shadow-glow); }
+.tib-fab kbd.hk { font-family: var(--mono); font-size: 11px; color: var(--text-2); border: 1px solid var(--hairline); border-radius: 6px; padding: 1px 6px; }
+body.boarding { overflow: hidden; }
+body.boarding .tib-fab { display: none; }
+@media (hover: none) { .tib-fab kbd.hk { display: none; } }
+@media (max-width: 720px) { .tib-fab { flex-direction: column; align-items: flex-end; gap: 6px; } .tib-fab button { font-size: 13px; padding: 6px 12px; min-height: 40px; } .tib-fab kbd.hk { display: none; } }
+body:has(.tib-fab) main { padding-bottom: 90px; }
+@media print { .tib-fab, .board { display: none !important; } }
