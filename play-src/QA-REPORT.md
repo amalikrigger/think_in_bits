@@ -66,6 +66,41 @@ connection is already in that phase.
 5. **Music uploads.** Uploads accept images only, so the music slots can never play yet. This
    is as planned ("Amali supplies files later").
 
-## Verification (final run, on the committed code)
+## Verification
 
-See the end of this file for the numbers from the final run.
+The app code was the same in every run below: from `e49e1ab` on, later commits changed
+only the tooling and docs. The final `pnpm -r test` and typecheck ran on `13e0a5d`.
+
+| Check | Result |
+|---|---|
+| `pnpm -r test` | **261 passing:** schema 21, engine 132, web 74, server 34. The server total includes 11 integration scenarios on the real Worker and Durable Object. |
+| Typecheck, all 5 packages | clean |
+| Mutation check | **23 / 23 caught,** including 4 new mutants for the rules fixed here |
+| End-to-end (`tools/e2e-smoke.ts`) | **39 / 39,** including the new check that the dev server refuses repo files |
+| 60-bot load, 10 autoplay questions | PASS: 0 dropped, **p95 8.1 ms** (target < 300) |
+| Layout sweep | **399 screenshots,** 320 px phone to 1920 px projector, dark and light: no layout findings, 0 console errors |
+| Robot edge cases (`tools/robot-edge-cases.ts`) | **13 / 13** |
+| Quiz validator on every sample | 4 / 4 valid |
+| Narrated walkthrough (`tools/demo-video.ts`) | **102 / 102 live checks,** 10 min 47 s, narrated with Piper, with English subtitles |
+
+**Integration tests prove the fixes.** The suite was also run against the original engine
+from `8fff3d4`. There, the wire-level regressions for the stale press, the pause dropout and
+the countdown answer texts all fail. With the fixes, they pass.
+
+**Not verified:**
+- real phones and iPads on school Wi-Fi
+- screen readers
+- a deployed Cloudflare Worker (Durable Object eviction, storage limits)
+
+The robot and the video drive Chromium, not Safari.
+
+## Notes for running the tools in a cloud container
+
+- **Browser:** set `BITBLITZ_CHROME=/opt/pw-browsers/chromium`.
+- **Proxy:** the container's egress proxy doesn't bypass the LAN address. Set
+  `BITBLITZ_CHROME_ARGS=--no-proxy-server`, or the teacher page's game socket gets a 403 from
+  the proxy. Real classroom networks (192.168/16, 10/8) are bypassed already, and a Mac has
+  no such proxy.
+- **Narration:** Piper narrates with one voice loaded for the whole run (`tools/lib/piper-speak.py`).
+  Loading the voice per line cost about 2 s each time, which let a question run out of time
+  on camera.
