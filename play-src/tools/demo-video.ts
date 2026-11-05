@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import type { PlayerView } from "@bitblitz/schema";
 import type { FrameLocator, Page } from "playwright";
 import { launchBrowser } from "./lib/browser";
-import { Connection, isType } from "./lib/client";
+import { Connection, hostToken, isType } from "./lib/client";
 import { narrate } from "./lib/narrator";
 
 // Narrated walkthrough video: plays every feature through the real UI and checks each
@@ -286,14 +286,16 @@ async function suiteSlide() {
   const p95 = /"p95":\s*([\d.]+)/.exec(bot)?.[1];
   const sweep = read("sweep");
   const shots = /^(\d+) screenshots in/m.exec(sweep)?.[1];
+  const robot = (read("robot").match(/^✓/gm) ?? []).length;
   const rows: [string, string, string][] = [
-    ["unit", "Unit tests (Vitest)", `${total} tests: ${counts.join(", ")}`],
+    ["unit", "Unit + integration tests (Vitest)", `${total} tests: ${counts.join(", ")}`],
     ["typecheck", "TypeScript, all 5 packages", "strict mode, no errors"],
     ["validate", "Quiz validator on every sample", (read("validate").match(/^✓/gm) ?? []).length + " quiz files valid"],
     ["mutation", "Mutation check (break a rule, a test must fail)", mutation ? `${mutation[1]} / ${mutation[2]} mutations caught` : "see log"],
     ["e2e", "End-to-end vs local Worker + Durable Object", `${e2e} checks`],
     ["botload", "60 simulated students, full autoplay game", `p95 answer ack ${p95 ?? "?"} ms (limit 300)`],
     ["sweep", "Responsive layout sweep, real Chrome", `${shots ?? "?"} screenshots, 320 px to 1920 px, dark + light`],
+    ["robot", "Robot edge cases through the real UI", `${robot} checks`],
   ];
   await slide(
     `<h2>1 · The automated suite, run just before this recording</h2><table><tr><th></th><th>Suite</th><th>Result</th><th>Time</th></tr>${rows
@@ -304,7 +306,8 @@ async function suiteSlide() {
       })
       .join("")}</table>`,
   );
-  return { total, counts, mutation, e2e, p95, shots, summary };
+  const passed = rows.filter(([key]) => summary[key]?.rc === 0).length;
+  return { total, counts, mutation, e2e, p95, shots, robot, summary, passed, suites: rows.length };
 }
 
 async function main() {
@@ -342,10 +345,10 @@ async function main() {
   const suite = await suiteSlide();
   if (suite) {
     await say(
-      `All seven suites passed. ${suite.total} unit tests across the schema, the game engine, the server and the web app. Every package type-checks in strict mode. The mutation check deliberately breaks scoring and game rules one at a time, and the tests caught ${suite.mutation?.[1] ?? "every"} out of ${suite.mutation?.[2] ?? "every"}.`,
+      `${suite.passed === suite.suites ? `All ${suite.suites} suites passed.` : `${suite.passed} of ${suite.suites} suites passed.`} ${suite.total} unit and integration tests across the schema, the game engine, the real game server and the web app. Every package type-checks in strict mode. The mutation check deliberately breaks scoring and game rules one at a time, and the tests caught ${suite.mutation?.[1] ?? "every"} out of ${suite.mutation?.[2] ?? "every"}.`,
     );
     await say(
-      `The end-to-end run plays real games against the local server and Durable Object: ${suite.e2e} checks, including that no student ever receives the answer key. Sixty simulated students played a full game with a ninety-fifth percentile answer time of ${suite.p95} milliseconds. And the layout sweep took ${suite.shots} screenshots from a 320 pixel phone up to a 1920 pixel projector, with no clipped or covered content.`,
+      `The end-to-end run plays real games against the local server and Durable Object: ${suite.e2e} checks, including that no student ever receives the answer key. Sixty simulated students played a full game with a ninety-fifth percentile answer time of ${suite.p95} milliseconds. And the layout sweep took ${suite.shots} screenshots from a 320 pixel phone up to a 1920 pixel projector, with no clipped or covered content. Finally, a robot played ${suite.robot} classroom edge cases through the real screens: a phone that blocks storage losing Wi-Fi, a finished game, a phone dropping off during the leaderboard, tied scores, and dollar amounts in a question.`,
     );
   }
   await say("Now the hands-on part. On the left is the teacher's screen at projector size. On the right, two student phones.");
@@ -762,7 +765,10 @@ async function main() {
   // ---- 8. Podium and results
   await chapter("Podium and results");
   await check("Podium appears", () => H.getByRole("list", { name: "Podium" }).waitFor({ timeout: 8000 }));
-  await say("The podium builds from third place to first, with confetti.", false);
+  await check("Phones point at the projector while the podium builds (no spoiler)", () =>
+    A.getByRole("heading", { name: "Look up at the podium!" }).waitFor({ timeout: 4000 }),
+  );
+  await say("The podium builds from third place to first, with confetti. Meanwhile the phones just say: look up at the podium, so nobody's phone spoils the reveal.", false);
   await sleep(3500);
   await layout("projector");
   await hush(1800);
@@ -771,7 +777,8 @@ async function main() {
   await check("Finished game shows no false 'Disconnected' badge", async () => {
     if (await A.getByText("Disconnected").isVisible()) throw new Error("badge visible");
   });
-  await say("Each phone shows the student's final place and score.");
+  await check("Final phone screen offers 'Join another game'", () => A.getByRole("button", { name: "Join another game" }).waitFor({ timeout: 4000 }));
+  await say("Then each phone shows the student's final place and score, and a button to join another game, so nobody is stuck on an old game next lesson.");
   await H.getByRole("button", { name: "Answer review" }).click();
   await check("Answer review: 'Most missed first'", () => H.getByText("Most missed first").waitFor({ timeout: 4000 }));
   await say("For the teacher, the answer review lists the questions the class missed most, so you know what to reteach, and the full standings.", false);
@@ -906,7 +913,43 @@ async function main() {
   await check("Team board on the final screen", () => H.getByRole("region", { name: "Teams" }).waitFor({ timeout: 5000 }));
   await hush(1500);
 
-  // ---- 11. Summary
+  // ---- 11. What the second adversarial review found and fixed
+  await chapter("Adversarial review: what was fixed");
+  const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
+  for (const path of ["play-src/apps/server/.dev.vars", "play-src/quizzes-private/README.md"]) {
+    await check(`Dev server refuses ${path.split("/").pop()} to the Wi-Fi`, async () => {
+      const status = (await fetch(`http://${lan}:5173/play/@fs${repoRoot}${path}`)).status;
+      if (status !== 403) throw new Error(`status ${status}`);
+    });
+  }
+  await check("A quiz naming an image the upload would refuse is caught at validation", async () => {
+    const bad = { ...quiz, questions: [{ ...quiz.questions[0], media: { type: "image", src: "circle+1.png", alt: "Circle" } }] };
+    const response = await fetch("http://127.0.0.1:8787/api/games", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${await hostToken()}` },
+      body: JSON.stringify({ quiz: bad }),
+    });
+    if (response.status !== 400) throw new Error(`status ${response.status}`);
+  });
+  await slide(
+    `<h2>A fresh reviewer attacked the build. Every finding below was reproduced, then fixed with a test that failed first.</h2>
+    <table>
+      <tr><th>Severity</th><th>What a class would have hit</th><th>Proven fixed by</th></tr>
+      <tr><td class="fail">Critical</td><td>Any student on the Wi-Fi could download the live answer key, .dev.vars and quizzes-private from the dev server</td><td>e2e + robot: 403 for every repo file</td></tr>
+      <tr><td class="fail">High</td><td>On a device that blocks storage, a Wi-Fi blip lost the student's seat and score</td><td>unit test + robot (storage blocked, Wi-Fi off and on)</td></tr>
+      <tr><td>Medium</td><td>Pressing Reveal as the clock hit zero skipped the reveal</td><td>engine + integration: stale presses refused</td></tr>
+      <tr><td>Medium</td><td>A student dropping out ended the teacher's pause</td><td>engine + integration</td></tr>
+      <tr><td>Medium</td><td>A finished game trapped the phone on its final screen</td><td>robot: Join another game, refresh starts fresh</td></tr>
+      <tr><td>Low</td><td>Leaderboard jumped back when a phone dropped · answer texts on phones during the countdown · "0 behind" a tied player · "$3 and $12" garbled into a formula · podium spoiled on phones · "of 1 players" · image names the upload refused</td><td>unit, integration and robot checks; 4 new mutation checks</td></tr>
+    </table>
+    <p class="lead">Open decisions for Amali, not changed: the latency allowance a modified phone can claim, bonuses at a 0× points multiplier, kick and rename mid-game, and the dev-only login limit.</p>`,
+  );
+  await say("Before this recording, a fresh reviewer attacked the build. The worst finding was critical: in classroom mode, any student on the Wi-Fi could download the live answer key from the development server. That is now refused, and checked live a moment ago.");
+  await say("The others: a Wi-Fi blip on a device that blocks storage lost the student's seat. Pressing reveal just as the clock hit zero skipped the reveal. A student dropping out ended the teacher's pause. And a finished game trapped the phone. Each one was reproduced, fixed, and is now guarded by a test that failed before the fix.");
+  await say("A few things are decisions for you rather than bugs, and are listed on screen. They are unchanged.");
+  await layout("normal");
+
+  // ---- 12. Summary
   await chapter("Summary");
   await check("No errors in any browser console during the run", async () => {
     if (consoleErrors.length) throw new Error(consoleErrors.slice(0, 3).join(" | "));

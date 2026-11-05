@@ -38,21 +38,31 @@ If you run `corepack enable` once, you can drop the `corepack` prefix from every
 ## Test it
 
 ```bash
-corepack pnpm test                               # unit tests: schema, engine (points table, state machine, leak check), server auth, web helpers
+corepack pnpm test                               # unit tests (schema, engine: points table, state machine, leak check; server auth; web helpers)
+                                                 # + integration tests that boot the real Worker and Durable Object in-process (no `pnpm dev` needed)
 corepack pnpm --filter @bitblitz/tools e2e       # end-to-end against the running dev server (needs `pnpm dev`)
+corepack pnpm --filter @bitblitz/tools robot     # classroom edge cases through the real UI in a browser (needs `pnpm dev`)
 corepack pnpm botload                            # 60 simulated players through 10 questions (needs `pnpm dev`)
 corepack pnpm screenshots                        # full game through the real UI, 5 device sizes × dark/light OS (needs `pnpm dev` and Google Chrome)
 python3 packages/engine/scripts/mutation-check.py packages/engine   # breaks scoring rules one at a time; every one must be caught
 ```
 
-**Narrated walkthrough video** (macOS, needs `pnpm dev`, Google Chrome and ffmpeg). Plays
-every feature through the real UI, with the teacher screen on the LAN IP beside two 320 px
-phones, checks each step, and narrates with the built-in `say` voice:
+The browser tools (screenshots, robot, video) drive the installed Google Chrome. Anywhere
+else, point `BITBLITZ_CHROME` at a Chromium binary, for example
+`BITBLITZ_CHROME=/opt/pw-browsers/chromium`.
+
+**Narrated walkthrough video** (needs `pnpm dev` and ffmpeg). Plays every feature through
+the real UI, with the teacher screen on the LAN IP beside two 320 px phones, checks each
+step, and narrates. On macOS the narration is the built-in `say` voice:
 
 ```bash
 cd tools && BITBLITZ_LAN=$(ipconfig getifaddr en0) corepack pnpm exec tsx demo-video.ts --suite=<folder of suite logs, optional>
 cd .. && python3 -I tools/demo-mux.py screenshots/demo/   # → screenshots/demo/bitblitz-walkthrough.mp4 with narration and subtitles
 ```
+
+On Linux, install [Piper](https://github.com/rhasspy/piper) (`pip install piper-tts` in a
+venv) with a voice such as `en_US-lessac-medium`, and set `BITBLITZ_PIPER="<venv>/bin/python -m piper"`
+and `BITBLITZ_PIPER_VOICE=<voice>.onnx` before running `demo-video.ts` (see `tools/lib/narrator.ts`).
 
 ## Make a quiz
 
