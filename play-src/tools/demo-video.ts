@@ -6,7 +6,7 @@ import type { PlayerView } from "@bitblitz/schema";
 import type { FrameLocator, Page } from "playwright";
 import { launchBrowser } from "./lib/browser";
 import { Connection, hostToken, isType } from "./lib/client";
-import { narrate } from "./lib/narrator";
+import { narrate, stopNarrator } from "./lib/narrator";
 
 // Narrated walkthrough video: plays every feature through the real UI and checks each
 // result as it goes. One 1920×1080 stage shows the teacher's screen (served from the
@@ -134,7 +134,7 @@ let clipNo = 0;
 
 async function say(text: string, wait = true): Promise<void> {
   if (speechEnd > Date.now()) await sleep(speechEnd - Date.now());
-  const { file, ms } = narrate(text, `${AUDIO}${String(++clipNo).padStart(3, "0")}`, VOICE);
+  const { file, ms } = await narrate(text, `${AUDIO}${String(++clipNo).padStart(3, "0")}`, VOICE);
   clips.push({ at: Date.now() - t0, ms, file, text });
   speechEnd = Date.now() + ms + 350;
   await stage.evaluate((t) => (document.getElementById("line")!.textContent = t), text);
@@ -324,6 +324,8 @@ async function main() {
   stage.on("pageerror", (e) => consoleErrors.push(e.message));
   writeFileSync(`${OUT}stage.html`, STAGE);
   await stage.goto(`file://${OUT}stage.html`);
+  // Load the voice before the clock starts, so the first line is not late.
+  await narrate("Ready.", `${AUDIO}warm-up`, VOICE);
   t0 = Date.now();
   const stopRecording = await startRecording(stage);
   const H = stage.frameLocator("#host");
@@ -970,6 +972,7 @@ async function main() {
   await hush(1500);
 
   const seconds = await stopRecording();
+  stopNarrator();
   await browser.close();
   for (const b of bots) b.connection.close();
 
@@ -980,6 +983,7 @@ async function main() {
 }
 
 main().catch(async (error) => {
+  stopNarrator();
   console.error(error);
   writeFileSync(`${OUT}results.json`, JSON.stringify({ crashed: String(error?.stack ?? error), results, chapters }, null, 2));
   process.exit(1);

@@ -61,8 +61,10 @@ cd .. && python3 -I tools/demo-mux.py screenshots/demo/   # → screenshots/demo
 ```
 
 On Linux, install [Piper](https://github.com/rhasspy/piper) (`pip install piper-tts` in a
-venv) with a voice such as `en_US-lessac-medium`, and set `BITBLITZ_PIPER="<venv>/bin/python -m piper"`
+venv) with a voice such as `en_US-lessac-medium`, and set `BITBLITZ_PIPER_PYTHON=<venv>/bin/python`
 and `BITBLITZ_PIPER_VOICE=<voice>.onnx` before running `demo-video.ts` (see `tools/lib/narrator.ts`).
+If a machine's outbound proxy does not bypass its LAN address, add
+`BITBLITZ_CHROME_ARGS=--no-proxy-server`.
 
 ## Make a quiz
 
