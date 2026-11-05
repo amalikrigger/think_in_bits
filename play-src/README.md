@@ -29,6 +29,10 @@ Then open:
   through the LAN IP as well (for example `http://192.168.1.20:5173/play/#host`), because
   the join link uses the address the teacher page was opened with.
 
+The game server only accepts requests from pages it knows. In dev, the Vite proxy passes on
+any request from a page it served itself, so the LAN IP works even when the Mac's address
+changes with the network (`src/lib/dev-origin.ts`). Requests from other sites are still refused.
+
 If you run `corepack enable` once, you can drop the `corepack` prefix from every command.
 
 ## Test it
@@ -39,6 +43,15 @@ corepack pnpm --filter @bitblitz/tools e2e       # end-to-end against the runnin
 corepack pnpm botload                            # 60 simulated players through 10 questions (needs `pnpm dev`)
 corepack pnpm screenshots                        # full game through the real UI, 5 device sizes × dark/light OS (needs `pnpm dev` and Google Chrome)
 python3 packages/engine/scripts/mutation-check.py packages/engine   # breaks scoring rules one at a time; every one must be caught
+```
+
+**Narrated walkthrough video** (macOS, needs `pnpm dev`, Google Chrome and ffmpeg). Plays
+every feature through the real UI, with the teacher screen on the LAN IP beside two 320 px
+phones, checks each step, and narrates with the built-in `say` voice:
+
+```bash
+cd tools && BITBLITZ_LAN=$(ipconfig getifaddr en0) corepack pnpm exec tsx demo-video.ts --suite=<folder of suite logs, optional>
+cd .. && python3 -I tools/demo-mux.py screenshots/demo/   # → screenshots/demo/bitblitz-walkthrough.mp4 with narration and subtitles
 ```
 
 ## Make a quiz

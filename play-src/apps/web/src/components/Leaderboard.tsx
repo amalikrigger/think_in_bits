@@ -3,7 +3,7 @@ import { LayoutGroup, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { formatPoints } from "../lib/format";
 import { leaderboardRows } from "../lib/stage";
-import { tile } from "../lib/tiles";
+import { teamColor } from "../lib/tiles";
 import { useViewport } from "../lib/useViewport";
 
 // The board first shows the previous order, then reorders with a spring so the class
@@ -75,9 +75,9 @@ export function TeamBoard({ teams }: { teams: TeamEntry[] }) {
     <section aria-label="Teams" className="bb-card min-w-64 p-5">
       <h3 className="mb-3 text-sm font-bold uppercase tracking-widest text-muted">Teams</h3>
       <ol className="flex flex-col gap-2">
-        {teams.map((team, i) => (
+        {teams.map((team) => (
           <li key={team.team} className="flex items-center gap-3">
-            <span className="h-4 w-4 shrink-0 rounded-full" style={{ background: tile(i).color }} aria-hidden="true" />
+            <span className="h-4 w-4 shrink-0 rounded-full" style={{ background: teamColor(team.team) }} aria-hidden="true" />
             <span className="min-w-0 flex-1 truncate text-xl font-bold">{team.team}</span>
             <span className="text-xl font-extrabold tabular-nums">{formatPoints(team.score)}</span>
           </li>

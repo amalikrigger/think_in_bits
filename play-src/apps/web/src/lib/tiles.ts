@@ -11,3 +11,12 @@ export const TILES: TileStyle[] = [
 ];
 
 export const tile = (index: number): TileStyle => TILES[index % TILES.length]!;
+
+// Teams are named after colours (the engine's TEAM_NAMES), so each team's dot must be its
+// own colour wherever it ranks; colouring by rank once put a coral dot beside "Teal".
+const EXTRA_TEAM_COLORS: Record<string, string> = { indigo: "#818cf8", lime: "#a3e635", rose: "#fb7185", sky: "#38bdf8" };
+
+export function teamColor(team: string): string {
+  const name = team.toLowerCase();
+  return TILES.find((t) => t.colorName === name)?.color ?? EXTRA_TEAM_COLORS[name] ?? "var(--bb-text-muted)";
+}

@@ -26,7 +26,7 @@ Everything below was run on the final code, after the review fixes.
 
 | Check | Result |
 |---|---|
-| Unit tests `corepack pnpm test` | **212 passing**: schema 18, engine 122, server 23, web 49 |
+| Unit tests `corepack pnpm test` | **227 passing** (rerun 30 Oct after the walkthrough fixes): schema 18, engine 122, server 23, web 64 |
 | Typecheck, all 5 packages | clean |
 | Mutation check (scoring/engine rules broken one at a time) | **19/19 caught** |
 | End-to-end vs local Worker + Durable Object (`tools/e2e-smoke.ts`) | **38/38** |
@@ -64,6 +64,28 @@ The walkthrough found two problems, both fixed and re-checked in Chrome:
   socket closed normally at the end.
 - **Fractions were unreadably small** on answer tiles (π/3 as script-size text); they now
   render at full size.
+
+## Narrated walkthrough video (30 Oct)
+
+`tools/demo-video.ts` plays every feature through the real UI and records it with narration
+(`screenshots/demo/bitblitz-walkthrough.mp4`, about 10 minutes, not in git). The teacher
+screen opens on the Mac's LAN IP, as the README tells teachers to do. Phone 1 is on
+`127.0.0.1` and phone 2 on the LAN IP, both at 320 px, and bot students fill the class.
+Each step is checked as it happens. Making the video found three bugs that last night's
+testing missed, because that testing never used the LAN address:
+
+- **High: nothing worked over the classroom Wi-Fi.** The server refused every request
+  carrying the LAN IP as its origin, so teacher login and every student's WebSocket got 403.
+  The dev proxy now passes on requests from pages it served itself (`src/lib/dev-origin.ts`,
+  6 tests). Requests from other sites are still refused. Production is unchanged.
+- **A refresh didn't resume a student who typed the code.** Only a QR scan put `?c=` in the
+  address bar. The code now stays in the URL while a game is open (`src/lib/code-in-url.ts`,
+  6 tests).
+- **Team dots were coloured by rank**, so "Teal" could show a coral dot. Each team now
+  shows its own colour (`teamColor`, 3 tests).
+
+Skip goes straight to the next question with no "Skipped" screen on phones. That's by
+design. The phone code for a "Skipped" result is never reached.
 
 ## Adversarial review (your mid-run request)
 

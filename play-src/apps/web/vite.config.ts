@@ -1,8 +1,10 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import type { ClientRequest, IncomingMessage } from "node:http";
 import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, type Plugin, type ProxyOptions } from "vite";
+import { devProxyOrigin } from "./src/lib/dev-origin";
 
 const repoRoot = fileURLToPath(new URL("../../..", import.meta.url));
 const outDir = fileURLToPath(new URL("../../../play", import.meta.url));
@@ -34,6 +36,24 @@ const serveSiteImages: Plugin = {
   },
 };
 
+// Phones on the classroom Wi-Fi only need to reach this one port. Their requests carry the
+// Mac's LAN address as Origin, which the game server doesn't know; see devProxyOrigin.
+function apiProxy(devOrigin: string): ProxyOptions {
+  return {
+    target: "http://127.0.0.1:8787",
+    ws: true,
+    changeOrigin: false,
+    configure(proxy) {
+      const rewrite = (proxyReq: ClientRequest, req: IncomingMessage) => {
+        const origin = devProxyOrigin(req.headers.origin, req.headers.host, devOrigin);
+        if (origin) proxyReq.setHeader("Origin", origin);
+      };
+      proxy.on("proxyReq", rewrite);
+      proxy.on("proxyReqWs", rewrite);
+    },
+  };
+}
+
 export default defineConfig({
   base: "/play/",
   plugins: [react(), tailwindcss(), keepBuildOutOfGit, serveSiteImages],
@@ -42,11 +62,10 @@ export default defineConfig({
     port: 5173,
     // The site's tokens and logo are imported from the repo root rather than copied.
     fs: { allow: [repoRoot] },
-    // Phones on the classroom Wi-Fi only need to reach this one port.
-    proxy: { "/api": { target: "http://127.0.0.1:8787", ws: true, changeOrigin: false } },
+    proxy: { "/api": apiProxy("http://localhost:5173") },
   },
   preview: {
     port: 4173,
-    proxy: { "/api": { target: "http://127.0.0.1:8787", ws: true } },
+    proxy: { "/api": apiProxy("http://localhost:4173") },
   },
 });

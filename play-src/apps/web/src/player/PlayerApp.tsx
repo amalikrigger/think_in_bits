@@ -1,8 +1,9 @@
 import { NICKNAME_MAX_CHARS, REJECTION_TEXT } from "../lib/rejection-text";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { BrandBar } from "../components/BrandBar";
 import { CenteredCard, Screen } from "../components/Screen";
 import { fetchGameInfo, type GameInfo } from "../lib/api";
+import { addressForStep } from "../lib/code-in-url";
 import { spacedCode } from "../lib/format";
 import { lastNickname, playerSeat } from "../lib/storage";
 import { PlayerGame } from "./PlayerGame";
@@ -28,7 +29,16 @@ function initialStep(): Step {
 
 export function PlayerApp() {
   const [step, setStep] = useState<Step>(initialStep);
-  const urlCode = new URLSearchParams(window.location.search).get("c");
+  const [urlCode] = useState(() => new URLSearchParams(window.location.search).get("c"));
+  const previousKind = useRef(step.kind);
+
+  // Keep the open game's code in the address bar so a refresh resumes the seat.
+  useEffect(() => {
+    const leftGame = step.kind === "code" && previousKind.current !== "code";
+    previousKind.current = step.kind;
+    const address = addressForStep(window.location.href, step.kind === "code" ? null : step.code, leftGame);
+    if (address) window.history.replaceState(window.history.state, "", address);
+  }, [step]);
 
   async function openGame(code: string) {
     let info: GameInfo;
