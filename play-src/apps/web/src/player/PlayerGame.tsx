@@ -1,6 +1,6 @@
 import type { JoinRejection, PlayerView, ServerMessage } from "@bitblitz/schema";
 import { REJECTION_TEXT } from "../lib/rejection-text";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { AnswerTile } from "../components/AnswerTile";
 import { BrandBar, ConnectionBadge } from "../components/BrandBar";
@@ -8,9 +8,9 @@ import { MathText, preloadMath } from "../components/MathText";
 import { QuestionMedia } from "../components/QuestionMedia";
 import { Screen } from "../components/Screen";
 import { TimerRing } from "../components/TimerRing";
-import { formatPoints, ordinal } from "../lib/format";
+import { countOf, formatPoints, ordinal } from "../lib/format";
 import { liveText } from "../lib/live-text";
-import { answerColumns } from "../lib/stage";
+import { answerColumns, PODIUM_BUILD_MS } from "../lib/stage";
 import { playerSeat } from "../lib/storage";
 import { useGameSocket } from "../lib/useGameSocket";
 import { useViewport } from "../lib/useViewport";
@@ -68,8 +68,11 @@ export function PlayerGame({
   });
 
   useEffect(() => {
-    if (view?.phase === "ended") stop("The game has ended. Thanks for playing!");
-  }, [view?.phase, stop]);
+    if (view?.phase !== "ended") return;
+    // A finished game is not resumed: a refresh, or opening the page next lesson, starts fresh.
+    playerSeat.set(code, null);
+    stop("The game has ended. Thanks for playing!");
+  }, [view?.phase, stop, code]);
 
   // Download KaTeX while the lobby waits, so the first math prompt renders at once.
   useEffect(() => {
@@ -174,7 +177,7 @@ export function PlayerGame({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <PhaseView view={view} code={code} locked={locked} choice={choice} sent={pending?.choice ?? null} onPick={pick} />
+            <PhaseView view={view} code={code} locked={locked} choice={choice} sent={pending?.choice ?? null} onPick={pick} onLeave={onLeave} />
           </motion.div>
         </AnimatePresence>
       )}
@@ -213,6 +216,7 @@ type PhaseProps = {
   choice: number[];
   sent: number[] | null;
   onPick: (index: number) => void;
+  onLeave: () => void;
 };
 
 function PhaseView(props: PhaseProps) {
@@ -245,7 +249,7 @@ function PhaseView(props: PhaseProps) {
       return <ResultScreen view={view} />;
     case "podium":
     case "ended":
-      return <FinalScreen view={view} />;
+      return <FinalScreen view={view} onLeave={props.onLeave} />;
   }
 }
 
@@ -355,7 +359,28 @@ function ResultScreen({ view }: { view: PlayerView }) {
   );
 }
 
-function FinalScreen({ view }: { view: PlayerView }) {
+function FinalScreen({ view, onLeave }: { view: PlayerView; onLeave: () => void }) {
+  const reduced = useReducedMotion();
+  // While the projector builds the podium, the phone points at it instead of spoiling it.
+  const [revealed, setRevealed] = useState(view.phase === "ended" || Boolean(reduced));
+  useEffect(() => {
+    if (revealed) return;
+    const timer = setTimeout(() => setRevealed(true), PODIUM_BUILD_MS);
+    return () => clearTimeout(timer);
+  }, [revealed]);
+
+  const leave = (
+    <button type="button" className="bb-btn bb-btn-ghost mt-4" onClick={onLeave}>
+      Join another game
+    </button>
+  );
+  if (!revealed) {
+    return (
+      <Message title="Look up at the podium!" detail="The winners are about to appear.">
+        {leave}
+      </Message>
+    );
+  }
   const top3 = view.rank !== null && view.rank <= 3;
   return (
     <Message title={view.rank ? `You finished ${ordinal(view.rank)}` : "Game over"} detail={`${formatPoints(view.score)} points`}>
@@ -364,7 +389,8 @@ function FinalScreen({ view }: { view: PlayerView }) {
           {["🥇", "🥈", "🥉"][view.rank! - 1]}
         </p>
       )}
-      <p className="text-muted">of {view.playerCount} players. Look up at the podium!</p>
+      <p className="text-muted">of {countOf(view.playerCount, "player")}.</p>
+      {leave}
     </Message>
   );
 }

@@ -1,4 +1,4 @@
-import { validateQuiz } from "@bitblitz/schema";
+import { MEDIA_FILE_NAME_PATTERN, validateQuiz } from "@bitblitz/schema";
 import { SESSION_TTL_MS, signSession, verifyPassphrase, verifySession } from "./auth";
 import type { Env } from "./env";
 
@@ -18,8 +18,6 @@ export { LoginLimiter } from "./login-limiter";
 //   GET  /api/games/:code/results.csv    X-Host-Key
 
 const CODE_PATTERN = /^\d{6}$/;
-/** A plain file name as teachers have them ("circle 1.png"); it is a storage key, never a path. */
-const MEDIA_NAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{N} _().-]{0,79}$/u;
 const QUIZ_MAX_BYTES = 512 * 1024;
 
 export default {
@@ -152,7 +150,7 @@ async function readJson(request: Request, maxBytes: number): Promise<unknown> {
 function decodeMediaName(segment: string): string | null {
   try {
     const name = decodeURIComponent(segment);
-    return MEDIA_NAME_PATTERN.test(name) ? name : null;
+    return MEDIA_FILE_NAME_PATTERN.test(name) ? name : null;
   } catch {
     return null;
   }

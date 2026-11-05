@@ -1,18 +1,21 @@
-import { execFileSync, spawn } from "node:child_process";
+import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { networkInterfaces } from "node:os";
 import { fileURLToPath } from "node:url";
 import type { PlayerView } from "@bitblitz/schema";
-import { chromium, type FrameLocator, type Page } from "playwright";
+import type { FrameLocator, Page } from "playwright";
+import { launchBrowser } from "./lib/browser";
 import { Connection, isType } from "./lib/client";
+import { narrate } from "./lib/narrator";
 
 // Narrated walkthrough video: plays every feature through the real UI and checks each
 // result as it goes. One 1920×1080 stage shows the teacher's screen (served from the
 // Mac's LAN address, as a teacher would open it) beside two 320 px student phones on
 // their own origins, so each keeps its own seat. A few off-screen bot students fill
-// the class. Narration is macOS `say`, placed at the moment each caption appears.
+// the class. Narration (macOS `say`, or Piper elsewhere: lib/narrator.ts) is placed at the
+// moment each caption appears.
 //
-// Needs `pnpm dev` running, ffmpeg on PATH and macOS. Writes to screenshots/demo/.
+// Needs `pnpm dev` running and ffmpeg on PATH. Writes to screenshots/demo/.
 // Usage: pnpm --filter @bitblitz/tools exec tsx demo-video.ts [--suite=<dir with suite logs>]
 
 const args = Object.fromEntries(process.argv.slice(2).map((a) => a.replace(/^--/, "").split("=") as [string, string]));
@@ -131,9 +134,7 @@ let clipNo = 0;
 
 async function say(text: string, wait = true): Promise<void> {
   if (speechEnd > Date.now()) await sleep(speechEnd - Date.now());
-  const file = `${AUDIO}${String(++clipNo).padStart(3, "0")}.aiff`;
-  execFileSync("say", ["-v", VOICE, "-r", "182", "-o", file, text]);
-  const ms = Number(/estimated duration: ([\d.]+)/.exec(execFileSync("afinfo", [file]).toString())![1]) * 1000;
+  const { file, ms } = narrate(text, `${AUDIO}${String(++clipNo).padStart(3, "0")}`, VOICE);
   clips.push({ at: Date.now() - t0, ms, file, text });
   speechEnd = Date.now() + ms + 350;
   await stage.evaluate((t) => (document.getElementById("line")!.textContent = t), text);
@@ -308,7 +309,7 @@ async function suiteSlide() {
 
 async function main() {
   const quiz = JSON.parse(readFileSync(fileURLToPath(new URL("../samples/circles-warm-up.json", import.meta.url)), "utf8"));
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await launchBrowser();
   const context = await browser.newContext({ viewport: { width: 1920, height: 1080 }, acceptDownloads: true });
   stage = await context.newPage();
   const consoleErrors: string[] = [];

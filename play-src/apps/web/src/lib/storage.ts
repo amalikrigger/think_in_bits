@@ -24,9 +24,16 @@ const session = () => window.sessionStorage;
 
 /** A player's seat in a game, so a refresh or a sleeping laptop resumes instead of rejoining. */
 export type PlayerSeat = { token: string; nickname: string };
+// The page's own copy is what a reconnect uses, so a Wi-Fi blip resumes the seat even on a
+// device that blocks storage; storage only carries the seat across a refresh.
+const seatsThisPage = new Map<string, PlayerSeat>();
 export const playerSeat = {
-  get: (code: string) => read<PlayerSeat>(local, `bitblitz:seat:${code}`),
-  set: (code: string, seat: PlayerSeat | null) => write(local, `bitblitz:seat:${code}`, seat),
+  get: (code: string): PlayerSeat | null => seatsThisPage.get(code) ?? read<PlayerSeat>(local, `bitblitz:seat:${code}`),
+  set: (code: string, seat: PlayerSeat | null) => {
+    if (seat) seatsThisPage.set(code, seat);
+    else seatsThisPage.delete(code);
+    write(local, `bitblitz:seat:${code}`, seat);
+  },
 };
 
 export const lastNickname = {

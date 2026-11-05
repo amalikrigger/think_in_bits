@@ -245,6 +245,12 @@ class Step {
 
   private runCommand(command: HostCommand): CommandRejection | null {
     const { phase } = this.state;
+    // Next, Skip and Reveal now name the screen they were pressed on. The clock or autoplay
+    // may have moved the game on while the press was in flight; acting on it then would
+    // skip a screen the class never saw.
+    if ("seen" in command && (command.seen.phase !== phase || command.seen.questionIndex !== this.state.questionIndex)) {
+      return "out_of_date";
+    }
     switch (command.kind) {
       case "start":
         if (phase !== "lobby") return "not_allowed_in_phase";
@@ -343,6 +349,7 @@ class Step {
     }
     if (open && phase === "question") open.openedAt += pausedFor;
     this.broadcast();
+    if (phase === "question") this.closeIfEveryoneAnswered();
     return null;
   }
 
@@ -444,6 +451,9 @@ class Step {
   }
 
   private closeIfEveryoneAnswered(): void {
+    // A teacher's pause holds until they resume, even if the last student still to answer
+    // drops out or is removed meanwhile; resuming checks again.
+    if (this.state.paused) return;
     const { count, total } = this.answerProgress();
     if (total > 0 && count >= total) this.closeQuestion();
   }

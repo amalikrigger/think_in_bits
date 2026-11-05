@@ -33,6 +33,7 @@ export function hostView(state: GameState, now: number): HostView {
     role: "host",
     code: state.code,
     phase,
+    questionIndex: state.questionIndex,
     title: state.quiz.title,
     questionCount: state.quiz.questions.length,
     settings: state.settings,
@@ -70,7 +71,10 @@ export function playerView(state: GameState, playerId: string, now: number): Pla
     score: player.score,
     paused: state.paused !== null,
     timer: timerView(state, now),
-    question: showQuestion && question ? publicQuestion(state, question, state.settings.showAnswersOnDevice) : null,
+    // During the countdown a phone shows only the prompt, so it gets no answer texts either:
+    // a modified client must not get a head start on reading them.
+    question:
+      showQuestion && question ? publicQuestion(state, question, phase !== "countdown" && state.settings.showAnswersOnDevice) : null,
     // The open question stays on state through the reveal, so the player sees what they picked.
     answer: phase === "question" || phase === "reveal" ? (ownAnswer?.choice ?? null) : null,
     result: phase === "reveal" || phase === "leaderboard" ? playerResult(state, player) : null,
@@ -131,7 +135,9 @@ function playerResult(state: GameState, player: PlayerState): PlayerResult | nul
   if (!score) return null;
   const ranked = standings(state);
   const position = ranked.findIndex((p) => p.id === player.id);
-  const above = position > 0 ? ranked[position - 1] : undefined;
+  // "Points behind the next player" means the nearest one with a higher score: telling a
+  // student they are 0 behind someone they are tied with reads as a bug.
+  const above = ranked.slice(0, position).reverse().find((p) => p.score > player.score);
   return {
     ...score,
     score: player.score,

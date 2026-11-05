@@ -15,6 +15,9 @@ export const Nickname = z
   .max(NICKNAME_MAX_CHARS * 2, `nicknames are at most ${NICKNAME_MAX_CHARS} characters`)
   .refine((s) => [...s].length <= NICKNAME_MAX_CHARS, `nicknames are at most ${NICKNAME_MAX_CHARS} characters`);
 
+export const PHASES = ["lobby", "countdown", "question", "reveal", "leaderboard", "podium", "ended"] as const;
+export type Phase = (typeof PHASES)[number];
+
 // ---------- client → server ----------
 
 const settingsPatchShape = Object.fromEntries(
@@ -24,14 +27,20 @@ const settingsPatchShape = Object.fromEntries(
 export const SettingsPatch = z.object(settingsPatchShape).strict() as unknown as z.ZodType<Partial<QuizSettingsType>>;
 export type SettingsPatch = Partial<QuizSettingsType>;
 
+// The screen the teacher was looking at when they pressed an advance button. The game may
+// have moved on by itself (the clock, autoplay) before the press arrives; a press meant for
+// the question must not skip the reveal that replaced it.
+export const SeenScreen = z.strictObject({ phase: z.enum(PHASES), questionIndex: z.number().int().min(-1) });
+export type SeenScreen = z.infer<typeof SeenScreen>;
+
 export const HostCommand = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("start") }),
-  z.object({ kind: z.literal("next") }),
+  z.object({ kind: z.literal("next"), seen: SeenScreen }),
   z.object({ kind: z.literal("pause") }),
   z.object({ kind: z.literal("resume") }),
-  z.object({ kind: z.literal("skip") }),
+  z.object({ kind: z.literal("skip"), seen: SeenScreen }),
   z.object({ kind: z.literal("end") }),
-  z.object({ kind: z.literal("reveal_now") }),
+  z.object({ kind: z.literal("reveal_now"), seen: SeenScreen }),
   z.object({ kind: z.literal("kick"), playerId: z.string().min(1) }),
   z.object({ kind: z.literal("rename"), playerId: z.string().min(1), nickname: Nickname }),
   z.object({ kind: z.literal("lock"), locked: z.boolean() }),
@@ -56,8 +65,6 @@ export type ClientMessage = z.infer<typeof ClientMessage>;
 
 // ---------- server → client ----------
 
-export const PHASES = ["lobby", "countdown", "question", "reveal", "leaderboard", "podium", "ended"] as const;
-export type Phase = (typeof PHASES)[number];
 
 export type AnswerRejection = "too_late" | "already_answered" | "not_accepting" | "invalid_choice";
 export type JoinRejection =
@@ -76,7 +83,8 @@ export type CommandRejection =
   | "unknown_player"
   | "nickname_taken"
   | "nickname_invalid"
-  | "invalid_settings";
+  | "invalid_settings"
+  | "out_of_date";
 
 /** A question as players and the projector see it: never carries answer data. */
 export type PublicQuestion = {
@@ -143,6 +151,8 @@ export type HostView = {
   role: "host";
   code: string;
   phase: Phase;
+  /** Index into the game's question order; -1 before the first question. Advance presses echo it back. */
+  questionIndex: number;
   title: string;
   questionCount: number;
   settings: QuizSettingsType;
@@ -215,4 +225,5 @@ export const REJECTION_TEXT: Record<AnswerRejection | JoinRejection | CommandRej
   no_players: "Wait for at least one player to join.",
   unknown_player: "That player isn't in the game.",
   invalid_settings: "Those settings aren't valid.",
+  out_of_date: "The game had already moved on, so that press was ignored.",
 };

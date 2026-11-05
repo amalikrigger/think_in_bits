@@ -121,7 +121,7 @@ export function GameScreen({ game, onLeave }: { game: HostGame; onLeave: () => v
           {view.phase === "leaderboard" && view.leaderboard && (
             <section className="flex flex-1 flex-col gap-4 pt-2 lg:gap-6">
               <h1 className="text-center text-3xl font-extrabold lg:text-5xl">Leaderboard</h1>
-              <Leaderboard entries={view.leaderboard} teams={view.teams} />
+              <Leaderboard entries={view.leaderboard} teams={view.teams} classSize={view.players.length} />
             </section>
           )}
           {(view.phase === "podium" || view.phase === "ended") && <Results view={view} game={game} />}
@@ -165,7 +165,13 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
             : phase === "podium"
               ? "Finish →"
               : null;
-  const next = useCallback(() => command({ kind: phase === "lobby" ? "start" : "next" }), [command, phase]);
+  // Presses name the screen they were made on, so a press that crosses the clock or autoplay
+  // moving the game on is ignored by the server rather than skipping a screen.
+  const seen = { phase, questionIndex: view.questionIndex };
+  const next = useCallback(
+    () => command(phase === "lobby" ? { kind: "start" } : { kind: "next", seen: { phase, questionIndex: view.questionIndex } }),
+    [command, phase, view.questionIndex],
+  );
 
   // A confirmation that outlives the phase it was asked in would end the wrong thing.
   useEffect(() => setConfirm(null), [phase]);
@@ -203,7 +209,7 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
             </button>
           )}
           {(phase === "countdown" || phase === "question") && (
-            <button type="button" className={secondary} onClick={() => command({ kind: "skip" })}>
+            <button type="button" className={secondary} onClick={() => command({ kind: "skip", seen })}>
               Skip
             </button>
           )}

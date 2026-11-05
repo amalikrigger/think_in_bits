@@ -46,6 +46,14 @@ describe("validateQuiz: accepts", () => {
     });
   });
 
+  it("image media as an uploaded file name or an https link", () => {
+    for (const src of ["circle.png", "my circle (1).png", "Graph_2-b.svg", "https://thinkinbits.site/images/logo.png"]) {
+      const quiz = validQuiz();
+      quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src, alt: "Circle on axes" } };
+      expect(validateQuiz(quiz).ok, src).toBe(true);
+    }
+  });
+
   it("image and code media", () => {
     const quiz = validQuiz();
     quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src: "circle.png", alt: "Circle on axes" } };
@@ -129,6 +137,22 @@ describe("validateQuiz: rejects with plain-language problems", () => {
     const src = `data:image/png;base64,${"A".repeat(5000)}`;
     quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src, alt: "big" } };
     expect(problemsFor(quiz)).toContain("Question 1: image src must be a URL or file name of at most 2000 characters");
+  });
+
+  it("an image file name the upload would refuse, caught before the game is created", () => {
+    const quiz = validQuiz();
+    quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src: "circle+1.png", alt: "Circle" } };
+    expect(problemsFor(quiz)).toContain(
+      "Question 1: image src must be an https:// link or an image file name using only letters, numbers, spaces and _ ( ) . -",
+    );
+  });
+
+  it("a javascript: or data: link as an image src", () => {
+    for (const src of ["javascript:alert(1)", "data:image/png;base64,AAAA"]) {
+      const quiz = validQuiz();
+      quiz.questions[0] = { ...quiz.questions[0]!, media: { type: "image", src, alt: "x" } };
+      expect(validateQuiz(quiz).ok).toBe(false);
+    }
   });
 
   it("a missing title, a wrong schema version and no questions", () => {

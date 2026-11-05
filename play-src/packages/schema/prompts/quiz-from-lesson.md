@@ -54,6 +54,9 @@ Return **only** one JSON object, no prose and no code fences, in exactly this sh
 
 - Math goes in KaTeX between single dollar signs: `$x^2 + y^2 = 25$`. Use `\\frac`, `\\sqrt`,
   `\\pi` etc. with the backslash escaped for JSON.
+- Keep formulas tight against their dollar signs (`$x^2$`, not `$ x^2 $`). Money is fine as
+  plain text ("costs $3 and $12"); to force a literal dollar sign next to a formula, write
+  `\\$` in the JSON.
 - Wrong answers are **plausible mistakes a student actually makes** (sign errors, forgetting
   to square-root the radius, mixing up gradient and intercept), never jokes.
 - Mix the position of the correct answer; do not always put it first.

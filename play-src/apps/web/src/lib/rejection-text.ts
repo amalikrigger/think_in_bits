@@ -26,4 +26,5 @@ export const REJECTION_TEXT: Record<AnswerRejection | JoinRejection | CommandRej
   no_players: "Wait for at least one player to join.",
   unknown_player: "That player isn't in the game.",
   invalid_settings: "Those settings aren't valid.",
+  out_of_date: "The game had already moved on, so that press was ignored.",
 };

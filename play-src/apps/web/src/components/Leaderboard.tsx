@@ -2,7 +2,7 @@ import type { LeaderboardEntry, TeamEntry } from "@bitblitz/schema";
 import { LayoutGroup, motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { formatPoints } from "../lib/format";
-import { leaderboardRows } from "../lib/stage";
+import { boardSignature, hiddenPlayerCount, leaderboardRows } from "../lib/stage";
 import { teamColor } from "../lib/tiles";
 import { useViewport } from "../lib/useViewport";
 
@@ -11,11 +11,21 @@ import { useViewport } from "../lib/useViewport";
 // Only as many rows as fit the screen are shown: with sixty players the class needs the
 // top of the table, not a scroll.
 
-export function Leaderboard({ entries, teams }: { entries: LeaderboardEntry[]; teams: TeamEntry[] | null }) {
+export function Leaderboard({
+  entries,
+  teams,
+  classSize = entries.length,
+}: {
+  entries: LeaderboardEntry[];
+  teams: TeamEntry[] | null;
+  /** Everyone in the game; `entries` may be only the top of the table. */
+  classSize?: number;
+}) {
   const reduced = useReducedMotion();
   const { height } = useViewport();
   const limit = leaderboardRows(height);
   const [settled, setSettled] = useState(Boolean(reduced));
+  const signature = boardSignature(entries);
 
   useEffect(() => {
     if (reduced) {
@@ -25,10 +35,10 @@ export function Leaderboard({ entries, teams }: { entries: LeaderboardEntry[]; t
     setSettled(false);
     const timer = setTimeout(() => setSettled(true), 700);
     return () => clearTimeout(timer);
-  }, [entries, reduced]);
+  }, [signature, reduced]);
 
   const ordered = (settled ? entries : [...entries].sort((a, b) => (a.previousRank ?? 999) - (b.previousRank ?? 999) || a.rank - b.rank)).slice(0, limit);
-  const hidden = entries.length - ordered.length;
+  const hidden = hiddenPlayerCount(classSize, ordered.length);
 
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-4 lg:grid-cols-[1fr_auto] lg:gap-6">

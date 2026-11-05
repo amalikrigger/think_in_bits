@@ -23,6 +23,11 @@ mutations = [
   ("look-alike folding removed", "src/nicknames.ts", "    .normalize(\"NFKC\")\n", ""),
   ("leaderboard rank from the stale stored value", "src/views.ts", "    rank: position + 1,\n    previousRank: player.previousRank,", "    rank: player.rank ?? 0,\n    previousRank: player.previousRank,"),
   ("paused timer shows the grace close, not the visible clock", "src/views.ts", "const remaining = visibleEnd !== null ? visibleEnd - frozenAt : (state.paused.remainingMs ?? 0);", "const remaining = state.paused.remainingMs ?? 0;"),
+  # Second adversarial review (Nov 2026)
+  ("a drop-out ends the teacher's pause", "src/engine.ts", "    if (this.state.paused) return;\n    const { count, total } = this.answerProgress();", "    const { count, total } = this.answerProgress();"),
+  ("a stale Next/Skip/Reveal press is obeyed", "src/engine.ts", "      return \"out_of_date\";\n    }", "    }"),
+  ("phones get answer texts during the countdown", "src/views.ts", "phase !== \"countdown\" && state.settings.showAnswersOnDevice", "state.settings.showAnswersOnDevice"),
+  ("'0 behind' a tied player", "src/views.ts", ".reverse().find((p) => p.score > player.score)", ".reverse().find(() => true)"),
 ]
 for name, rel, old, new in mutations:
   path = root / rel

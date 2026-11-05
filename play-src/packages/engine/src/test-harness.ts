@@ -73,6 +73,11 @@ export class Harness {
     return this.send({ type: "host_command", command });
   }
 
+  /** The teacher presses Next, Skip or Reveal now on the screen currently showing. */
+  press(kind: "next" | "skip" | "reveal_now"): OutgoingMessage[] {
+    return this.host({ kind, seen: { phase: this.state.phase, questionIndex: this.state.questionIndex } });
+  }
+
   /** Starts the game and runs the 3 s countdown so the first question is open. */
   startAndOpenFirstQuestion(): void {
     this.host({ kind: "start" });

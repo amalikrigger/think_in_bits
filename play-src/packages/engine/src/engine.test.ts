@@ -25,23 +25,23 @@ describe("game flow", () => {
     game.answer(bo, [1]);
     expect(game.state.phase).toBe("reveal"); // everyone answered, so no waiting for the clock
 
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("leaderboard");
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("countdown");
     game.advance(COUNTDOWN_MS);
     game.advance(10_000); // nobody answers question 2; the clock closes it
     expect(game.state.phase).toBe("reveal");
 
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     game.answer(ada, [0, 1]);
     game.answer(bo, [0]);
     expect(game.state.phase).toBe("reveal");
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("podium"); // the last reveal goes straight to the podium
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("ended");
   });
 
@@ -67,11 +67,11 @@ describe("game flow", () => {
     const ada = game.join("Ada");
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("countdown"); // after question 1: no leaderboard
     game.advance(COUNTDOWN_MS);
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("leaderboard"); // after question 2
   });
 
@@ -86,7 +86,7 @@ describe("game flow", () => {
     const game = new Harness();
     game.join("Ada");
     game.host({ kind: "start" });
-    expect(game.host({ kind: "next" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
+    expect(game.press("next")[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
   });
 });
 
@@ -176,7 +176,7 @@ describe("answers", () => {
     const ada = game.join("Ada");
     const bo = game.join("Bo");
     game.startAndOpenFirstQuestion();
-    game.host({ kind: "reveal_now" });
+    game.press("reveal_now");
     expect(game.answer(bo, [0], 0)).toMatchObject({ accepted: false, reason: "too_late" });
     void ada;
   });
@@ -195,8 +195,8 @@ describe("answers", () => {
     const ada = game.join("Ada");
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     game.answer(ada, [0]);
     expect(game.playerView(ada).result).toMatchObject({ streak: 2, points: { streak: 50 } });
@@ -225,13 +225,13 @@ describe("leaderboard order (rule 9)", () => {
     game.answer(bo, [0]);
     game.answer(cy, [1]);
     game.advance(20_000);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     game.answer(ada, [0]);
     game.answer(cy, [1]);
     game.advance(10_000);
-    game.host({ kind: "next" });
+    game.press("next");
     const board = game.hostView().leaderboard!;
     expect(board.map((e) => [e.nickname, e.score])).toEqual([
       ["Bo", 1000], // total response 0 + 10 s
@@ -247,7 +247,7 @@ describe("leaderboard order (rule 9)", () => {
     game.startAndOpenFirstQuestion();
     game.answer(second, [0]);
     game.answer(first, [0]);
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.hostView().leaderboard!.map((e) => e.nickname)).toEqual(["First", "Second"]);
   });
 
@@ -261,7 +261,7 @@ describe("leaderboard order (rule 9)", () => {
     game.advance(2_000);
     game.answer(bo, [0]);
     game.answer(cy, [1]);
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.hostView().leaderboard!.map((e) => [e.nickname, e.rank])).toEqual([["Ada", 1], ["Bo", 2], ["Cy", 3]]);
 
     game.host({ kind: "kick", playerId: ada });
@@ -280,17 +280,17 @@ describe("leaderboard order (rule 9)", () => {
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
     game.answer(bo, [1]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     game.answer(ada, [1]);
     game.answer(bo, [0]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     game.answer(bo, [0, 1]);
     game.answer(ada, [3]);
-    game.host({ kind: "next" });
+    game.press("next");
     const bo3 = game.hostView().leaderboard!.find((e) => e.nickname === "Bo")!;
     expect(bo3).toMatchObject({ rank: 1, previousRank: 2 });
   });
@@ -420,9 +420,9 @@ describe("mid-game joins and kicks", () => {
     const ada = game.join("Ada");
     game.startAndOpenFirstQuestion(); // Q1: 20 s, scored
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
-    game.host({ kind: "skip" }); // Q2 skipped
+    game.press("next");
+    game.press("next");
+    game.press("skip"); // Q2 skipped
     game.advance(COUNTDOWN_MS); // Q3: points none
     game.answer(ada, [0, 1]);
     const late = game.join("Late");
@@ -464,14 +464,14 @@ describe("command rejections", () => {
   it("names the outcome for commands that make no sense in the current phase", () => {
     const game = new Harness();
     game.join("Ada");
-    expect(game.host({ kind: "reveal_now" })[0]!.message).toMatchObject({ command: "reveal_now", reason: "not_allowed_in_phase" });
+    expect(game.press("reveal_now")[0]!.message).toMatchObject({ command: "reveal_now", reason: "not_allowed_in_phase" });
     expect(game.host({ kind: "resume" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
     expect(game.host({ kind: "pause" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
-    expect(game.host({ kind: "skip" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
+    expect(game.press("skip")[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
     expect(game.host({ kind: "kick", playerId: "p99" })[0]!.message).toMatchObject({ reason: "unknown_player" });
     expect(game.host({ kind: "update_settings", patch: { revealSec: 1 } })[0]!.message).toMatchObject({ reason: "invalid_settings" });
     game.host({ kind: "start" });
-    expect(game.host({ kind: "reveal_now" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
+    expect(game.press("reveal_now")[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
     expect(game.host({ kind: "start" })[0]!.message).toMatchObject({ reason: "not_allowed_in_phase" });
   });
 
@@ -480,8 +480,8 @@ describe("command rejections", () => {
     const ada = game.join("Ada");
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
+    game.press("next");
+    game.press("next");
     game.advance(COUNTDOWN_MS);
     expect(game.answer(ada, [0], 0)).toMatchObject({ accepted: false, reason: "too_late" });
     expect(game.answer(ada, [0], 2)).toMatchObject({ accepted: false, reason: "not_accepting" });
@@ -530,9 +530,9 @@ describe("teacher controls", () => {
     const ada = game.join("Ada");
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
-    game.host({ kind: "next" });
-    game.host({ kind: "next" });
-    game.host({ kind: "skip" }); // during question 2's countdown
+    game.press("next");
+    game.press("next");
+    game.press("skip"); // during question 2's countdown
     expect(game.state.phase).toBe("countdown");
     expect(game.state.questionIndex).toBe(2);
     expect(game.state.players[ada]!.streak).toBe(1);
@@ -544,8 +544,8 @@ describe("teacher controls", () => {
     const ada = scored.join("Ada");
     scored.startAndOpenFirstQuestion();
     scored.answer(ada, [0]);
-    scored.host({ kind: "next" });
-    scored.host({ kind: "next" });
+    scored.press("next");
+    scored.press("next");
     scored.advance(COUNTDOWN_MS);
     scored.host({ kind: "end" });
     expect(scored.state.phase).toBe("podium");
@@ -576,13 +576,13 @@ describe("teacher controls", () => {
     game.answer(ada, [0]);
     expect(game.state.phase).toBe("reveal");
     game.host({ kind: "pause" });
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("leaderboard");
     expect(game.state.paused).toBeNull();
     expect(game.hostView().paused).toBe(false);
     // Pausing on the leaderboard and pressing Next goes straight into a countdown that must run.
     game.host({ kind: "pause" });
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.state.phase).toBe("countdown");
     expect(game.state.paused).toBeNull();
     game.advance(COUNTDOWN_MS);
@@ -595,9 +595,9 @@ describe("teacher controls", () => {
     game.startAndOpenFirstQuestion();
     game.answer(ada, [0]);
     game.host({ kind: "pause" });
-    game.host({ kind: "skip" }); // reveal → leaderboard
+    game.press("skip"); // reveal → leaderboard
     expect(game.state.paused).toBeNull();
-    game.host({ kind: "skip" }); // leaderboard → countdown of question 2
+    game.press("skip"); // leaderboard → countdown of question 2
     game.advance(COUNTDOWN_MS);
     expect(game.state.phase).toBe("question");
   });
@@ -648,7 +648,7 @@ describe("teams (rule 10)", () => {
     const teamsOf = Object.values(game.state.players).map((p) => p.team);
     expect(new Set(teamsOf).size).toBe(3);
     for (const id of ids) game.answer(id, [0]);
-    game.host({ kind: "next" });
+    game.press("next");
     const teams = game.hostView().teams!;
     expect(teams.every((t) => t.score === 1000)).toBe(true); // everyone scored 1000, so every average is 1000
     expect(teams.reduce((n, t) => n + t.members, 0)).toBe(5);
@@ -661,7 +661,7 @@ describe("teams (rule 10)", () => {
     game.startAndOpenFirstQuestion();
     game.answer(a, [0]);
     game.answer(b, [0]);
-    game.host({ kind: "next" });
+    game.press("next");
     expect(game.hostView().teams).toEqual([{ team: "Cyan", score: 2000, members: 2, rank: 1 }]);
   });
 });
@@ -675,8 +675,8 @@ describe("the server never leaks answers before the reveal", () => {
     for (let q = 0; q < 3; q++) {
       game.advance(2_000);
       players.forEach((id, i) => game.answer(id, i === 0 ? [0] : [1]));
-      game.host({ kind: "next" });
-      if (game.state.phase === "leaderboard") game.host({ kind: "next" });
+      game.press("next");
+      if (game.state.phase === "leaderboard") game.press("next");
       game.advance(COUNTDOWN_MS);
     }
     game.host({ kind: "end" });
@@ -783,5 +783,149 @@ describe("nickname filter", () => {
     expect(game.host({ kind: "rename", playerId: ada, nickname: "⠀" })[0]!.message).toMatchObject({ reason: "nickname_invalid" });
     game.host({ kind: "rename", playerId: ada, nickname: "Ａda L." });
     expect(game.playerView(ada).nickname).toBe("Ada L.");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Second adversarial review (Nov 2026). Each scenario failed before its fix.
+
+describe("a teacher's pause holds until they resume", () => {
+  it("does not reveal when the last student still to answer drops out during a pause", () => {
+    const game = new Harness(sampleQuiz({ settings: { autoplay: true } }));
+    const ada = game.join("Ada");
+    const bo = game.join("Bo");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]);
+    game.host({ kind: "pause" });
+
+    game.send({ type: "disconnect", playerId: bo });
+    game.advance(60_000);
+
+    expect(game.state.phase).toBe("question");
+    expect(game.state.paused).not.toBeNull();
+  });
+
+  it("does not reveal when the teacher kicks the last student still to answer during a pause", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    const bo = game.join("Bo");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]);
+    game.host({ kind: "pause" });
+
+    game.host({ kind: "kick", playerId: bo });
+
+    expect(game.state.phase).toBe("question");
+  });
+
+  it("closes the question on resume if everyone still in the game has answered by then", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    const bo = game.join("Bo");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]);
+    game.host({ kind: "pause" });
+    game.send({ type: "disconnect", playerId: bo });
+
+    game.host({ kind: "resume" });
+
+    expect(game.state.phase).toBe("reveal");
+  });
+});
+
+describe("an advance press only acts on the screen the teacher was looking at", () => {
+  it("ignores 'Reveal now' that arrives just after the clock already revealed, instead of skipping the reveal", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    game.startAndOpenFirstQuestion();
+    const sawQuestion = { phase: "question" as const, questionIndex: 0 };
+    game.advance(20_000); // the time limit passes: the server reveals on its own
+
+    const rejected = game.host({ kind: "next", seen: sawQuestion });
+
+    expect(rejected[0]!.message).toMatchObject({ type: "command_rejected", command: "next", reason: "out_of_date" });
+    expect(game.state.phase).toBe("reveal");
+    expect(game.playerView(ada).phase).toBe("reveal");
+  });
+
+  it("ignores a 'Next' pressed on the reveal that arrives after autoplay already moved on", () => {
+    const game = new Harness(sampleQuiz({ settings: { autoplay: true, revealSec: 6 } }));
+    const ada = game.join("Ada");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]);
+    const sawReveal = { phase: "reveal" as const, questionIndex: 0 };
+    game.advance(6_000); // autoplay leaves the reveal
+
+    game.host({ kind: "next", seen: sawReveal });
+
+    expect(game.state.phase).toBe("leaderboard");
+  });
+
+  it("ignores a 'Skip' meant for an earlier question", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]);
+    game.press("next"); // reveal → leaderboard
+    game.press("next"); // leaderboard → countdown of question 2
+    game.advance(COUNTDOWN_MS);
+
+    game.host({ kind: "skip", seen: { phase: "question", questionIndex: 0 } });
+
+    expect(game.state.phase).toBe("question");
+    expect(game.state.questionIndex).toBe(1);
+  });
+
+  it("tells the projector which question it is on, so presses can name it", () => {
+    const game = new Harness();
+    game.join("Ada");
+    expect(game.hostView().questionIndex).toBe(-1);
+    game.startAndOpenFirstQuestion();
+    expect(game.hostView().questionIndex).toBe(0);
+  });
+});
+
+describe("what students see before a question opens", () => {
+  it("sends no answer texts to phones during the countdown, only the prompt", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    game.host({ kind: "start" });
+
+    const countdown = game.playerView(ada);
+
+    expect(countdown.phase).toBe("countdown");
+    expect(countdown.question?.prompt).toContain("Centre");
+    expect(countdown.question?.answers.every((a) => a.text === null)).toBe(true);
+    game.advance(COUNTDOWN_MS);
+    expect(game.playerView(ada).question?.answers[0]?.text).toBe("(2, −3)");
+  });
+});
+
+describe("points behind the next player (rule 11)", () => {
+  it("names the nearest player with a higher score, skipping players tied with you", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    const bo = game.join("Bo");
+    const cy = game.join("Cy");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [0]); // right
+    game.answer(bo, [1]); // wrong: 0
+    game.answer(cy, [1]); // wrong: 0, tied with Bo but ranked below on join order
+
+    const cyResult = game.playerView(cy).result!;
+    const adaScore = game.playerView(ada).score;
+
+    expect(cyResult.behind).toEqual({ nickname: "Ada", points: adaScore });
+  });
+
+  it("says nothing about being behind when everyone above is tied with you", () => {
+    const game = new Harness();
+    const ada = game.join("Ada");
+    const bo = game.join("Bo");
+    game.startAndOpenFirstQuestion();
+    game.answer(ada, [1]);
+    game.answer(bo, [1]);
+
+    expect(game.playerView(bo).result!.behind).toBeNull();
   });
 });

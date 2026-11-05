@@ -27,6 +27,14 @@ const timeLimitSec = z
   .min(LIMITS.timeLimitMinSec, `time limit must be at least ${LIMITS.timeLimitMinSec} seconds`)
   .max(LIMITS.timeLimitMaxSec, `time limit must be at most ${LIMITS.timeLimitMaxSec} seconds`);
 
+/**
+ * File names the media upload accepts: plain names as teachers have them ("circle 1.png"),
+ * used as a storage key and never as a path. Shared with the server's upload route, so a
+ * quiz that validates never names an image the upload would refuse.
+ */
+export const MEDIA_FILE_NAME_PATTERN = /^[\p{L}\p{N}][\p{L}\p{N} _().-]{0,79}$/u;
+const isImageSource = (src: string) => /^https?:\/\/\S+$/.test(src) || MEDIA_FILE_NAME_PATTERN.test(src);
+
 export const ImageMedia = z.strictObject({
   type: z.literal("image"),
   // An https URL, or the file name of an image uploaded alongside the quiz.
@@ -34,7 +42,8 @@ export const ImageMedia = z.strictObject({
     .string()
     .trim()
     .min(1, "image src is required")
-    .max(LIMITS.mediaSrcMaxChars, `image src must be a URL or file name of at most ${LIMITS.mediaSrcMaxChars} characters`),
+    .max(LIMITS.mediaSrcMaxChars, `image src must be a URL or file name of at most ${LIMITS.mediaSrcMaxChars} characters`)
+    .refine(isImageSource, "image src must be an https:// link or an image file name using only letters, numbers, spaces and _ ( ) . -"),
   alt: z.string().trim().min(1, "image alt text is required, so screen readers can describe it").max(200),
 });
 

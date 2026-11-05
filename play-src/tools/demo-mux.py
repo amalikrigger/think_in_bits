@@ -20,8 +20,9 @@ duration = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entri
 
 track = array("h", bytes(2 * int((duration + 1) * RATE)))
 for clip in clips:
-    wav = Path(clip["file"]).with_suffix(".wav")
-    subprocess.run(["afconvert", "-f", "WAVE", "-d", f"LEI16@{RATE}", "-c", "1", clip["file"], str(wav)], check=True)
+    # One format for every clip, whichever voice made it (macOS say writes AIFF, Piper WAV).
+    wav = Path(clip["file"]).with_name(Path(clip["file"]).stem + f".{RATE}.wav")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", clip["file"], "-ac", "1", "-ar", str(RATE), "-sample_fmt", "s16", str(wav)], check=True)
     with wave.open(str(wav)) as w:
         samples = array("h", w.readframes(w.getnframes()))
     start = int(clip["at"] / 1000 * RATE)

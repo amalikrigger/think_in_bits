@@ -8,3 +8,6 @@ export function ordinal(n: number): string {
 
 /** Game codes read better on a projector as two groups: 482 913. */
 export const spacedCode = (code: string): string => `${code.slice(0, 3)} ${code.slice(3)}`;
+
+/** "1 player", "30 players". */
+export const countOf = (n: number, noun: string): string => `${formatPoints(n)} ${noun}${n === 1 ? "" : "s"}`;

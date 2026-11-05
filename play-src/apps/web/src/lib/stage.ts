@@ -35,3 +35,24 @@ export function lobbyPillSize(playerCount: number): "lg" | "md" | "sm" {
   if (playerCount > 16) return "md";
   return "lg";
 }
+
+/**
+ * Identifies a leaderboard's standings. The climb animation replays only when this changes:
+ * the host view is re-sent whenever a phone drops off or rejoins, as a new array with the
+ * same standings, and replaying then would show the class the old order again.
+ */
+export function boardSignature(entries: { playerId: string; score: number; rank: number; previousRank: number | null }[]): string {
+  return entries.map((e) => `${e.playerId}:${e.score}:${e.rank}:${e.previousRank ?? ""}`).join("|");
+}
+
+/** "And N more players": the server sends only the top rows, so count from the whole class. */
+export function hiddenPlayerCount(classSize: number, shownRows: number): number {
+  return Math.max(0, classSize - shownRows);
+}
+
+/**
+ * How long the projector's podium takes to build 3rd → 2nd → 1st (first place lands at
+ * 2.2 s and springs into place). Phones wait this long before showing the student's own
+ * place, so nobody's phone spoils the reveal the class is watching.
+ */
+export const PODIUM_BUILD_MS = 3200;

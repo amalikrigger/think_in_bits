@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { answerColumns, leaderboardRows, lobbyPillSize, promptScale } from "./stage";
+import { answerColumns, boardSignature, hiddenPlayerCount, leaderboardRows, lobbyPillSize, promptScale } from "./stage";
 
 describe("promptScale", () => {
   it("steps type down as prompts get longer, up to the 500-character limit", () => {
@@ -35,5 +35,32 @@ describe("lobbyPillSize", () => {
     expect(lobbyPillSize(4)).toBe("lg");
     expect(lobbyPillSize(30)).toBe("md");
     expect(lobbyPillSize(60)).toBe("sm");
+  });
+});
+
+describe("boardSignature", () => {
+  const board = [
+    { playerId: "a", nickname: "Alpha", score: 2000, rank: 1, previousRank: 2, team: null },
+    { playerId: "c", nickname: "Charlie", score: 1500, rank: 2, previousRank: 1, team: null },
+  ];
+
+  it("stays the same when the same standings are sent again, so the climb animation does not replay", () => {
+    // A phone dropping off re-sends the host view: a new array with identical standings.
+    expect(boardSignature(board.map((e) => ({ ...e })))).toBe(boardSignature(board));
+  });
+
+  it("changes when the standings change", () => {
+    const after = [{ ...board[0]!, score: 2600 }, board[1]!];
+    expect(boardSignature(after)).not.toBe(boardSignature(board));
+    expect(boardSignature([board[1]!, board[0]!])).not.toBe(boardSignature(board));
+  });
+});
+
+describe("hiddenPlayerCount", () => {
+  it("counts the whole class, not just the rows the server sent", () => {
+    // 30 players, the server sends the top 10, a 1366 × 768 projector fits 9.
+    expect(hiddenPlayerCount(30, 9)).toBe(21);
+    expect(hiddenPlayerCount(30, 10)).toBe(20);
+    expect(hiddenPlayerCount(5, 5)).toBe(0);
   });
 });

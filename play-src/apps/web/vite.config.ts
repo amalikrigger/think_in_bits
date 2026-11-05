@@ -7,6 +7,7 @@ import { defineConfig, type Plugin, type ProxyOptions } from "vite";
 import { devProxyOrigin } from "./src/lib/dev-origin";
 
 const repoRoot = fileURLToPath(new URL("../../..", import.meta.url));
+const workspace = fileURLToPath(new URL("../..", import.meta.url));
 const outDir = fileURLToPath(new URL("../../../play", import.meta.url));
 
 // Until deployment is decided, the build output in /play is kept out of git: it would
@@ -60,8 +61,22 @@ export default defineConfig({
   build: { outDir, emptyOutDir: true },
   server: {
     port: 5173,
-    // The site's tokens and logo are imported from the repo root rather than copied.
-    fs: { allow: [repoRoot] },
+    // Students' phones load from this server over the classroom Wi-Fi, so it serves only what
+    // the app needs: its own source, the shared schema package, the practice samples, the
+    // dependencies and the site's colour tokens (imported rather than copied). Never the
+    // rest of the repo, which holds .dev.vars, the game server's local state (with every
+    // live game's answers) and quizzes-private/.
+    fs: {
+      allow: [
+        fileURLToPath(new URL(".", import.meta.url)),
+        `${workspace}packages/schema`,
+        `${workspace}samples`,
+        `${workspace}node_modules`,
+        `${repoRoot}templates/base/variables.css`,
+      ],
+      // Vite's defaults, plus the secrets and state above as a second line of defence.
+      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", ".dev.vars", "**/.wrangler/**", "**/quizzes-private/**"],
+    },
     proxy: { "/api": apiProxy("http://localhost:5173") },
   },
   preview: {

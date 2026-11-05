@@ -178,7 +178,7 @@ export function UploadScreen({
           {created && (
             <div role="alert" className="bb-card border-coral/40 p-6">
               <p className="font-bold text-coral">
-                The game was created, but {created.failed.length === 1 ? "this image" : "these images"} failed to upload (max 1 MB each): {created.failed.join(", ")}.
+                The game was created, but {created.failed.length === 1 ? "this image" : "these images"} failed to upload: {created.failed.join(", ")}. Images must be PNG, JPEG, GIF, WebP or SVG, up to 1 MB each.
               </p>
               <p className="mt-1 text-muted">Those questions will show their alt text instead.</p>
               <button type="button" className="bb-btn bb-btn-primary mt-4" onClick={() => onCreated(created.game)}>

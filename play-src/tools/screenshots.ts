@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
+import type { Browser, BrowserContext, Page } from "playwright";
+import { launchBrowser } from "./lib/browser";
 
 // Responsive screenshot sweep that also plays a full game through the real UI:
 // one projector host (re-sized through six screens, from a 1920×1080 projector to a
@@ -320,7 +321,7 @@ async function runGame(browser: Browser, scheme: "dark" | "light", quiz: Quiz, p
 
 async function main(): Promise<void> {
   if (STRESS && !existsSync(FIXTURE)) throw new Error(`fixture not found: ${FIXTURE}`);
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await launchBrowser();
   try {
     for (const scheme of SCHEMES) await runGame(browser, scheme, { sample: SAMPLE }, "", true);
     if (STRESS) await runGame(browser, SCHEMES[0] ?? "dark", { fixture: FIXTURE }, "stress-", false);

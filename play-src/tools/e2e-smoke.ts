@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import type { HostView, PlayerView, ServerMessage } from "@bitblitz/schema";
 import { API, Connection, createGame, hostToken, isType, login } from "./lib/client";
 
@@ -149,9 +150,9 @@ async function main(): Promise<void> {
     resumed.playerId === adaWelcome.playerId && resumedView.view.nickname === "Ada" && resumedView.view.score === scoreBefore);
 
   // --- Q2 (true/false): reconnect mid-question, late join mid-question, kick ---
-  host.command({ kind: "next" }); // reveal → leaderboard
+  host.press("next"); // reveal → leaderboard
   await host.waitForPhase("leaderboard");
-  host.command({ kind: "next" }); // leaderboard → countdown
+  host.press("next"); // leaderboard → countdown
   await ada2.waitForPhase("question", 8000);
   ada2.close();
   const ada3 = new Connection(code);
@@ -192,14 +193,14 @@ async function main(): Promise<void> {
     latestHostView.players.map((p) => p.nickname).join(","));
 
   // --- Q3 (multi) to the podium ---
-  host.command({ kind: "next" });
+  host.press("next");
   await host.waitForPhase("leaderboard");
-  host.command({ kind: "next" });
+  host.press("next");
   await ada3.waitForPhase("question", 8000);
   ada3.send({ type: "answer", questionIndex: 2, choice: [0, 1] });
   bo.send({ type: "answer", questionIndex: 2, choice: [1] });
   await host.waitForPhase("reveal");
-  host.command({ kind: "next" });
+  host.press("next");
   const podium = await host.waitForPhase("podium");
   check("game reaches the podium", podium.role === "host" && podium.podium!.length === 2, podium.role === "host" ? podium.podium!.map((p) => `${p.nickname} ${p.score}`).join(", ") : "");
 
@@ -213,6 +214,16 @@ async function main(): Promise<void> {
   const playerMessages = [ada, ada2, ada3, bo, late, lateAgain].flatMap((c) => c.received).map((r) => JSON.stringify(r.message));
   check("no player message ever carried the answer key", playerMessages.every((j) => !/"correct"\s*:/.test(j)), `${playerMessages.length} messages`);
   check("no player message ever carried an explanation", playerMessages.every((j) => !j.includes("Two pairs make four")));
+
+  // --- the web dev server (what students' phones load over the Wi-Fi) serves no repo secrets ---
+  const web = process.env.BITBLITZ_WEB ?? "http://127.0.0.1:5173";
+  const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
+  const exposed: string[] = [];
+  for (const path of ["play-src/apps/server/.dev.vars", "play-src/quizzes-private/README.md", "play-src/apps/server/wrangler.toml", "play-src/PLAN.md"]) {
+    const response = await fetch(`${web}/play/@fs${repoRoot}${path}`).catch(() => null);
+    if (response?.ok) exposed.push(path);
+  }
+  check("the web dev server refuses .dev.vars, quizzes-private and the rest of the repo", exposed.length === 0, exposed.join(", "));
 
   // --- rate limiting (made-up documentation-range IPs, unique per run so the dev login stays
   // usable and a re-run inside the 10-minute window, or a concurrent run, cannot collide) ---

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatPoints, ordinal, spacedCode } from "./format";
+import { countOf, formatPoints, ordinal, spacedCode } from "./format";
 import { hasMath, splitMath } from "./math";
 import { TILES, tile } from "./tiles";
 
@@ -13,6 +13,14 @@ describe("formatting", () => {
   it("groups points with commas and splits the code for the projector", () => {
     expect(formatPoints(1085)).toBe("1,085");
     expect(spacedCode("482913")).toBe("482 913");
+  });
+});
+
+describe("countOf", () => {
+  it("says '1 player', not '1 players'", () => {
+    expect(countOf(1, "player")).toBe("1 player");
+    expect(countOf(2, "player")).toBe("2 players");
+    expect(countOf(1200, "point")).toBe("1,200 points");
   });
 });
 
@@ -31,6 +39,20 @@ describe("splitMath", () => {
 
   it("handles several formulas and math-only text", () => {
     expect(splitMath("$a$ and $b$").filter((s) => s.math).map((s) => s.text)).toEqual(["a", "b"]);
+  });
+
+  it("reads dollar amounts as money, not as the edges of a formula", () => {
+    expect(splitMath("A pen costs $3 and a book costs $12.")).toEqual([{ math: false, text: "A pen costs $3 and a book costs $12." }]);
+    expect(hasMath("A pen costs $3 and a book costs $12.")).toBe(false);
+  });
+
+  it("still finds a formula next to money", () => {
+    expect(splitMath("Pay $5 if $x>2$").filter((s) => s.math).map((s) => s.text)).toEqual(["x>2"]);
+  });
+
+  it("treats \\$ as a literal dollar sign", () => {
+    expect(splitMath("Cost: \\$x\\$ dollars")).toEqual([{ math: false, text: "Cost: $x$ dollars" }]);
+    expect(hasMath("\\$x\\$")).toBe(false);
   });
 
   it("knows when KaTeX is needed at all, so plain quizzes never download it", () => {
