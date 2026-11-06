@@ -22,9 +22,11 @@ export function Screen({
   return (
     <div className="bb-screen flex flex-col">
       {header}
+      {/* Focusable, so keyboard users can scroll a long question or results list (WCAG 2.1.1). */}
       <main
         ref={mainRef}
         data-scroll
+        tabIndex={0}
         className={`flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden ${footer ? "" : "bb-main-end"} ${mainClassName}`}
       >
         {children}

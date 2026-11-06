@@ -1,7 +1,7 @@
 # Mutation spot check: breaks one scoring/engine rule at a time and confirms the test
 # suite notices. Usage (from packages/engine): python3 scripts/mutation-check.py .
 # Each file is restored after its run, even on failure.
-import subprocess, sys, shutil, pathlib
+import os, re, subprocess, sys, shutil, pathlib
 root = pathlib.Path(sys.argv[1])
 mutations = [
   ("speed factor /2 → /3", "src/scoring.ts", "return 1 - t / timeLimitMs / 2;", "return 1 - t / timeLimitMs / 3;"),
@@ -43,8 +43,11 @@ for name, rel, old, new in mutations:
     print(f"!! {name}: pattern not found"); continue
   path.write_text(original.replace(old, new, 1))
   try:
-    r = subprocess.run(["npx", "vitest", "run"], cwd=root, capture_output=True, text=True)
-    summary = [l.strip() for l in r.stdout.splitlines() if l.strip().startswith("Tests")]
+    # CI runners force coloured output; colour codes in front of "Tests" would hide the summary.
+    env = {**os.environ, "NO_COLOR": "1", "FORCE_COLOR": "0"}
+    r = subprocess.run(["npx", "vitest", "run"], cwd=root, capture_output=True, text=True, env=env)
+    plain = re.sub(r"\x1b\[[0-9;]*m", "", r.stdout)
+    summary = [l.strip() for l in plain.splitlines() if l.strip().startswith("Tests")]
     # A run that never reached a summary line (a crash, a hung runner) proves nothing either way.
     if not summary:
       tail = (r.stderr or r.stdout).strip().splitlines()[-3:]

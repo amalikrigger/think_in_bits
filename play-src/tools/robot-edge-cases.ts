@@ -74,14 +74,19 @@ async function storageBlockedBlip(browser: Browser) {
   await host.waitForPhase("reveal");
   const scoreBefore = hostView(host).players.find((p) => p.nickname === "Dana")!.score;
 
-  const danaConnected = (connected: boolean) => () => hostView(host).players.some((p) => p.nickname === "Dana" && p.connected === connected);
+  // The phone's own view of the blip is what matters (bug F2 was the phone joining afresh on
+  // reconnect). When the server notices depends on how fast the browser tears the old socket down.
+  const reconnecting = page.getByRole("status").filter({ hasText: "Reconnecting" });
   await context.setOffline(true);
-  check("storage blocked: the server sees the phone drop when the Wi-Fi goes", await eventually(danaConnected(false), 15_000));
+  check("storage blocked: the phone notices the Wi-Fi is gone", await appears(reconnecting, 15_000));
   await sleep(1500);
   await context.setOffline(false);
-  const reconnected = await eventually(danaConnected(true), 20_000);
-  check("storage blocked: the phone reconnects by itself when the Wi-Fi comes back", reconnected);
-  await sleep(500);
+  const backOnline = await reconnecting.waitFor({ state: "hidden", timeout: 20_000 }).then(() => true, () => false);
+  const oneDanaConnected = () => {
+    const players = hostView(host).players;
+    return players.length === 1 && players[0]!.nickname === "Dana" && players[0]!.connected;
+  };
+  check("storage blocked: the phone reconnects by itself when the Wi-Fi comes back", backOnline && (await eventually(oneDanaConnected, 10_000)));
   const text = await bodyText(page);
   const players = hostView(host).players;
   check("storage blocked: after a Wi-Fi blip the student is back in their seat, not asked for a new nickname",

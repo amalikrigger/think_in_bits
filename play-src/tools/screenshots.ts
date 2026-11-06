@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { Browser, BrowserContext, Page } from "playwright";
+import AxeBuilder from "@axe-core/playwright";
 import { launchBrowser } from "./lib/browser";
 
 // Responsive screenshot sweep that also plays a full game through the real UI:
@@ -52,6 +53,9 @@ const STAGE_STEPS = /^host-(question|reveal|countdown|leaderboard|podium)-/;
 
 type Finding = { shot: string; problem: string };
 const findings: Finding[] = [];
+/** WCAG 2.1 A/AA problems from axe, grouped by rule: one shared component would otherwise repeat on every shot. */
+type A11yProblem = { impact: string; help: string; where: Set<string> };
+const a11y = new Map<string, A11yProblem>();
 const shots: string[] = [];
 const consoleErrors: string[] = [];
 /** File-name prefix for the current run ("" for the sample game, "stress-" for the fixture). */
@@ -117,10 +121,18 @@ async function snap(page: Page, scheme: string, name: string, mustFit = false): 
   const shot = `${scheme}/${shotPrefix}${name}`;
   await page.screenshot({ path: `${dir}/${shotPrefix}${name}.png` });
   shots.push(`${shot}.png`);
+  // Layout is measured at the moment of the screenshot; the accessibility audit takes about a
+  // second and runs last, so a phase change during it cannot be blamed on this screen's layout.
   for (const problem of await page.evaluate<string[]>(INSPECT_LAYOUT)) findings.push({ shot, problem });
   if (mustFit) {
     const overflow = await page.evaluate<number>(STAGE_OVERFLOW);
     if (overflow > 0) findings.push({ shot, problem: `stage needs ${overflow}px of scrolling` });
+  }
+  const audit = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+  for (const violation of audit.violations) {
+    const problem = a11y.get(violation.id) ?? { impact: violation.impact ?? "unknown", help: violation.help, where: new Set<string>() };
+    for (const node of violation.nodes) problem.where.add(`${shot}: ${node.target.join(" ")}`);
+    a11y.set(violation.id, problem);
   }
 }
 
@@ -241,6 +253,17 @@ async function runGame(browser: Browser, scheme: "dark" | "light", quiz: Quiz, p
     for (const p of players) await snap(p.page, scheme, s(`player-lobby-${p.name}`));
   }
 
+  // Each interesting question is captured at every size, with an accessibility audit per shot:
+  // longer than a 20 s clock. Questions close when everyone has answered, so a long limit
+  // costs nothing and keeps the clock from closing a question mid-capture.
+  await host.getByRole("button", { name: "Settings" }).click();
+  const sameLimit = host.getByRole("switch", { name: /Same time limit for every question/ });
+  if ((await sameLimit.getAttribute("aria-checked")) !== "true") await sameLimit.click();
+  const seconds = host.getByRole("textbox", { name: /^Seconds per question/ });
+  await seconds.fill("120");
+  await seconds.press("Enter");
+  await host.getByRole("button", { name: "Hide settings" }).click();
+
   await host.getByRole("button", { name: "Start ▶" }).click();
   await host.getByText(/Question 1 of/).waitFor();
   await hostSizes(host, scheme, s("countdown"));
@@ -328,12 +351,18 @@ async function main(): Promise<void> {
   } finally {
     await browser.close();
   }
-  const report = { web: WEB, sample: SAMPLE, stress: STRESS ? FIXTURE : null, schemes: SCHEMES, shots: shots.length, layoutFindings: findings, consoleErrors };
+  const accessibility = [...a11y].map(([rule, p]) => ({ rule, impact: p.impact, help: p.help, count: p.where.size, examples: [...p.where].slice(0, 5) }));
+  const report = { web: WEB, sample: SAMPLE, stress: STRESS ? FIXTURE : null, schemes: SCHEMES, shots: shots.length, layoutFindings: findings, accessibility, consoleErrors };
   writeFileSync(`${OUT}report.json`, JSON.stringify(report, null, 2));
   console.log(`${shots.length} screenshots in ${OUT}`);
   console.log(findings.length ? `layout findings:\n${findings.map((f) => `  ${f.shot}: ${f.problem}`).join("\n")}` : "no layout findings (no sideways scroll, nothing clipped or covered, stage fits)");
+  console.log(
+    accessibility.length
+      ? `accessibility (WCAG 2.1 AA, axe):\n${accessibility.map((a) => `  [${a.impact}] ${a.rule}: ${a.help} (${a.count} places, e.g. ${a.examples[0]})`).join("\n")}`
+      : "no accessibility violations (axe, WCAG 2.1 A and AA)",
+  );
   console.log(consoleErrors.length ? `console errors:\n  ${consoleErrors.join("\n  ")}` : "no console errors");
-  process.exit(findings.length || consoleErrors.length ? 1 : 0);
+  process.exit(findings.length || accessibility.length || consoleErrors.length ? 1 : 0);
 }
 
 main().catch((error) => {

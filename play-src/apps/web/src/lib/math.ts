@@ -55,3 +55,55 @@ function closingDollar(source: string, open: number): number | null {
 const isVisible = (char: string | undefined): boolean => char !== undefined && !/\s/.test(char);
 
 export const hasMath = (source: string): boolean => splitMath(source).some((segment) => segment.math);
+
+// ---------- spoken form, for screen readers ----------
+// An answer tile is a button, and a button's accessible name is plain text: Chrome leaves
+// KaTeX's MathML out of it. So tiles carry a spoken version of the quiz text. It covers what
+// AS quizzes use (fractions, roots, powers, Greek letters, relations); anything else is read
+// as its command name without the backslash, which is still better than raw TeX.
+
+const SPOKEN_COMMANDS: Record<string, string> = {
+  times: "times",
+  cdot: "times",
+  div: "divided by",
+  pm: "plus or minus",
+  le: "less than or equal to",
+  leq: "less than or equal to",
+  ge: "greater than or equal to",
+  geq: "greater than or equal to",
+  ne: "not equal to",
+  neq: "not equal to",
+  approx: "approximately",
+  infty: "infinity",
+};
+const SPOKEN_SYMBOLS: Record<string, string> = { "=": "equals", "+": "plus", "-": "minus", "−": "minus", "<": "less than", ">": "greater than" };
+
+/** Words for one TeX formula, e.g. "\frac{1}{2}" → "1 over 2". */
+export function speakMath(tex: string): string {
+  let s = tex.replace(/\\(displaystyle|left|right)|\\[,;!]/g, "");
+  // Innermost first, so nested fractions and roots unwrap one layer per pass.
+  for (let before = ""; before !== s; ) {
+    before = s;
+    s = s.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, " $1 over $2 ").replace(/\\sqrt\{([^{}]*)\}/g, " square root of $1 ");
+  }
+  s = s
+    .replace(/\^\{?\\circ\}?/g, " degrees ")
+    .replace(/\^\{?2\}?(?![0-9])/g, " squared ")
+    .replace(/\^\{?3\}?(?![0-9])/g, " cubed ")
+    .replace(/\^\{([^{}]*)\}|\^(\S)/g, (_m, group: string | undefined, single: string | undefined) => ` to the power ${group ?? single} `)
+    .replace(/_\{([^{}]*)\}|_(\S)/g, (_m, group: string | undefined, single: string | undefined) => ` sub ${group ?? single} `)
+    .replace(/\\([a-zA-Z]+)/g, (_m, name: string) => ` ${SPOKEN_COMMANDS[name] ?? name} `)
+    .replace(/[=+\-−<>]/g, (symbol) => ` ${SPOKEN_SYMBOLS[symbol]} `)
+    .replace(/[{}]/g, "");
+  return s
+    .replace(/\s+/g, " ")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+([),])/g, "$1")
+    .trim();
+}
+
+/** Quiz text with every formula replaced by its spoken form; plain words and money stay as written. */
+export const speakText = (source: string): string =>
+  splitMath(source)
+    .map((segment) => (segment.math ? speakMath(segment.text) : segment.text))
+    .join("");

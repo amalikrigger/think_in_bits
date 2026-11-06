@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { speakText } from "../lib/math";
 import { tile } from "../lib/tiles";
 import { MathText } from "./MathText";
 
@@ -26,9 +27,11 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
   const revealed = correct !== undefined;
   const dim = revealed && !correct;
   const shapesOnly = text === null;
-  const label = `Answer ${index + 1}, ${style.colorName} ${style.shapeName}${text ? `: ${text}` : ""}${
-    revealed ? (correct ? ", correct" : ", not correct") : ""
-  }${selected ? ", selected" : ""}`;
+  // Screen readers get the tile's name from hidden text: "Answer 1, cyan triangle:", the answer
+  // in words (speakText: a button's name is plain text, and Chrome leaves KaTeX's MathML out
+  // of it, so raw TeX or silence were the alternatives), then the tile's state.
+  const spokenPrefix = `Answer ${index + 1}, ${style.colorName} ${style.shapeName}${shapesOnly ? "" : ": "}`;
+  const spokenState = `${revealed ? (correct ? ", correct" : ", not correct") : ""}${selected ? ", selected" : ""}`;
 
   const shapeClass = projector
     ? "bb-tile-shape"
@@ -40,26 +43,37 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
 
   const content = (
     <>
+      <span className="sr-only">{spokenPrefix}</span>
       <span aria-hidden="true" className={`flex shrink-0 items-center justify-center rounded-xl bg-black/20 ${shapeClass}`}>
         {style.shape}
       </span>
       {!shapesOnly && (
-        <span className={`min-w-0 flex-1 break-words text-left font-bold leading-tight ${projector ? "" : size === "device-dense" ? "text-base" : "text-lg"}`}>
-          <MathText text={text} />
-        </span>
+        <>
+          <span
+            aria-hidden="true"
+            className={`min-w-0 flex-1 break-words text-left font-bold leading-tight ${projector ? "" : size === "device-dense" ? "text-base" : "text-lg"}`}
+          >
+            <MathText text={text} />
+          </span>
+          <span className="sr-only">{speakText(text)}</span>
+        </>
       )}
       {revealed && correct && (
         <span aria-hidden="true" className={`ml-auto font-extrabold ${projector ? "bb-tile-count" : "text-2xl"}`}>
           ✓
         </span>
       )}
+      {spokenState && <span className="sr-only">{spokenState}</span>}
       {count !== undefined && (
-        <span
-          className={`${revealed && correct ? "" : "ml-auto"} rounded-full bg-black/25 px-3 py-1 font-extrabold tabular-nums ${projector ? "bb-tile-count" : "text-lg"}`}
-          aria-label={`${count} picked this`}
-        >
-          {count}
-        </span>
+        <>
+          <span
+            aria-hidden="true"
+            className={`${revealed && correct ? "" : "ml-auto"} rounded-full bg-black/25 px-3 py-1 font-extrabold tabular-nums ${projector ? "bb-tile-count" : "text-lg"}`}
+          >
+            {count}
+          </span>
+          <span className="sr-only">, {count} picked this</span>
+        </>
       )}
       {multi && selected && !revealed && (
         <span aria-hidden="true" className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/30 text-xl font-extrabold">
@@ -85,7 +99,7 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
 
   if (!onPress) {
     return (
-      <div className={className} style={background} role="listitem" aria-label={label}>
+      <div className={className} style={background} role="listitem">
         {content}
       </div>
     );
@@ -97,7 +111,6 @@ export function AnswerTile({ index, text, correct, selected, count, onPress, dis
       style={background}
       onClick={onPress}
       disabled={disabled}
-      aria-label={label}
       aria-pressed={multi ? Boolean(selected) : undefined}
       whileTap={disabled ? undefined : { scale: 0.96 }}
     >

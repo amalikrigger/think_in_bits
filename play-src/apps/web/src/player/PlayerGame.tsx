@@ -261,7 +261,7 @@ function AnswerScreen({ view, code, locked, choice, sent, onPick }: PhaseProps) 
     const answer = view.answer ?? sent ?? [];
     return (
       <Message title="Locked in!" detail="Waiting for everyone else…">
-        <div className="flex justify-center gap-2" aria-label="Your answer">
+        <div className="flex justify-center gap-2" role="group" aria-label="Your answer">
           {answer.map((i) => (
             <span key={i} className="h-4 w-16 rounded-full" style={{ background: `var(--bb-tile-${(i % 6) + 1})` }} />
           ))}
