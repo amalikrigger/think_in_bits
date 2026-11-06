@@ -10,21 +10,24 @@ import { BitBlitzClient, Connection, isType } from "../../../tools/lib/client";
 
 export const TEST_PASSPHRASE = "integration-test-passphrase";
 
-export type TestServer = { api: string; client: BitBlitzClient; close: () => Promise<void> };
+export type TestServer = { api: string; client: BitBlitzClient; sessionSecret: string; close: () => Promise<void> };
 
-export async function startServer(): Promise<TestServer> {
+/** `vars` overrides wrangler.toml [vars] for this server only, e.g. a deployed BUILD_SHA. */
+export async function startServer(options: { vars?: Record<string, string> } = {}): Promise<TestServer> {
+  const sessionSecret = randomToken(32);
   const server = createTestHarness({
     root: new URL("..", import.meta.url).pathname,
     workers: [
       {
         configPath: "./wrangler.toml",
-        secrets: { HOST_PASSPHRASE_HASH: await hashPassphrase(TEST_PASSPHRASE), SESSION_SECRET: randomToken(32) },
+        vars: options.vars,
+        secrets: { HOST_PASSPHRASE_HASH: await hashPassphrase(TEST_PASSPHRASE), SESSION_SECRET: sessionSecret },
       },
     ],
   });
   const { url } = await server.listen();
   const api = url.href.replace(/\/$/, "");
-  return { api, client: new BitBlitzClient(api, TEST_PASSPHRASE), close: () => server.close() };
+  return { api, client: new BitBlitzClient(api, TEST_PASSPHRASE), sessionSecret, close: () => server.close() };
 }
 
 export const sampleQuiz = (name: string): QuizInput =>

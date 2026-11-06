@@ -8,7 +8,8 @@
     "botload": "tsx botload.ts",
     "screenshots": "tsx screenshots.ts",
     "robot": "tsx robot-edge-cases.ts",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "rehearse": "tsx rehearse-published.ts"
   },
   "dependencies": {
     "@bitblitz/schema": "workspace:*"

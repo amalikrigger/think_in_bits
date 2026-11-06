@@ -8,7 +8,9 @@
     "setup:dev": "tsx scripts/write-dev-vars.ts",
     "hash-passphrase": "tsx scripts/hash-passphrase.ts",
     "test": "vitest run",
-    "typecheck": "tsc -p . && tsc -p tsconfig.node.json"
+    "typecheck": "tsc -p . && tsc -p tsconfig.node.json",
+    "deploy:production": "git diff --quiet HEAD -- ../.. || { echo 'Commit first: the deployed version must match a commit.'; exit 1; }; wrangler deploy --env production --var BUILD_SHA:$(git rev-parse --short HEAD)",
+    "rollback:production": "wrangler rollback --env production"
   },
   "dependencies": {
     "@bitblitz/engine": "workspace:*",

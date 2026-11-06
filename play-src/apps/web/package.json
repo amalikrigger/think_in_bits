@@ -8,7 +8,8 @@
     "build": "tsc -p . && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
-    "typecheck": "tsc -p ."
+    "typecheck": "tsc -p .",
+    "build:publish": "tsc -p . && BITBLITZ_PUBLISH=1 vite build"
   },
   "dependencies": {
     "@bitblitz/schema": "workspace:*",

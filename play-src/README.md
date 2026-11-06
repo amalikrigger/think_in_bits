@@ -6,7 +6,8 @@ shows the lobby, timer, reveal, leaderboard and podium. Quizzes are JSON files t
 writes from lesson material.
 
 **Status:** working prototype, local only. Nothing is deployed. See `PLAN.md` for the
-decisions and `MORNING-REPORT.md` for what works and what's open.
+decisions, `QA-REPORT.md` for the reviews and tests, `STATUS.md` for what must be true
+before students use it, and `DEPLOY.md` for how to deploy and roll back.
 
 ## Run it locally
 

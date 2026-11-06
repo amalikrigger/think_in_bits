@@ -5,6 +5,8 @@ export type Env = {
   GAME_ROOM: DurableObjectNamespace<GameRoom>;
   LOGIN_LIMITER: DurableObjectNamespace<LoginLimiter>;
   ALLOWED_ORIGINS: string;
+  /** The git commit deployed, passed by `pnpm deploy:production`; "dev" when unset. */
+  BUILD_SHA?: string;
   /** Secret: `pbkdf2-sha256$<iterations>$<salt>$<hash>` from `pnpm hash-passphrase`. */
   HOST_PASSPHRASE_HASH?: string;
   /** Secret: at least 32 random characters, signs host session tokens. */

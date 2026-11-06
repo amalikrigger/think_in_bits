@@ -24,3 +24,32 @@ class_name = "LoginLimiter"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["GameRoom", "LoginLimiter"]
+
+# ---------------------------------------------------------------------------------------------
+# Production: thinkinbits.site/play talks to this Worker on workers.dev. Not deployed yet.
+# Deploy with `pnpm --filter @bitblitz/server deploy:production` after `wrangler login` and
+# the two secrets (`wrangler secret put … --env production`); the steps are in DEPLOY.md.
+# Wrangler does not inherit vars or Durable Object bindings into an environment, so they
+# are repeated here.
+[env.production]
+name = "bitblitz"
+workers_dev = true
+
+[env.production.vars]
+ALLOWED_ORIGINS = "https://www.thinkinbits.site,https://thinkinbits.site"
+
+# Workers Logs: the structured error lines from index.ts become queryable in the dashboard.
+[env.production.observability]
+enabled = true
+
+[[env.production.durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+[[env.production.durable_objects.bindings]]
+name = "LOGIN_LIMITER"
+class_name = "LoginLimiter"
+
+[[env.production.migrations]]
+tag = "v1"
+new_sqlite_classes = ["GameRoom", "LoginLimiter"]

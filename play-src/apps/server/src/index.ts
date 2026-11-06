@@ -23,24 +23,55 @@ const QUIZ_MAX_BYTES = 512 * 1024;
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get("Origin");
-    if (origin && !allowedOrigins(env).includes(origin)) return json({ error: "origin not allowed" }, 403);
-    if (request.method === "OPTIONS") return withCors(new Response(null, { status: 204 }), origin);
+    if (origin && !allowedOrigins(env).includes(origin)) return secured(json({ error: "origin not allowed" }, 403));
+    if (request.method === "OPTIONS") return secured(withCors(new Response(null, { status: 204 }), origin));
 
     try {
-      return withCors(await route(request, env), origin);
+      return secured(withCors(await route(request, env), origin));
     } catch (error) {
-      console.error("unhandled", error);
-      return withCors(json({ error: "server error" }, 500), origin);
+      logUnhandled(request, error);
+      return secured(withCors(json({ error: "server error" }, 500), origin));
     }
   },
 } satisfies ExportedHandler<Env>;
+
+/**
+ * One JSON line per failure, so Workers Logs can be filtered by event and joined to a request
+ * by its cf-ray ID. Only the method and path are logged: headers carry host keys and session
+ * tokens, and bodies carry passphrases and nicknames.
+ */
+function logUnhandled(request: Request, error: unknown): void {
+  const err = error instanceof Error ? error : new Error(String(error));
+  console.error(
+    JSON.stringify({
+      event: "unhandled_error",
+      ray: request.headers.get("cf-ray"),
+      method: request.method,
+      path: new URL(request.url).pathname,
+      error: err.message,
+      stack: err.stack,
+    }),
+  );
+}
+
+/** Headers every API response carries. Media keeps its own stricter CSP (serveMedia). */
+function secured(response: Response): Response {
+  if (response.status === 101) return response;
+  const headers = new Headers(response.headers);
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "no-referrer");
+  headers.set("Strict-Transport-Security", "max-age=31536000");
+  if (!headers.has("Content-Security-Policy")) headers.set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'");
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
 
 async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const parts = url.pathname.split("/").filter(Boolean);
   if (parts[0] !== "api") return json({ error: "not found" }, 404);
 
-  if (parts[1] === "health" && parts.length === 2) return json({ ok: true });
+  // The deployed commit, so production is traceable to a SHA (set by the deploy script).
+  if (parts[1] === "health" && parts.length === 2) return json({ ok: true, version: env.BUILD_SHA ?? "dev" });
   if (parts[1] === "host" && parts[2] === "login" && request.method === "POST") return login(request, env);
   if (parts[1] === "games" && parts.length === 2 && request.method === "POST") return createGame(request, env);
 

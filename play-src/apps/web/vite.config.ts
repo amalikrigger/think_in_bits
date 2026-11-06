@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import type { ClientRequest, IncomingMessage } from "node:http";
 import { fileURLToPath } from "node:url";
@@ -10,14 +11,53 @@ const repoRoot = fileURLToPath(new URL("../../..", import.meta.url));
 const workspace = fileURLToPath(new URL("../..", import.meta.url));
 const outDir = fileURLToPath(new URL("../../../play", import.meta.url));
 
+// `pnpm build:publish` makes the build that goes live at thinkinbits.site/play (DEPLOY.md):
+// it must know the game server's address, and it is meant to be committed.
+const publishing = process.env.BITBLITZ_PUBLISH === "1";
+const apiBase = process.env.VITE_API_BASE ?? "";
+// A local address is allowed too, to rehearse the published build against `pnpm dev`'s Worker.
+if (publishing && !/^(https:\/\/[^/]+|http:\/\/(localhost|127\.0\.0\.1):\d+)$/.test(apiBase)) {
+  throw new Error("build:publish needs VITE_API_BASE=https://<worker>.workers.dev (no trailing slash)");
+}
+
 // Until deployment is decided, the build output in /play is kept out of git: it would
 // otherwise ship to thinkinbits.site/play with no game server behind it.
 // Delete play/.gitignore deliberately when it is time to publish.
 const keepBuildOutOfGit: Plugin = {
   name: "bitblitz-keep-build-out-of-git",
-  apply: "build",
+  apply: (_config, { command }) => !publishing && command === "build",
   closeBundle() {
     writeFileSync(`${outDir}/.gitignore`, "# BitBlitz build output: not committed until deployment is decided.\n*\n");
+  },
+};
+
+// GitHub Pages cannot send response headers, so the published page carries its policy in a
+// meta tag: scripts and connections only to this site and the game server, fonts from Google
+// Fonts, https images (quizzes may link one), inline styles (Motion animates through the
+// style attribute) and blob workers (canvas-confetti). It also names the commit it was built from.
+const publishedPage: Plugin = {
+  name: "bitblitz-published-page",
+  apply: () => publishing,
+  transformIndexHtml(html) {
+    const ws = apiBase.replace(/^http/, "ws"); // https → wss, as lib/api.ts wsUrl does
+    const policy = [
+      "default-src 'self'",
+      "script-src 'self'",
+      `connect-src 'self' ${apiBase} ${ws}`,
+      `img-src 'self' https: data: blob: ${apiBase}`,
+      `media-src 'self' ${apiBase}`,
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "worker-src blob:",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "object-src 'none'",
+    ].join("; ");
+    const sha = execFileSync("git", ["rev-parse", "--short", "HEAD"]).toString().trim();
+    return html.replace(
+      "<head>",
+      `<head>\n    <meta http-equiv="Content-Security-Policy" content="${policy}" />\n    <meta name="referrer" content="no-referrer" />\n    <meta name="bitblitz-build" content="${sha}" />`,
+    );
   },
 };
 
@@ -57,7 +97,7 @@ function apiProxy(devOrigin: string): ProxyOptions {
 
 export default defineConfig({
   base: "/play/",
-  plugins: [react(), tailwindcss(), keepBuildOutOfGit, serveSiteImages],
+  plugins: [react(), tailwindcss(), keepBuildOutOfGit, publishedPage, serveSiteImages],
   build: { outDir, emptyOutDir: true },
   server: {
     port: 5173,
