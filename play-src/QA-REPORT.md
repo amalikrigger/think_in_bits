@@ -30,13 +30,13 @@ morning-report session). Work happened in a cloud session on branch
 | F3 | Medium | A Reveal or Next press arriving just after the clock or autoplay moved on skipped a screen. | **Fixed:** Next, Skip and Reveal now carry the screen they were pressed on, and stale presses are refused as `out_of_date`. | engine tests, integration test, mutation check |
 | F4 | Medium | A student dropping out or being kicked ended the teacher's pause and revealed the answer. | **Fixed:** the early close waits for resume. | engine tests, integration test, mutation check |
 | F5 | Medium | A student who typed the code was trapped on a finished game's final screen, even after a refresh or the next lesson. | **Fixed:** "Join another game" button, and the seat is cleared once the game ends. | robot |
-| F6 | Low–medium | A modified phone can delay its latency pongs to claim the full 1 s allowance and take fastest-finger. | **Decision needed** (below) | reviewer probe |
+| F6 | Low–medium | A modified phone can delay its latency pongs to claim the full 1 s allowance and take fastest-finger. | **Decided and built (6 Nov):** fastest-finger is ordered by arrival at the server. | scoring test, mutation check |
 | F7 | Low–medium | The projector leaderboard jumped back to the old order whenever a phone dropped or rejoined. | **Fixed:** the animation is keyed on the standings, not on array identity. | unit test, robot |
 | F8 | Low | Answer texts reached phones during the 3 s countdown. | **Fixed:** phones get the prompt only. | engine test, integration test, robot, mutation check |
 | F9 | Low | Tied students were told "0 behind" each other. | **Fixed:** the message names the nearest higher score, or nothing. | engine tests, robot, mutation check |
 | F10 | Low | Dollar amounts ("$3 and $12") were garbled into a formula. | **Fixed:** Pandoc-style rule, `\$` escape, and the rule written into the LLM prompt. | unit tests, robot |
-| F11 | Low | A 0× points multiplier still awards First and Streak bonuses. | **Decision needed** (below) | reviewer probe |
-| F12 | Low (dev only) | Under `wrangler dev`, `CF-Connecting-IP` is client-supplied, so the login limit can be sidestepped. Production Cloudflare sets the header itself. | **Decision needed** (below) | reviewer probe |
+| F11 | Low | A 0× points multiplier still awards First and Streak bonuses. | **Decided and built (6 Nov):** 0× is a no-points round. | scoring and engine tests, mutation check |
+| F12 | Low (dev only) | Under `wrangler dev`, `CF-Connecting-IP` is client-supplied, so the login limit can be sidestepped. Production Cloudflare sets the header itself. | **Decided (6 Nov):** left as is. Deploy before real classes. | reviewer probe |
 | – | Low | "And N more players" counted only the top 10 the server sends. | **Fixed:** counts the whole class. | unit test |
 | – | Low | Phones spoiled the podium by showing "You finished 1st" while the projector was still building it. | **Fixed:** phones say "Look up at the podium!" until it is built. | robot, video |
 | – | Low | The quiz validator accepted image names the upload refuses (`circle+1.png`), and also `javascript:` and `data:` links. | **Fixed:** one shared file-name rule, so the problem shows at upload. | schema tests, integration test |
@@ -48,23 +48,22 @@ Found while building the robot: the test client's `waitForPhase` missed a phase 
 already arrived, which could make tests flaky. It now resolves straight away when the
 connection is already in that phase.
 
-## Decisions for you (unchanged, with a recommendation)
+## Decisions (Amali, 6 Nov 2026: all four recommendations)
 
-1. **Latency allowance (F6).** Rule 3 forgives up to 1 s of measured latency, but the client
-   controls the measurement.
-   - **Recommendation:** order fastest-finger by raw arrival time (keep the allowance for the
-     speed score only), and lower the cap to 500 ms after the school Wi-Fi test shows real
-     pings.
-2. **0× multiplier (F11).** Should a 0× round still award First and Streak bonuses?
-   - **Recommendation:** treat 0× as "no points", with bonuses off and streaks untouched, like
-     `points: "none"`.
-3. **Kick and rename mid-game.** These are only in the lobby UI today. A late joiner with a
-   name that slips past the filter can't be removed during the game.
-   - **Recommendation:** add the roster panel to the "More…" menu.
-4. **Login limit in dev (F12).** This only matters on the classroom LAN dev setup.
-   - **Recommendation:** leave it, and deploy before using this with real classes.
-5. **Music uploads.** Uploads accept images only, so the music slots can never play yet. This
-   is as planned ("Amali supplies files later").
+1. **Latency allowance (F6).** Fastest-finger is now ordered by when answers reached the
+   server, and the latency allowance counts towards the speed score only.
+   - **Still to do:** lower the 1 s cap to 0.5 s once the school Wi-Fi test shows real pings.
+     It's recorded in `PLAN.md` rule 6.
+2. **0× multiplier (F11).** 0× is a no-points round, like `points: "none"`: no bonuses,
+   streaks left as they were, and no time counted towards the tie-break. Both screens say
+   "no points".
+3. **Kick and rename mid-game.** A **Players** button in the teacher's control bar (inside
+   "More…" on a phone) opens a panel to rename or remove any student while the game runs.
+   The clicker keys are off while it's open, and Escape closes it.
+4. **Login limit in dev (F12).** Left as is. Production Cloudflare is not affected; deploy
+   before real classes.
+5. **Music uploads.** Unchanged, as planned. Uploads accept images only until you supply the
+   music files.
 
 ## Verification
 

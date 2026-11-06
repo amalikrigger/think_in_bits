@@ -929,3 +929,24 @@ describe("points behind the next player (rule 11)", () => {
     expect(game.playerView(bo).result!.behind).toBeNull();
   });
 });
+
+describe("a 0× points multiplier is a no-points round (decided 6 Nov 2026)", () => {
+  it("labels every question 'no points' on the screens and scores nothing", () => {
+    const game = new Harness(sampleQuiz({ settings: { pointsMultiplier: 0 } }));
+    const ada = game.join("Ada");
+    game.startAndOpenFirstQuestion();
+    expect(game.playerView(ada).question?.points).toBe("none");
+    expect(game.hostView().question?.points).toBe("none");
+    game.answer(ada, [0]);
+    expect(game.playerView(ada).result).toMatchObject({ outcome: "correct", points: { total: 0 } });
+  });
+
+  it("does not count response time towards the tie-break", () => {
+    const game = new Harness(sampleQuiz({ settings: { pointsMultiplier: 0 } }));
+    const ada = game.join("Ada");
+    game.startAndOpenFirstQuestion();
+    game.advance(5000);
+    game.answer(ada, [0]);
+    expect(game.state.players[ada]!.totalResponseMs).toBe(0);
+  });
+});

@@ -7,11 +7,11 @@ mutations = [
   ("speed factor /2 → /3", "src/scoring.ts", "return 1 - t / timeLimitMs / 2;", "return 1 - t / timeLimitMs / 3;"),
   ("latency cap 1000 → 2000", "src/scoring.ts", "export const LATENCY_CAP_MS = 1000;", "export const LATENCY_CAP_MS = 2000;"),
   ("partial multi counts as exact", "src/scoring.ts", "const exact = wrongPicks === 0 && rightPicks === correct.size;", "const exact = rightPicks === correct.size;"),
-  ("fastest finger sorted slowest first", "src/scoring.ts", ".sort((a, b) => a.responseMs - b.responseMs ||", ".sort((a, b) => b.responseMs - a.responseMs ||"),
+  ("fastest finger sorted slowest first", "src/scoring.ts", ".sort((a, b) => a.receivedAt - b.receivedAt ||", ".sort((a, b) => b.receivedAt - a.receivedAt ||"),
   ("streak cap removed", "src/scoring.ts", "return Math.min(STREAK_STEP * Math.max(0, streak - 1), STREAK_CAP);", "return STREAK_STEP * Math.max(0, streak - 1);"),
   ("streak not reset on miss", "src/scoring.ts", "streak: counts ? 0 : streakBefore,", "streak: streakBefore,"),
   ("tie-break ignores response time", "src/views.ts", "b.score - a.score || a.totalResponseMs - b.totalResponseMs || a.joinSeq - b.joinSeq", "b.score - a.score || a.joinSeq - b.joinSeq"),
-  ("answer key leaks into public question", "src/views.ts", "    timeLimitMs: question.timeLimitMs,\n    points: question.points,\n  };", "    timeLimitMs: question.timeLimitMs,\n    points: question.points,\n    ...({ correct: question.correct } as object),\n  };"),
+  ("answer key leaks into public question", "src/views.ts", "    points: effectivePoints(question.points, state.settings.pointsMultiplier),\n  };", "    points: effectivePoints(question.points, state.settings.pointsMultiplier),\n    ...({ correct: question.correct } as object),\n  };"),
   ("pause time counted against student", "src/engine.ts", "if (open && phase === \"question\") open.openedAt += pausedFor;", ""),
   ("double answers allowed", "src/engine.ts", "if (open.answers[player.id]) return \"already_answered\";", ""),
   ("late answers accepted", "src/engine.ts", "if (responseMs > question.timeLimitMs) {", "if (responseMs > question.timeLimitMs + 5000) {"),
@@ -28,11 +28,18 @@ mutations = [
   ("a stale Next/Skip/Reveal press is obeyed", "src/engine.ts", "      return \"out_of_date\";\n    }", "    }"),
   ("phones get answer texts during the countdown", "src/views.ts", "phase !== \"countdown\" && state.settings.showAnswersOnDevice", "state.settings.showAnswersOnDevice"),
   ("'0 behind' a tied player", "src/views.ts", ".reverse().find((p) => p.score > player.score)", ".reverse().find(() => true)"),
+  # Decisions of 6 Nov 2026
+  ("fastest finger ordered by latency-corrected time", "src/scoring.ts", ".sort((a, b) => a.receivedAt - b.receivedAt || a.joinSeq - b.joinSeq);", ".sort((a, b) => a.responseMs - b.responseMs || a.joinSeq - b.joinSeq);"),
+  ("0x multiplier still scores bonuses", "src/scoring.ts", "return multiplier > 0 ? level : \"none\";", "return level;"),
 ]
+# Anything but CAUGHT fails the run: a mutant that was missed, or never applied because the
+# code it targets changed, proves nothing about the tests.
+problems = 0
 for name, rel, old, new in mutations:
   path = root / rel
   original = path.read_text()
   if old not in original:
+    problems += 1
     print(f"!! {name}: pattern not found"); continue
   path.write_text(original.replace(old, new, 1))
   try:
@@ -41,8 +48,11 @@ for name, rel, old, new in mutations:
     # A run that never reached a summary line (a crash, a hung runner) proves nothing either way.
     if not summary:
       tail = (r.stderr or r.stdout).strip().splitlines()[-3:]
+      problems += 1
       print(f"ERROR   {name}  no test summary (exit {r.returncode}): {' | '.join(tail)}"); continue
     caught = r.returncode != 0 and "failed" in summary[-1]
+    problems += 0 if caught else 1
     print(f"{'CAUGHT ' if caught else 'MISSED!'} {name}  {summary[-1]}")
   finally:
     path.write_text(original)
+sys.exit(1 if problems else 0)

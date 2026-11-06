@@ -98,7 +98,8 @@ describe("rule 7: streak bonus table", () => {
 
 // ---------- whole-question scoring (rules 4–8) ----------
 
-type AnswerRow = { id: string; choice: number[]; t: number; joinSeq?: number };
+/** `t` is the fair (latency-corrected) time; `arrivedMs` is when the answer reached the server, if different. */
+type AnswerRow = { id: string; choice: number[]; t: number; joinSeq?: number; arrivedMs?: number };
 
 function score(overrides: Partial<ScoringInput> & { rows: AnswerRow[]; players?: string[] }) {
   const { rows, players, ...rest } = overrides;
@@ -117,7 +118,7 @@ function score(overrides: Partial<ScoringInput> & { rows: AnswerRow[]; players?:
       playerId: r.id,
       choice: r.choice,
       responseMs: r.t,
-      receivedAt: 1_000_000 + r.t,
+      receivedAt: 1_000_000 + (r.arrivedMs ?? r.t),
       joinSeq: r.joinSeq ?? i,
     })),
     ...rest,
@@ -224,6 +225,23 @@ describe("rule 6: fastest finger", () => {
   it("can be switched off", () => {
     expect(score({ fastestFinger: false, rows: [{ id: "a", choice: [0], t: 0 }] }).a!.points.first).toBe(0);
   });
+
+  // Decided 6 Nov 2026: the latency allowance is reported by the phone itself, so a modified
+  // phone could claim a full second. It still protects slow Wi-Fi in the speed score, but the
+  // race for First is decided by when answers actually reached the server.
+  it("orders the race by arrival at the server, not by latency-corrected time", () => {
+    const result = score({
+      rows: [
+        { id: "honest", choice: [0], t: 1950, arrivedMs: 2000 },
+        // Arrived 30 ms after honest, but claims 1 s of latency, so its corrected time is earlier.
+        { id: "claimsLag", choice: [0], t: 1030, arrivedMs: 2030 },
+      ],
+    });
+    expect(result.honest!.fastestPlace).toBe(1);
+    expect(result.claimsLag!.fastestPlace).toBe(2);
+    // The allowance still counts towards the speed score.
+    expect(result.claimsLag!.points.speed).toBeGreaterThan(result.honest!.points.speed);
+  });
 });
 
 describe("rule 7: streaks across a question", () => {
@@ -257,6 +275,14 @@ describe("rule 8: per-question maximum", () => {
   it("is 2350 on a double question (bonuses are not doubled)", () => {
     const result = score({ points: "double", streaksBefore: { a: 10 }, rows: [{ id: "a", choice: [0], t: 0 }] });
     expect(result.a!.points).toEqual({ speed: 2000, first: 100, streak: 250, total: 2350 });
+  });
+});
+
+describe("a 0× points multiplier (decided 6 Nov 2026)", () => {
+  it("is a no-points round: no bonuses, and streaks are left as they were", () => {
+    const result = score({ multiplier: 0, streaksBefore: { a: 3, b: 3 }, rows: [{ id: "a", choice: [0], t: 0 }, { id: "b", choice: [1], t: 0 }] });
+    expect(result.a).toMatchObject({ outcome: "correct", streak: 3, fastestPlace: null, points: { speed: 0, first: 0, streak: 0, total: 0 } });
+    expect(result.b).toMatchObject({ outcome: "wrong", streak: 3, points: { total: 0 } });
   });
 });
 

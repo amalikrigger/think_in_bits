@@ -8,6 +8,7 @@ import type {
   TeamEntry,
   Timer,
 } from "@bitblitz/schema";
+import { effectivePoints } from "./scoring";
 import type { GameState, PlannedQuestion, PlayerState } from "./state";
 
 // What each role is allowed to see. This file is the answer-leak boundary: a player view
@@ -95,7 +96,7 @@ function publicQuestion(state: GameState, question: PlannedQuestion, withText: b
     // True/false labels are not a secret, so they always show.
     answers: question.answers.map((text) => ({ text: withText || question.type === "true_false" ? text : null })),
     timeLimitMs: question.timeLimitMs,
-    points: question.points,
+    points: effectivePoints(question.points, state.settings.pointsMultiplier),
   };
 }
 

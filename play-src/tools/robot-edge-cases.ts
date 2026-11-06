@@ -54,6 +54,11 @@ async function joinByLink(page: Page, code: string, nickname: string): Promise<v
   await page.getByRole("heading", { name: "You're in!" }).waitFor({ timeout: 10_000 });
 }
 
+/** Polls state the robot already holds: a reply can land before a Playwright click resolves. */
+async function eventually(condition: () => boolean, timeoutMs = 5000): Promise<boolean> {
+  for (const end = Date.now() + timeoutMs; Date.now() < end; await sleep(100)) if (condition()) return true;
+  return condition();
+}
 const appears = (locator: Locator, timeout: number) => locator.waitFor({ timeout }).then(() => true, () => false);
 const bodyText = async (page: Page) => (await page.locator("body").innerText()).replace(/\s+/g, " ");
 const hostView = (host: Connection) => host.lastView() as HostView;
@@ -191,6 +196,51 @@ async function tiesAndMoney(browser: Browser) {
   host.close();
 }
 
+async function kickAndRenameMidGame(browser: Browser) {
+  const { code, hostKey, host } = await game("Robot: players mid-game", [trueFalse("Q1"), trueFalse("Q2")]);
+  const students = await Promise.all(["Bo", "Zed", "Cy"].map(async (nickname) => {
+    const c = new Connection(code);
+    await c.opened();
+    c.send({ type: "join", nickname });
+    await c.waitFor(isType("welcome"));
+    return c;
+  }));
+  const [, zed] = students as [Connection, Connection, Connection];
+  host.command({ kind: "start" });
+  await host.waitForPhase("question", 8000);
+
+  const context = await browser.newContext({ viewport: { width: 1366, height: 768 } });
+  await context.addInitScript(({ code, hostKey }) => sessionStorage.setItem("bitblitz:host-game", JSON.stringify({ code, hostKey })), { code, hostKey });
+  const projector = await context.newPage();
+  await projector.goto(HOST);
+  await projector.getByRole("button", { name: "Players" }).click({ timeout: 10_000 });
+  const panel = projector.getByRole("dialog", { name: /Players/ });
+  check("mid-game: the Players panel opens from the control bar", await appears(panel, 5000));
+
+  await projector.keyboard.press("ArrowRight");
+  await sleep(500);
+  check("mid-game: the clicker key does not advance the game while the panel is open", hostView(host).phase === "question", hostView(host).phase);
+
+  await panel.getByRole("button", { name: /^Bo\. Manage player/ }).click();
+  await panel.getByRole("button", { name: "Rename" }).click();
+  await panel.getByLabel("New nickname for Bo").fill("Bo B.");
+  await panel.getByRole("button", { name: "Save" }).click();
+  check("mid-game: the teacher renames a student", await eventually(() => hostView(host).players.some((p) => p.nickname === "Bo B.")));
+
+  await panel.getByRole("button", { name: /^Zed\. Manage player/ }).click();
+  await panel.getByRole("button", { name: "Remove" }).click();
+  await panel.getByRole("group", { name: "Remove Zed?" }).getByRole("button", { name: "Remove" }).click();
+  const kicked = await eventually(() => zed.received.some((r) => r.message.type === "kicked") && hostView(host).players.every((p) => p.nickname !== "Zed"));
+  check("mid-game: the teacher removes a student, who is told and disconnected", kicked);
+  check("mid-game: removing a student does not stop the question", hostView(host).phase === "question", hostView(host).phase);
+
+  await projector.keyboard.press("Escape");
+  check("mid-game: Escape closes the Players panel", await panel.waitFor({ state: "detached", timeout: 3000 }).then(() => true, () => false));
+  await context.close();
+  host.close();
+  for (const c of students) c.close();
+}
+
 async function countdownShowsNoAnswers() {
   const { code, host } = await game("Robot: countdown", [
     { type: "single", prompt: "Countdown secrecy", answers: [{ text: "Right", correct: true }, { text: "Wrong" }] },
@@ -225,6 +275,7 @@ async function main() {
     await finishedGameIsNotATrap(browser);
     await leaderboardHoldsStill(browser);
     await tiesAndMoney(browser);
+    await kickAndRenameMidGame(browser);
     await countdownShowsNoAnswers();
   } finally {
     await browser.close();

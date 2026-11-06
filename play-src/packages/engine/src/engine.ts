@@ -10,7 +10,7 @@ import {
 } from "@bitblitz/schema";
 import { checkNickname, generateNickname } from "./nicknames";
 import { seededRandom, shuffled } from "./random";
-import { oneWayLatencyMs, responseTimeMs, scoreQuestion } from "./scoring";
+import { effectivePoints, oneWayLatencyMs, responseTimeMs, scoreQuestion } from "./scoring";
 import {
   COUNTDOWN_MS,
   RTT_SAMPLES_KEPT,
@@ -494,7 +494,9 @@ class Step {
       player.score += result.points.total;
       player.streak = result.streak;
       if (result.outcome === "correct") player.correctCount += 1;
-      if (question.points !== "none") player.totalResponseMs += answer ? answer.responseMs : question.timeLimitMs;
+      if (effectivePoints(question.points, this.state.settings.pointsMultiplier) !== "none") {
+        player.totalResponseMs += answer ? answer.responseMs : question.timeLimitMs;
+      }
     }
     standings(this.state).forEach((player, i) => {
       player.previousRank = previousRanks.get(player.id) ?? null;
@@ -588,7 +590,8 @@ class Step {
     let total = 0;
     for (const record of this.state.records) {
       const question = this.state.plan[record.index];
-      if (!record.skipped && question && question.points !== "none") total += question.timeLimitMs;
+      const scored = question && effectivePoints(question.points, this.state.settings.pointsMultiplier) !== "none";
+      if (!record.skipped && scored) total += question.timeLimitMs;
     }
     return total;
   }

@@ -1,6 +1,7 @@
 import { REJECTION_TEXT, type HostCommand, type HostView, type ServerMessage } from "@bitblitz/schema";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { BrandBar, ConnectionBadge } from "../components/BrandBar";
 import { Leaderboard } from "../components/Leaderboard";
 import { preloadMath } from "../components/MathText";
@@ -10,6 +11,7 @@ import { useSound } from "../lib/sound";
 import type { HostGame } from "../lib/storage";
 import { useGameSocket } from "../lib/useGameSocket";
 import { Lobby } from "./Lobby";
+import { PlayersPanel } from "./PlayersPanel";
 import { Results } from "./Results";
 import { Stage } from "./Stage";
 
@@ -148,6 +150,7 @@ export function GameScreen({ game, onLeave }: { game: HostGame; onLeave: () => v
 function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: HostCommand) => void; onLeave: () => void }) {
   const [confirm, setConfirm] = useState<"end" | "cancel" | null>(null);
   const [more, setMore] = useState(false);
+  const [rosterOpen, setRosterOpen] = useState(false);
   const { phase, paused, settings } = view;
   const running = phase === "countdown" || phase === "question" || phase === "reveal" || phase === "leaderboard";
   const canStart = phase === "lobby" && view.players.length > 0;
@@ -175,13 +178,18 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
 
   // A confirmation that outlives the phase it was asked in would end the wrong thing.
   useEffect(() => setConfirm(null), [phase]);
+  // The Players panel belongs to a running game; it closes once the game reaches the podium.
+  useEffect(() => {
+    if (!running) setRosterOpen(false);
+  }, [running]);
 
   // Presentation clickers send → or Page Down; Space pauses. Ignored while typing. Space is
   // also ignored while a button has focus (it would fire that button too), but the arrow keys
   // still work there, because the last mouse click leaves focus on a button.
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
+      // With the Players panel open, keys belong to the panel (typing a new name, Escape).
+      if (rosterOpen || event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, [contenteditable=true]")) return;
       if ((event.key === "ArrowRight" || event.key === "PageDown") && nextLabel && (phase !== "lobby" || canStart)) {
@@ -194,12 +202,15 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [phase, paused, running, nextLabel, canStart, next, command]);
+  }, [phase, paused, running, nextLabel, canStart, next, command, rosterOpen]);
 
   const secondary = `bb-btn bb-btn-sm bb-btn-quiet ${more ? "" : "hidden sm:inline-flex"}`;
 
   return (
     <nav aria-label="Teacher controls" className="bb-footer border-t border-white/5 bg-[#0a0a0a]/85 backdrop-blur">
+      {/* Portalled: the bar's backdrop-blur would otherwise trap a fixed overlay inside it. */}
+      {rosterOpen &&
+        createPortal(<PlayersPanel players={view.players} command={command} onClose={() => setRosterOpen(false)} />, document.body)}
       <p className="sr-only">Keyboard: right arrow or Page Down advances, Space pauses and resumes.</p>
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-3 pt-2 sm:px-4">
         <div className="flex flex-wrap items-center gap-2">
@@ -211,6 +222,11 @@ function ControlBar({ view, command, onLeave }: { view: HostView; command: (c: H
           {(phase === "countdown" || phase === "question") && (
             <button type="button" className={secondary} onClick={() => command({ kind: "skip", seen })}>
               Skip
+            </button>
+          )}
+          {running && (
+            <button type="button" className={secondary} aria-haspopup="dialog" onClick={() => setRosterOpen(true)}>
+              Players
             </button>
           )}
           {phase !== "ended" && (

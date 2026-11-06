@@ -42,7 +42,7 @@ All math runs on the server, in the pure engine.
 3. **Fair timing:** `t` is measured on the server from the moment the question opens, minus the player's estimated one-way latency (half the median ping, capped at 1 s), so slow Wi-Fi does not cost points. Answers after `T` score 0.
 4. **Single and true/false:** `round(base × speedFactor)` if correct, otherwise 0.
 5. **Multi-select (Kahoot style):** `base × (correct picks ÷ number of correct options) × speedFactor`. Wrong picks cost nothing (Amali's choice). Known weakness: ticking every box scores full marks, so a **streak only counts when the selection is exactly right**, and a setting `multiPenalty` (default off) can subtract wrong picks later.
-6. **Fastest-finger bonus:** the first, second and third correct answers get +100, +60 and +30. Toggleable.
+6. **Fastest-finger bonus:** the first, second and third correct answers get +100, +60 and +30. Toggleable. *Decided 6 Nov 2026:* the order is by arrival at the server. The latency allowance in rule 3 is measured from the phone's own replies, so it counts towards the speed score only. Lower the 1 s cap to 0.5 s once the school Wi-Fi test shows real pings.
 7. **Streak bonus:** from the 2nd correct answer in a row, +50 × (streak − 1), capped at +250. A wrong or missing answer resets it. Toggleable.
 8. **Per-question maximum:** 1000 + 100 + 250 = 1350 on standard, 2350 on double.
 9. **Ties** on the leaderboard break by lower total response time, then by earlier join.
@@ -59,7 +59,7 @@ The engine ships with a test table covering every rule above, including edge cas
 **Settings** live in the quiz JSON (`settings`) and can be changed in the lobby while students are joining:
 
 - **Autoplay:** after the reveal and leaderboard, advance on a timer (`revealSec`, `leaderboardSec`) with no clicks; otherwise the teacher presses Next.
-- Time limit override · points multiplier · show question and answers on student devices (or shapes only) · shuffle questions and answers · generated nicknames only · profanity filter · late join · streak and fastest-finger bonuses · teams (auto-balance, size) · lobby capacity · lock the room · sound and music on/off · show the leaderboard every N questions · explanation slide after reveal.
+- Time limit override · points multiplier (*decided 6 Nov 2026:* 0× is a no-points round, like `points: "none"`, with no bonuses and streaks left as they were) · show question and answers on student devices (or shapes only) · shuffle questions and answers · generated nicknames only · profanity filter · late join · streak and fastest-finger bonuses · teams (auto-balance, size) · lobby capacity · lock the room · sound and music on/off · show the leaderboard every N questions · explanation slide after reveal.
 - **Teacher controls:** kick, rename a player, pause/resume, skip, end early, lock the room, reveal now.
 - **Reconnect:** a dropped player resumes with the same nickname and score (better than Kahoot).
 

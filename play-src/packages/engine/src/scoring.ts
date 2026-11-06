@@ -9,6 +9,11 @@ export const STREAK_STEP = 50;
 export const STREAK_CAP = 250;
 export const LATENCY_CAP_MS = 1000;
 
+/** What a question is worth in this game: a 0× multiplier makes every question a no-points round. */
+export function effectivePoints(level: PointsLevel, multiplier: number): PointsLevel {
+  return multiplier > 0 ? level : "none";
+}
+
 export function basePoints(level: PointsLevel, multiplier: number): number {
   return BASE_POINTS[level] * multiplier;
 }
@@ -94,7 +99,8 @@ export type QuestionScore = Pick<PlayerResult, "outcome" | "points" | "fastestPl
 
 export function scoreQuestion(input: ScoringInput): Record<string, QuestionScore> {
   const base = basePoints(input.points, input.multiplier);
-  const counts = input.points !== "none";
+  // No points means no bonuses either, and streaks are left as they were.
+  const counts = effectivePoints(input.points, input.multiplier) !== "none";
   const answersByPlayer = new Map(input.answers.map((a) => [a.playerId, a]));
 
   const judged = new Map<string, Judgement>();
@@ -108,9 +114,11 @@ export function scoreQuestion(input: ScoringInput): Record<string, QuestionScore
 
   const fastestPlaces = new Map<string, 1 | 2 | 3>();
   if (counts) {
+    // The race is decided by arrival at the server. The latency allowance in responseMs comes
+    // from the phone's own pong timing, so a modified phone could claim it to jump the queue.
     const exactInOrder = input.answers
       .filter((a) => judged.get(a.playerId)?.exact)
-      .sort((a, b) => a.responseMs - b.responseMs || a.receivedAt - b.receivedAt || a.joinSeq - b.joinSeq);
+      .sort((a, b) => a.receivedAt - b.receivedAt || a.joinSeq - b.joinSeq);
     exactInOrder.slice(0, FASTEST_FINGER_BONUS.length).forEach((a, i) => {
       fastestPlaces.set(a.playerId, (i + 1) as 1 | 2 | 3);
     });
