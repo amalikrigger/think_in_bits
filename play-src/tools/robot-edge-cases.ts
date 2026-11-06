@@ -1,4 +1,4 @@
-import type { HostView, ServerMessage } from "@bitblitz/schema";
+import type { HostView } from "@bitblitz/schema";
 import type { Browser, BrowserContext, Locator, Page } from "playwright";
 import { launchBrowser } from "./lib/browser";
 import { API, Connection, createGame, hostToken, isType } from "./lib/client";
@@ -74,13 +74,12 @@ async function storageBlockedBlip(browser: Browser) {
   await host.waitForPhase("reveal");
   const scoreBefore = hostView(host).players.find((p) => p.nickname === "Dana")!.score;
 
-  const danaConnected = (connected: boolean) => (m: ServerMessage) =>
-    m.type === "view" && m.view.role === "host" && m.view.players.some((p) => p.nickname === "Dana" && p.connected === connected);
+  const danaConnected = (connected: boolean) => () => hostView(host).players.some((p) => p.nickname === "Dana" && p.connected === connected);
   await context.setOffline(true);
-  await host.waitFor(danaConnected(false), 15_000);
+  check("storage blocked: the server sees the phone drop when the Wi-Fi goes", await eventually(danaConnected(false), 15_000));
   await sleep(1500);
   await context.setOffline(false);
-  const reconnected = await host.waitFor(danaConnected(true), 20_000).then(() => true, () => false);
+  const reconnected = await eventually(danaConnected(true), 20_000);
   check("storage blocked: the phone reconnects by itself when the Wi-Fi comes back", reconnected);
   await sleep(500);
   const text = await bodyText(page);

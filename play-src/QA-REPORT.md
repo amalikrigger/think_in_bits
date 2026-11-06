@@ -67,20 +67,21 @@ connection is already in that phase.
 
 ## Verification
 
-The app code was the same in every run below: from `e49e1ab` on, later commits changed
-only the tooling and docs. The final `pnpm -r test` and typecheck ran on `13e0a5d`.
+**Latest run, 6 Nov, after the decisions were built.** The app code is the same as the
+commit that holds this report.
 
 | Check | Result |
 |---|---|
-| `pnpm -r test` | **261 passing:** schema 21, engine 132, web 74, server 34. The server total includes 11 integration scenarios on the real Worker and Durable Object. |
+| `pnpm -r test` | **265 passing:** schema 21, engine 136, web 74, server 34. The server total includes 11 integration scenarios on the real Worker and Durable Object. |
 | Typecheck, all 5 packages | clean |
-| Mutation check | **23 / 23 caught,** including 4 new mutants for the rules fixed here |
-| End-to-end (`tools/e2e-smoke.ts`) | **39 / 39,** including the new check that the dev server refuses repo files |
-| 60-bot load, 10 autoplay questions | PASS: 0 dropped, **p95 8.1 ms** (target < 300) |
+| Mutation check | **25 / 25 caught.** The check now fails if any mutant is missed or can't be applied. |
+| End-to-end (`tools/e2e-smoke.ts`) | **39 / 39** |
+| 60-bot load, 10 autoplay questions | PASS: 0 dropped, **p95 7.6 ms** (target < 300) |
 | Layout sweep | **399 screenshots,** 320 px phone to 1920 px projector, dark and light: no layout findings, 0 console errors |
-| Robot edge cases (`tools/robot-edge-cases.ts`) | **13 / 13** |
-| Quiz validator on every sample | 4 / 4 valid |
-| Narrated walkthrough (`tools/demo-video.ts`) | **102 / 102 live checks,** 10 min 47 s, narrated with Piper, with English subtitles |
+| Robot edge cases (`tools/robot-edge-cases.ts`) | **20 / 20,** including the mid-game Players panel. Passed 3 runs in a row, and again straight after the load test. |
+
+The narrated walkthrough video was recorded on 5 Nov, before the decisions. It passed all
+102 of its live checks then, and doesn't show the Players panel.
 
 **Integration tests prove the fixes.** The suite was also run against the original engine
 from `8fff3d4`. There, the wire-level regressions for the stale press, the pause dropout and
