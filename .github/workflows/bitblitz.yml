@@ -1,0 +1,40 @@
+# BitBlitz (play-src/): typecheck, unit + integration tests, the engine's mutation check and
+# the sample quizzes, on every push or pull request that touches the game. The integration
+# tests boot the real Worker and Durable Object in-process, so no server or secret is needed.
+# The browser suites (robot, layout sweep, video) need a running dev server and stay local.
+name: BitBlitz
+
+on:
+  push:
+    paths: ["play-src/**", ".github/workflows/bitblitz.yml"]
+  pull_request:
+    paths: ["play-src/**", ".github/workflows/bitblitz.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bitblitz-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: play-src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # pnpm comes from the version pinned in package.json's packageManager field.
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r typecheck
+      - run: pnpm -r test
+      - name: Mutation check (break each scoring rule; a test must fail)
+        run: python3 -I packages/engine/scripts/mutation-check.py packages/engine
+      - name: Sample quizzes validate
+        run: pnpm -s validate samples/*.json
