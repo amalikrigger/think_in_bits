@@ -67,21 +67,23 @@ connection is already in that phase.
 
 ## Verification
 
-**Latest run, 6 Nov, after the decisions were built.** The app code is the same as the
-commit that holds this report.
+**Latest, 6 Nov 2026, on `94f3d5c`.** These are the final runs. The app's behaviour has not
+changed since; later commits touched only docs.
 
 | Check | Result |
 |---|---|
-| `pnpm -r test` | **265 passing:** schema 21, engine 136, web 74, server 34. The server total includes 11 integration scenarios on the real Worker and Durable Object. |
+| `pnpm -r test` | **286 passing:** schema 21, engine 136, web 89, server 40. The server total includes 17 integration scenarios on the real Worker and Durable Object. |
+| GitHub Actions (`.github/workflows/bitblitz.yml`) | Green on `94f3d5c` ([run #3](https://github.com/amalikrigger/think_in_bits/actions/runs/42185485198)): typecheck, tests, mutation check, samples |
 | Typecheck, all 5 packages | clean |
-| Mutation check | **25 / 25 caught.** The check now fails if any mutant is missed or can't be applied. |
-| End-to-end (`tools/e2e-smoke.ts`) | **39 / 39** |
-| 60-bot load, 10 autoplay questions | PASS: 0 dropped, **p95 7.6 ms** (target < 300) |
-| Layout sweep | **399 screenshots,** 320 px phone to 1920 px projector, dark and light: no layout findings, 0 console errors |
-| Robot edge cases (`tools/robot-edge-cases.ts`) | **20 / 20,** including the mid-game Players panel. Passed 3 runs in a row, and again straight after the load test. |
+| Mutation check | **25 / 25 caught.** It fails if any mutant is missed or can't be applied, and it works with forced colour output, as on CI. |
+| End-to-end (`tools/e2e-smoke.ts`) | **39 / 39** on `94f3d5c` |
+| Robot edge cases (`tools/robot-edge-cases.ts`) | **20 / 20** on `94f3d5c`, after 3 clean runs in a row on `f05da97` |
+| Layout and accessibility sweep | **399 screenshots,** 320 px to 1920 px, dark and light: no layout findings, **0 axe violations (WCAG 2.1 A/AA)**, 0 console errors (on `f05da97`, the last UI change) |
+| Published build rehearsal (`tools/rehearse-published.ts`) | A full game through the `build:publish` output, served as Pages would: no browser errors, no CSP violations |
+| 60-bot load, 10 autoplay questions | PASS: 0 dropped, **p95 7.6 ms** (target < 300), on `2c502b1`. Since then the server has only gained response headers and error logging. |
 
-The narrated walkthrough video was recorded on 5 Nov, before the decisions. It passed all
-102 of its live checks then, and doesn't show the Players panel.
+The narrated walkthrough video was recorded on 5 Nov at `85cc819`, and all 102 of its live
+checks passed. It doesn't show the Players panel, the spoken answer tiles or the deploy prep.
 
 **Integration tests prove the fixes.** The suite was also run against the original engine
 from `8fff3d4`. There, the wire-level regressions for the stale press, the pause dropout and
@@ -89,7 +91,8 @@ the countdown answer texts all fail. With the fixes, they pass.
 
 **Not verified:**
 - real phones and iPads on school Wi-Fi
-- screen readers
+- a real screen reader (VoiceOver, TalkBack): the accessibility tree and axe were checked,
+  but nobody listened to it
 - a deployed Cloudflare Worker (Durable Object eviction, storage limits)
 
 The robot and the video drive Chromium, not Safari.

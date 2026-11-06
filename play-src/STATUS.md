@@ -1,5 +1,41 @@
 # BitBlitz: ship status
 
+## Next session: start here (handoff, 6 Nov 2026)
+
+**Where things are:** `feat/bitblitz` on GitHub holds everything, up to the commit that added
+this handoff. Amali's Mac worktree (`think_in_bits.worktrees/bitblitz`) matches it once pulled.
+Nothing is deployed, and
+`main` and the live site are untouched (`main` has moved on with lesson work; merging
+BitBlitz in later adds files under `play-src/`, `.claude/skills/bitblitz-quiz/` and
+`.github/workflows/`).
+
+**How to start:**
+- Run Claude in the worktree on the Mac. Cloud sessions can't see the Mac, so push any local
+  work first; the Claude GitHub App is now installed on `think_in_bits`, so a cloud session
+  can push back.
+- Read, in this order: this file → `QA-REPORT.md` (reviews, decisions, test evidence) →
+  `DEPLOY.md` → `PLAN.md` (the spec).
+- Checks before changing code: `corepack pnpm install && corepack pnpm test` (286 tests);
+  CI runs the same on every push.
+
+**Next, in order:**
+1. **First deploy, as a rehearsal with no students** (`DEPLOY.md`). Only Amali can start it,
+   because it needs `wrangler login` on the Mac. Clear the five blockers below and record the
+   results here.
+2. **School Wi-Fi test:** a Chromebook and a phone against the deployed server. This decides
+   whether the long-polling fallback is needed. Then lower the latency cap to 0.5 s if real
+   pings allow (`PLAN.md` rule 6).
+3. **Monday 9 Nov:** the warm-up quiz `quizzes-private/1.4-s2-warm-up.json`, 8 questions,
+   validated and math checked. It was sent to Amali as a file because it's gitignored. Save
+   it into `play-src/quizzes-private/` on the Mac.
+
+**Loose ends, all optional:**
+- **Video:** re-record the narrated walkthrough (`tools/demo-video.ts`, recorded 5 Nov at
+  `85cc819`) to show the Players panel and the spoken answer tiles.
+- **Safari:** test on a real iPad. The tooling only covers Chromium.
+- **Exceptions:** the five below come due on 2026-12-01.
+
+
 **Not live.** Readiness record for the first deploy, checked against `gcoat-ai/SHIP_READINESS.md`
 on 6 Nov 2026 (code at the commit holding this file). The steps are in `DEPLOY.md`.
 
