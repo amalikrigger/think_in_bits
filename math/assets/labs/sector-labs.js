@@ -224,7 +224,7 @@ window.SectorKit = (function () {
       gperim: ['The <b>segment</b> is the thin strip between the chord and the arc. Its perimeter is the walk round the strip: along the arc, back along the chord.', 'arc + chord = ' + f(arc) + ' + ' + f(chord) + ' = <b>' + f(arc + chord) + ' cm</b>', 'Two edges: the arc and the chord. The radii are not on its edge.'],
       circ: ['The circumference is the perimeter of the <b>whole</b> circle.', 'circumference = 2πr = <b>' + f(circ) + ' cm</b>', 'The arc is a fraction of it: θ ÷ 2π = ' + (t / (2 * PI)).toFixed(3) + ' of the way round.'],
       sarea: ['Area is the <b>space inside</b>, like the cheese on the slice. The sector area is the whole slice.', 'sector area = ½r²θ = ½ × ' + f(r) + '² × ' + t + ' = <b>' + f(sArea) + ' cm²</b>', 'Area is in cm² (squares), length is in cm.'],
-      garea: ['The segment area is the space inside the thin strip only.', 'segment area = sector − triangle ABC = ' + f(sArea) + ' − ' + f(tri) + ' = <b>' + f(gArea) + ' cm²</b>', 'How to find the triangle: Session 2 (next Monday).']
+      garea: ['The segment area is the space inside the thin strip only.', 'segment area = sector − triangle ABC = ' + f(sArea) + ' − ' + f(tri) + ' = <b>' + f(gArea) + ' cm²</b>', 'How to find the triangle: Session 2.']
     };
     function pieces(m) {
       var k = R / r;
@@ -331,5 +331,66 @@ window.SectorKit = (function () {
     box.querySelector('.fl-fold').addEventListener('click', function () { run++; fold(run); });
     box.__set = function (o) { draw(o.step || 0, false); return stepEl.textContent + ' ' + read.textContent; };
     draw(0, false);
+  });
+})();
+
+/* Segment Lab (added Nov 12, 2026, for 1.4 Session 2).
+     <div class="lab segment" data-r="6" data-t="2.0944"></div>   segment = sector − triangle, live; θ from 0.1 to π;
+                                                                  a toggle shows the calculator left in degrees mode
+   Exposes box.__set({r, t, deg}) for scripted checks and returns the readout text. */
+(function () {
+  'use strict';
+  var K = window.SectorKit; if (!K) return;
+  var CY = K.CY, W = K.W, GR = K.GR, GO = K.GO, RD = K.RD, PI = Math.PI;
+  function f(v) { return Math.abs(v) < 1e-9 ? '0' : K.sf(v, 4); }
+  function pt(p) { return p[0].toFixed(2) + ',' + p[1].toFixed(2); }
+  [].slice.call(document.querySelectorAll('.lab.segment')).forEach(function (box, n) {
+    var st = { r: +(box.getAttribute('data-r') || 6), t: +(box.getAttribute('data-t') || 2.0944), deg: false }, uid = 'sg' + n;
+    var snaps = [['π/3', PI / 3], ['1 rad', 1], ['π/2', PI / 2], ['2π/3', 2 * PI / 3], ['2.5', 2.5], ['π', PI]];
+    box.innerHTML = '<svg class="fig" viewBox="0 0 320 300" role="img" aria-label="A sector split into the triangle OAB, shaded red, and the segment between the chord AB and the arc, shaded gold"></svg>' +
+      '<div class="panel">' +
+      '<label for="' + uid + '-r">radius r = <span class="cval sg-rv"></span> cm</label>' +
+      '<input type="range" id="' + uid + '-r" class="sg-r" min="2" max="10" step="0.5" value="' + st.r + '">' +
+      '<label for="' + uid + '-t">angle θ = <span class="cval sg-tv"></span> rad</label>' +
+      '<input type="range" id="' + uid + '-t" class="sg-t" min="0.1" max="' + PI.toFixed(4) + '" step="0.01" value="' + st.t + '">' +
+      '<div class="picks sg-snap" role="group" aria-label="Set the angle">' + snaps.map(function (p) { return '<button type="button" data-t="' + p[1] + '">' + p[0] + '</button>'; }).join('') + '</div>' +
+      '<button type="button" class="toggle sg-deg" aria-pressed="false">Leave the calculator in degrees mode</button>' +
+      '<div class="read sg-read" aria-live="polite"></div><div class="verdict ok sg-v"></div></div>';
+    var svg = box.querySelector('svg'), read = box.querySelector('.sg-read'), verdict = box.querySelector('.sg-v');
+    var rIn = box.querySelector('.sg-r'), tIn = box.querySelector('.sg-t'), degBtn = box.querySelector('.sg-deg');
+    function draw() {
+      var r = st.r, t = Math.min(Math.max(st.t, 0.1), PI), Cx = 160, Cy = 200, R = 14.5 * r, a0 = PI / 2 - t / 2, a1 = PI / 2 + t / 2;
+      var O = [Cx, Cy], A = K.at(Cx, Cy, R, a0), B = K.at(Cx, Cy, R, a1), arcD = K.arcPath(Cx, Cy, R, a0, a1), pf = K.piFrac(t), s = '';
+      box.querySelector('.sg-rv').textContent = String(r);
+      box.querySelector('.sg-tv').textContent = t.toFixed(2) + (pf ? ' = ' + pf : '');
+      s += '<circle cx="' + Cx + '" cy="' + Cy + '" r="' + R + '" fill="none" stroke="' + GR + '" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="4 5"/>';
+      s += '<path d="M' + pt(O) + ' L' + pt(A) + ' L' + pt(B) + ' Z" fill="rgba(255,107,107,0.30)"/>';
+      s += '<path d="' + arcD + ' Z" fill="rgba(255,196,107,0.45)"/>';
+      s += K.line(O, A, W, 2.2) + K.line(O, B, W, 2.2) + K.line(A, B, GO, 2.4);
+      s += '<path d="' + arcD + '" fill="none" stroke="' + CY + '" stroke-width="3.4" stroke-linecap="round"/>';
+      var ar = Math.min(28, R * 0.35); s += '<path d="' + K.arcPath(Cx, Cy, ar, a0, a1) + '" fill="none" stroke="' + GO + '" stroke-width="2"/>';
+      var lp = K.at(Cx, Cy, ar + 14, PI / 2); s += K.txt(lp[0], lp[1], 'θ', GO, 14);
+      s += K.txt(Cx, Cy + 16, 'O', W, 14) + K.txt(A[0] + 13, A[1] + 10, 'A', W, 14) + K.txt(B[0] - 13, B[1] + 10, 'B', W, 14);
+      var mr = K.at(Cx, Cy, R / 2, a0); s += K.txt(mr[0] + 16, mr[1] + 6, 'r', W, 13);
+      s += '<circle cx="' + Cx + '" cy="' + Cy + '" r="3.5" fill="' + W + '"/>';
+      svg.innerHTML = s;
+      var sec = 0.5 * r * r * t, sinT = st.deg ? Math.sin(t * PI / 180) : Math.sin(t), tri = 0.5 * r * r * sinT, seg = sec - tri, real = sec - 0.5 * r * r * Math.sin(t), v, ok = true;
+      read.innerHTML = '<span class="lw">sector = ½r²θ =</span> ½ × ' + r + '² × ' + t.toFixed(3) + ' = <b>' + f(sec) + '</b><br>' +
+        '<span class="lw">triangle = ½r² sin θ =</span> ½ × ' + r + '² × sin ' + t.toFixed(3) + (st.deg ? '°' : '') + ' = <b' + (st.deg ? ' class="bad"' : '') + '>' + f(tri) + '</b><br>' +
+        '<span class="lw">segment = sector − triangle =</span> <b' + (st.deg ? ' class="bad"' : '') + '>' + f(seg) + ' cm²</b>';
+      if (st.deg) { v = 'Degrees mode reads θ as ' + t.toFixed(2) + '°, a sliver, so the triangle comes out almost 0 and the segment almost the whole sector. The real segment is ' + f(real) + ' cm². Switch to radians before you press sin.'; ok = false; }
+      else if (t > PI - 0.006) v = 'θ = π: A, O and B lie on one line, so the triangle is flat (sin π = 0). The segment is the whole half circle.';
+      else if (t > PI / 2 + 0.006) v = 'θ is past π/2: the triangle gets thinner again (sin θ falls), but the same rule works: sector minus triangle.';
+      else v = 'The segment is ' + Math.round(100 * seg / sec) + '% of the sector. The smaller θ is, the more of the sector the triangle fills.';
+      verdict.textContent = v; verdict.classList.toggle('ok', ok); verdict.classList.toggle('no', !ok);
+      degBtn.setAttribute('aria-pressed', String(st.deg)); degBtn.textContent = st.deg ? 'Back to radians mode' : 'Leave the calculator in degrees mode';
+      rIn.value = st.r; tIn.value = t;
+    }
+    rIn.addEventListener('input', function () { st.r = +rIn.value; draw(); });
+    tIn.addEventListener('input', function () { st.t = +tIn.value; draw(); });
+    [].forEach.call(box.querySelectorAll('.sg-snap button'), function (b) { b.addEventListener('click', function () { st.t = +b.getAttribute('data-t'); draw(); }); });
+    degBtn.addEventListener('click', function () { st.deg = !st.deg; draw(); });
+    box.__set = function (o) { Object.keys(o).forEach(function (k) { if (k in st) st[k] = o[k]; }); draw(); return read.textContent + ' | ' + verdict.textContent; };
+    draw();
   });
 })();

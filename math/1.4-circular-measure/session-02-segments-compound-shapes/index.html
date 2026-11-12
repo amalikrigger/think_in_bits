@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Segments and Compound Shapes</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    /* figures for this deck (drawn by the script at the bottom and by SectorKit.figure) */
+    svg.cg { width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto; background: #0f0f0f; border-radius: 14px; cursor: zoom-in; }
+    .slide.duo .card svg.cg { max-width: 270px; }
+    .slide.duo .card svg.cg.wide { max-width: 340px; }
+    .key { margin: 0; max-width: none; font-size: clamp(12px, 1.3vw, 15px); color: var(--text-2, #b0b0b0); display: block; }
+    .key .sw { display: inline-block; width: 30px; margin-right: 7px; height: 0; border-top: 3px solid; vertical-align: middle; }
+    .key .sw.arc { border-color: #00e5ff; }
+    .key .sw.gold { border-color: #ffc46b; }
+    .key .sw.red { border-color: #ff6b6b; }
+    .key .sw.rad { border-color: #ffffff; }
+    #cgZoom { position: fixed; inset: 0; z-index: 60; background: rgba(5,5,8,0.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2vh; cursor: zoom-out; padding: 3vh 3vw; }
+    #cgZoom.on { display: flex; }
+    #cgZoom svg { width: auto; height: min(84vh, 92vw); max-width: 92vw; }
+    #cgZoom p { color: #b0b0b0; font-family: 'JetBrains Mono', monospace; font-size: clamp(12px, 1.4vw, 16px); margin: 0; }
+    .lab.segment .fig { width: min(280px, 22vw); background: #0f0f0f; border-radius: 14px; }
+    .lab.segment .read { font-size: clamp(12px, 1.3vw, 15.5px); line-height: 1.55; }
+    .lab.segment .panel { gap: 0.7vh; }
+    .lab.segment .verdict { font-size: clamp(12px, 1.3vw, 15px); }
+    .lab.segment .picks button { font-size: clamp(11px, 1.15vw, 14px); }
+    @media (max-width: 800px) { .lab.segment .fig { width: 100%; } }
+    .dn .check .math, .tight .check .math { font-size: clamp(12px, 1.35vw, 15.5px); }
+    .how li { margin: 0.3vh 0; }
+  </style>
+</head>
+<body data-deck-name="1.4 · Session 2" data-help-note="Work through this deck on your own. Use the arrow keys or the arrow buttons to move. On every slide, try the step on paper first, then tap the box to check. Click any figure to enlarge it. In the Segment Lab, drag the sliders or tap the angle buttons.">
+
+<!-- 1 · title + how to work today -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.4 Circular Measure · Session 2 of 2 · work at your own pace</p>
+  <h1>Segments and Compound Shapes</h1>
+  <p class="muted">Session 1 gave you the arc and the sector. Today: the segment, then shapes built from sectors and triangles, with two real Cambridge questions.</p>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><div class="agenda">
+      <div class="row"><span>Do Now, and why this matters</span><span class="t">7 min</span></div>
+      <div class="row"><span>Triangle area, then segment = sector − triangle</span><span class="t">14 min</span></div>
+      <div class="row"><span>Angles in a triangle, in radians</span><span class="t">4 min</span></div>
+      <div class="row"><span>Cambridge: November 2020, Paper 12, <span class="lit">Q8</span></span><span class="t">15 min</span></div>
+      <div class="row"><span>Cambridge: Specimen Paper 1, <span class="lit">Q9</span></span><span class="t">9 min</span></div>
+      <div class="row"><span>Practice, recap and exit ticket</span><span class="t">9 min</span></div>
+    </div></div>
+    <div><div class="card how">
+      <p class="eyebrow">How to work today</p>
+      <ol class="small">
+        <li>Paper and calculator out. Put the calculator in <b>radians</b> mode now.</li>
+        <li>Each step is hidden in a box. <b>Write your own step first</b>, then tap the box to check it.</li>
+        <li>Keep 4 or more figures in your working. Round only the final answer.</li>
+                <li>Put your name on your paper and hand it in at the end of class.</li>
+      </ol>
+    </div></div>
+  </div>
+</section>
+
+<!-- 2 · do now -->
+<section class="slide duo dn">
+  <p class="eyebrow">Do Now · 5 min · no notes</p>
+  <h2>Three questions: one from 1.3, one from Session 1, one from Pre-Calculus.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> Find the distance between \((2, -1)\) and \((8, 7)\).</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">differences:</span>&nbsp; \(8 - 2 = 6\) and \(7 - (-1) = 8\)</div>
+          <div class="math small"><span class="lbl">Pythagoras:</span>&nbsp; \(\sqrt{6^2 + 8^2} = \sqrt{100}\)</div>
+          <div class="math small result">\(10\)</div>
+        </div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>2.</b> A sector has radius 5 cm and angle 1.2 radians. Find its arc length and its area.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">arc length:</span>&nbsp; \(s = r\theta = 5 \times 1.2\)</div>
+          <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2}r^2\theta = \tfrac{1}{2} \times 25 \times 1.2\)</div>
+          <div class="math small result">arc \(6\) cm, &nbsp;area \(15\) cm²</div>
+        </div>
+      </div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>3.</b> A triangle has two sides 8 cm and 5 cm, with an angle of \(30^\circ\) between them. Find its area.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small"><span class="lbl">two sides and the angle between them:</span>&nbsp; area \(= \tfrac{1}{2}ab\sin C\)</div>
+          <div class="math small">\(\tfrac{1}{2} \times 8 \times 5 \times \sin 30^\circ = 20 \times \tfrac{1}{2}\)</div>
+          <div class="math small result">\(10\) cm²</div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 3 · why this matters -->
+<section class="slide duo">
+  <p class="eyebrow">Why this matters · 2 min</p>
+  <h2>Real shapes are rarely a single sector. They are sectors with pieces added or cut away.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="eyebrow">Where you will see it</p>
+      <p class="small"><b>A windshield wiper</b> wipes a band of glass: a big sector with a small sector cut out where the arm has no rubber.</p>
+      <p class="small"><b>An arched doorway or window</b>, like the arches along the streets of Christiansted, has a curved top. The piece above the straight line is a segment.</p>
+      <p class="small"><b>A slice of pizza with the crust cut off</b> is a sector minus a segment.</p>
+    </div></div>
+    <div><div class="card">
+      <p class="eyebrow">On the exam</p>
+      <p class="small">Circular measure questions on recent Paper 1s were worth <b>4 to 10 marks</b> each. Almost all of them are compound shapes: you are never told "find the segment"; you have to see it.</p>
+      <p class="small">Today's method for any shaded region: <b>name the shapes it is made of, find each one, then add or subtract.</b></p>
+      <p class="small">From today on, you use <b>sin</b>, so the calculator mode matters again: radians.</p>
+    </div></div>
+  </div>
+</section>
+
+<!-- 4 · triangle area -->
+<section class="slide duo">
+  <p class="eyebrow">New · the triangle inside a sector</p>
+  <h2>Triangle \(OAB\) has two sides of length \(r\) with the angle \(\theta\) between them, so its area is \(\tfrac{1}{2}r^2\sin\theta\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-tri" aria-label="Sector OAB with the chord AB drawn; triangle OAB is shaded red"></svg>
+      <p class="key"><span class="sw rad"></span>radii \(OA\), \(OB\) &nbsp; <span class="sw gold"></span>chord \(AB\) &nbsp; <span class="sw red"></span>triangle \(OAB\)</p>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>The rule you used in the Do Now:</b> a triangle with two sides \(a\) and \(b\) and the angle \(C\) <i>between</i> them has area \(\tfrac{1}{2}ab\sin C\). No height needed.</p>
+      <p class="small"><b>In a sector:</b> the two sides are both radii, \(a = b = r\), and the angle between them is \(\theta\).</p>
+      <div class="math small result">triangle \(OAB = \tfrac{1}{2}r^2\sin\theta\)</div>
+      <p class="small">It looks like the sector formula \(\tfrac{1}{2}r^2\theta\), with \(\sin\theta\) in place of \(\theta\). Don't mix them up.</p>
+      <p class="small"><b>Your turn:</b> \(r = 5\), \(\theta = 1\) radian. Find the triangle's area.</p>
+      <div class="check" tabindex="0">
+        <div class="math small">Tap to check.</div>
+        <div class="ans">
+          <div class="math small">\(\tfrac{1}{2} \times 25 \times \sin 1 = 12.5 \times 0.84147\) <span class="lbl">(radians mode)</span></div>
+          <div class="math small result">\(10.5\) cm²</div>
+          <p class="small">Got \(0.218\)? Your calculator is in degrees mode. Switch it.</p>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 5 · segment lab -->
+<section class="slide">
+  <p class="eyebrow">Segment Lab · segment = sector − triangle</p>
+  <h2>The segment is the sector with the triangle taken away. Drag \(\theta\) and watch all three areas.</h2>
+  <div class="lab segment" data-r="8" data-t="2.0944"></div>
+  <div class="cols" style="margin-top:0.6vh">
+    <div><div class="math small"><span class="lbl">segment area:</span>&nbsp; \(\tfrac{1}{2}r^2\theta - \tfrac{1}{2}r^2\sin\theta = \tfrac{1}{2}r^2(\theta - \sin\theta)\)</div></div>
+    <div><p class="small"><b>Try this:</b> press the degrees-mode button. The triangle almost vanishes and the "segment" becomes nearly the whole sector. That is the mistake to watch for in every answer.</p></div>
+  </div>
+</section>
+
+<!-- 6 · worked example -->
+<section class="slide duo tight">
+  <p class="eyebrow">Worked example · segment area, exactly</p>
+  <h2>A sector has radius 6 cm and angle \(\dfrac{2\pi}{3}\). Find the area of the segment cut off by the chord, exactly and to 3 s.f.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-we" aria-label="Sector of radius 6 and angle 2 pi over 3, with the segment between the chord and the arc shaded gold"></svg>
+      <p class="small"><b>The plan:</b> segment = sector − triangle. Find each, then subtract.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="check" tabindex="0"><div class="math small">Step 1 · the sector. Tap to check.</div><div class="ans">
+        <div class="math small">\(\tfrac{1}{2} \times 6^2 \times \dfrac{2\pi}{3} = 18 \times \dfrac{2\pi}{3} = 12\pi\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Step 2 · the triangle. Tap to check.</div><div class="ans">
+        <div class="math small">\(\tfrac{1}{2} \times 6^2 \times \sin\dfrac{2\pi}{3} = 18 \times \dfrac{\sqrt{3}}{2} = 9\sqrt{3}\)</div>
+        <p class="small">\(\sin\tfrac{2\pi}{3} = \sin\tfrac{\pi}{3} = \tfrac{\sqrt{3}}{2}\): an exact value from Pre-Calculus (\(\tfrac{2\pi}{3}\) is \(120^\circ\), and \(\sin 120^\circ = \sin 60^\circ\)).</p></div></div>
+      <div class="check" tabindex="0"><div class="math small">Step 3 · subtract. Tap to check.</div><div class="ans">
+        <div class="math small result">\(12\pi - 9\sqrt{3} \approx 22.1\) cm²</div>
+        <p class="small">"Exactly" means keep \(\pi\) and \(\sqrt{3}\). Only the 3 s.f. answer uses the calculator.</p></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 7 · angles in a triangle -->
+<section class="slide duo tight">
+  <p class="eyebrow">Angles in radians · needed for the Cambridge questions</p>
+  <h2>The angles of a triangle add to \(\pi\), and a straight line is \(\pi\).</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg" id="fig-iso" aria-label="An isosceles triangle with apex angle theta and two equal base angles, each pi minus theta over 2"></svg>
+      <p class="small"><b>The same facts as in degrees,</b> with \(180^\circ\) replaced by \(\pi\):</p>
+      <ul class="small">
+        <li>angles in a triangle add to \(\pi\);</li>
+        <li>angles on a straight line add to \(\pi\);</li>
+        <li>in an isosceles triangle, the two angles opposite the equal sides are equal.</li>
+      </ul>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>Isosceles with top angle \(\theta\):</b> the other two angles share what is left, \(\pi - \theta\), equally.</p>
+      <div class="math small result">each base angle \(= \dfrac{\pi - \theta}{2}\)</div>
+      <p class="small"><b>Your turn (a):</b> the top angle is 1.2 radians. Find each base angle.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small result">\(\dfrac{\pi - 1.2}{2} = 0.971\) radians</div>
+        <p class="small bad">Not \(\tfrac{180 - 1.2}{2}\): never mix degrees and radians in one line.</p></div></div>
+      <p class="small"><b>Your turn (b):</b> two angles of a triangle are each 0.6 radians. Find the third.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small result">\(\pi - 0.6 - 0.6 = \pi - 1.2 = 1.94\) radians</div>
+        <p class="small">You will need exactly this on the next slide.</p></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 8 · Nov 2020 Q8 (a) -->
+<section class="slide duo tight">
+  <p class="eyebrow">Cambridge · November 2020, Paper 12, <span class="lit">Q8</span> · part (a) · 3 marks</p>
+  <h2>Part (a): the shaded region is the triangle with the sector taken away.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">In the diagram, \(ABC\) is an isosceles triangle with \(AB = BC = r\) cm and angle \(BAC = \theta\) radians. The point \(D\) lies on \(AC\) and \(ABD\) is a sector of a circle with center \(A\).</p>
+      <p class="small">(a) Express the area of the shaded region in terms of \(r\) and \(\theta\). <span class="marks">[3]</span></p>
+      <svg class="cg wide" id="fig-q8" style="max-width:290px" aria-label="Triangle ABC with A at top left, C at top right and B below; a sector ABD with center A sweeps from AB to the point D on AC; the region between the arc BD, DC and CB is shaded"></svg>
+      <p class="key"><span class="sw arc"></span>arc \(BD\) (center \(A\)) &nbsp; <span class="sw gold"></span>shaded region</p>
+      <p class="small bad"><b>Mistakes the examiners saw:</b> using only half of triangle \(ABC\); writing \(\tfrac{1}{2}r^2\sin\theta\) for the triangle (wrong angle: \(\theta\) is not between the two sides of length \(r\)).</p>
+    </div></div>
+    <div><div class="card">
+      <div class="check" tabindex="0"><div class="math small">Which shapes make it? Tap.</div><div class="ans">
+        <div class="math small">shaded = triangle \(ABC\) − sector \(ABD\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Angle \(ABC\) (between the two \(r\) sides)? Tap.</div><div class="ans">
+        <div class="math small">\(AB = BC\), so angle \(C\) = angle \(A = \theta\) (opposite the equal sides);<br>angle \(ABC = \pi - \theta - \theta = \pi - 2\theta\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Triangle and sector. Tap.</div><div class="ans">
+        <div class="math small">triangle \(= \tfrac{1}{2} \times r \times r \times \sin(\pi - 2\theta)\)</div>
+        <div class="math small">sector \(ABD\) (radius \(AB = r\), angle \(\theta\)) \(= \tfrac{1}{2}r^2\theta\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Subtract. Tap to check.</div><div class="ans">
+        <div class="math small result">\(\tfrac{1}{2}r^2\sin(\pi - 2\theta) - \tfrac{1}{2}r^2\theta\)</div>
+        <p class="small">\(\sin(\pi - 2\theta) = \sin 2\theta\), so \(\tfrac{1}{2}r^2(\sin 2\theta - \theta)\) is the same answer.</p></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 · Nov 2020 Q8 (b) -->
+<section class="slide duo tight">
+  <p class="eyebrow">Cambridge · November 2020, Paper 12, <span class="lit">Q8</span> · part (b) · 4 marks</p>
+  <h2>Part (b): in the case where \(r = 10\) and \(\theta = 0.6\), find the perimeter of the shaded region.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <svg class="cg wide" id="fig-q8b" aria-label="The same triangle with r equal to 10 and theta equal to 0.6; a dashed line from B meets AC at its middle point M at a right angle"></svg>
+      <div class="check" tabindex="0"><div class="math small">Which edges go round the shaded region? Tap.</div><div class="ans">
+        <div class="math small">arc \(BD\) + straight \(DC\) + straight \(CB\)</div>
+        <p class="small">\(CB = r = 10\). \(DC = AC - AD = AC - 10\), because \(AD\) is a radius of the sector.</p></div></div>
+      <div class="check" tabindex="0"><div class="math small">Arc \(BD\). Tap to check.</div><div class="ans">
+        <div class="math small">\(r\theta = 10 \times 0.6 = 6\)</div></div></div>
+      <p class="small bad"><b>From the Cambridge sample scripts:</b> one student lost the last mark by rounding \(10\cos 0.6\) to 8.3 and getting 22.6. Another used 0.6 instead of \(\pi - 1.2\) in the cosine rule and lost both method marks.</p>
+    </div></div>
+    <div><div class="card">
+      <div class="check" tabindex="0"><div class="math small">\(AC\): split the triangle in half (the Session 1 fold). Tap.</div><div class="ans">
+        <div class="math small">\(B\) to the middle \(M\) of \(AC\) makes two right triangles. In triangle \(ABM\): \(\cos 0.6 = \dfrac{AM}{10}\)</div>
+        <div class="math small">\(AM = 10\cos 0.6 = 8.2534\), &nbsp;\(AC = 2 \times 8.2534 = 16.5067\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Or by the cosine rule. Which angle? Tap.</div><div class="ans">
+        <div class="math small">the angle opposite \(AC\) is angle \(B = \pi - 1.2\), <b>not</b> 0.6</div>
+        <div class="math small">\(AC^2 = 10^2 + 10^2 - 2(10)(10)\cos(\pi - 1.2)\), &nbsp;\(AC = 16.5067\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Add the three edges. Tap to check.</div><div class="ans">
+        <div class="math small">\(6 + (16.5067 - 10) + 10 = 22.5067\)</div>
+        <div class="math small result">perimeter \(= 22.5\) cm</div></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 10 · Specimen Q9 -->
+<section class="slide duo tight">
+  <p class="eyebrow">Cambridge · Specimen Paper 1, <span class="lit">Q9</span> · 7 marks</p>
+  <h2>Two circles. The shaded region is half the small circle with a segment of the big circle taken away.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small">The diagram shows a circle with center \(A\) and radius \(r\). Diameters \(CAD\) and \(BAE\) are perpendicular to each other. A larger circle has center \(B\) and passes through \(C\) and \(D\).</p>
+      <p class="small">(a) Show that the radius of the larger circle is \(r\sqrt{2}\). <span class="marks">[1]</span> &nbsp; (b) Find the area of the shaded region in terms of \(r\). <span class="marks">[6]</span></p>
+      <p class="small"><b>The plan:</b> shaded = right half of the small circle − the part of it inside the big circle, which is the big circle's segment on the chord \(CD\).</p>
+      <svg class="cg" id="fig-sp9" style="max-width:210px" aria-label="A small circle with center A and a larger circle with center B on the small circle, passing through C and D; the crescent between the right half of the small circle and the larger circle is shaded"></svg>
+      <div class="check" tabindex="0"><div class="math small">(a) Tap to check.</div><div class="ans">
+        <div class="math small">triangle \(BAC\) has a right angle at \(A\): \(BC^2 = r^2 + r^2 = 2r^2\)</div>
+        <div class="math small">\(BC = r\sqrt{2}\) &nbsp;<span class="lbl">B1</span></div></div></div>
+    </div></div>
+    <div><div class="card">
+      <div class="check" tabindex="0"><div class="math small">(b) Angle \(CBD\)? Tap to check.</div><div class="ans">
+        <div class="math small">triangle \(BAC\) is right-angled with \(AB = AC\), so angle \(ABC = \tfrac{\pi}{4}\); by symmetry angle \(ABD = \tfrac{\pi}{4}\) too</div>
+        <div class="math small">angle \(CBD = \tfrac{\pi}{2}\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">Segment of the big circle cut off by \(CD\). Tap.</div><div class="ans">
+        <div class="math small"><span class="lbl">M1 sector:</span> \(\tfrac{1}{2}(r\sqrt{2})^2 \cdot \tfrac{\pi}{2} = \tfrac{1}{2}\pi r^2\) &nbsp; <span class="lbl">M1 triangle:</span> \(\tfrac{1}{2}(r\sqrt{2})^2 \sin\tfrac{\pi}{2} = r^2\)</div>
+        <div class="math small"><span class="lbl">A1 segment:</span> \(\tfrac{1}{2}\pi r^2 - r^2\)</div></div></div>
+      <div class="check" tabindex="0"><div class="math small">The shaded region. Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">B1 half the small circle:</span> \(\tfrac{1}{2}\pi r^2\)</div>
+        <div class="math small"><span class="lbl">M1 subtract:</span> \(\tfrac{1}{2}\pi r^2 - \left(\tfrac{1}{2}\pi r^2 - r^2\right)\)</div>
+        <div class="math small result">shaded area \(= r^2\) &nbsp;<span class="lbl">A1</span></div>
+</div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 11 · practice -->
+<section class="slide duo tight">
+  <p class="eyebrow">Practice · 5 min · on paper, then check</p>
+  <h2>Two more. Give exact answers where you can, otherwise 3 s.f.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> Sector \(OAB\) has radius 8 cm and angle 1.5 radians. Find the area and the perimeter of the segment cut off by the chord \(AB\).</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 64 \times (1.5 - \sin 1.5) = 32 \times 0.50250\)</div>
+        <div class="math small"><span class="lbl">perimeter:</span>&nbsp; arc \(8 \times 1.5 = 12\), &nbsp;chord \(2 \times 8\sin 0.75 = 10.906\)</div>
+        <div class="math small result">area \(16.1\) cm², &nbsp;perimeter \(22.9\) cm</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>2.</b> A circle has radius 10 cm. A chord \(AB\) is also 10 cm long. Find the exact area of the smaller segment.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">the angle first:</span> \(OA = OB = AB = 10\), so triangle \(OAB\) is equilateral and \(\theta = \tfrac{\pi}{3}\)</div>
+        <div class="math small">\(\tfrac{1}{2} \times 100 \times \tfrac{\pi}{3} - \tfrac{1}{2} \times 100 \times \tfrac{\sqrt{3}}{2}\)</div>
+        <div class="math small result">\(\dfrac{50\pi}{3} - 25\sqrt{3} \approx 9.06\) cm²</div>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 12 · recap + homework -->
+<section class="slide">
+  <p class="eyebrow">Recap and homework · 2 min</p>
+  <h2>Name the shapes, find each one, then add or subtract.</h2>
+  <p><b>Triangle in a sector:</b> \(\tfrac{1}{2}r^2\sin\theta\) (from \(\tfrac{1}{2}ab\sin C\), calculator in radians).</p>
+  <p><b>Segment:</b> sector − triangle \(= \tfrac{1}{2}r^2(\theta - \sin\theta)\). Its perimeter is arc + chord.</p>
+  <p><b>Angles:</b> a triangle's angles add to \(\pi\). Use the angle <i>between</i> the two sides in \(\tfrac{1}{2}ab\sin C\), and the angle <i>opposite</i> the side you want in the cosine rule.</p>
+  <div class="card" style="margin-top:0.6vh">
+    <p class="small"><b>Homework.</b> Finish the If-time slide. <b>Exit ticket due Thursday, November 19, 11:59 pm</b>. Hand in your paper with today's working before you leave.</p>
+  </div>
+</section>
+
+<!-- 13 · exit ticket -->
+<section class="slide">
+  <p class="eyebrow">Exit ticket · 5 min · Schoology, Paper 1 → 1.4 Circular Measure</p>
+  <h2>Four questions. Work on paper first, then enter your answers in Schoology.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div>
+      <div class="card"><p class="small"><b>1.</b> Triangle \(OAB\) has \(OA = OB = 9\) cm and angle \(AOB = 0.8\) radians. Find its area.</p></div>
+      <div class="card"><p class="small"><b>2.</b> Triangle \(PQR\) is isosceles with \(PQ = PR\) and angle \(QPR = 1.4\) radians. Find angle \(PQR\).</p></div>
+    </div>
+    <div>
+      <div class="card"><p class="small"><b>3.</b> A sector has radius 4 cm and angle \(\tfrac{\pi}{3}\). Find the exact area of the segment cut off by its chord.</p></div>
+      <div class="card"><p class="small"><b>4.</b> Sector \(OAB\) has radius 12 cm and angle 0.9 radians. Find the area of the segment between the chord \(AB\) and the arc \(AB\). Show your working.</p></div>
+    </div>
+  </div>
+  <div class="math result">Submit when you finish. An attempt left open scores nothing.</div>
+</section>
+
+<!-- 14 · if time -->
+<section class="slide duo tight">
+  <p class="eyebrow">If time, else finish at home · on your own</p>
+  <h2>Three more compound shapes.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> A windshield wiper arm turns through 2.1 radians about its pivot. The rubber blade runs from 15 cm to 55 cm from the pivot. Find the area of glass it wipes.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">big sector − small sector:</span>&nbsp; \(\tfrac{1}{2}(55^2)(2.1) - \tfrac{1}{2}(15^2)(2.1) = \tfrac{1}{2}(3025 - 225)(2.1)\)</div>
+        <div class="math small result">\(2940\) cm²</div>
+      </div></div>
+      <p class="small"><b>2.</b> A square has side 8 cm. A quarter circle of radius 8 cm is drawn inside it, centered at one corner. Find the exact area of the square outside the quarter circle.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">quarter circle = sector with \(\theta = \tfrac{\pi}{2}\):</span>&nbsp; \(\tfrac{1}{2} \times 64 \times \tfrac{\pi}{2} = 16\pi\)</div>
+        <div class="math small result">\(64 - 16\pi \approx 13.7\) cm²</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>3.</b> A sector has radius 4 cm and angle 2.5 radians. Find the area of the segment cut off by its chord.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small">\(\tfrac{1}{2} \times 16 \times (2.5 - \sin 2.5) = 8 \times (2.5 - 0.59847)\)</div>
+        <div class="math small result">\(15.2\) cm²</div>
+        <p class="small">\(\theta\) is more than \(\tfrac{\pi}{2}\), and the rule does not change.</p>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+<script src="../../assets/labs/sector-labs.js"></script>
+<script>
+/* static figures for this deck; the Segment Lab and SectorKit.figure live in ../../assets/labs/sector-labs.js */
+(function () {
+  'use strict';
+  var K = SectorKit, P = Math.PI, CY = K.CY, W = K.W, GR = K.GR, GO = K.GO, RD = K.RD;
+  function pt(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }
+  function fit(svg, s, xs, ys, pad) {
+    pad = pad || 30;
+    var x0 = Math.min.apply(null, xs) - pad, x1 = Math.max.apply(null, xs) + pad, y0 = Math.min.apply(null, ys) - pad, y1 = Math.max.apply(null, ys) + pad;
+    svg.setAttribute('viewBox', x0.toFixed(0) + ' ' + y0.toFixed(0) + ' ' + (x1 - x0).toFixed(0) + ' ' + (y1 - y0).toFixed(0)); svg.innerHTML = s;
+  }
+
+  /* slide 4: sector with the triangle shaded red */
+  (function () {
+    var svg = document.getElementById('fig-tri'); if (!svg) return;
+    var R = 150, a0 = P / 2 - 0.6, a1 = P / 2 + 0.6, O = [0, 0], A = K.at(0, 0, R, a0), B = K.at(0, 0, R, a1), s = '';
+    s += '<path d="M0,0 L' + pt(A) + ' L' + pt(B) + ' Z" fill="rgba(255,107,107,0.32)"/>';
+    s += K.line(O, A, W) + K.line(O, B, W) + K.line(A, B, GO, 2.6);
+    s += '<path d="' + K.arcPath(0, 0, R, a0, a1) + '" fill="none" stroke="' + CY + '" stroke-width="3.2"/>';
+    s += '<path d="' + K.arcPath(0, 0, 32, a0, a1) + '" fill="none" stroke="' + GO + '" stroke-width="2"/>' + K.txt(0, -48, 'θ', GO, 15);
+    s += K.txt(0, 18, 'O', W, 14) + K.txt(A[0] + 14, A[1] + 2, 'A', W, 14) + K.txt(B[0] - 14, B[1] + 2, 'B', W, 14);
+    var m1 = K.at(0, 0, R / 2, a0), m2 = K.at(0, 0, R / 2, a1);
+    s += K.txt(m1[0] + 14, m1[1] + 6, 'r', W, 14) + K.txt(m2[0] - 14, m2[1] + 6, 'r', W, 14) + '<circle r="3.5" fill="' + W + '"/>';
+    fit(svg, s, [A[0], B[0], 0], [-R, 0]);
+  })();
+
+  /* slide 6: r 6, 2π/3, segment shaded */
+  K.figure('fig-we', { r: 6, t: 2 * P / 3, rot: P / 6, k: 22, O: 'O', A: 'A', B: 'B', rLabel: '6', tLabel: '2π/3', chord: true, shade: 'segment' });
+
+  /* slide 7: isosceles triangle */
+  (function () {
+    var svg = document.getElementById('fig-iso'); if (!svg) return;
+    var T = [0, 0], L = [-110, 170], R2 = [110, 170], s = '';
+    s += '<path d="M' + pt(T) + ' L' + pt(L) + ' L' + pt(R2) + ' Z" fill="rgba(0,229,255,0.08)" stroke="' + W + '" stroke-width="2.4"/>';
+    function ang(c, a0, a1, r, col) { return '<path d="' + K.arcPath(c[0], c[1], r, a0, a1) + '" fill="none" stroke="' + col + '" stroke-width="2"/>'; }
+    var at = Math.atan2(170, 110); /* angle of the side from the base */
+    s += ang(T, P + at, 2 * P - at, 34, GO) + K.txt(0, 52, 'θ', GO, 15);
+    s += ang(L, 0, at, 30, CY) + ang(R2, P - at, P, 30, CY);
+    s += K.txt(L[0] + 6, L[1] + 20, '(π − θ)/2', CY, 13) + K.txt(R2[0] - 6, R2[1] + 20, '(π − θ)/2', CY, 13);
+    var tk = function (p, q) { var mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, dx = q[1] - p[1], dy = -(q[0] - p[0]), d = Math.hypot(dx, dy); return K.line([mx - dx / d * 8, my - dy / d * 8], [mx + dx / d * 8, my + dy / d * 8], W, 2); };
+    s += tk(T, L) + tk(T, R2);
+    fit(svg, s, [L[0] - 20, R2[0] + 20], [T[1], L[1] + 20], 30);
+  })();
+
+  /* slides 8 and 9: Nov 2020 Q8 triangle, AB = BC = r, angle BAC = θ */
+  function q8(id, opts) {
+    var svg = document.getElementById(id); if (!svg) return;
+    var r = 150, th = 0.6, A = [0, 0], B = [r * Math.cos(th), r * Math.sin(th)], C = [2 * r * Math.cos(th), 0], D = [r, 0], s = '';
+    /* screen y grows down, so B is below the line AC */
+    var arc = 'M' + pt(D) + ' A' + r + ',' + r + ' 0 0 1 ' + pt(B);
+    s += '<path d="' + arc + ' L' + pt(C) + ' Z" fill="rgba(255,196,107,0.35)"/>';
+    s += K.line(A, C, W) + K.line(A, B, W) + K.line(B, C, W);
+    s += '<path d="' + arc + '" fill="none" stroke="' + CY + '" stroke-width="3"/>';
+    s += '<path d="M28,0 A28,28 0 0 1 ' + pt([28 * Math.cos(th), 28 * Math.sin(th)]) + '" fill="none" stroke="' + GO + '" stroke-width="2"/>';
+    s += K.txt(50, 12, opts.t, GO, 13);
+    s += K.txt(-14, -6, 'A', W, 15) + K.txt(C[0] + 14, -6, 'C', W, 15) + K.txt(B[0], B[1] + 18, 'B', W, 15) + K.txt(D[0] + 6, -14, 'D', W, 15);
+    s += K.txt(B[0] / 2 - 14, B[1] / 2 + 12, opts.r, W, 13) + K.txt((B[0] + C[0]) / 2 + 16, B[1] / 2 + 12, opts.r, W, 13);
+    if (opts.half) {
+      var M = [B[0], 0]; s += K.line(B, M, GR, 2, '5 4') + '<polyline points="' + pt([M[0] - 9, 0]) + ' ' + pt([M[0] - 9, 9]) + ' ' + pt([M[0], 9]) + '" fill="none" stroke="' + GR + '" stroke-width="1.6"/>' + K.txt(M[0] - 12, -14, 'M', GR, 13);
+    }
+    fit(svg, s, [A[0], C[0]], [A[1], B[1]], 32);
+  }
+  q8('fig-q8', { r: 'r', t: 'θ' });
+  q8('fig-q8b', { r: '10', t: '0.6', half: true });
+
+  /* slide 10: Specimen Q9, small circle center A radius r, big circle center B radius r√2 */
+  (function () {
+    var svg = document.getElementById('fig-sp9'); if (!svg) return;
+    var r = 90, A = [0, 0], B = [-r, 0], Rb = r * Math.SQRT2, C = [0, -r], D = [0, r], E = [r, 0], s = '';
+    /* crescent: right half of the small circle (from C round through E to D), back along the big circle from D to C */
+    s += '<path d="M' + pt(C) + ' A' + r + ',' + r + ' 0 0 1 ' + pt(D) + ' A' + Rb.toFixed(1) + ',' + Rb.toFixed(1) + ' 0 0 0 ' + pt(C) + ' Z" fill="rgba(255,196,107,0.38)"/>';
+    s += '<circle cx="' + B[0] + '" cy="0" r="' + Rb.toFixed(1) + '" fill="none" stroke="' + W + '" stroke-width="2"/>';
+    s += '<circle cx="0" cy="0" r="' + r + '" fill="none" stroke="' + CY + '" stroke-width="2.4"/>';
+    s += K.line(B, E, GR, 1.8) + K.line(C, D, GR, 1.8);
+    s += '<polyline points="0,-12 12,-12 12,0" fill="none" stroke="' + W + '" stroke-width="1.6"/>';
+    s += K.txt(-14, -12, 'A', W, 14) + K.txt(B[0] - 14, 0, 'B', W, 14) + K.txt(E[0] + 14, 0, 'E', W, 14) + K.txt(10, C[1] - 14, 'C', W, 14) + K.txt(10, D[1] + 14, 'D', W, 14) + K.txt(-12, -r / 2, 'r', W, 13);
+    s += '<circle cx="0" cy="0" r="3" fill="' + W + '"/><circle cx="' + B[0] + '" cy="0" r="3" fill="' + W + '"/>';
+    fit(svg, s, [B[0] - Rb, r + 4], [-Rb, Rb], 22);
+  })();
+
+  /* click any figure to enlarge it */
+  var box = document.createElement('div'); box.id = 'cgZoom'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Enlarged figure');
+  document.body.appendChild(box);
+  function close() { box.classList.remove('on'); box.innerHTML = ''; }
+  box.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && box.classList.contains('on')) close(); });
+  [].slice.call(document.querySelectorAll('svg.cg')).forEach(function (svg) {
+    svg.setAttribute('tabindex', '0'); svg.setAttribute('role', 'img');
+    function open() { var c = svg.cloneNode(true); c.removeAttribute('tabindex'); c.removeAttribute('id'); box.innerHTML = ''; box.appendChild(c); var p = document.createElement('p'); p.textContent = 'Click or press Esc to close'; box.appendChild(p); box.classList.add('on'); }
+    svg.addEventListener('click', open);
+    svg.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+  });
+})();
+</script>
+</body>
+</html>
