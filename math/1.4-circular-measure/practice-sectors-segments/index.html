@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Circular Measure Practice</title>
+  <link rel="icon" type="image/png" href="../../../images/favicon.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="../../assets/katex/katex.min.css">
+  <link rel="stylesheet" href="../../assets/deck.css">
+  <style>
+    .tight .check .math { font-size: clamp(12px, 1.35vw, 15.5px); }
+    .plan li { margin: 0.5vh 0; }
+  </style>
+</head>
+<body data-deck-name="1.4 · Practice" data-help-note="Work through this on your own. Use the arrow keys or the arrow buttons to move. Try each question on paper first, then tap the box to check.">
+
+<!-- 1 · the plan for today -->
+<section class="slide active">
+  <p class="eyebrow">9709 Pure 1 · 1.4 Circular Measure · practice and reading day</p>
+  <h1>Circular Measure Practice</h1>
+  <p class="muted">Seven questions on everything from Sessions 1 and 2, each with a worked check. Then reading and the workbook.</p>
+  <div class="card plan" style="margin-top:0.8vh">
+    <p class="eyebrow">Today's plan</p>
+    <ol>
+      <li><b>About 25 min: these seven questions.</b> On paper, with your name on it. Try each one first, then tap to check. Mark your own work and correct it in a different color.</li>
+      <li><b>About 20 min: read</b> the Circular Measure chapter of your Hodder <i>Pure Mathematics 1</i> textbook, then the opening section of the Trigonometry chapter (Trig is next).</li>
+      <li><b>The rest of the period: your workbook.</b> Start the Circular Measure pages. Finished? Catch up on any work still outstanding in Schoology, including the Session 2 exit ticket (due Thursday, November 19, 11:59 pm).</li>
+    </ol>
+    <p class="small">Hand your practice paper to the teacher before you leave.</p>
+  </div>
+</section>
+
+<!-- 2 · Q1 to Q3 -->
+<section class="slide duo tight">
+  <p class="eyebrow">Practice · radians, sectors, segments</p>
+  <h2>Questions 1 to 3. Exact answers where you can, otherwise 3 s.f.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>1.</b> (a) Express \(72^\circ\) in radians, in terms of \(\pi\). (b) Express 0.35 radians in degrees.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small">(a) \(72 \times \dfrac{\pi}{180} = \dfrac{2\pi}{5}\) &nbsp;&nbsp; (b) \(0.35 \times \dfrac{180}{\pi} = 20.05\)</div>
+        <div class="math small result">\(\dfrac{2\pi}{5}\), &nbsp;\(20.1^\circ\)</div>
+      </div></div>
+      <p class="small"><b>2.</b> A sector has radius 7.5 cm and perimeter 27 cm. Find the angle and the area.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">perimeter = \(2r + r\theta\):</span>&nbsp; \(15 + 7.5\theta = 27\), &nbsp;\(\theta = \dfrac{12}{7.5}\)</div>
+        <div class="math small"><span class="lbl">area:</span>&nbsp; \(\tfrac{1}{2} \times 7.5^2 \times 1.6 = \tfrac{1}{2} \times 56.25 \times 1.6\)</div>
+        <div class="math small result">\(\theta = 1.6\) radians, &nbsp;area \(45\) cm²</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>3.</b> A sector has radius 10 cm and area 50 cm². Find its angle, its arc length and the area of the segment cut off by its chord.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">angle:</span>&nbsp; \(\tfrac{1}{2} \times 100 \times \theta = 50\), &nbsp;\(\theta = 1\) radian</div>
+        <div class="math small"><span class="lbl">arc:</span>&nbsp; \(10 \times 1 = 10\) cm</div>
+        <div class="math small"><span class="lbl">segment = sector − triangle:</span>&nbsp; \(50 - \tfrac{1}{2} \times 100 \times \sin 1 = 50 - 42.074\)</div>
+        <div class="math small result">\(\theta = 1\), &nbsp;arc \(10\) cm, &nbsp;segment \(7.93\) cm²</div>
+        <p class="small">Got 49.1 for the segment? Your calculator was in degrees mode for \(\sin 1\).</p>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 3 · Q4 and Q5 -->
+<section class="slide duo tight">
+  <p class="eyebrow">Practice · perimeters, and working backwards</p>
+  <h2>Questions 4 and 5.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>4.</b> A sector has radius 9 cm and angle \(\tfrac{\pi}{2}\). Find the exact perimeter of the segment cut off by its chord.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">perimeter of a segment = arc + chord</span></div>
+        <div class="math small"><span class="lbl">arc:</span>&nbsp; \(9 \times \tfrac{\pi}{2} = \tfrac{9\pi}{2}\)</div>
+        <div class="math small"><span class="lbl">chord:</span>&nbsp; the angle at the center is a right angle, so by Pythagoras \(\sqrt{9^2 + 9^2} = 9\sqrt{2}\)</div>
+        <div class="math small result">\(\dfrac{9\pi}{2} + 9\sqrt{2} \approx 26.9\) cm</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>5.</b> A sector has perimeter 20 cm and area 16 cm². Find \(r\) and \(\theta\).</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">two equations:</span>&nbsp; \(2r + r\theta = 20\) and \(\tfrac{1}{2}r^2\theta = 16\)</div>
+        <div class="math small"><span class="lbl">\(r\theta = 20 - 2r\), substitute:</span>&nbsp; \(\tfrac{1}{2}r(20 - 2r) = 16\), &nbsp;\(10r - r^2 = 16\)</div>
+        <div class="math small">\(r^2 - 10r + 16 = 0\), &nbsp;\((r - 2)(r - 8) = 0\)</div>
+        <div class="math small"><span class="lbl">check each:</span>&nbsp; \(r = 2\) gives \(\theta = 8\), more than a full turn (\(2\pi \approx 6.28\)): reject. &nbsp;\(r = 8\) gives \(\theta = \tfrac{4}{8}\).</div>
+        <div class="math small result">\(r = 8\) cm, &nbsp;\(\theta = 0.5\) radians</div>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 4 · Q6 and Q7 -->
+<section class="slide duo tight">
+  <p class="eyebrow">Practice · compound shapes</p>
+  <h2>Questions 6 and 7. Name the shapes first, then add or subtract.</h2>
+  <div class="cols" style="margin-top:0.4vh">
+    <div><div class="card">
+      <p class="small"><b>6.</b> Two sectors share the same center and the same angle, 1.3 radians. One has radius 9 cm, the other 5 cm. Find the area and the perimeter of the region between their arcs.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">area = big sector − small sector:</span>&nbsp; \(\tfrac{1}{2}(81 - 25)(1.3)\)</div>
+        <div class="math small"><span class="lbl">perimeter: two arcs and two straight ends, each \(9 - 5 = 4\):</span><br>\(9(1.3) + 5(1.3) + 4 + 4 = 11.7 + 6.5 + 8\)</div>
+        <div class="math small result">area \(36.4\) cm², &nbsp;perimeter \(26.2\) cm</div>
+      </div></div>
+    </div></div>
+    <div><div class="card">
+      <p class="small"><b>7.</b> Triangle \(ABC\) has \(AB = AC = 6\) cm and angle \(BAC = 0.7\) radians. A sector of a circle with center \(A\) and radius 4 cm is cut out of the triangle at \(A\). Find the area that is left.</p>
+      <div class="check" tabindex="0"><div class="math small">Tap to check.</div><div class="ans">
+        <div class="math small"><span class="lbl">triangle (\(\tfrac{1}{2}ab\sin C\), angle between the two 6 cm sides):</span>&nbsp; \(\tfrac{1}{2} \times 6 \times 6 \times \sin 0.7 = 11.596\)</div>
+        <div class="math small"><span class="lbl">sector:</span>&nbsp; \(\tfrac{1}{2} \times 4^2 \times 0.7 = 5.6\)</div>
+        <div class="math small result">\(11.596 - 5.6 = 6.00\) cm²</div>
+      </div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 5 · wrap up -->
+<section class="slide">
+  <p class="eyebrow">Next · reading and workbook</p>
+  <h2>Done with the seven? Mark and correct your paper, then move on.</h2>
+  <p><b>Read:</b> the Circular Measure chapter of your Hodder <i>Pure Mathematics 1</i> textbook. Compare its worked examples with Sessions 1 and 2. Then read the opening section of the Trigonometry chapter.</p>
+  <p><b>Workbook:</b> start the Circular Measure pages.</p>
+  <p><b>Outstanding work:</b> check Schoology for anything still missing, including the Session 2 exit ticket (due Thursday, November 19, 11:59 pm).</p>
+  <div class="math result">Hand your practice paper to the teacher before you leave.</div>
+</section>
+
+<script src="../../assets/katex/katex.min.js"></script>
+<script src="../../assets/katex/auto-render.min.js"></script>
+<script src="../../assets/deck.js"></script>
+</body>
+</html>
